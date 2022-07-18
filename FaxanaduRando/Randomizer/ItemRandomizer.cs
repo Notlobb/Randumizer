@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     using CheckFunction = Func<ShopRandomizer, GiftRandomizer, DoorRandomizer, List<Level>, HashSet<ShopRandomizer.Id>, HashSet<SubLevel.Id>, HashSet<Guru.GuruId>, bool>;
 
@@ -313,19 +313,6 @@ namespace FaxanaduRando
                 {
                     doorRandomizer.ShuffleWorlds(Rand);
                     var worlds = doorRandomizer.GetWorlds();
-
-                    for (int i = 1; i < worlds.Count; i++)
-                    {
-                        for (int j = 1; j < worlds.Count; j++)
-                        {
-                            if (levels[i].Number == worlds[j].number)
-                            {
-                                levels[i].Number = (DoorRandomizer.WorldNumber)j;
-                                break;
-                            }
-                        }
-                    }
-
                     shuffleWorlds = false;
                 }
 
@@ -532,21 +519,21 @@ namespace FaxanaduRando
             return false;
         }
 
-        private CheckFunction GetCheck(DoorRandomizer.WorldNumber number)
+        private CheckFunction GetCheck(WorldNumber number)
         {
-            if (number == DoorRandomizer.WorldNumber.Trunk)
+            if (number == WorldNumber.Trunk)
             {
                 return CheckTrunk;
             }
-            else if (number == DoorRandomizer.WorldNumber.Mist)
+            else if (number == WorldNumber.Mist)
             {
                 return CheckMist;
             }
-            else if (number == DoorRandomizer.WorldNumber.Branch)
+            else if (number == WorldNumber.Branch)
             {
                 return CheckBranch;
             }
-            else if (number == DoorRandomizer.WorldNumber.Dartmoor)
+            else if (number == WorldNumber.Dartmoor)
             {
                 return CheckDartmoor;
             }

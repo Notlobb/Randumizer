@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class Level
     {
@@ -60,9 +60,9 @@ namespace FaxanaduRando
         public EndOffset End { get; set; }
         public List<Screen> Screens { get; set; } = new List<Screen>();
         public List<SubLevel> SubLevels { get; set; } = new List<SubLevel>();
-        public DoorRandomizer.WorldNumber Number { get; set; }
+        public WorldNumber Number { get; set; }
 
-        public Level(StartOffset startOffset, EndOffset endOffset, DoorRandomizer.WorldNumber number)
+        public Level(StartOffset startOffset, EndOffset endOffset, WorldNumber number)
         {
             Start = startOffset;
             End = endOffset;
@@ -152,22 +152,22 @@ namespace FaxanaduRando
                     }
                     else
                     {
-                        if (Number == DoorRandomizer.WorldNumber.Mist)
+                        if (Number == WorldNumber.Mist)
                         {
                             hardProbability = 5;
                             bossProbability = hardProbability + 10;
                         }
-                        else if (Number == DoorRandomizer.WorldNumber.Branch)
+                        else if (Number == WorldNumber.Branch)
                         {
                             hardProbability = 10;
                             bossProbability = hardProbability + 20;
                         }
-                        else if (Number == DoorRandomizer.WorldNumber.Dartmoor)
+                        else if (Number == WorldNumber.Dartmoor)
                         {
                             hardProbability = 30;
                             bossProbability = hardProbability + 30;
                         }
-                        else if (Number == DoorRandomizer.WorldNumber.EvilOnesLair)
+                        else if (Number == WorldNumber.EvilOnesLair)
                         {
                             hardProbability = 45;
                             bossProbability = hardProbability + 45;

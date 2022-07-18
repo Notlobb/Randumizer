@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
    public class Util
     {
@@ -40,6 +40,7 @@ namespace FaxanaduRando
             {
                 reverse.Add(dictionary[key], key);
             }
+
             return reverse;
         }
     }

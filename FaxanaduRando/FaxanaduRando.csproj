@@ -70,7 +70,6 @@
     <Compile Include="Randomizer\DoorRandomizer.cs" />
     <Compile Include="Randomizer\OpCode.cs" />
     <Compile Include="Randomizer\PaletteRandomizer.cs" />
-    <Compile Include="Randomizer\Priest.cs" />
     <Compile Include="Randomizer\Screen.cs" />
     <Compile Include="Randomizer\Section.cs" />
     <Compile Include="Randomizer\Shop.cs" />

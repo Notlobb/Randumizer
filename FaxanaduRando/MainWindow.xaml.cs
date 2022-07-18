@@ -42,7 +42,7 @@ namespace FaxanaduRando
         private void NewSeedButton_Click(object sender, RoutedEventArgs e)
         {
             var random = new Random();
-            int seed = Math.Abs(random.Next(int.MaxValue));
+            int seed = random.Next(int.MaxValue);
             seedTextBox.Text = seed.ToString();
         }
 
@@ -54,15 +54,14 @@ namespace FaxanaduRando
             if (!File.Exists(pathTextBox.Text))
                 return;
 
-            int seed = 0;
-            if (!int.TryParse(seedTextBox.Text, out seed))
+            if (!int.TryParse(seedTextBox.Text, out int seed))
             {
                 MessageBox.Show("Incorrect seed format", "Error");
                 return;
             }
 
-            if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress &&
-                !GeneralOptions.MoveFinalRequirements)
+            if (Randomizer.GeneralOptions.ShuffleTowers && Randomizer.GeneralOptions.IncludeEvilOnesFortress &&
+                !Randomizer.GeneralOptions.MoveFinalRequirements)
             {
                 if (MessageBox.Show("You have selected to include the Evil One's fortress in the tower shuffle, but you have not selected to move the final requirements. This might result in extra requirements not actually being required. Continue?", "Warning", MessageBoxButton.YesNo) ==
                     MessageBoxResult.No)
@@ -73,7 +72,7 @@ namespace FaxanaduRando
 
             try
             {
-                var randomizer = new Randomizer();
+                var randomizer = new Randomizer.Randomizer();
                 string message;
                 bool result = randomizer.Randomize(pathTextBox.Text, flagsTextBox.Text, seed, out message);
                 if (!result)

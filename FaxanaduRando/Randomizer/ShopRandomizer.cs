@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class ShopRandomizer
     {
@@ -144,13 +144,11 @@ namespace FaxanaduRando
         public ShopRandomizer(byte[] content, DoorRandomizer doorRandomizer)
         {
             var shop = new Shop(Shop.Id.EolisKeyShop, true);
-            shop.MaxPrice = 400;
             shop.Items.Add(new ShopItem(0x3258A, content));
             Shops.Add(shop);
             ShopDict.Add(shop.ShopId, shop);
 
             shop = new Shop(Shop.Id.EolisItemShop);
-            shop.MaxPrice = 800;
             shop.Items.Add(new ShopItem(0x3243E, content));
             shop.Items.Add(new ShopItem(0x32441, content));
             shop.Items.Add(new ShopItem(0x32444, content));
@@ -450,7 +448,7 @@ namespace FaxanaduRando
         public void RandomizePrices(Random random, DoorRandomizer doorRandomizer)
         {
             var worlds = doorRandomizer.GetWorlds();
-            var multipliers = new Dictionary<DoorRandomizer.WorldNumber, int>();
+            var multipliers = new Dictionary<WorldNumber, int>();
             for (int i = 0; i < worlds.Count; i++)
             {
                 multipliers[worlds[i].number] = 5 + 5 * i;
@@ -464,7 +462,7 @@ namespace FaxanaduRando
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisMagicShop], 1000);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.MartialArtsShop], 1000);
 
-            int multiplier = multipliers[DoorRandomizer.WorldNumber.Trunk];
+            int multiplier = multipliers[WorldNumber.Trunk];
             SetShopPrice(doorRandomizer.Buildings[DoorId.TrunkSecretShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneItemShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneKeyShop], 100 * multiplier);
@@ -480,7 +478,7 @@ namespace FaxanaduRando
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawHouse], 300 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawMeatShop], 300 * multiplier);
 
-            multiplier = multipliers[DoorRandomizer.WorldNumber.Mist];
+            multiplier = multipliers[WorldNumber.Mist];
             SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconItemShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconKeyShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconBar], 200 * multiplier);
@@ -497,7 +495,7 @@ namespace FaxanaduRando
             SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimHouse], 300 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimMeatShop], 300 * multiplier);
 
-            multiplier = multipliers[DoorRandomizer.WorldNumber.Branch];
+            multiplier = multipliers[WorldNumber.Branch];
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateItemShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateGuru], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateHospital], 200 * multiplier);
@@ -512,7 +510,7 @@ namespace FaxanaduRando
             SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakHouse], 300 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakMeatShop], 300 * multiplier);
 
-            multiplier = multipliers[DoorRandomizer.WorldNumber.Dartmoor];
+            multiplier = multipliers[WorldNumber.Dartmoor];
             SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorItemShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorKeyShop], 200 * multiplier);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorMeatShop], 200 * multiplier);

@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     class FlagConverter : IMultiValueConverter
     {

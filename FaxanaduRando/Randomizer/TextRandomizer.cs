@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     class TextRandomizer
     {
-        private List<Level> levels;
         private Random random;
 
         private static readonly List<string> ranks = new List<string>
@@ -55,9 +54,8 @@ namespace FaxanaduRando
             {Sprite.SpriteId.Glove2OrKeyJoker, "Glove2" },
         };
 
-        public TextRandomizer(List<Level> levels, Random random)
+        public TextRandomizer(Random random)
         {
-            this.levels = levels;
             this.random = random;
         }
 
@@ -101,32 +99,32 @@ namespace FaxanaduRando
                 {
                     "Hi",
                     "Ni",
-                    "Stand back.äI just farted... Sorry",
+                    "Stand back. I just farted... Sorry",
                     "I am Error",
-                    "Sorry. I knowänothing",
-                    "Faxanadu or duänot. There is noäFaxanatry",
+                    "Sorry. I know nothing",
+                    "Faxanadu or du not. There is no Faxanatry",
                     "All glory to the Evil One",
                     "I love the Evil One",
-                    "Elves are theäreal evil ones",
-                    "Have negativeäthoughts",
-                    "Forget yourämantra",
-                    "The King? Iädidn't vote for him",
+                    "Elves are the real evil ones",
+                    "Have negative thoughts",
+                    "Forget your mantra",
+                    "The King? I didn't vote for him",
                     "This seed sucks",
                     "If only this game had chocobos",
                     "Silvers are in 9",
                     "Smoke!",
-                    "i'm not aäbad elf",
-                    "I think theämeat vendorämight be aäpervert",
-                    "Let's live hereätogether",
-                    "I don't knowähow to sayäthis...äFaxanadu?äFax-anadu?äFazzanadu?äFaxana-du?äFaxanadu?",
-                    "Why do theyäcall itäFaxanadu?äIt's not a faxäand it's notädu-ing anything!",
-                    "What wouldäFaxanadu?",
-                    "Shoutout toäTundra83",
-                    "Shoutout toäCha0sFinale",
-                    "Shoutout toäShinerCCC",
-                    "Shoutout toäLoZCardsfan23",
-                    "Shoutout toäOdinSpack",
-                    "Shoutout toäMeowthRocket",
+                    "i'm not a bad elf",
+                    "I think the meat vendor might be a pervert",
+                    "Let's live here together",
+                    "I don't know how to say this... Faxanadu? Fax-anadu? Fazzanadu? Faxana-du? Faxanadu?",
+                    "Why do they call it Faxanadu? It's not a fax and it's not du-ing anything!",
+                    "What would Faxanadu?",
+                    "Shoutout to Tundra83",
+                    "Shoutout to Cha0sFinale",
+                    "Shoutout to ShinerCCC",
+                    "Shoutout to LoZCardsfan23",
+                    "Shoutout to OdinSpack",
+                    "Shoutout to MeowthRocket",
                 };
 
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
@@ -174,32 +172,32 @@ namespace FaxanaduRando
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FireMage, out giftItem))
                 {
                     var cost = shopRandomizer.StaticPriceDict[DoorId.FireMage].Price;
-                    var text = $"{giftItem.Item} forä{cost}?ö";
-                    allText[22] = text;
+                    var text = $"{giftItem.Item} for {cost}?";
+                    AddText(text, allText, 22);
                 }
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FortressGuru, out giftItem))
                 {
-                    var text = $"Have youäactivated theäsky spring?äCome back forä{giftItem.Item}ö";
-                    allText[83] = text;
+                    var text = $"Have you activated the sky spring? Come back for {giftItem.Item}";
+                    AddText(text, allText, 83);
                 }
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.VictimBar, out giftItem))
                 {
                     string rank = ranks[giftRandomizer.BarRank];
-                    var text = $"Are you aä{rank}?äCome back forä{giftItem.Item}ö";
-                    allText[115] = text;
+                    var text = $"Are you a {rank}? Come back for {giftItem.Item}";
+                    AddText(text, allText, 115);
                 }
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.AceKeyHouse, out giftItem))
                 {
-                    var text = $"Come back forä{giftItem.Item}ö";
-                    allText[124] = text;
+                    var text = $"Come back for {giftItem.Item}";
+                    AddText(text, allText, 124);
                 }
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.ConflateGuru, out giftItem))
                 {
-                    var text = $"This guru hasä{giftItem.Item}ö";
+                    var text = $"This guru has {giftItem.Item}";
                     if (Util.GurusShuffled())
                     {
                         string location = "Unknown";
@@ -212,44 +210,45 @@ namespace FaxanaduRando
                             }
                         }
 
-                        text = $"This guru hasä{giftItem.Item}äand is atä{location}ö";
+                        text = $"This guru has {giftItem.Item} and is at {location}";
                     }
-                    allText[131] = text;
-                    allText[132] = text;
-                    allText[133] = text;
+
+                    AddText(text, allText, 131);
+                    AddText(text, allText, 132);
+                    AddText(text, allText, 133);
                 }
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FraternalGuru, out giftItem))
                 {
-                    var text = $"Do you have theäDragon Slayer?äCome back forä{giftItem.Item}ö";
-                    allText[160] = text;
+                    var text = $"Do you have the Dragon Slayer? Come back for {giftItem.Item}";
+                    AddText(text, allText, 160);
                 }
 
                 var mattockText = new List<string>()
                 {
                     "MAAAAAAAATTTTTTTTTOOOOOOOOCK!",
-                    "I now declareäthis the MattockäExpressway",
+                    "I now declare this the Mattock Expressway",
                 };
 
                 var hourglassText = new List<string>()
                 {
                     "Za Warudo!",
                     "Stop the clock!",
-                    "Stop! HammeräTime!",
+                    "Stop! Hammer Time!",
                 };
 
                 var wingbootText = new List<string>()
                 {
-                    "Looks like Team Rocket isäBlasting OffäAgain!",
-                    "With boots Iäcould walk onäair.",
-                    "This streamäsponsored byäRed Bull!",
+                    "Looks like Team Rocket is Blasting Off Again!",
+                    "With boots I could walk on air.",
+                    "This stream sponsored by Red Bull!",
                 };
 
                 var poisonText = new List<string>();
                 if (ItemOptions.ReplacePoison)
                 {
-                    poisonText.Add("I'm holdingäBlack Potion");
-                    poisonText.Add("I nowäprossessäBlack Potion");
+                    poisonText.Add("I'm holding Black Potion");
+                    poisonText.Add("I now prossess Black Potion");
                 }
                 else
                 {
@@ -259,21 +258,21 @@ namespace FaxanaduRando
 
                 var gloveText = new List<string>()
                 {
-                    "I love the power glove.äIt's so bad",
-                    "If it doesn'täfit, you mustäacquit.",
-                    "Hey! You forgotäthe Power Glove!",
-                    "No glove,äno love",
+                    "I love the power glove. It's so bad",
+                    "If it doesn't fit, you must acquit.",
+                    "Hey! You forgot the Power Glove!",
+                    "No glove, no love",
                 };
 
                 var endingText = new List<string>()
                 {
                     "You're winner!",
-                    "Congraturation.äThis story isähappy end.äThank you.",
-                    "Conglaturation.äYou haveäcompleted aägreat gameäand proovedäthe justiceäof our culture.",
-                    "You've won! You did it! You did it! I knew youäwould, I justäknew you would!",
-                    "Winners don'tädo potions",
-                    "Winner winnerächicken dinner!",
-                    "You have finallyämanaged toädefeat theäEvil One.äBut is heäreally dead?äWe're notätelling! End.",
+                    "Congraturation. This story is happy end. Thank you.",
+                    "Conglaturation. You have completed a great game and prooved the justice of our culture.",
+                    "You've won! You did it! You did it! I knew you would, I just knew you would!",
+                    "Winners don't do potions",
+                    "Winner winner chicken dinner!",
+                    "You have finally managed to defeat the Evil One. But is he really dead? We're not telling! End.",
                 };
 
                 AddText(mattockText[random.Next(mattockText.Count)], allText, 170);
@@ -287,62 +286,62 @@ namespace FaxanaduRando
                 {
                     var doorText = new List<string>()
                     {
-                        "Do you need aäsword to openäa door?",
-                        "You're notäproperly dressedäfor work!",
+                        "Do you need a sword to open a door?",
+                        "You're not properly dressed for work!",
                     };
 
                     AddText(doorText[random.Next(doorText.Count)], allText, 37);
                 }
                 else
                 {
-                    allText[37] = "Hiö"; //Intro text
+                    //Intro text
+                    AddText("Hi", allText, 37);
                 }
 
                 var kingTexts = new List<string>()
                 {
-                    "Shut up andätake my money!",
+                    "Shut up and take my money!",
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
-
-                allText[86] = "Hiö"; //Sky fountain
-                allText[125] = "Hiö"; //Ace key guy
-                allText[139] = "Hiö"; //Conflate guru
-                allText[161] = "Hiö"; //Fraternal guru
+                AddText("Hi", allText, 86); //Sky fountain
+                AddText("Hi", allText, 125); //Ace key guy
+                AddText("Hi", allText, 139); //Conflate guru
+                AddText("Hi", allText, 161); //Fraternal guru
 
                 var price = shopRandomizer.StaticPriceDict[DoorId.MartialArtsShop].Price;
-                allText[24] = $"{price}?ö";
+                AddText($"Martial arts for {price}?", allText, 24);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.EolisMagicShop].Price;
-                allText[20] = $"{price}?ö";
+                AddText($"Magic for {price}?", allText, 20);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.ApoluneHospital].Price;
-                allText[27] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 27);
                 price = shopRandomizer.StaticPriceDict[DoorId.ForepawHospital].Price;
-                allText[28] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 28);
                 price = shopRandomizer.StaticPriceDict[DoorId.MasconHospital].Price;
-                allText[29] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 29);
                 price = shopRandomizer.StaticPriceDict[DoorId.VictimHospital].Price;
-                allText[30] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 30);
                 price = shopRandomizer.StaticPriceDict[DoorId.ConflateHospital].Price;
-                allText[31] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 31);
                 price = shopRandomizer.StaticPriceDict[DoorId.DartmoorHospital].Price;
-                allText[32] = $"{price}?ö";
+                AddText(GetHospitalText(price), allText, 32);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.EolisMeatShop].Price;
-                allText[6] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 6);
                 price = shopRandomizer.StaticPriceDict[DoorId.ForepawMeatShop].Price;
-                allText[7] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 7);
                 price = shopRandomizer.StaticPriceDict[DoorId.MasconMeatShop].Price;
-                allText[8] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 8);
                 price = shopRandomizer.StaticPriceDict[DoorId.VictimMeatShop].Price;
-                allText[9] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 9);
                 price = shopRandomizer.StaticPriceDict[DoorId.ConflateMeatShop].Price;
-                allText[10] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 10);
                 price = shopRandomizer.StaticPriceDict[DoorId.DaybreakMeatShop].Price;
-                allText[11] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 11);
                 price = shopRandomizer.StaticPriceDict[DoorId.DartmoorMeatShop].Price;
-                allText[12] = $"Eat my meat forä{price}?ö";
+                AddText(GetMeatShopText(price), allText, 12);
             }
 
             int newLength = getLength(allText);
@@ -355,6 +354,16 @@ namespace FaxanaduRando
             return true;
         }
 
+        private string GetHospitalText(ushort price)
+        {
+            return $"Eat my meat for {price}?";
+        }
+
+        private string GetMeatShopText(ushort price)
+        {
+            return $"{price}?";
+        }
+
         private int getLength(List<string> texts)
         {
             int length = 0;
@@ -365,9 +374,40 @@ namespace FaxanaduRando
             return length;
         }
 
-        private void AddText(string text, List<String> texts, int index)
+        private void AddText(string text, List<string> texts, int index)
         {
+            text = InsertLineBreaks(text);
             texts[index] = text + 'ö';
+        }
+
+        private string InsertLineBreaks(string text)
+        {
+            var indices = new List<int>();
+
+            for (int i = 16; i < text.Length; i += 16)
+            {
+                int j = i;
+                int k = j - 16;
+                while (j > k)
+                {
+                    if (text[j] == ' ')
+                    {
+                        indices.Add(j);
+                        i = j;
+                        break;
+                    }
+
+                    j--;
+                }
+            }
+
+            var newText = text;
+            foreach (var index in indices)
+            {
+                newText = newText.Substring(0, index) + "ä" + text.Substring(index + 1);
+            }
+
+            return newText;
         }
 
         public List<string> GetHints(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, bool spoilerLog=false)
@@ -473,10 +513,10 @@ namespace FaxanaduRando
         private string GetLevelKeyHint(Door door, DoorRandomizer doorRandomizer)
         {
             var item = doorRandomizer.GetLevelKey(door);
-            string hint = $"{door.OriginalId}ärequiresä{item}";
+            string hint = $"{door.OriginalId} requires {item}";
             if (item == ShopRandomizer.Id.Book)
             {
-                hint = $"{door.OriginalId}ärequiresänothing";
+                hint = $"{door.OriginalId} requires nothing";
             }
             return hint;
         }
@@ -499,10 +539,10 @@ namespace FaxanaduRando
             var item = doorRandomizer.GetExitKey(door);
             if (item == ShopRandomizer.Id.Book)
             {
-                return $"{door}ärequiresänothing";
+                return $"{door} requires nothing";
             }
 
-            string hint = $"{door}ärequiresä{item}";
+            string hint = $"{door} requires {item}";
             return hint;
         }
 
@@ -526,7 +566,7 @@ namespace FaxanaduRando
             string source = worlds[index].number.ToString();
             string destination = worlds[index].forward.number.ToString();
 
-            string hint = $"{source}äleads toä{destination}";
+            string hint = $"{source} leads to {destination}";
             return hint;
         }
 
@@ -563,7 +603,7 @@ namespace FaxanaduRando
             var hints = new List<string>();
             if (door.Gift != null)
             {
-                string hint = $"{door.Id}ähasä{door.Gift.Item}";
+                string hint = $"{door.Id} has {door.Gift.Item}";
                 hint = GetTail(hint, oldDoor, door.ShouldShuffle, true);
                 hints.Add(hint);
             }
@@ -573,7 +613,7 @@ namespace FaxanaduRando
                 bool weakHints = GeneralOptions.HintSetting == GeneralOptions.Hints.Weak && !spoilerLog;
                 foreach (var item in items)
                 {
-                    string hint = $"{door.Id}ähasä{item}";
+                    string hint = $"{door.Id} has {item}";
                     if (!weakHints)
                     {
                         hint = GetTail(hint, oldDoor, door.ShouldShuffle, true);
@@ -597,7 +637,7 @@ namespace FaxanaduRando
                 var items = GetShopItems(door.BuildingShop, spoilerLog);
                 foreach (var item in items)
                 {
-                    string hint = $"{door.Id}ähasä{item}";
+                    string hint = $"{door.Id} has {item}";
                     hint = GetTail(hint, door.OriginalId, door.ShouldShuffle, true);
                     hints.Add(hint);
                 }
@@ -612,11 +652,11 @@ namespace FaxanaduRando
             {
                 if (appendAnd)
                 {
-                    hint += "äand is atä";
+                    hint += " and is at ";
                 }
                 else
                 {
-                    hint += "äis atä";
+                    hint += " is at ";
                 }
 
                 hint += $"{oldDoor}";
@@ -734,7 +774,7 @@ namespace FaxanaduRando
             var items = GetSublevelItems(sublevel, spoilerLog);
             foreach (var item in items)
             {
-                hints.Add($"{sublevel.SubLevelId}ähasä{item}");
+                hints.Add($"{sublevel.SubLevelId} has {item}");
             }
 
             return hints;

@@ -2,8 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
+    public enum WorldNumber : byte
+    {
+        Eolis,
+        Trunk,
+        Mist,
+        Branch,
+        Dartmoor,
+        EvilOnesLair,
+        Buildings,
+        Towns,
+    }
+
     public enum OtherWorldNumber
     {
         Eolis,
@@ -801,7 +813,6 @@ namespace FaxanaduRando
 
         public void AddToContent(byte[] content, Random random)
         {
-            FinalizeWorlds(random);
             doorRequirementTable.AddToContent(content);
             levelTable.AddToContent(content);
             screenTable.AddToContent(content);
@@ -922,18 +933,6 @@ namespace FaxanaduRando
             }
         }
 
-        public enum WorldNumber : byte
-        {
-            Eolis,
-            Trunk,
-            Mist,
-            Branch,
-            Dartmoor,
-            EvilOnesLair,
-            Buildings,
-            Towns,
-        }
-
         public class World
         {
             public WorldNumber number;
@@ -970,8 +969,20 @@ namespace FaxanaduRando
             }
         }
 
-        private void FinalizeWorlds(Random random)
+        public void FinalizeWorlds(List<Level> levels, Random random)
         {
+            for (int i = 1; i < worlds.Count; i++)
+            {
+                for (int j = 1; j < worlds.Count; j++)
+                {
+                    if (levels[i].Number == worlds[j].number)
+                    {
+                        levels[i].Number = (WorldNumber)j;
+                        break;
+                    }
+                }
+            }
+
             if (GeneralOptions.ShuffleWorlds)
             {
                 if (GeneralOptions.QuickSeed &&

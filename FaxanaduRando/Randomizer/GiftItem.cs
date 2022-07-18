@@ -1,4 +1,4 @@
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class GiftItem
     {

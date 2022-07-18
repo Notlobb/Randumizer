@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     class Text
     {

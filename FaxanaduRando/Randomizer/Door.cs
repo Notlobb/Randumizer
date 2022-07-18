@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public enum DoorId
     {
@@ -101,8 +101,6 @@ namespace FaxanaduRando
         public DoorRandomizer.Requirement Requirement { get; set; }
         public DoorRandomizer.PositionData ReturnPosition { get; set; }
         public DoorRandomizer.Requirement ReturnRequirement { get; set; }
-        public DoorRandomizer.PositionData OtherReturnPosition { get; set; }
-        public DoorRandomizer.Requirement OtherReturnRequirement { get; set; }
         public SubLevel Sublevel { get; set; } = null;
         public GiftItem Gift { get; set; } = null;
         public Shop BuildingShop { get; set; } = null;
@@ -118,7 +116,7 @@ namespace FaxanaduRando
 
         public byte screen;
         public byte palette;
-        public DoorRandomizer.WorldNumber level;
+        public WorldNumber level;
         public DoorRandomizer.DoorRequirement key = DoorRandomizer.DoorRequirement.Nothing;
 
         public byte reqScreen;
@@ -205,7 +203,7 @@ namespace FaxanaduRando
             }
         }
 
-        public DoorRandomizer.WorldNumber GetWorld()
+        public WorldNumber GetWorld()
         {
             return worldDict[World];
         }
@@ -220,16 +218,16 @@ namespace FaxanaduRando
             return 10;
         }
 
-        private static Dictionary<OtherWorldNumber, DoorRandomizer.WorldNumber> worldDict = new Dictionary<OtherWorldNumber, DoorRandomizer.WorldNumber>()
+        private static Dictionary<OtherWorldNumber, WorldNumber> worldDict = new Dictionary<OtherWorldNumber, WorldNumber>()
         {
-            { OtherWorldNumber.Eolis, DoorRandomizer.WorldNumber.Eolis },
-            { OtherWorldNumber.Trunk, DoorRandomizer.WorldNumber.Trunk },
-            { OtherWorldNumber.Mist, DoorRandomizer.WorldNumber.Mist },
-            { OtherWorldNumber.Branch, DoorRandomizer.WorldNumber.Branch },
-            { OtherWorldNumber.Dartmoor, DoorRandomizer.WorldNumber.Dartmoor },
-            { OtherWorldNumber.EvilOnesLair, DoorRandomizer.WorldNumber.EvilOnesLair },
-            { OtherWorldNumber.Towns, DoorRandomizer.WorldNumber.Towns },
-            { OtherWorldNumber.Buildings, DoorRandomizer.WorldNumber.Buildings },
+            { OtherWorldNumber.Eolis, WorldNumber.Eolis },
+            { OtherWorldNumber.Trunk, WorldNumber.Trunk },
+            { OtherWorldNumber.Mist, WorldNumber.Mist },
+            { OtherWorldNumber.Branch, WorldNumber.Branch },
+            { OtherWorldNumber.Dartmoor, WorldNumber.Dartmoor },
+            { OtherWorldNumber.EvilOnesLair, WorldNumber.EvilOnesLair },
+            { OtherWorldNumber.Towns, WorldNumber.Towns },
+            { OtherWorldNumber.Buildings, WorldNumber.Buildings },
         };
 
         private static Dictionary<DoorId, byte> doorPalettes = new Dictionary<DoorId, byte>()

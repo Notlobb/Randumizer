@@ -1,6 +1,6 @@
 using System;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public abstract class ShopEntry
     {

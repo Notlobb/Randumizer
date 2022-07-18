@@ -3,39 +3,39 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FaxanaduRando"
+        xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
         Title="Randumizer v0.23" Height="450" Width="900">
     <Window.Resources>
-        <local:FlagConverter x:Key="MultiValueConverter" />
-        <local:FlagPresets x:Key="flagPresets" />
-        <local:HintSettings x:Key="hintSettings" />
-        <local:HintConverter x:Key="hintConverter" />
-        <local:MiscDoorSettings x:Key="miscDoorSettings" />
-        <local:MiscDoorConverter x:Key="miscDoorConverter" />
-        <local:EnemyHPSettings x:Key="enemyHPSettings" />
-        <local:EnemyHPConverter x:Key="enemyHPConverter" />
-        <local:EnemyDamageSettings x:Key="enemyDamageSettings" />
-        <local:EnemyDamageConverter x:Key="enemyDamageConverter" />
-        <local:EnemySetSettings x:Key="enemySetSettings" />
-        <local:EnemySetConverter x:Key="enemySetConverter" />
-        <local:StartingWeaponSettings x:Key="startingWeapon" />
-        <local:StartingWeaponConverter x:Key="startingWeaponConverter" />
-        <local:MattockUsageSettings x:Key="mattockUsageSettings" />
-        <local:MattockUsageConverter x:Key="mattockUsageConverter" />
-        <local:WingBootSettingsConverter x:Key="wingBootConverter" />
-        <local:WingBootSettings x:Key="wingBootSettings" />
-        <local:ShieldSettings x:Key="shieldSettings" />
-        <local:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
-        <local:BigItemSpawnsSettingsConverter x:Key="bigItemSpawnsSettingsConverter" />
-        <local:WorldDoorSettings x:Key="worldDoorSettings" />
-        <local:WorldDoorConverter x:Key="worldDoorConverter" />
-        <local:ShuffleItemsSettings x:Key="itemShuffleSettings" />
-        <local:ShuffleItemsConverter x:Key="itemShuffleSettingsConverter" />
-        <local:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
-        <local:RandomizeKeysConverter x:Key="randomizeKeysConverter" />
-        <local:MusicSettings x:Key="musicSettings" />
-        <local:MusicConverter x:Key="musicConverter" />
+        <randomizer:FlagConverter x:Key="MultiValueConverter" />
+        <randomizer:FlagPresets x:Key="flagPresets" />
+        <randomizer:HintSettings x:Key="hintSettings" />
+        <randomizer:HintConverter x:Key="hintConverter" />
+        <randomizer:MiscDoorSettings x:Key="miscDoorSettings" />
+        <randomizer:MiscDoorConverter x:Key="miscDoorConverter" />
+        <randomizer:EnemyHPSettings x:Key="enemyHPSettings" />
+        <randomizer:EnemyHPConverter x:Key="enemyHPConverter" />
+        <randomizer:EnemyDamageSettings x:Key="enemyDamageSettings" />
+        <randomizer:EnemyDamageConverter x:Key="enemyDamageConverter" />
+        <randomizer:EnemySetSettings x:Key="enemySetSettings" />
+        <randomizer:EnemySetConverter x:Key="enemySetConverter" />
+        <randomizer:StartingWeaponSettings x:Key="startingWeapon" />
+        <randomizer:StartingWeaponConverter x:Key="startingWeaponConverter" />
+        <randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
+        <randomizer:MattockUsageConverter x:Key="mattockUsageConverter" />
+        <randomizer:WingBootSettingsConverter x:Key="wingBootConverter" />
+        <randomizer:WingBootSettings x:Key="wingBootSettings" />
+        <randomizer:ShieldSettings x:Key="shieldSettings" />
+        <randomizer:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
+        <randomizer:BigItemSpawnsSettingsConverter x:Key="bigItemSpawnsSettingsConverter" />
+        <randomizer:WorldDoorSettings x:Key="worldDoorSettings" />
+        <randomizer:WorldDoorConverter x:Key="worldDoorConverter" />
+        <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
+        <randomizer:ShuffleItemsConverter x:Key="itemShuffleSettingsConverter" />
+        <randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
+        <randomizer:RandomizeKeysConverter x:Key="randomizeKeysConverter" />
+        <randomizer:MusicSettings x:Key="musicSettings" />
+        <randomizer:MusicConverter x:Key="musicConverter" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="General">
@@ -166,67 +166,67 @@
 
                 <Button Name="randomizeButton" HorizontalAlignment="Left" Content="Randomize" Grid.Column="0" Grid.Row="9" Click="RandomizeButton_Click"/>
 
-                <CheckBox Name="generateSpoilerLogCheckBox" Grid.Column="2" Grid.Row="0" IsChecked="{Binding Path=(local:GeneralOptions.GenerateSpoilerLog), Mode=TwoWay}"
+                <CheckBox Name="generateSpoilerLogCheckBox" Grid.Column="2" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.GenerateSpoilerLog), Mode=TwoWay}"
                           ToolTip="Generates a .txt file with all item locations, and additional information depending on flags such as dungeon locations and door requirements if those are randomized"/>
                 <TextBlock Grid.Column="3" Grid.Row="0" Text="Generate spoiler log"/>
 
-                <CheckBox Name="fastTextCheckBox" Grid.Column="2" Grid.Row="1" IsChecked="{Binding Path=(local:GeneralOptions.FastText), Mode=TwoWay}"
+                <CheckBox Name="fastTextCheckBox" Grid.Column="2" Grid.Row="1" IsChecked="{Binding Path=(randomizer:GeneralOptions.FastText), Mode=TwoWay}"
                           ToolTip="Makes the text load faster"/>
                 <TextBlock Grid.Column="3" Grid.Row="1" Text="Fast text"/>
 
-                <CheckBox Name="fullHealthCheckBox" Grid.Column="2" Grid.Row="2" IsChecked="{Binding Path=(local:GeneralOptions.FastStart), Mode=TwoWay}"
+                <CheckBox Name="fullHealthCheckBox" Grid.Column="2" Grid.Row="2" IsChecked="{Binding Path=(randomizer:GeneralOptions.FastStart), Mode=TwoWay}"
                           ToolTip="You start with Full HP and MP, 1500 golds, and if 'randomize keys' is off you also start with the Ring of Elf"/>
                 <TextBlock Grid.Column="3" Grid.Row="2" Text="Fast start"/>
 
-                <CheckBox Name="dragonSlayerRequiredCheckBox" Grid.Column="2" Grid.Row="3" IsChecked="{Binding Path=(local:GeneralOptions.DragonSlayerRequired), Mode=TwoWay}"
+                <CheckBox Name="dragonSlayerRequiredCheckBox" Grid.Column="2" Grid.Row="3" IsChecked="{Binding Path=(randomizer:GeneralOptions.DragonSlayerRequired), Mode=TwoWay}"
                                 ToolTip="Can't beat the game without the full Battle gear equipped"/>
                 <TextBlock Grid.Column="3" Grid.Row="3" Text="Make equipped dragon slayer required"/>
 
-                <CheckBox Name="pendantRodRubyRequiredCheckBox" Grid.Column="2" Grid.Row="4" IsChecked="{Binding Path=(local:GeneralOptions.PendantRodRubyRequired), Mode=TwoWay}"
+                <CheckBox Name="pendantRodRubyRequiredCheckBox" Grid.Column="2" Grid.Row="4" IsChecked="{Binding Path=(randomizer:GeneralOptions.PendantRodRubyRequired), Mode=TwoWay}"
                           ToolTip="Can't beat the game without all of these items"/>
                 <TextBlock Grid.Column="3" Grid.Row="4" Text="Make pendant, magical rod and ruby ring required"/>
 
-                <CheckBox Name="moveSpringQuestRequirementCheckBox" Grid.Column="2" Grid.Row="5" IsChecked="{Binding Path=(local:GeneralOptions.MoveSpringQuestRequirement), Mode=TwoWay}"
+                <CheckBox Name="moveSpringQuestRequirementCheckBox" Grid.Column="2" Grid.Row="5" IsChecked="{Binding Path=(randomizer:GeneralOptions.MoveSpringQuestRequirement), Mode=TwoWay}"
                           ToolTip="Spring quest must be completed to beat the game, but is not needed to enter Mist. You still need to push the rock to enter Mist, but only need the ruby ring to do so"/>
                 <TextBlock Grid.Column="3" Grid.Row="5" Text="Move spring quest requirement to final requirement"/>
 
-                <CheckBox Name="moveFinalRequirementsCheckBox" Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=(local:GeneralOptions.MoveFinalRequirements), Mode=TwoWay}"
+                <CheckBox Name="moveFinalRequirementsCheckBox" Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=(randomizer:GeneralOptions.MoveFinalRequirements), Mode=TwoWay}"
                           ToolTip="Check for required items at the Evil Ones room instead of at the end of Dartmoor."/>
                 <TextBlock Grid.Column="3" Grid.Row="6" Text="Move final requirements to final door"/>
 
-                <CheckBox Name="shuffleTowersCheckBox" Grid.Column="2" Grid.Row="7" IsChecked="{Binding Path=(local:GeneralOptions.ShuffleTowers), Mode=TwoWay}"
+                <CheckBox Name="shuffleTowersCheckBox" Grid.Column="2" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleTowers), Mode=TwoWay}"
                           ToolTip="Tower locations are shuffled."/>
                 <TextBlock Grid.Column="3" Grid.Row="7" Text="Shuffle towers"/>
 
-                <CheckBox Name="shuffleWorldsCheckBox" Grid.Column="2" Grid.Row="8" IsChecked="{Binding Path=(local:GeneralOptions.ShuffleWorlds), Mode=TwoWay}"
+                <CheckBox Name="shuffleWorldsCheckBox" Grid.Column="2" Grid.Row="8" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleWorlds), Mode=TwoWay}"
                           ToolTip="Shuffle the worlds after Eolis"/>
                 <TextBlock Grid.Column="3" Grid.Row="8" Text="Shuffle worlds"/>
 
-                <CheckBox Name="updateMiscTextCheckBox" Grid.Column="2" Grid.Row="9" IsChecked="{Binding Path=(local:GeneralOptions.UpdateMiscText), Mode=TwoWay}"
+                <CheckBox Name="updateMiscTextCheckBox" Grid.Column="2" Grid.Row="9" IsChecked="{Binding Path=(randomizer:GeneralOptions.UpdateMiscText), Mode=TwoWay}"
                           ToolTip="Update various text related to randomization. One example is that NPCs holding items will tell you what they have if you have not fulfilled their requirement yet."/>
                 <TextBlock Grid.Column="3" Grid.Row="9" Text="Update misc text"/>
 
-                <CheckBox Name="quickSeedCheckBox" Grid.Column="2" Grid.Row="10" IsChecked="{Binding Path=(local:GeneralOptions.QuickSeed), Mode=TwoWay}"
+                <CheckBox Name="quickSeedCheckBox" Grid.Column="2" Grid.Row="10" IsChecked="{Binding Path=(randomizer:GeneralOptions.QuickSeed), Mode=TwoWay}"
                           ToolTip="The randomizer will attempt to make the seed beatable more quickly than the average seed"/>
                 <TextBlock Grid.Column="3" Grid.Row="10" Text="Quick seed"/>
 
-                <CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="2" Grid.Row="11" IsChecked="{Binding Path=(local:GeneralOptions.AllowLoweringRespawn), Mode=TwoWay}"
+                <CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="2" Grid.Row="11" IsChecked="{Binding Path=(randomizer:GeneralOptions.AllowLoweringRespawn), Mode=TwoWay}"
                           ToolTip="Makes it so talking to an earlier guru will set your respawn point there even if you previously had it further ahead"/>
                 <TextBlock Grid.Column="3" Grid.Row="11" Text="Allow lowering of respawn value"/>
 
-                <CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="2" Grid.Row="12" IsChecked="{Binding Path=(local:GeneralOptions.PreventKnockbackOnLadders), Mode=TwoWay}"
+                <CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="2" Grid.Row="12" IsChecked="{Binding Path=(randomizer:GeneralOptions.PreventKnockbackOnLadders), Mode=TwoWay}"
                           ToolTip="This will prevent the player from being knocked off ladders when taking damage"/>
                 <TextBlock Grid.Column="3" Grid.Row="12" Text="Prevent knockback while on ladders"/>
 
-                <CheckBox Name="allowEquippingIndoorsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(local:GeneralOptions.AllowEquippingIndoors), Mode=TwoWay}"
+                <CheckBox Name="allowEquippingIndoorsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.AllowEquippingIndoors), Mode=TwoWay}"
                           ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors."/>
                 <TextBlock Grid.Column="5" Grid.Row="0" Text="Allow equipping items indoors"/>
 
-                <CheckBox Name="darknessCheckBox" Grid.Column="4" Grid.Row="1" IsChecked="{Binding Path=(local:GeneralOptions.DarkTowers), Mode=TwoWay}"
+                <CheckBox Name="darknessCheckBox" Grid.Column="4" Grid.Row="1" IsChecked="{Binding Path=(randomizer:GeneralOptions.DarkTowers), Mode=TwoWay}"
                           ToolTip="The inside of towers will be dark"/>
                 <TextBlock Grid.Column="5" Grid.Row="1" Text="Dark towers"/>
 
-                <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(local:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
+                <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
                           ToolTip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
                 <TextBlock Grid.Column="5" Grid.Row="7" Text="Include Evil One's fortress in the tower shuffle"/>
 
@@ -237,7 +237,7 @@
                         ItemsSource="{StaticResource hintSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:GeneralOptions.HintSetting), Mode=TwoWay, Converter={StaticResource hintConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.HintSetting), Mode=TwoWay, Converter={StaticResource hintConverter}}"
                         ToolTip="Changes NPC dialog to add hints for things like item and dungeon locations"
                         />
                 </StackPanel>
@@ -249,7 +249,7 @@
                         ItemsSource="{StaticResource miscDoorSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:GeneralOptions.MiscDoorSetting), Mode=TwoWay, Converter={StaticResource miscDoorConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.MiscDoorSetting), Mode=TwoWay, Converter={StaticResource miscDoorConverter}}"
                         ToolTip="Setting for miscellaneous doors, which may include different kinds of town doors as well as some of the doors outside towns"
                         />
                 </StackPanel>
@@ -261,7 +261,7 @@
                         ItemsSource="{StaticResource worldDoorSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:GeneralOptions.WorldDoorSetting), Mode=TwoWay, Converter={StaticResource worldDoorConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.WorldDoorSetting), Mode=TwoWay, Converter={StaticResource worldDoorConverter}}"
                         ToolTip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."
                         />
                 </StackPanel>
@@ -289,19 +289,19 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <CheckBox Name="randomizeEnemyExperiencesCheckBox" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=(local:EnemyOptions.RandomizeExperience), Mode=TwoWay}"
+                <CheckBox Name="randomizeEnemyExperiencesCheckBox" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=(randomizer:EnemyOptions.RandomizeExperience), Mode=TwoWay}"
                           ToolTip="Enemies give different experience values from vanilla"/>
                 <TextBlock Grid.Column="1" Grid.Row="0" Text="Randomize enemy experience"/>
 
-                <CheckBox Name="randomizeRewardsCheckBox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(local:EnemyOptions.RandomizeRewards), Mode=TwoWay}"
+                <CheckBox Name="randomizeRewardsCheckBox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(randomizer:EnemyOptions.RandomizeRewards), Mode=TwoWay}"
                           ToolTip="Enemies drop different things from vanilla (gold, food or nothing)"/>
                 <TextBlock Grid.Column="1" Grid.Row="1" Text="Randomize enemy drops"/>
 
-                <CheckBox Name="randomizeMagicImmunitiesCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(local:EnemyOptions.RandomizeMagicImmunities), Mode=TwoWay}"
+                <CheckBox Name="randomizeMagicImmunitiesCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(randomizer:EnemyOptions.RandomizeMagicImmunities), Mode=TwoWay}"
                           ToolTip="Each enemy will be immune to exactly one spell, and magic will pass through an immune enemy"/>
                 <TextBlock Grid.Column="1" Grid.Row="2" Text="Randomize enemy magic immunities"/>
 
-                <CheckBox Name="tryToMoveBossesCheckBox" Grid.Column="0" Grid.Row="3" IsChecked="{Binding Path=(local:EnemyOptions.TryToMoveBosses), Mode=TwoWay}"
+                <CheckBox Name="tryToMoveBossesCheckBox" Grid.Column="0" Grid.Row="3" IsChecked="{Binding Path=(randomizer:EnemyOptions.TryToMoveBosses), Mode=TwoWay}"
                           ToolTip="The randomizer will attempt to adjust the position of bosses to try to prevent them from being stuck"/>
                 <TextBlock Grid.Column="1" Grid.Row="3" Text="Try to move bosses"/>
 
@@ -312,7 +312,7 @@
                         ItemsSource="{StaticResource enemySetSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:EnemyOptions.EnemySet), Mode=TwoWay, Converter={StaticResource enemySetConverter}}">
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemySet), Mode=TwoWay, Converter={StaticResource enemySetConverter}}">
                         <ComboBox.ToolTip>
                             <ToolTip>
                                 <TextBlock Text="Changes how enemies are randomized. No mixed enemy types means that bosses will only appear in vanilla boss locations. Scaling means that the enemies will become harder in the later worlds. Scaling can also result in harder enemies in towers when combined with tower shuffling." TextWrapping="Wrap"/>
@@ -328,7 +328,7 @@
                         ItemsSource="{StaticResource enemyHPSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:EnemyOptions.EnemyHPSetting), Mode=TwoWay, Converter={StaticResource enemyHPConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemyHPSetting), Mode=TwoWay, Converter={StaticResource enemyHPConverter}}"
                         ToolTip="Changes enemy HP values by a random numerical value or percentage value. Affects each enemy type seperately"
                         />
                 </StackPanel>
@@ -340,7 +340,7 @@
                         ItemsSource="{StaticResource enemyDamageSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:EnemyOptions.EnemyDamageSetting), Mode=TwoWay, Converter={StaticResource enemyDamageConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemyDamageSetting), Mode=TwoWay, Converter={StaticResource enemyDamageConverter}}"
                         ToolTip="Changes enemy Damage by a random numerical value or percantage value. Affects each enemy type seperately"
                         />
                 </StackPanel>
@@ -387,31 +387,31 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(local:ItemOptions.GuaranteeElixirNearFortress), Mode=TwoWay}"
+                <CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeElixirNearFortress), Mode=TwoWay}"
                           ToolTip="Guarantees that there will be an Elixir near the fountain that requires it"/>
                 <TextBlock Grid.Column="1" Grid.Row="1" Text="Guarantee elixir near Tower of Fortress"/>
 
-                <CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(local:ItemOptions.FixPendantBug), Mode=TwoWay}"
+                <CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.FixPendantBug), Mode=TwoWay}"
                           ToolTip="Collecting the pendant makes you stronger instead of weaker, but you will also be weaker at the start"/>
                 <TextBlock Grid.Column="1" Grid.Row="2" Text="Fix pendant bug"/>
 
-                <CheckBox Name="buffGlovesCheckBox" Grid.Column="0" Grid.Row="3" IsChecked="{Binding Path=(local:ItemOptions.BuffGloves), Mode=TwoWay}"
+                <CheckBox Name="buffGlovesCheckBox" Grid.Column="0" Grid.Row="3" IsChecked="{Binding Path=(randomizer:ItemOptions.BuffGloves), Mode=TwoWay}"
                           ToolTip="Increases the glove duration"/>
                 <TextBlock Grid.Column="1" Grid.Row="3" Text="Buff gloves"/>
 
-                <CheckBox Name="buffHourglassCheckBox" Grid.Column="0" Grid.Row="4" IsChecked="{Binding Path=(local:ItemOptions.BuffHourglass), Mode=TwoWay}"
+                <CheckBox Name="buffHourglassCheckBox" Grid.Column="0" Grid.Row="4" IsChecked="{Binding Path=(randomizer:ItemOptions.BuffHourglass), Mode=TwoWay}"
                           ToolTip="The hourglass will no longer take half your HP when used"/>
                 <TextBlock Grid.Column="1" Grid.Row="4" Text="Buff hourglass"/>
 
-                <CheckBox Name="randomizeBarRank" Grid.Column="0" Grid.Row="5" IsChecked="{Binding Path=(local:ItemOptions.RandomizeBarRank), Mode=TwoWay}"
+                <CheckBox Name="randomizeBarRank" Grid.Column="0" Grid.Row="5" IsChecked="{Binding Path=(randomizer:ItemOptions.RandomizeBarRank), Mode=TwoWay}"
                           ToolTip="Victim barkeep requires a random rank before giving you his item"/>
                 <TextBlock Grid.Column="1" Grid.Row="5" Text="Randomize Victim bar rank requirement"/>
 
-                <CheckBox Name="guaranteeStartingSpell" Grid.Column="0" Grid.Row="6" IsChecked="{Binding Path=(local:ItemOptions.GuaranteeStartingSpell), Mode=TwoWay}"
+                <CheckBox Name="guaranteeStartingSpell" Grid.Column="0" Grid.Row="6" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeStartingSpell), Mode=TwoWay}"
                           ToolTip="Guarantees a spell in the first town"/>
                 <TextBlock Grid.Column="1" Grid.Row="6" Text="Guarantee spell in Eolis"/>
 
-                <CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="7" IsChecked="{Binding Path=(local:ItemOptions.GuaranteeMattock), Mode=TwoWay}"
+                <CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="7" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeMattock), Mode=TwoWay}"
                           ToolTip="There will always be a mattock after the first breakable wall"/>
                 <TextBlock Grid.Column="1" Grid.Row="7" Text="Guarantee mattock near Forepaw"/>
 
@@ -422,7 +422,7 @@
                         ItemsSource="{StaticResource mattockUsageSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.MattockUsage), Mode=TwoWay, Converter={StaticResource mattockUsageConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.MattockUsage), Mode=TwoWay, Converter={StaticResource mattockUsageConverter}}"
                         ToolTip="Setting for allowing Mattock to be used in more places"
                         />
                 </StackPanel>
@@ -434,7 +434,7 @@
                         ItemsSource="{StaticResource startingWeapon}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.StartingWeapon), Mode=TwoWay, Converter={StaticResource startingWeaponConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.StartingWeapon), Mode=TwoWay, Converter={StaticResource startingWeaponConverter}}"
                         ToolTip="Can set if there is a guaranteed weapon in Eolis. Random means there will be either a dagger or longsword guaranteed"
                         />
                 </StackPanel>
@@ -446,7 +446,7 @@
                         ItemsSource="{StaticResource wingBootSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.WingbootDurationSetting), Mode=TwoWay, Converter={StaticResource wingBootConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.WingbootDurationSetting), Mode=TwoWay, Converter={StaticResource wingBootConverter}}"
                         ToolTip="Changes how long Wing Boots are active, and how ranking up affects it"
                         />
                 </StackPanel>
@@ -458,7 +458,7 @@
                         ItemsSource="{StaticResource shieldSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.ShieldSetting), Mode=TwoWay}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.ShieldSetting), Mode=TwoWay}"
                         ToolTip="Changes how shields work"
                         />
                 </StackPanel>
@@ -470,7 +470,7 @@
                         ItemsSource="{StaticResource bigItemSpawnsSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.BigItemSpawns), Mode=TwoWay, Converter={StaticResource bigItemSpawnsSettingsConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.BigItemSpawns), Mode=TwoWay, Converter={StaticResource bigItemSpawnsSettingsConverter}}"
                         ToolTip="Change how 'big' items spawn, this includes the items that are normally locked behind a boss"
                         />
                 </StackPanel>
@@ -482,7 +482,7 @@
                         ItemsSource="{StaticResource itemShuffleSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.ShuffleItems), Mode=TwoWay, Converter={StaticResource itemShuffleSettingsConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.ShuffleItems), Mode=TwoWay, Converter={StaticResource itemShuffleSettingsConverter}}"
                         ToolTip="Change how to shuffle items. Mixing types fully will result in some items having an incorrect appearance, but they can still be collected."
                         />
                 </StackPanel>
@@ -494,12 +494,12 @@
                         ItemsSource="{StaticResource randomizeKeysSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ItemOptions.RandomizeKeys), Mode=TwoWay, Converter={StaticResource randomizeKeysConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.RandomizeKeys), Mode=TwoWay, Converter={StaticResource randomizeKeysConverter}}"
                         ToolTip="Change how to randomize key requirements"
                         />
                 </StackPanel>
 
-                <CheckBox Name="allowMultipleGifts" Grid.Column="3" Grid.Row="1" IsChecked="{Binding Path=(local:ItemOptions.AllowMultipleGifts), Mode=TwoWay}">
+                <CheckBox Name="allowMultipleGifts" Grid.Column="3" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.AllowMultipleGifts), Mode=TwoWay}">
                     <CheckBox.ToolTip>
                         <ToolTip>
                             <TextBlock Text="Can collect as many of the item given as you can hold. Normally if you have one, you cannot receive another. This only applies to the gurus that normally give the joker key and the ring of ruby. For the Eolis and Conflate guru, they will only give you an item if you don't have it, and for all other places, you can always receive multiple gifts." TextWrapping="Wrap"/>
@@ -508,11 +508,11 @@
                 </CheckBox>
                 <TextBlock Grid.Column="4" Grid.Row="1" Text="Allow multiple gifts from Fortress and Joker gurus"/>
 
-                <CheckBox Name="replacePoisonCheckBox" Grid.Column="3" Grid.Row="2" IsChecked="{Binding Path=(local:ItemOptions.ReplacePoison), Mode=TwoWay}"
+                <CheckBox Name="replacePoisonCheckBox" Grid.Column="3" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.ReplacePoison), Mode=TwoWay}"
                           ToolTip="Introduces a new item (Black Potion) that refills Mana, and removes all Poison from the game, replacing them with Black Potions"/>
                 <TextBlock Grid.Column="4" Grid.Row="2" Text="Replace poison with mana potions"/>
 
-                <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="3" IsChecked="{Binding Path=(local:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
+                <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="3" IsChecked="{Binding Path=(randomizer:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
                           ToolTip="Small items will awlays spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
                 <TextBlock Grid.Column="4" Grid.Row="3" Text="Always spawn small items"/>
 
@@ -559,11 +559,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
-                <CheckBox Name="randomizePalettesCheckbox" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=(local:ExtraOptions.RandomizePalettes), Mode=TwoWay}"
+                <CheckBox Name="randomizePalettesCheckbox" Grid.Column="0" Grid.Row="0" IsChecked="{Binding Path=(randomizer:ExtraOptions.RandomizePalettes), Mode=TwoWay}"
                           ToolTip="Randomizes which palettes are used."/>
                 <TextBlock Grid.Column="1" Grid.Row="0" Text="Randomize palettes"/>
 
-                <CheckBox Name="randomizeSoundEffectsCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(local:ExtraOptions.RandomizeSounds), Mode=TwoWay}"
+                <CheckBox Name="randomizeSoundEffectsCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ExtraOptions.RandomizeSounds), Mode=TwoWay}"
                           ToolTip="Randomizes the different sound effects."/>
                 <TextBlock Grid.Column="1" Grid.Row="1" Text="Randomize sound effects"/>
 
@@ -574,7 +574,7 @@
                         ItemsSource="{StaticResource musicSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(local:ExtraOptions.MusicSetting), Mode=TwoWay, Converter={StaticResource musicConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:ExtraOptions.MusicSetting), Mode=TwoWay, Converter={StaticResource musicConverter}}"
                         ToolTip="Change how to handle music"
                         />
                 </StackPanel>

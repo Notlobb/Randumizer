@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class Screen
     {
@@ -12,9 +12,6 @@ namespace FaxanaduRando
         private static List<Sprite.SpriteId> flyingIdList = new List<Sprite.SpriteId>();
         private static List<Sprite.SpriteId> smallIdList = new List<Sprite.SpriteId>();
         private static Dictionary<Sprite.SpriteId, List<Sprite.SpriteId>> bossTargets = new Dictionary<Sprite.SpriteId, List<Sprite.SpriteId>>();
-        private static List<Sprite.SpriteId> semiBossIdList = new List<Sprite.SpriteId>();
-        private static List<Sprite.SpriteId> hoverBossIdList = new List<Sprite.SpriteId>();
-        private static List<Sprite.SpriteId> realBossIdList = new List<Sprite.SpriteId>();
         private static List<Sprite.SpriteId> largeIdList = new List<Sprite.SpriteId>();
         private static List<Sprite.SpriteId> hardIdList = new List<Sprite.SpriteId>();
         private static HashSet<Sprite.SpriteId> sourceIds = new HashSet<Sprite.SpriteId>();
@@ -28,9 +25,6 @@ namespace FaxanaduRando
             flyingIdList = new List<Sprite.SpriteId>();
             smallIdList = new List<Sprite.SpriteId>();
             bossTargets = new Dictionary<Sprite.SpriteId, List<Sprite.SpriteId>>();
-            semiBossIdList = new List<Sprite.SpriteId>();
-            hoverBossIdList = new List<Sprite.SpriteId>();
-            realBossIdList = new List<Sprite.SpriteId>();
             largeIdList = new List<Sprite.SpriteId>();
             hardIdList = new List<Sprite.SpriteId>();
             sourceIds = new HashSet<Sprite.SpriteId>();

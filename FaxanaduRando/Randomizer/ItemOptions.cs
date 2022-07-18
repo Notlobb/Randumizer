@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class ItemOptions
     {

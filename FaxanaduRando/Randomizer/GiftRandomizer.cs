@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public class GiftRandomizer
     {

@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
 
-namespace FaxanaduRando
+namespace FaxanaduRando.Randomizer
 {
     public enum Music
     {
