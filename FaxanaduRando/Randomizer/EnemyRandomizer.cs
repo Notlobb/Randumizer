@@ -81,17 +81,20 @@ namespace FaxanaduRando.Randomizer
         {
             for (int i = 0; i < enemyExperienceTable.Entries.Count; i++)
             {
-                int newExperience;
-                if (random.Next(0, 4) == 0)
+                if (Sprite.enemies.Contains((Sprite.SpriteId)i))
                 {
-                    newExperience = random.Next(0, 256);
-                }
-                else
-                {
-                    newExperience = random.Next(0, 81);
-                }
+                    int newExperience;
+                    if (random.Next(0, 4) == 0)
+                    {
+                        newExperience = random.Next(0, 256);
+                    }
+                    else
+                    {
+                        newExperience = random.Next(0, 81);
+                    }
 
-                enemyExperienceTable.Entries[i][0] = (byte)newExperience;
+                    enemyExperienceTable.Entries[i][0] = (byte)newExperience;
+                }
             }
         }
 

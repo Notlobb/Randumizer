@@ -252,13 +252,6 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            if (ParentSubLevelId == SubLevel.Id.CastleFraternal &&
-                Sprites.Count == 2)
-            {
-                //Shouldn't be necessary but seems to be bugged in rare occasions
-                return true;
-            }
-
             bool skipBosses = false;
             if (!ContainsBoss())
             {

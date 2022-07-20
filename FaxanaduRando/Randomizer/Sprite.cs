@@ -14,6 +14,7 @@ namespace FaxanaduRando.Randomizer
             BipedCyclops = 6,
             Bee = 7,
             FloatingFangs = 8,
+            SpawnedGhost = 9,
             Ghost = 11,
             Goat = 12,
             TeleMage = 13,
@@ -115,6 +116,7 @@ namespace FaxanaduRando.Randomizer
         {
             SpriteId.Bee,
             SpriteId.FloatingFangs,
+            SpriteId.SpawnedGhost,
             SpriteId.Ghost,
             SpriteId.BeeSwarm,
             SpriteId.Bat,
@@ -213,6 +215,19 @@ namespace FaxanaduRando.Randomizer
             SpriteId.Rod,
             SpriteId.WingbootsBossLocked,
         };
+
+        public static readonly HashSet<SpriteId> enemies = GetEnemies();
+
+        public static HashSet<SpriteId> GetEnemies()
+        {
+            var enemies = new HashSet<SpriteId>();
+            enemies.UnionWith(tallIds);
+            enemies.UnionWith(shortIds);
+            enemies.UnionWith(flyingIds);
+            enemies.UnionWith(bossIds);
+            enemies.UnionWith(superBossIds);
+            return enemies;
+        }
 
         public Sprite(SpriteId id, byte location)
         {

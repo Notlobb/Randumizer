@@ -4,6 +4,11 @@ namespace FaxanaduRando.Randomizer
 {
     class Text
     {
+        //These are just unused characters used to represent special characters
+        public const char lineBreakChar = 'ä';
+        public const char lineBreakWithPauseChar = 'Ä';
+        public const char endOfTextChar = 'ö';
+
         private const int textOffset = 0x34310;
         private const int textOffsetEnd = 0x373C9;
 
@@ -105,10 +110,10 @@ namespace FaxanaduRando.Randomizer
                 {0x7D, '}'},
                 {0x7E, '~'},
                 {0xFB, 'Å'}, //space?
-                {0xFC, 'Ä'}, //space?
+                {0xFC, lineBreakWithPauseChar},
                 {0xFD, ' '},
-                {0xFE, 'ä'}, //newline
-                {0xFF, 'ö'}, //terminator
+                {0xFE, lineBreakChar},
+                {0xFF, endOfTextChar},
         };
 
         private static Dictionary<char, byte> reverseCharDict = Util.Reverse(charDict);

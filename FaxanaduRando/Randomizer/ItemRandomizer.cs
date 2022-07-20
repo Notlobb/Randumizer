@@ -164,7 +164,111 @@ namespace FaxanaduRando.Randomizer
                 ids.AddRange(extraItems);
             }
 
+            Util.ShuffleList(ids, 0, ids.Count - 1, Rand);
+            var toShopIds = ids.GetRange(ids.Count - extraItems.Count, extraItems.Count);
+
             shopRandomizer.SetStaticItems(startingWeapon, startingSpell);
+
+            var shopIds = shopRandomizer.GetBaseIds();
+            if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            {
+                shopIds.Add(ShopRandomizer.Id.JackKey);
+                shopIds.Add(ShopRandomizer.Id.JackKey);
+                shopIds.Add(ShopRandomizer.Id.JackKey);
+                shopIds.Add(ShopRandomizer.Id.QueenKey);
+                shopIds.Add(ShopRandomizer.Id.QueenKey);
+                shopIds.Add(ShopRandomizer.Id.QueenKey);
+                shopIds.Add(ShopRandomizer.Id.KingKey);
+                shopIds.Add(ShopRandomizer.Id.KingKey);
+                shopIds.Add(ShopRandomizer.Id.KingKey);
+                shopIds.Add(ShopRandomizer.Id.ElfRing);
+                shopIds.Add(GetMiscItem());
+            }
+
+            if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.NoGuaranteed ||
+                ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.GuaranteeOnlyWithNoSpells)
+            {
+                shopIds.Add(ShopRandomizer.Id.Dagger);
+                shopIds.Add(ShopRandomizer.Id.LongSword);
+            }
+            else if (startingWeapon == ShopRandomizer.Id.Dagger)
+            {
+                shopIds.Add(ShopRandomizer.Id.LongSword);
+            }
+            else
+            {
+                var miscId = GetMiscItem();
+                shopIds.Add(miscId);
+            }
+
+            if (!ItemOptions.GuaranteeStartingSpell)
+            {
+                shopIds.Add(startingSpell);
+            }
+
+            shopIds.AddRange(spells);
+
+            foreach (var id in toShopIds)
+            {
+                ShopRandomizer.Id shopId;
+                if (shopIdDictionary.TryGetValue(id, out shopId))
+                {
+                    shopIds.Add(shopId);
+                }
+                else
+                {
+                    var miscId = GetMiscItem();
+                    shopIds.Add(miscId);
+                }
+            }
+
+            int giftCount = giftRandomizer.GiftItems.Count;
+            if (!IncludeEolisGuru())
+            {
+                giftCount--;
+            }
+
+            if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
+            {
+                Util.ShuffleList(shopIds, 0, shopIds.Count - 5, Rand);
+                Util.ShuffleList(shopIds, shopIds.Count - giftCount, shopIds.Count - 1, Rand);
+            }
+            else
+            {
+                if (ItemOptions.ReplacePoison)
+                {
+                    shopIds.Add(ShopRandomizer.Id.BlackPotion);
+                }
+                else
+                {
+                    shopIds.Add(GetMiscItem());
+                }
+
+                shopIds.Add(ShopRandomizer.Id.WingBoots);
+                shopIds.Add(ShopRandomizer.Id.Elixir);
+                shopIds.Add(ShopRandomizer.Id.Hourglass);
+
+                shopIds.Add(GetMiscItem());
+                shopIds.Add(GetMiscItem());
+
+                if (IncludeEolisGuru())
+                {
+                    shopIds.Add(GetMiscItem());
+                }
+
+                var giftItems = new List<ShopRandomizer.Id>();
+                giftItems.Add(ShopRandomizer.Id.JokerKey);
+                giftItems.Add(ShopRandomizer.Id.RubyRing);
+                giftItems.Add(ShopRandomizer.Id.AceKey);
+                giftItems.Add(ShopRandomizer.Id.DworfRing);
+                giftItems.Add(ShopRandomizer.Id.DemonRing);
+                shopIds.AddRange(giftItems);
+
+                if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.NoMixed)
+                {
+                    Util.ShuffleList(shopIds, 0, shopIds.Count - giftItems.Count - 1, Rand);
+                }
+            }
 
             bool valid = false;
             attempts = 0;
@@ -190,116 +294,18 @@ namespace FaxanaduRando.Randomizer
 
                 if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
                 {
-                    Util.ShuffleList(ids, 0, ids.Count - 1, Rand);
-                    setIds(ids, 0, ids.Count - extraItems.Count, items);
+                    Util.ShuffleList(ids, 0, ids.Count - extraItems.Count - 1, Rand);
+                    SetIds(ids, 0, ids.Count - extraItems.Count, items);
 
-                    var toShopIds = ids.GetRange(ids.Count - extraItems.Count, extraItems.Count);
-                    var shopIds = shopRandomizer.GetBaseIds();
-
-                    if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+                    if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.NoMixed ||
+                        ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
                     {
-                        shopIds.Add(ShopRandomizer.Id.JackKey);
-                        shopIds.Add(ShopRandomizer.Id.JackKey);
-                        shopIds.Add(ShopRandomizer.Id.JackKey);
-                        shopIds.Add(ShopRandomizer.Id.QueenKey);
-                        shopIds.Add(ShopRandomizer.Id.QueenKey);
-                        shopIds.Add(ShopRandomizer.Id.QueenKey);
-                        shopIds.Add(ShopRandomizer.Id.KingKey);
-                        shopIds.Add(ShopRandomizer.Id.KingKey);
-                        shopIds.Add(ShopRandomizer.Id.KingKey);
-                        shopIds.Add(ShopRandomizer.Id.ElfRing);
-                        shopIds.Add(GetMiscItem());
-                    }
-
-                    if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.NoGuaranteed ||
-                        ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.GuaranteeOnlyWithNoSpells)
-                    {
-                        shopIds.Add(ShopRandomizer.Id.Dagger);
-                        shopIds.Add(ShopRandomizer.Id.LongSword);
-                    }
-                    else if (startingWeapon == ShopRandomizer.Id.Dagger)
-                    {
-                        shopIds.Add(ShopRandomizer.Id.LongSword);
-                    }
-                    else
-                    {
-                        var miscId = GetMiscItem();
-                        shopIds.Add(miscId);
-                    }
-
-                    if (!ItemOptions.GuaranteeStartingSpell)
-                    {
-                        shopIds.Add(startingSpell);
-                    }
-
-                    shopIds.AddRange(spells);
-
-                    foreach (var id in toShopIds)
-                    {
-                        ShopRandomizer.Id shopId;
-                        if (shopIdDictionary.TryGetValue(id, out shopId))
-                        {
-                            shopIds.Add(shopId);
-                        }
-                        else
-                        {
-                            var miscId = GetMiscItem();
-                            shopIds.Add(miscId);
-                        }
-                    }
-
-                    int giftCount = giftRandomizer.GiftItems.Count;
-                    if (!IncludeEolisGuru())
-                    {
-                        giftCount--;
-                    }
-
-                    if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
-                    {
-                        Util.ShuffleList(shopIds, 0, shopIds.Count - 5, Rand);
+                        Util.ShuffleList(shopIds, 0, shopIds.Count - giftCount, Rand);
                         Util.ShuffleList(shopIds, shopIds.Count - giftCount, shopIds.Count - 1, Rand);
                     }
                     else
                     {
-                        if (ItemOptions.ReplacePoison)
-                        {
-                            shopIds.Add(ShopRandomizer.Id.BlackPotion);
-                        }
-                        else
-                        {
-                            shopIds.Add(GetMiscItem());
-                        }
-
-                        shopIds.Add(ShopRandomizer.Id.WingBoots);
-                        shopIds.Add(ShopRandomizer.Id.Elixir);
-                        shopIds.Add(ShopRandomizer.Id.Hourglass);
-
-                        shopIds.Add(GetMiscItem());
-                        shopIds.Add(GetMiscItem());
-
-                        if (IncludeEolisGuru())
-                        {
-                            shopIds.Add(GetMiscItem());
-                        }
-
-                        var giftItems = new List<ShopRandomizer.Id>();
-                        giftItems.Add(ShopRandomizer.Id.JokerKey);
-                        giftItems.Add(ShopRandomizer.Id.RubyRing);
-                        giftItems.Add(ShopRandomizer.Id.AceKey);
-                        giftItems.Add(ShopRandomizer.Id.DworfRing);
-                        giftItems.Add(ShopRandomizer.Id.DemonRing);
-
-                        if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.NoMixed)
-                        {
-                            Util.ShuffleList(shopIds, 0, shopIds.Count - 1, Rand);
-                            shopIds.AddRange(giftItems);
-                            Util.ShuffleList(shopIds, shopIds.Count - giftCount, shopIds.Count - 1, Rand);
-                        }
-                        else
-                        {
-                            shopIds.AddRange(giftItems);
-                            Util.ShuffleList(shopIds, 0, shopIds.Count - 1, Rand);
-                        }
+                        Util.ShuffleList(shopIds, 0, shopIds.Count - 1, Rand);
                     }
 
                     var shopList = shopIds.GetRange(0, shopIds.Count - giftCount);
@@ -378,7 +384,7 @@ namespace FaxanaduRando.Randomizer
             return true;
         }
 
-        private void setIds(List<Sprite.SpriteId> ids, int startIndex, int endIndex,
+        private void SetIds(List<Sprite.SpriteId> ids, int startIndex, int endIndex,
                             List<Sprite> items)
         {
             for (int index = startIndex; index < endIndex; index++)

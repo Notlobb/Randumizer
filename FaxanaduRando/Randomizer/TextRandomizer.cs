@@ -68,7 +68,8 @@ namespace FaxanaduRando.Randomizer
             {
                 for(int i = 0; i < allText.Count; i++)
                 {
-                    allText[i] = allText[i].Replace("Ä", "ä");
+                    allText[i] = allText[i].Replace(Text.lineBreakWithPauseChar,
+                                                    Text.lineBreakChar);
                 }
             }
 
@@ -356,12 +357,12 @@ namespace FaxanaduRando.Randomizer
 
         private string GetHospitalText(ushort price)
         {
-            return $"Eat my meat for {price}?";
+            return $"{price}?";
         }
 
         private string GetMeatShopText(ushort price)
         {
-            return $"{price}?";
+            return $"Eat my meat for {price}?";
         }
 
         private int getLength(List<string> texts)
@@ -377,7 +378,7 @@ namespace FaxanaduRando.Randomizer
         private void AddText(string text, List<string> texts, int index)
         {
             text = InsertLineBreaks(text);
-            texts[index] = text + 'ö';
+            texts[index] = text + Text.endOfTextChar;
         }
 
         private string InsertLineBreaks(string text)
@@ -404,7 +405,7 @@ namespace FaxanaduRando.Randomizer
             var newText = text;
             foreach (var index in indices)
             {
-                newText = newText.Substring(0, index) + "ä" + text.Substring(index + 1);
+                newText = newText.Substring(0, index) + Text.lineBreakChar + text.Substring(index + 1);
             }
 
             return newText;
