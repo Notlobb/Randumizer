@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -8,13 +9,14 @@ namespace FaxanaduRando.Randomizer
         public const char lineBreakChar = 'ä';
         public const char lineBreakWithPauseChar = 'Ä';
         public const char endOfTextChar = 'ö';
+        public const char spaceChar = 'å';
 
         private const int textOffset = 0x34310;
         private const int textOffsetEnd = 0x373C9;
 
         private static readonly Dictionary<byte, char> charDict = new Dictionary<byte, char>
         {
-                {0x20, 'å'}, //space?
+                {0x20, spaceChar},
                 {0x21, '!'},
                 {0x22, '\"'},
                 {0x23, '#'},
@@ -202,6 +204,58 @@ namespace FaxanaduRando.Randomizer
                 text = text.PadRight(length - 1, ' ');
                 text = text.Insert(text.Length, "ö");
                 allText[index] = text;
+            }
+        }
+
+        public static List<string> GetTitles(byte[] content, int offset)
+        {
+            var titles = new List<string>();
+            for (int i = 0; i < TextRandomizer.numberOfTitles; i++)
+            {
+                StringBuilder sb = new StringBuilder(TextRandomizer.titleLength);
+                for (int j = 0; j < TextRandomizer.titleLength; j++)
+                {
+                    var c = content[offset + i * TextRandomizer.titleLength + j];
+                    sb.Append(charDict[c]);
+                }
+
+                var title = sb.ToString();
+                title = title.Replace(spaceChar, ' ');
+                title = title.TrimEnd(' ');
+                titles.Add(title);
+            }
+
+            return titles;
+        }
+
+        public static void SetTitles(List<string> titles, byte[] content)
+        {
+            var offset = Section.GetOffset(15, 0xF649, 0xC000);
+            var upperCaseOffset = Section.GetOffset(12, 0x8943, 0x8000);
+            int counter = 0;
+            foreach (var title in titles)
+            {
+                var newTitle = title;
+                if (title.Length > TextRandomizer.titleLength - 2)
+                {
+                    newTitle = title.Substring(0, TextRandomizer.titleLength - 2);
+                }
+
+                var upperCaseTitle = newTitle.ToUpper();
+                newTitle = newTitle.PadRight(TextRandomizer.titleLength, spaceChar);
+                upperCaseTitle = upperCaseTitle.PadRight(TextRandomizer.titleLength - 1, spaceChar);
+                content[upperCaseOffset + counter] = 14; //Length
+
+                for (int i = 0; i < newTitle.Length; i++)
+                {
+                    content[offset + counter] = reverseCharDict[newTitle[i]];
+                    if (i < upperCaseTitle.Length)
+                    {
+                        content[upperCaseOffset + counter + 1] = reverseCharDict[upperCaseTitle[i]];
+                    }
+
+                    counter++;
+                }
             }
         }
 

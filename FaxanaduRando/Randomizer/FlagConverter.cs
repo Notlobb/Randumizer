@@ -8,7 +8,7 @@ namespace FaxanaduRando.Randomizer
 {
     class FlagConverter : IMultiValueConverter
     {
-        private const int boolCount = 30;
+        private const int boolCount = 31;
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {

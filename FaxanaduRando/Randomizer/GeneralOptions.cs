@@ -45,6 +45,7 @@ namespace FaxanaduRando.Randomizer
         public static bool AllowEquippingIndoors { get; set; } = true;
         public static bool IncludeEvilOnesFortress { get; set; } = false;
         public static bool DarkTowers { get; set; } = false;
+        public static bool RandomizeTitles { get; set; } = true;
         public static Hints HintSetting { get; set; } = Hints.Strong;
         public static MiscDoors MiscDoorSetting { get; set; } = MiscDoors.Unchanged;
         public static WorldDoors WorldDoorSetting { get; set; } = WorldDoors.Unchanged;

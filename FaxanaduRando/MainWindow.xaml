@@ -129,6 +129,7 @@
                             <Binding ElementName="allowEquippingIndoorsCheckbox" Path="IsChecked" />
                             <Binding ElementName="includeEvilOnesFortressCheckBox" Path="IsChecked" />
                             <Binding ElementName="darknessCheckBox" Path="IsChecked" />
+                            <Binding ElementName="randomizeTitlesCheckBox" Path="IsChecked" />
                             <Binding ElementName="hintsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="miscDoorsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="worldDoorsComboBox" Path="SelectedIndex" />
@@ -225,6 +226,10 @@
                 <CheckBox Name="darknessCheckBox" Grid.Column="4" Grid.Row="1" IsChecked="{Binding Path=(randomizer:GeneralOptions.DarkTowers), Mode=TwoWay}"
                           ToolTip="The inside of towers will be dark"/>
                 <TextBlock Grid.Column="5" Grid.Row="1" Text="Dark towers"/>
+
+                <CheckBox Name="randomizeTitlesCheckBox" Grid.Column="4" Grid.Row="2" IsChecked="{Binding Path=(randomizer:GeneralOptions.RandomizeTitles), Mode=TwoWay}"
+                          ToolTip="The name, requirements and rewards for titles will be random"/>
+                <TextBlock Grid.Column="5" Grid.Row="2" Text="Randomize titles"/>
 
                 <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
                           ToolTip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>

@@ -305,7 +305,12 @@ namespace FaxanaduRando.Randomizer
             enemyRewardQuantityTable.AddToContent(content);
             magicResistanceTable.AddToContent(content);
 
-            var textRandomizer = new TextRandomizer(random);
+            var textRandomizer = new TextRandomizer(content, random);
+            if (GeneralOptions.RandomizeTitles)
+            {
+                textRandomizer.RandomizeTitles(content, random);
+            }
+
             if (!textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content))
             {
                 return false;

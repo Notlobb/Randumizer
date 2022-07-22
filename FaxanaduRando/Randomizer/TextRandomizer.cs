@@ -5,27 +5,14 @@ namespace FaxanaduRando.Randomizer
 {
     class TextRandomizer
     {
+        public const int numberOfTitles = 16;
+        public const int titleLength = 16;
+
         private Random random;
 
-        private static readonly List<string> ranks = new List<string>
-        {
-            "Novice",
-            "Aspirant",
-            "Battler",
-            "Fighter",
-            "Adept",
-            "Chevalier",
-            "Veteran",
-            "Warrior",
-            "Swordman",
-            "Hero",
-            "Soldier",
-            "Myrmidon",
-            "Champion",
-            "Superhero",
-            "Paladin",
-            "Lord",
-        };
+        private List<string> titles = new List<string>();
+        private List<ushort> titleExperiences = new List<ushort>();
+        private List<ushort> titleRewards = new List<ushort>();
 
         private static readonly Dictionary<Sprite.SpriteId, string> itemDict = new Dictionary<Sprite.SpriteId, string>
         {
@@ -54,9 +41,12 @@ namespace FaxanaduRando.Randomizer
             {Sprite.SpriteId.Glove2OrKeyJoker, "Glove2" },
         };
 
-        public TextRandomizer(Random random)
+        public TextRandomizer(byte[] content, Random random)
         {
             this.random = random;
+            titles = Text.GetTitles(content, Section.GetOffset(15, 0xF649, 0xC000));
+            titleExperiences = GetTitleData(content, Section.GetOffset(15, 0xF749, 0xC000));
+            titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
         public bool UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content)
@@ -185,8 +175,9 @@ namespace FaxanaduRando.Randomizer
 
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.VictimBar, out giftItem))
                 {
-                    string rank = ranks[giftRandomizer.BarRank];
-                    var text = $"Are you a {rank}? Come back for {giftItem.Item}";
+                    string rank = titles[giftRandomizer.BarRank];
+                    ushort experience = titleExperiences[giftRandomizer.BarRank - 1];
+                    var text = $"Have you achieved the title '{rank}'? Come back for {giftItem.Item}. You will need {experience} experience";
                     AddText(text, allText, 115);
                 }
 
@@ -353,6 +344,96 @@ namespace FaxanaduRando.Randomizer
 
             Text.SetAllText(content, allText);
             return true;
+        }
+
+        public void RandomizeTitles(byte[] content, Random random)
+        {
+            var newTitles = GetNewTitles();
+            Util.ShuffleList(newTitles, 0, newTitles.Count - 1, random);
+            titles = newTitles.GetRange(0, titles.Count);
+            Text.SetTitles(titles, content);
+
+            RandomizeData(titleExperiences, random, 2000);
+            RandomizeData(titleRewards, random, 800);
+            SetTitleData(titleExperiences, content, Section.GetOffset(15, 0xF749, 0xC000));
+            SetTitleData(titleRewards, content, Section.GetOffset(15, 0xF767, 0xC000));
+        }
+
+        private void RandomizeData(List<ushort> dataList, Random random, int max)
+        {
+            int min = 1;
+            int data = 0;
+            int increment = max / 10;
+            for (int i = 0; i < dataList.Count; i++)
+            {
+                data += random.Next(min, max + 1);
+                dataList[i] = (ushort)data;
+                max += increment;
+            }
+        }
+
+        private List<ushort> GetTitleData(byte[] content, int offset)
+        {
+            List<ushort> data = new List<ushort>();
+            for (int i = 0; i < (numberOfTitles - 1) * 2; i+=2)
+            {
+                data.Add(BitConverter.ToUInt16(content, offset + i));
+            }
+
+            return data;
+        }
+
+        private void SetTitleData(List<ushort> data, byte[] content, int offset)
+        {
+            for (int i = 0; i < data.Count; i++)
+            {
+                var bytes = BitConverter.GetBytes(data[i]);
+                content[offset + i * 2] = bytes[0];
+                content[offset + i * 2 + 1] = bytes[1];
+            }
+        }
+
+        private List<string> GetNewTitles()
+        {
+            return new List<string>()
+            {
+                "Weiner",
+                "Dufus",
+                "Poindexter",
+                "Peanut",
+                "Dude",
+                "Bro",
+                "Homey",
+                "RapMaster",
+                "FunkLord",
+                "Dawg",
+                "Playa",
+                "BlingMaster",
+                "SpinMaster",
+                "CoolCat",
+                "FunkMeister",
+                "Speedrunner",
+                "Slowrunner",
+                "Gamer",
+                "RetroGamer",
+                "OG",
+                "EvilOne",
+                "EvilTwo",
+                "GoodOne",
+                "Boomer",
+                "Zoomer",
+                "Pirate",
+                "AssPirate",
+                "Nerd",
+                "SuperNerd",
+                "Weeb",
+                "CardinalsFan",
+                "CardinalsHater",
+                "AnimeFan",
+                "AnimeHater",
+                "Chad",
+                "Incel",
+            };
         }
 
         private string GetHospitalText(ushort price)
