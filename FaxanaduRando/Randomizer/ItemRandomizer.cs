@@ -300,7 +300,7 @@ namespace FaxanaduRando.Randomizer
                     if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.NoMixed ||
                         ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
                     {
-                        Util.ShuffleList(shopIds, 0, shopIds.Count - giftCount, Rand);
+                        Util.ShuffleList(shopIds, 0, shopIds.Count - giftCount - 1, Rand);
                         Util.ShuffleList(shopIds, shopIds.Count - giftCount, shopIds.Count - 1, Rand);
                     }
                     else
