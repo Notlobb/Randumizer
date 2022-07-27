@@ -110,6 +110,8 @@ namespace FaxanaduRando.Randomizer
                     "I don't know how to say this... Faxanadu? Fax-anadu? Fazzanadu? Faxana-du? Faxanadu?",
                     "Why do they call it Faxanadu? It's not a fax and it's not du-ing anything!",
                     "What would Faxanadu?",
+                    "I love the smell of the Fire spell in the morning. It smells like... victory.",
+                    "Dragon Slayer? I hardly know her!",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
