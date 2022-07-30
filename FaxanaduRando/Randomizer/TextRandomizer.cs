@@ -435,6 +435,14 @@ namespace FaxanaduRando.Randomizer
                 "AnimeHater",
                 "Chad",
                 "Incel",
+                "PirateKing",
+                "SpacePirate",
+                "FaxanaDude",
+                "DwarfSlayer",
+                "DragonSlayer",
+                "Dweeb",
+                "Stoner",
+                "SDustCrusader",
             };
         }
 
