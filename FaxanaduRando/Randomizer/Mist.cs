@@ -602,7 +602,7 @@ namespace FaxanaduRando.Randomizer
             }
             Screens[30].OpenTilesLeft.Remove(2);
             Screens[30].OpenTilesLeft.Remove(7);
-            Screens[30].OpenTilesRight.Remove(8);
+            Screens[30].OpenTilesRight.Remove(6);
             Screens[31].Directions.Add(Direction.Left); // Mist exit
             Screens[31].Directions.Add(Direction.Right);
             Screens[31].Directions.Add(Direction.Up);
