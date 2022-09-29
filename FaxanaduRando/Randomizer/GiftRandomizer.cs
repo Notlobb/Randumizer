@@ -34,7 +34,7 @@ namespace FaxanaduRando.Randomizer
         private static readonly HashSet<GiftItem.Id> optionallyRegiftableLocations = new HashSet<GiftItem.Id>
         {
             GiftItem.Id.FortressGuru,
-            GiftItem.Id.JokerHouse,
+            GiftItem.Id.JokerSpring,
         };
 
         public GiftRandomizer(byte[] content)
@@ -46,7 +46,7 @@ namespace FaxanaduRando.Randomizer
             GiftItems.Add(giftItem);
             ItemDict.Add(giftItem.LocationId, giftItem);
 
-            giftItem = new GiftItem(GiftItem.Id.JokerHouse,
+            giftItem = new GiftItem(GiftItem.Id.JokerSpring,
                                     Section.GetOffset(12, 0xA1CE, 0x8000),
                                     Section.GetOffset(12, 0xA1D4, 0x8000),
                                     content);
@@ -94,6 +94,12 @@ namespace FaxanaduRando.Randomizer
                                     content);
             GiftItems.Add(giftItem);
             ItemDict.Add(giftItem.LocationId, giftItem);
+
+            if ((GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords) && GeneralOptions.FastStart)
+            {
+                giftItem.Item = ShopRandomizer.Id.WingBoots;
+                giftItem.ConditionItem = ShopRandomizer.Id.Book;
+            }
         }
 
         public void AddGiftItems(List<ShopRandomizer.Id> ids)
@@ -117,8 +123,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     item.ConditionItem = ShopRandomizer.Id.Book;
                 }
-                else if (regiftableItems.Contains(ids[index]) && item.LocationId == GiftItem.Id.EolisGuru &&
-                         Util.GurusShuffled())
+                else if (regiftableItems.Contains(ids[index]) && item.LocationId == GiftItem.Id.EolisGuru && Util.GurusShuffled())
                 {
                     item.ConditionItem = ShopRandomizer.Id.Book;
                 }

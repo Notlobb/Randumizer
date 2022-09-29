@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.24" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 1" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -30,6 +30,8 @@
         <randomizer:BigItemSpawnsSettingsConverter x:Key="bigItemSpawnsSettingsConverter" />
         <randomizer:WorldDoorSettings x:Key="worldDoorSettings" />
         <randomizer:WorldDoorConverter x:Key="worldDoorConverter" />
+        <randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
+        <randomizer:ScreenRandomizationConverter x:Key="screenRandomizationConverter" />
         <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
         <randomizer:ShuffleItemsConverter x:Key="itemShuffleSettingsConverter" />
         <randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
@@ -130,6 +132,7 @@
                             <Binding ElementName="includeEvilOnesFortressCheckBox" Path="IsChecked" />
                             <Binding ElementName="darknessCheckBox" Path="IsChecked" />
                             <Binding ElementName="randomizeTitlesCheckBox" Path="IsChecked" />
+                            <Binding ElementName="includeSomeEolisDoorsCheckBox" Path="IsChecked" />
                             <Binding ElementName="hintsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="miscDoorsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="worldDoorsComboBox" Path="SelectedIndex" />
@@ -143,6 +146,7 @@
                             <Binding ElementName="bigItemSpawnsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="itemShuffleComboBox" Path="SelectedIndex" />
                             <Binding ElementName="keyRandomizationComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="randomizeScreensComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -270,6 +274,17 @@
                         ToolTip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."
                         />
                 </StackPanel>
+                <TextBlock Grid.Column="1" Grid.Row="16" Text="Screen connections:"/>
+                <StackPanel  Grid.Column="3"
+                             Grid.Row="16">
+                    <ComboBox Name="randomizeScreensComboBox"
+                        ItemsSource="{StaticResource screenRandomizationSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.RandomizeScreens), Mode=TwoWay, Converter={StaticResource screenRandomizationConverter}}"
+                        ToolTip="If you randomize screen connections it is recommended that you also select ´permanent´ for the wing boot timer, to help prevent softlocks"
+                        />
+                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Enemies">
@@ -320,7 +335,7 @@
                         SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemySet), Mode=TwoWay, Converter={StaticResource enemySetConverter}}">
                         <ComboBox.ToolTip>
                             <ToolTip>
-                                <TextBlock Text="Changes how enemies are randomized. No mixed enemy types means that bosses will only appear in vanilla boss locations. Scaling means that the enemies will become harder in the later worlds. Scaling can also result in harder enemies in towers when combined with tower shuffling." TextWrapping="Wrap"/>
+                                <TextBlock Text="Changes how enemies are randomized. No mixed enemy types means that bosses will only appear in vanilla boss locations. Scaling means that the enemies will become harder in the later worlds." TextWrapping="Wrap"/>
                             </ToolTip>
                         </ComboBox.ToolTip>
                     </ComboBox>
@@ -394,7 +409,7 @@
 
                 <CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeElixirNearFortress), Mode=TwoWay}"
                           ToolTip="Guarantees that there will be an Elixir near the fountain that requires it"/>
-                <TextBlock Grid.Column="1" Grid.Row="1" Text="Guarantee elixir near Tower of Fortress"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Guarantee elixir near Tower of Fortress spring"/>
 
                 <CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.FixPendantBug), Mode=TwoWay}"
                           ToolTip="Collecting the pendant makes you stronger instead of weaker, but you will also be weaker at the start"/>
@@ -409,7 +424,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="4" Text="Buff hourglass"/>
 
                 <CheckBox Name="randomizeBarRank" Grid.Column="0" Grid.Row="5" IsChecked="{Binding Path=(randomizer:ItemOptions.RandomizeBarRank), Mode=TwoWay}"
-                          ToolTip="Victim barkeep requires a random rank before giving you his item"/>
+                          ToolTip="Victim bar patron requires a random rank before giving you his item"/>
                 <TextBlock Grid.Column="1" Grid.Row="5" Text="Randomize Victim bar rank requirement"/>
 
                 <CheckBox Name="guaranteeStartingSpell" Grid.Column="0" Grid.Row="6" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeStartingSpell), Mode=TwoWay}"
@@ -417,7 +432,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="6" Text="Guarantee spell in Eolis"/>
 
                 <CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="7" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeMattock), Mode=TwoWay}"
-                          ToolTip="There will always be a mattock after the first breakable wall"/>
+                          ToolTip="There will always be a mattock after the first breakable wall. Only guaranteed if there is a guru in the area."/>
                 <TextBlock Grid.Column="1" Grid.Row="7" Text="Guarantee mattock near Forepaw"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="8" Text="Mattock usage:"/>
@@ -520,6 +535,10 @@
                 <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="3" IsChecked="{Binding Path=(randomizer:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
                           ToolTip="Small items will awlays spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
                 <TextBlock Grid.Column="4" Grid.Row="3" Text="Always spawn small items"/>
+
+                <CheckBox Name="includeSomeEolisDoorsCheckBox" Grid.Column="3" Grid.Row="14" IsChecked="{Binding Path=(randomizer:ItemOptions.IncludeSomeEolisDoors), Mode=TwoWay}"
+                          ToolTip="Include the Eolis magic shop, martial arts shop and exit door in the key randomization"/>
+                <TextBlock Grid.Column="4" Grid.Row="14" Text="Include some Eolis doors"/>
 
             </Grid>
         </TabItem>

@@ -43,5 +43,22 @@ namespace FaxanaduRando.Randomizer
 
             return reverse;
         }
+
+        public static int GetPointer(byte world, byte[] content, byte bank)
+        {
+            int bankOffset = Section.GetOffset(bank, 0x8000, 0x8000);
+            byte b1 = content[bankOffset];
+            byte b2 = content[bankOffset + 1];
+            int levelOffset = world * 2;
+            var bytes = new byte[] { b1, b2 };
+            int pointer = BitConverter.ToUInt16(bytes, 0);
+
+            b1 = content[bankOffset + pointer + levelOffset];
+            b2 = content[bankOffset + pointer + levelOffset + 1];
+            bytes = new byte[] { b1, b2 };
+            pointer = BitConverter.ToUInt16(bytes, 0);
+
+            return pointer;
+        }
     }
 }

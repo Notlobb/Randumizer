@@ -16,6 +16,7 @@ namespace FaxanaduRando.Randomizer
             ScalesUpFrom30,
             ScalesUpFrom20,
             ScalesUpFrom10,
+            Permanent,
             Unchanged,
         };
 
@@ -73,6 +74,7 @@ namespace FaxanaduRando.Randomizer
         public static bool ReplacePoison { get; set; } = true;
         public static MattockUsages MattockUsage { get; set; } = MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle;
         public static bool AlwaysSpawnSmallItems { get; set; } = true;
+        public static bool IncludeSomeEolisDoors { get; set; } = false;
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
         public static ItemShuffle ShuffleItems { get; set; } = ItemShuffle.MixOnlyShopsAndGifts;
         public static KeyRandomization RandomizeKeys { get; set; } = KeyRandomization.Unchanged;
@@ -89,6 +91,7 @@ namespace FaxanaduRando.Randomizer
             Add("30, scales up with rank");
             Add("20, scales up with rank");
             Add("10, scales up with rank");
+            Add("Permanent");
             Add("Unchanged");
         }
     }

@@ -8,11 +8,11 @@ namespace FaxanaduRando.Randomizer
         public const int numberOfTitles = 16;
         public const int titleLength = 16;
 
-        private Random random;
-
         private List<string> titles = new List<string>();
         private List<ushort> titleExperiences = new List<ushort>();
         private List<ushort> titleRewards = new List<ushort>();
+
+        private Random random;
 
         private static readonly Dictionary<Sprite.SpriteId, string> itemDict = new Dictionary<Sprite.SpriteId, string>
         {
@@ -112,6 +112,8 @@ namespace FaxanaduRando.Randomizer
                     "What would Faxanadu?",
                     "I love the smell of the Fire spell in the morning. It smells like... victory.",
                     "Dragon Slayer? I hardly know her!",
+                    "In theory, this seed can be beaten. But in theory, communism works. In theory...",
+                    "Trying is the first step towards failure.",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -298,6 +300,7 @@ namespace FaxanaduRando.Randomizer
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
+                AddText("Hi", allText, 43); //Eolis guru
                 AddText("Hi", allText, 86); //Sky fountain
                 AddText("Hi", allText, 125); //Ace key guy
                 AddText("Hi", allText, 139); //Conflate guru
@@ -348,20 +351,32 @@ namespace FaxanaduRando.Randomizer
             return true;
         }
 
-        public void RandomizeTitles(byte[] content, Random random)
+        public void RandomizeTitles(byte[] content)
         {
             var newTitles = GetNewTitles();
             Util.ShuffleList(newTitles, 0, newTitles.Count - 1, random);
             titles = newTitles.GetRange(0, titles.Count);
             Text.SetTitles(titles, content);
 
-            RandomizeData(titleExperiences, random, 2000);
-            RandomizeData(titleRewards, random, 800);
+            RandomizeData(titleExperiences, 2000);
+            RandomizeData(titleRewards, 800);
             SetTitleData(titleExperiences, content, Section.GetOffset(15, 0xF749, 0xC000));
             SetTitleData(titleRewards, content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        private void RandomizeData(List<ushort> dataList, Random random, int max)
+        public List<string> GetTitleData()
+        {
+            var titleData = new List<string>();
+            titleData.Add(titles[0] + " 0" + " 0");
+            for (int i = 1; i < titles.Count; i++)
+            {
+                titleData.Add($"{titles[i]} {titleExperiences[i - 1]} {titleRewards[i - 1]}");
+            }
+
+            return titleData;
+        }
+
+        private void RandomizeData(List<ushort> dataList, int max)
         {
             int min = 1;
             int data = 0;
@@ -369,8 +384,10 @@ namespace FaxanaduRando.Randomizer
             for (int i = 0; i < dataList.Count; i++)
             {
                 data += random.Next(min, max + 1);
+                data = Math.Min(data, ushort.MaxValue);
                 dataList[i] = (ushort)data;
                 max += increment;
+                increment = (int)(increment * 1.1);
             }
         }
 
@@ -421,6 +438,7 @@ namespace FaxanaduRando.Randomizer
                 "OG",
                 "EvilOne",
                 "EvilTwo",
+                "NeutralOne",
                 "GoodOne",
                 "Boomer",
                 "Zoomer",
@@ -437,12 +455,110 @@ namespace FaxanaduRando.Randomizer
                 "Incel",
                 "PirateKing",
                 "SpacePirate",
+                "SpaceMarine",
                 "FaxanaDude",
+                "Dwarf",
                 "DwarfSlayer",
                 "DragonSlayer",
+                "Guru",
                 "Dweeb",
                 "Stoner",
                 "SDustCrusader",
+                "StandUser",
+                "OnionKnight",
+                "Freelancer",
+                "Thief",
+                "Ninja",
+                "Esper",
+                "Chocobo",
+                "Cultist",
+                "KefkaCultist",
+                "Returner",
+                "DragonWarrior",
+                "RandoRacer",
+                "RandoDev",
+                "Streamer",
+                "Clown",
+                "Donald",
+                "Ronald",
+                "OfficeWorker",
+                "Plummer",
+                "Janitor",
+                "Baker",
+                "Butcher",
+                "MeatEater",
+                "King",
+                "CrimsonKing",
+                "KillerQueen",
+                "PokemonTrainer",
+                "PokemonChamp",
+                "Pokemon",
+                "Charmander",
+                "Squirtle",
+                "Bulbasaur",
+                "Mudkip",
+                "Piplup",
+                "MissingNo",
+                "MegaMan",
+                "BatMan",
+                "SpiderMan",
+                "SuperMan",
+                "Titan",
+                "Ghost",
+                "GhostBuster",
+                "GhostPirate",
+                "PirateGhost",
+                "Angel",
+                "ArchAngel",
+                "HolyDiver",
+                "FamilyMan",
+                "Vampire",
+                "Count",
+                "VampireHunter",
+                "VampireKiller",
+                "HeroOfTime",
+                "Ogre",
+                "Orc",
+                "GrandVizier",
+                "PerfectMan",
+                "PillarMan",
+                "OneStabMan",
+                "Archer",
+                "Lancer",
+                "Planeswalker",
+                "Leekspinner",
+                "AVGN",
+                "Jedi",
+                "Sith",
+                "MarioBrother",
+                "KoopaTroopa",
+                "Koopaling",
+                "Yoshi",
+                "Cannibal",
+                "Peasant",
+                "Peon",
+                "Plebeian",
+                "Pleb",
+                "StreetFighter",
+                "Dictator",
+                "Lannister",
+                "Capitalist",
+                "Communist",
+                "Saiyan",
+                "SaiyanPrince",
+                "SuperSaiyan",
+                "MajorGeneral",
+                "EdgeLord",
+                "CringeLord",
+                "ShadowEura",
+                "Nothing",
+                "NoTitle",
+                "Error",
+                "President",
+                "ElPresidente",
+                "NinjaTurtle",
+                "Shredder",
+                "Hippie",
             };
         }
 
@@ -506,9 +622,9 @@ namespace FaxanaduRando.Randomizer
         {
             var hints = new List<string>();
 
-            hints.AddRange(GetTowerHints(doorRandomizer, spoilerLog));
-            hints.AddRange(GetAllSublevelHints(spoilerLog));
-            hints.AddRange(GetBuildingHints(doorRandomizer, spoilerLog));
+            hints.AddRange(GetTowerHints(doorRandomizer, giftRandomizer, spoilerLog));
+            hints.AddRange(GetAllSublevelHints(giftRandomizer, spoilerLog));
+            hints.AddRange(GetBuildingHints(doorRandomizer, giftRandomizer, spoilerLog));
 
             if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
@@ -533,21 +649,24 @@ namespace FaxanaduRando.Randomizer
             return hints;
         }
 
-        private List<string> GetAllSublevelHints(bool spoilerLog)
+        private List<string> GetAllSublevelHints(GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], spoilerLog));
-            if (!GeneralOptions.ShuffleTowers)
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], giftRandomizer, spoilerLog));
+            if (!(GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress))
             {
-                hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair], spoilerLog));
+                hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair], giftRandomizer, spoilerLog));
             }
             return hints;
         }
@@ -570,6 +689,12 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.EvilOnesLair], doorRandomizer));
+            }
+
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            {
+                hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.DropdownWing], doorRandomizer));
+                hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.BackFromEastBranch], doorRandomizer));
             }
 
             if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
@@ -662,35 +787,35 @@ namespace FaxanaduRando.Randomizer
             return hint;
         }
 
-        private List<string> GetTowerHints(DoorRandomizer doorRandomizer, bool spoilerLog)
+        private List<string> GetTowerHints(DoorRandomizer doorRandomizer, GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
             foreach (var key in doorRandomizer.TowerDoors.Keys)
             {
-                hints.AddRange(GetDoorHints(doorRandomizer.TowerDoors[key].OriginalId, doorRandomizer.TowerDoors[key], spoilerLog));
+                hints.AddRange(GetDoorHints(doorRandomizer.TowerDoors[key].OriginalId, doorRandomizer.TowerDoors[key], giftRandomizer, spoilerLog));
             }
 
             return hints;
         }
 
-        private List<string> GetBuildingHints(DoorRandomizer doorRandomizer, bool spoilerLog)
+        private List<string> GetBuildingHints(DoorRandomizer doorRandomizer, GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
             foreach (var key in doorRandomizer.Buildings.Keys)
             {
                 var building = doorRandomizer.Buildings[key];
-                hints.AddRange(GetDoorHints(building.OriginalId, building, spoilerLog));
+                hints.AddRange(GetDoorHints(building.OriginalId, building, giftRandomizer, spoilerLog));
             }
 
             foreach (var key in doorRandomizer.TownDoors.Keys)
             {
-                hints.AddRange(GetDoorHints(key, doorRandomizer.TownDoors[key], spoilerLog));
+                hints.AddRange(GetDoorHints(key, doorRandomizer.TownDoors[key], giftRandomizer, spoilerLog));
             }
 
             return hints;
         }
 
-        private List<string> GetDoorHints(DoorId oldDoor, Door door, bool spoilerLog)
+        private List<string> GetDoorHints(DoorId oldDoor, Door door, GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
             if (door.Gift != null)
@@ -721,6 +846,14 @@ namespace FaxanaduRando.Randomizer
                     if (hint != prefix)
                     {
                         hints.Add(hint);
+                    }
+                }
+
+                foreach (var screen in door.Sublevel.Screens)
+                {
+                    foreach (var gift in screen.Gifts)
+                    {
+                        hints.Add($"{gift} has {giftRandomizer.ItemDict[gift].Item} and is inside {door.Sublevel.SubLevelId}");
                     }
                 }
             }
@@ -860,13 +993,21 @@ namespace FaxanaduRando.Randomizer
             return items;
         }
 
-        private List<string> GetSublevelHints(SubLevel sublevel, bool spoilerLog)
+        private List<string> GetSublevelHints(SubLevel sublevel, GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
             var items = GetSublevelItems(sublevel, spoilerLog);
             foreach (var item in items)
             {
                 hints.Add($"{sublevel.SubLevelId} has {item}");
+            }
+
+            foreach (var screen in sublevel.Screens)
+            {
+                foreach (var gift in screen.Gifts)
+                {
+                    hints.Add($"{gift} has {giftRandomizer.ItemDict[gift].Item} and is inside {sublevel.SubLevelId}");
+                }
             }
 
             return hints;

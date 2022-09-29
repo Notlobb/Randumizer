@@ -3,86 +3,46 @@ using System.Collections.Generic;
 
 namespace FaxanaduRando.Randomizer
 {
-    public class Level
+    public abstract class Level
     {
-        public enum StartOffset
-        {
-            Eolis = 0x2C242,
-            Trunk = 0x2C2F0,
-            Mist = 0x2C538,
-            Branch = 0x2C7AA,
-            DartmoorArea = 0x2C8F2,
-            EvilOnesLair = 0x2C9F4,
-            Buildings = 0x2CB12,
-            Towns = 0x2CCB9,
-        }
-
-        public enum EndOffset
-        {
-            Eolis = 0x2C26F,
-            Trunk = 0x2C491,
-            Mist = 0x2C759,
-            Branch = 0x2C8B1,
-            DartmoorArea = 0x2C9CB,
-            EvilOnesLair = 0x2CA85,
-            Buildings = 0x2CC9C,
-            Towns = 0x2CCED,
-        }
-
         public const int glitchedOffset = 0x2C31F;
-        public static readonly List<StartOffset> offsets = new List<StartOffset>
-        {
-            StartOffset.Eolis,
-            StartOffset.Trunk,
-            StartOffset.Mist,
-            StartOffset.Branch,
-            StartOffset.DartmoorArea,
-            StartOffset.EvilOnesLair,
-            StartOffset.Buildings,
-            StartOffset.Towns,
-        };
 
-        public static readonly List<EndOffset> ends = new List<EndOffset>
-        {
-            EndOffset.Eolis,
-            EndOffset.Trunk,
-            EndOffset.Mist,
-            EndOffset.Branch,
-            EndOffset.DartmoorArea,
-            EndOffset.EvilOnesLair,
-            EndOffset.Buildings,
-            EndOffset.Towns,
-        };
+        public static Dictionary<WorldNumber, Level> LevelDict { get; set; } = new Dictionary<WorldNumber, Level>();
 
-        public static Dictionary<StartOffset, Level> LevelDict { get; set; } = new Dictionary<StartOffset, Level>();
-
-        public StartOffset Start { get; set; }
-        public EndOffset End { get; set; }
         public List<Screen> Screens { get; set; } = new List<Screen>();
         public List<SubLevel> SubLevels { get; set; } = new List<SubLevel>();
         public WorldNumber Number { get; set; }
+        public WorldNumber AdjustedNumber { get; set; }
 
-        public Level(StartOffset startOffset, EndOffset endOffset, WorldNumber number)
+        public Level(WorldNumber number, byte[] content)
         {
-            Start = startOffset;
-            End = endOffset;
             Number = number;
+            AdjustedNumber = Number;
+
+            AddScreens(content);
+            GetScrollingData(content);
+            CorrectScreenSprites();
         }
+
+        public abstract int GetStartOffset();
+        public abstract int GetEndOffset();
 
         public void AddScreens(byte[] content)
         {
-            int offset = (int)Start;
+            int offset = GetStartOffset();
             bool text = false;
-            Screen screen = new Screen();
+            byte number = 0;
+            Screen screen = new Screen(number);
 
-            while (offset <= (int)End && offset < content.Length)
+            while (offset <= GetEndOffset() && offset < content.Length)
             {
                 if (content[offset] == 0xFF)
                 {
                     if (text)
                     {
                         Screens.Add(screen);
-                        screen = new Screen();
+                        number++;
+                        screen = new Screen(number);
                     }
 
                     text = !text;
@@ -94,27 +54,33 @@ namespace FaxanaduRando.Randomizer
                 {
                     // special case needed as ROM is inconsistent
                     Screens.Add(screen);
-                    screen = new Screen();
+                    number++;
+                    screen = new Screen(number);
                     text = false;
                 }
 
                 if (text)
                 {
-                    screen.Text.Add(content[offset]);
+                    screen.Text.Add(new TextObject(content, offset));
                     offset++;
                 }
                 else
                 {
-                    var sprite = new Sprite((Sprite.SpriteId)content[offset], content[offset + 1]);
+                    var sprite = new Sprite(content, offset);
                     screen.Sprites.Add(sprite);
                     offset += 2;
                 }
             }
         }
 
-        public bool IsEolis()
+        public virtual bool IsEolis()
         {
-            return Start == StartOffset.Eolis;
+            return false;
+        }
+
+        public virtual bool ShouldRandomizeScreens()
+        {
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords;
         }
 
         public void RandomizeEnemies(Random random)
@@ -135,8 +101,8 @@ namespace FaxanaduRando.Randomizer
                 {
                     int evilOneProbability = 0;
                     int grieveProbability = 0;
-                    int bossProbability = 0;
-                    int hardProbability = 0;
+                    int hardProbability = 3;
+                    int bossProbability = hardProbability + 5;
 
                     if (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.VeryHard)
                     {
@@ -152,30 +118,25 @@ namespace FaxanaduRando.Randomizer
                     }
                     else
                     {
-                        if (Number == WorldNumber.Mist)
+                        if (screen.ParentWorld == WorldNumber.Mist)
                         {
                             hardProbability = 5;
                             bossProbability = hardProbability + 10;
                         }
-                        else if (Number == WorldNumber.Branch)
+                        else if (screen.ParentWorld == WorldNumber.Branch)
                         {
                             hardProbability = 10;
                             bossProbability = hardProbability + 20;
                         }
-                        else if (Number == WorldNumber.Dartmoor)
+                        else if (screen.ParentWorld == WorldNumber.Dartmoor)
                         {
                             hardProbability = 30;
                             bossProbability = hardProbability + 30;
                         }
-                        else if (Number == WorldNumber.EvilOnesLair)
+                        else if (screen.ParentWorld == WorldNumber.EvilOnesLair)
                         {
                             hardProbability = 45;
                             bossProbability = hardProbability + 45;
-                        }
-                        else
-                        {
-                            hardProbability = 3;
-                            bossProbability = hardProbability + 5;
                         }
                     }
 
@@ -185,12 +146,11 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void WriteToContent(byte[] content)
+        public void AddToContent(byte[] content)
         {
-            int offset = (int)Start;
             foreach (var screen in Screens)
             {
-                offset = screen.WriteToContent(content, offset);
+                screen.AddToContent(content);
             }
         }
 
@@ -208,9 +168,176 @@ namespace FaxanaduRando.Randomizer
 
         public void AddSubLevelScreens(SubLevel sublevel, int start, int end)
         {
-            for (int i = start; i < end; i++)
+            for (int i = start; i <= end; i++)
             {
                 sublevel.Screens.Add(Screens[i]);
+            }
+        }
+
+        public virtual void CorrectScreenSprites()
+        {
+        }
+
+        public abstract void SetupScreens();
+        public abstract void GetEnds(ref List<Screen> startScreens, ref List<Screen> endScreens, Random random);
+        public abstract List<Screen> GetCandidates(Random random);
+        public abstract List<Screen> GetSpecialScreens(Random random);
+        public abstract bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens,
+                                             List<Screen> candidates, List<Screen> specialScreens,
+                                             Random random);
+
+        public virtual bool RandomizeScreens(Random random, ref uint attempts)
+        {
+            if (!ShouldRandomizeScreens())
+            {
+                return true;
+            }
+
+            SetupScreens();
+            var startScreens = new List<Screen>();
+            var endScreens = new List<Screen>();
+            GetEnds(ref startScreens, ref endScreens, random);
+
+            bool result = false;
+            while (!result && attempts < 100000)
+            {
+                attempts++;
+                foreach (var screen in Screens)
+                {
+                    screen.ScrollData.Left = 0xFF;
+                    screen.ScrollData.Right = 0xFF;
+                    screen.ScrollData.Up = 0xFF;
+                    screen.ScrollData.Down = 0xFF;
+
+                    screen.AvailableDirections = new HashSet<Direction>(screen.Directions);
+                }
+
+                var candidates = GetCandidates(random);
+                var specialScreens = GetSpecialScreens(random);
+
+                result = CreateSublevels(startScreens, endScreens, candidates, specialScreens, random);
+            }
+
+            return result;
+        }
+
+        protected bool CreateSublevel(Screen start, Screen end, List<Screen> candidates, List<Screen> specialScreens,
+                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId)
+        {
+            var current = start;
+            var sublevel = SubLevel.SubLevelDict[sublevelId];
+            sublevel.Screens = new List<Screen>();
+            sublevel.Screens.Add(current);
+            bool keepGoing = true;
+            bool attemptedEnd;
+            while (keepGoing)
+            {
+                bool found = false;
+                attemptedEnd = false;
+                if (candidates.Count < 6)
+                {
+                    endProbability = 100;
+                }
+
+                var directions = new List<Direction>(current.AvailableDirections);
+                if (specialScreens.Count > 0 && random.Next(0, 100) < specialProbability)
+                {
+                    foreach (var direction in directions)
+                    {
+                        foreach (var special in specialScreens)
+                        {
+                            if (current.CanConnect(direction, special))
+                            {
+                                current.Connect(direction, special.Number);
+                                var reverse = Screen.GetReverse(direction);
+                                special.Connect(reverse, current.Number);
+                                sublevel.Screens.Add(special);
+                                current = special;
+                                specialScreens.Remove(special);
+                                found = true;
+                                break;
+                            }
+                        }
+
+                        if (found)
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                if (found)
+                {
+                    continue;
+                }
+
+                if (random.Next(0, 100) < endProbability)
+                {
+                    foreach (var direction in directions)
+                    {
+                        if (current.CanConnect(direction, end))
+                        {
+                            current.Connect(direction, end.Number);
+                            var reverse = Screen.GetReverse(direction);
+                            end.Connect(reverse, current.Number);
+                            sublevel.Screens.Add(end);
+                            return true;
+                        }
+                    }
+
+                    attemptedEnd = true;
+                }
+
+                while (directions.Count > 0 && !found)
+                {
+                    Util.ShuffleList(directions, 0, directions.Count - 1, random);
+                    var direction = directions[random.Next(0, directions.Count)];
+                    directions.Remove(direction);
+
+                    for (int i = 0; i < candidates.Count; i++)
+                    {
+                        if (current.CanConnect(direction, candidates[i]))
+                        {
+                            var candidate = candidates[i];
+                            current.Connect(direction, candidate.Number);
+                            var reverse = Screen.GetReverse(direction);
+                            candidate.Connect(reverse, current.Number);
+                            sublevel.Screens.Add(candidate);
+                            current = candidate;
+                            candidates.Remove(candidate);
+                            found = true;
+                            endProbability += 2;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                {
+                    endProbability = 100;
+                    if (attemptedEnd)
+                    {
+                        keepGoing = false;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public void GetScrollingData( byte[] content)
+        {
+            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
+            int pointer = Util.GetPointer((byte)Door.OtherWorldDict[Number], content, 3);
+            byte b1 = content[bankOffset + pointer + 4];
+            byte b2 = content[bankOffset + pointer + 5];
+            var bytes = new byte[] { b1, b2 };
+            var newPointer = BitConverter.ToUInt16(bytes, 0);
+
+            for (int i = 0; i < Screens.Count; i++)
+            {
+                var data = new ScrollingData(content, bankOffset + newPointer + i * 4);
+                Screens[i].ScrollData = data;
             }
         }
     }

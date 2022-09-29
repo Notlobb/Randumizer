@@ -29,6 +29,13 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        public enum ScreenRandomization
+        {
+            AllWords,
+            EolisAndZenisOnly,
+            Unchanged,
+        };
+
         public static bool FastText { get; set; } = true;
         public static bool FastStart { get; set; } = true;
         public static bool DragonSlayerRequired { get; set; } = false;
@@ -49,6 +56,7 @@ namespace FaxanaduRando.Randomizer
         public static Hints HintSetting { get; set; } = Hints.Strong;
         public static MiscDoors MiscDoorSetting { get; set; } = MiscDoors.Unchanged;
         public static WorldDoors WorldDoorSetting { get; set; } = WorldDoors.Unchanged;
+        public static ScreenRandomization RandomizeScreens { get; set; } = ScreenRandomization.Unchanged;
     }
 
     public class FlagPresets : ObservableCollection<string>
@@ -99,6 +107,16 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class ScreenRandomizationSettings : ObservableCollection<string>
+    {
+        public ScreenRandomizationSettings()
+        {
+            Add("Randomize for all worlds");
+            Add("Randomize for Eolis and Zenis only");
+            Add("Unchanged");
+        }
+    }
+
     public class HintConverter : EnumConverter<GeneralOptions.Hints>
     {
     }
@@ -108,6 +126,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class WorldDoorConverter : EnumConverter<GeneralOptions.WorldDoors>
+    {
+    }
+
+    public class ScreenRandomizationConverter : EnumConverter<GeneralOptions.ScreenRandomization>
     {
     }
 }

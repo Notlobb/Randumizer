@@ -14,7 +14,7 @@ namespace FaxanaduRando.Randomizer
         VictimTower,
         BattleHelmetWing,
         EastBranch,
-        EastBranch2,
+        BackFromEastBranch,
         DropdownWing,
         CastleFraternal,
         KingGrieve,
@@ -218,7 +218,7 @@ namespace FaxanaduRando.Randomizer
             return 10;
         }
 
-        private static Dictionary<OtherWorldNumber, WorldNumber> worldDict = new Dictionary<OtherWorldNumber, WorldNumber>()
+        public static Dictionary<OtherWorldNumber, WorldNumber> worldDict = new Dictionary<OtherWorldNumber, WorldNumber>()
         {
             { OtherWorldNumber.Eolis, WorldNumber.Eolis },
             { OtherWorldNumber.Trunk, WorldNumber.Trunk },
@@ -229,6 +229,8 @@ namespace FaxanaduRando.Randomizer
             { OtherWorldNumber.Towns, WorldNumber.Towns },
             { OtherWorldNumber.Buildings, WorldNumber.Buildings },
         };
+
+        public static Dictionary<WorldNumber, OtherWorldNumber> OtherWorldDict = Util.Reverse(worldDict);
 
         private static Dictionary<DoorId, byte> doorPalettes = new Dictionary<DoorId, byte>()
         {
@@ -274,7 +276,7 @@ namespace FaxanaduRando.Randomizer
             { DoorId.VictimTower, 2 },
             { DoorId.BattleHelmetWing, 3 },
             { DoorId.EastBranch, 3 },
-            { DoorId.EastBranch2, 3 },
+            { DoorId.BackFromEastBranch, 3 },
             { DoorId.DropdownWing, 3 },
             { DoorId.CastleFraternal, 4 },
             { DoorId.KingGrieve, 4 },

@@ -339,6 +339,14 @@ namespace FaxanaduRando.Randomizer
                             item.ShouldBeRandomized = false;
                         }
                     }
+                    if ((GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords) && (!GeneralOptions.FastStart))
+                    {
+                        if (tempShop.ShopId == Shop.Id.EolisItemShop && item.Id == Id.Elixir)
+                        {
+                            item.ShouldBeRandomized = false;
+                            item.Id = Id.WingBoots;
+                        }
+                    }
                 }
             }
         }
@@ -393,8 +401,12 @@ namespace FaxanaduRando.Randomizer
             ids.Add(Id.WingBoots);
             ids.Add(Id.WingBoots);
             ids.Add(Id.WingBoots);
-            ids.Add(Id.WingBoots);
             ids.Add(Id.Mattock);
+
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+            {
+                ids.Add(Id.WingBoots);
+            }
 
             if (GeneralOptions.ShuffleWorlds && ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
             {

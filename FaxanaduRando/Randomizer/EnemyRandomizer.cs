@@ -139,9 +139,9 @@ namespace FaxanaduRando.Randomizer
             var possibleBehaviours = new List<Sprite.SpriteId>
             {
                 Sprite.SpriteId.Mario,
-                Sprite.SpriteId.Goat,
+                Sprite.SpriteId.Snowman,
                 Sprite.SpriteId.Jason,
-                Sprite.SpriteId.JumpingCreature,
+                Sprite.SpriteId.Cricket,
                 Sprite.SpriteId.Raisin,
             };
 

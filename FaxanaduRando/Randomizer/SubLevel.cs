@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace FaxanaduRando.Randomizer
@@ -6,12 +7,16 @@ namespace FaxanaduRando.Randomizer
     {
         public enum Id
         {
+            Eolis,
             EarlyTrunk,
+            MiddleTrunk,
+            LateTrunk,
             TowerOfTrunk,
             EastTrunk,
             TowerOfFortress,
             JokerHouse,
             EarlyMist,
+            MiddleMist,
             TowerOfSuffer,
             MasconTower,
             VictimTower,
@@ -22,6 +27,7 @@ namespace FaxanaduRando.Randomizer
             MiddleBranch,
             DropDownWing,
             EastBranch,
+            BackFromEastBranch,
             Dartmoor,
             CastleFraternal,
             KingGrieve,
@@ -37,14 +43,14 @@ namespace FaxanaduRando.Randomizer
 
         public static Dictionary<Id, SubLevel> SubLevelDict { get; set; } = new Dictionary<Id, SubLevel>();
 
+        public static Id SkySpringSublevel { get; set; } = Id.EastTrunk;
+        public static Id FortressSpringSublevel { get; set; } = Id.TowerOfFortress;
+        public static Id JokerSpringSublevel { get; set; } = Id.JokerHouse;
+
         public SubLevel(Id id, List<Screen> screens)
         {
             SubLevelId = id;
-            Screens.AddRange(screens);
-            foreach (var screen in Screens)
-            {
-                screen.ParentSubLevel = this;
-            }
+            Screens = screens;
         }
 
         public bool ContainsItem(Sprite.SpriteId itemId)
@@ -77,6 +83,25 @@ namespace FaxanaduRando.Randomizer
             }
 
             return items;
+        }
+
+        private static HashSet<Id> towerIds = new HashSet<Id>()
+        {
+            Id.TowerOfTrunk,
+            Id.TowerOfFortress,
+            Id.JokerHouse,
+            Id.MasconTower,
+            Id.TowerOfSuffer,
+            Id.VictimTower,
+            Id.TowerOfMist,
+            Id.BattleHelmetWing,
+            Id.CastleFraternal,
+            Id.EvilOnesLair,
+        };
+
+        public bool IsTower()
+        {
+            return towerIds.Contains(SubLevelId);
         }
     }
 }

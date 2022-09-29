@@ -10,38 +10,38 @@ namespace FaxanaduRando.Randomizer
             //TODO complete
             Undefined = -1,
             Luigi = 4,
-            LadderSnake = 5,
-            BipedCyclops = 6,
-            Bee = 7,
-            FloatingFangs = 8,
+            NecronAides = 5,
+            Zombie = 6,
+            Hornet = 7,
+            Metroid = 8,
             SpawnedGhost = 9,
             Ghost = 11,
-            Goat = 12,
-            TeleMage = 13,
-            WaitingTaur = 14,
+            Snowman = 12,
+            Nash = 13,
+            FireGiant = 14,
             BlueMage = 15,
-            EvilCreature = 16,
+            ExecutionHood = 16,
             Table = 17,
             RockSnake = 18,
             CloakedMage = 21,
             Raisin = 23,
             Psychic = 24,
             Mario = 25,
-            BeeSwarm = 26,
-            PizzaGuy = 27,
-            FoodSnake = 28,
+            GiantBees = 26,
+            Myconid = 27,
+            Naga = 28,
             StillKnight = 29,
-            Bird = 30,
-            DemonFencer = 31,
+            GiantStrider = 30,
+            SirGawaine = 31,
             Jason = 32,
-            AlienFencer = 33,
-            Squid = 34,
+            Wolfman = 33,
+            Yareeka = 34,
             TeleCreature = 35,
             Jouster = 36,
-            JumpingCreature = 38,
+            Cricket = 38,
             Slug = 39,
-            CoiledCreature = 40,
-            JumpingCyclops = 42,
+            Lamprey = 40,
+            Monodron = 42,
             Bat = 43,
             BurrowingCyclops = 44,
             Wyvern = 45,
@@ -82,31 +82,31 @@ namespace FaxanaduRando.Randomizer
         public static readonly HashSet<SpriteId> tallIds = new HashSet<SpriteId>
         {
             SpriteId.Luigi,
-            SpriteId.LadderSnake,
-            SpriteId.BipedCyclops,
-            SpriteId.Goat,
-            SpriteId.TeleMage,
-            SpriteId.WaitingTaur,
+            SpriteId.NecronAides,
+            SpriteId.Zombie,
+            SpriteId.Snowman,
+            SpriteId.Nash,
+            SpriteId.FireGiant,
             SpriteId.BlueMage,
-            SpriteId.EvilCreature,
+            SpriteId.ExecutionHood,
             SpriteId.CloakedMage,
             SpriteId.Raisin,
             SpriteId.Psychic,
             SpriteId.Mario,
-            SpriteId.PizzaGuy,
-            SpriteId.FoodSnake,
+            SpriteId.Myconid,
+            SpriteId.Naga,
             SpriteId.StillKnight,
-            SpriteId.Bird,
-            SpriteId.DemonFencer,
+            SpriteId.GiantStrider,
+            SpriteId.SirGawaine,
             SpriteId.Jason,
-            SpriteId.AlienFencer,
-            SpriteId.Squid,
+            SpriteId.Wolfman,
+            SpriteId.Yareeka,
             SpriteId.TeleCreature,
             SpriteId.Jouster,
-            SpriteId.JumpingCreature,
+            SpriteId.Cricket,
             SpriteId.Slug,
-            SpriteId.CoiledCreature,
-            SpriteId.JumpingCyclops,
+            SpriteId.Lamprey,
+            SpriteId.Monodron,
             SpriteId.BurrowingCyclops,
         };
 
@@ -114,11 +114,11 @@ namespace FaxanaduRando.Randomizer
 
         public static readonly HashSet<SpriteId> flyingIds = new HashSet<SpriteId>
         {
-            SpriteId.Bee,
-            SpriteId.FloatingFangs,
+            SpriteId.Hornet,
+            SpriteId.Metroid,
             SpriteId.SpawnedGhost,
             SpriteId.Ghost,
-            SpriteId.BeeSwarm,
+            SpriteId.GiantBees,
             SpriteId.Bat,
             SpriteId.Eye,
         };
@@ -229,14 +229,16 @@ namespace FaxanaduRando.Randomizer
             return enemies;
         }
 
-        public Sprite(SpriteId id, byte location)
+        public Sprite(byte[] content, int offset)
         {
-            Id = id;
-            Location = location;
+            Id = (SpriteId)content[offset];
+            Location = content[offset + 1];
+            Offset = offset;
         }
 
         public SpriteId Id { get; set; }
         public byte Location { get; set; }
+        public int Offset { get; set; }
         public bool RequiresMattock { get; set; } = false;
         public bool RequiresWingBoots { get; set; } = false;
 
@@ -315,10 +317,10 @@ namespace FaxanaduRando.Randomizer
             Id = newId;
         }
 
-        public void WriteToContent(byte[] content, int offset)
+        public void AddToContent(byte[] content)
         {
-            content[offset] = (byte)Id;
-            content[offset + 1] = Location;
+            content[Offset] = (byte)Id;
+            content[Offset + 1] = Location;
         }
     }
 }

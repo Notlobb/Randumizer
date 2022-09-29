@@ -11,7 +11,7 @@ namespace FaxanaduRando.Randomizer
             message = "Failed to find a valid randomization for this seed";
             Random random = new Random(seed);
 
-            #if !DEBUG
+#if !DEBUG
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 for (int i = 0; i < 100; i++)
@@ -22,12 +22,26 @@ namespace FaxanaduRando.Randomizer
                     }
                 }
             }
-            #endif
+#endif
 
             byte[] content = File.ReadAllBytes(inputFile);
+
             AddMiscHacks(content, random);
 
             var levels = GetLevels(content);
+            uint screenAttempts = 0;
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged)
+            {
+                foreach (var level in levels)
+                {
+                    bool result = level.RandomizeScreens(random, ref screenAttempts);
+                    if (!result)
+                    {
+                        return result;
+                    }
+                }
+            }
+
             var doorRandomizer = new DoorRandomizer(content, random);
             var shopRandomizer = new ShopRandomizer(content, doorRandomizer);
             var giftRandomizer = new GiftRandomizer(content);
@@ -179,7 +193,7 @@ namespace FaxanaduRando.Randomizer
             var enemyRewardQuantityTable = new Table(Section.GetOffset(14, 0xACED, 0x8000), 63, 1, content);
             var magicResistanceTable = new Table(Section.GetOffset(14, 0xB73B, 0x8000), 100, 1, content);
 
-            #if DEBUG
+#if DEBUG
             var spriteTypes = new Dictionary<Sprite.SpriteId, SpriteType>();
             for (int i = 0; i < 100; i++)
             {
@@ -200,7 +214,7 @@ namespace FaxanaduRando.Randomizer
                                                content[Section.GetOffset(14, 0xB7A3, 0x8000)]);
             spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, 0xB7AD, 0x8000)],
                                                content[Section.GetOffset(14, 0xB7A4, 0x8000)]);
-            #endif
+#endif
             if (EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Unchanged)
             {
                 foreach (var level in levels)
@@ -294,7 +308,7 @@ namespace FaxanaduRando.Randomizer
 
             foreach (var level in levels)
             {
-                level.WriteToContent(content);
+                level.AddToContent(content);
             }
 
             spriteBehaviourTable.AddToContent(content);
@@ -308,7 +322,7 @@ namespace FaxanaduRando.Randomizer
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
             {
-                textRandomizer.RandomizeTitles(content, random);
+                textRandomizer.RandomizeTitles(content);
             }
 
             if (!textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content))
@@ -318,7 +332,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V24", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B1", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -331,173 +345,43 @@ namespace FaxanaduRando.Randomizer
 
             int dotIndex = inputFile.IndexOf(".nes");
             string outputFile;
-            #if DEBUG
+#if DEBUG
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString());
-            #else
+#else
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags);
-            #endif
+#endif
 
             RandomizeExtras(content, random, doorRandomizer, out byte finalPalette, out bool addSection);
 
             if (GeneralOptions.ShuffleTowers)
             {
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(0xFE);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xE565, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x01);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0xFE);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0x35);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0xDC);
-                newSection.Bytes.Add(0xDA);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFE00, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x20);
-                newSection.Bytes.Add(0xFE);
-                newSection.Bytes.Add(OpCode.NOP);
-                newSection.Bytes.Add(OpCode.NOP);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xDF1D, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x62);
-                newSection.Bytes.Add(0xD0);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.CMPImmediate);
-                newSection.Bytes.Add(0x01);
-                newSection.Bytes.Add(OpCode.BEQ);
-                newSection.Bytes.Add(0x03);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x22);
-                newSection.Bytes.Add(0xDF);
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x46);
-                newSection.Bytes.Add(0xDD);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFE20, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x40);
-                newSection.Bytes.Add(0xFE);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xE84C, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.TAY);
-                newSection.Bytes.Add(OpCode.LSR);
-                newSection.Bytes.Add(OpCode.LSR);
-                newSection.Bytes.Add(OpCode.LSR);
-                newSection.Bytes.Add(OpCode.LSR);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xFE);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.TYA);
-                newSection.Bytes.Add(OpCode.ANDImmediate);
-                newSection.Bytes.Add(0x0F);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0x2B);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFE40, 0xC000));
-
-                if (!addSection)
-                {
-                    newSection = new Section();
-                    newSection.Bytes.Add(OpCode.JSR);
-                    newSection.Bytes.Add(0x60);
-                    newSection.Bytes.Add(0xFE);
-                    newSection.AddToContent(content, Section.GetOffset(15, 0xE54E, 0xC000));
-
-                    newSection = new Section();
-                    newSection.Bytes.Add(OpCode.CMPImmediate);
-                    newSection.Bytes.Add(PaletteRandomizer.BranchPalette);
-                    newSection.Bytes.Add(OpCode.BNE);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.LDAImmediate);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.BNE);
-                    newSection.Bytes.Add(0x0A);
-                    newSection.Bytes.Add(OpCode.CMPImmediate);
-                    newSection.Bytes.Add(finalPalette);
-                    newSection.Bytes.Add(OpCode.BEQ);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.CMPAbsoluteX);
-                    newSection.Bytes.Add(0x69);
-                    newSection.Bytes.Add(0xE5);
-                    newSection.Bytes.Add(OpCode.RTS);
-                    newSection.Bytes.Add(OpCode.LDAImmediate);
-                    newSection.Bytes.Add(0x10);
-                    newSection.Bytes.Add(OpCode.STAAbsolute);
-                    newSection.Bytes.Add(0xFA);
-                    newSection.Bytes.Add(0x00);
-                    newSection.Bytes.Add(OpCode.STAAbsolute);
-                    newSection.Bytes.Add(0xD1);
-                    newSection.Bytes.Add(0x03);
-                    newSection.Bytes.Add(OpCode.RTS);
-                    newSection.AddToContent(content, Section.GetOffset(15, 0xFE60, 0xC000));
-                }
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0xA0);
-                newSection.Bytes.Add(0xFD);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xE5D7, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(0x1F);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0xDC);
-                newSection.Bytes.Add(0xDA);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
+                AddTowerShuffleModifications(content, addSection, finalPalette);
             }
 
             File.WriteAllBytes(outputFile, content);
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.24");
+                spoilers.Add("Randumizer v0.25 Beta 1");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
-                #if DEBUG
+#if DEBUG
                 spoilers.Add($"Randomization attempts: {attempts}");
-                #endif
-
+                spoilers.Add($"Screen randomization attempts: {screenAttempts}");
+                spoilers.Add($"Title Experience Gold");
+                foreach (var data in textRandomizer.GetTitleData())
+                {
+                    spoilers.Add(data);
+                }
+#endif
                 var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, true);
                 foreach (var hint in hints)
                 {
-                    string spoiler = hint.Replace('å', ' ');
-                    spoiler = hint.Replace('ä', ' ');
-                    spoiler = spoiler.Replace('ö', ' ');
-                    spoiler = spoiler.Replace('Å', ' ');
-                    spoiler = spoiler.Replace('Ä', ' ');
-                    spoiler = spoiler.Replace('Ö', ' ');
+                    string spoiler = hint.Replace(Text.spaceChar, ' ');
+                    spoiler = hint.Replace(Text.lineBreakChar, ' ');
+                    spoiler = spoiler.Replace(Text.endOfTextChar, ' ');
+                    spoiler = spoiler.Replace(Text.lineBreakWithPauseChar, ' ');
+                    spoiler = spoiler.Replace(Text.secondSpaceChar, ' ');
                     spoilers.Add(spoiler);
                 }
 
@@ -508,24 +392,166 @@ namespace FaxanaduRando.Randomizer
             return true;
         }
 
+        private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette)
+        {
+            var newSection = new Section();
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0x00);
+            newSection.Bytes.Add(0xFE);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xE565, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.LDAImmediate);
+            newSection.Bytes.Add(0x01);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0xFF);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.LDAAbsolute);
+            newSection.Bytes.Add(0xFE);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0x35);
+            newSection.Bytes.Add(0x04);
+            newSection.Bytes.Add(OpCode.JSR);
+            newSection.Bytes.Add(0xDC);
+            newSection.Bytes.Add(0xDA);
+            newSection.Bytes.Add(OpCode.RTS);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xFE00, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0x20);
+            newSection.Bytes.Add(0xFE);
+            newSection.Bytes.Add(OpCode.NOP);
+            newSection.Bytes.Add(OpCode.NOP);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xDF1D, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.LDAImmediate);
+            newSection.Bytes.Add(0x00);
+            newSection.Bytes.Add(OpCode.JSR);
+            newSection.Bytes.Add(0x62);
+            newSection.Bytes.Add(0xD0);
+            newSection.Bytes.Add(OpCode.LDAAbsolute);
+            newSection.Bytes.Add(0xFF);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.CMPImmediate);
+            newSection.Bytes.Add(0x01);
+            newSection.Bytes.Add(OpCode.BEQ);
+            newSection.Bytes.Add(0x03);
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0x22);
+            newSection.Bytes.Add(0xDF);
+            newSection.Bytes.Add(OpCode.LDAImmediate);
+            newSection.Bytes.Add(0x00);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0xFF);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0x46);
+            newSection.Bytes.Add(0xDD);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xFE20, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.JSR);
+            newSection.Bytes.Add(0x40);
+            newSection.Bytes.Add(0xFE);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xE84C, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.TAY);
+            newSection.Bytes.Add(OpCode.LSR);
+            newSection.Bytes.Add(OpCode.LSR);
+            newSection.Bytes.Add(OpCode.LSR);
+            newSection.Bytes.Add(OpCode.LSR);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0xFE);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.TYA);
+            newSection.Bytes.Add(OpCode.ANDImmediate);
+            newSection.Bytes.Add(0x0F);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0x2B);
+            newSection.Bytes.Add(0x04);
+            newSection.Bytes.Add(OpCode.RTS);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xFE40, 0xC000));
+
+            if (!addSection)
+            {
+                newSection = new Section();
+                newSection.Bytes.Add(OpCode.JSR);
+                newSection.Bytes.Add(0x60);
+                newSection.Bytes.Add(0xFE);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xE54E, 0xC000));
+
+                newSection = new Section();
+                newSection.Bytes.Add(OpCode.CMPImmediate);
+                newSection.Bytes.Add(PaletteRandomizer.BranchPalette);
+                newSection.Bytes.Add(OpCode.BNE);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.LDAImmediate);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.BNE);
+                newSection.Bytes.Add(0x0A);
+                newSection.Bytes.Add(OpCode.CMPImmediate);
+                newSection.Bytes.Add(finalPalette);
+                newSection.Bytes.Add(OpCode.BEQ);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.CMPAbsoluteX);
+                newSection.Bytes.Add(0x69);
+                newSection.Bytes.Add(0xE5);
+                newSection.Bytes.Add(OpCode.RTS);
+                newSection.Bytes.Add(OpCode.LDAImmediate);
+                newSection.Bytes.Add(0x10);
+                newSection.Bytes.Add(OpCode.STAAbsolute);
+                newSection.Bytes.Add(0xFA);
+                newSection.Bytes.Add(0x00);
+                newSection.Bytes.Add(OpCode.STAAbsolute);
+                newSection.Bytes.Add(0xD1);
+                newSection.Bytes.Add(0x03);
+                newSection.Bytes.Add(OpCode.RTS);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xFE60, 0xC000));
+            }
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0xA0);
+            newSection.Bytes.Add(0xFD);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xE5D7, 0xC000));
+
+            newSection = new Section();
+            newSection.Bytes.Add(OpCode.LDAImmediate);
+            newSection.Bytes.Add(0x00);
+            newSection.Bytes.Add(OpCode.STAAbsolute);
+            newSection.Bytes.Add(0xFF);
+            newSection.Bytes.Add(0x1F);
+            newSection.Bytes.Add(OpCode.JMPAbsolute);
+            newSection.Bytes.Add(0xDC);
+            newSection.Bytes.Add(0xDA);
+            newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
+        }
+
         private List<Level> GetLevels(byte[] content)
         {
-            int index = 0;
             var levels = new List<Level>();
-            while (index < Level.offsets.Count)
+            levels.Add(new Eolis(WorldNumber.Eolis, content));
+            levels.Add(new Trunk(WorldNumber.Trunk, content));
+            levels.Add(new Mist(WorldNumber.Mist, content));
+            levels.Add(new Branch(WorldNumber.Branch, content));
+            levels.Add(new Dartmoor(WorldNumber.Dartmoor, content));
+            levels.Add(new Zenis(WorldNumber.EvilOnesLair, content));
+            levels.Add(new Buildings(WorldNumber.Buildings, content));
+            levels.Add(new Towns(WorldNumber.Towns, content));
+
+            foreach (var level in levels)
             {
-                var offset = Level.offsets[index];
-                var end = Level.ends[index];
-                var level = new Level(offset, end, (WorldNumber)index);
-                level.AddScreens(content);
-                levels.Add(level);
-                Level.LevelDict[level.Start] = level;
-                index++;
+                Level.LevelDict[level.Number] = level;
             }
 
             AddSublevels(levels);
-            SubLevel.SubLevelDict[SubLevel.Id.EastTrunk].Screens[2].Sprites[0].RequiresWingBoots = true;
-            var branchHiddenItem = SubLevel.SubLevelDict[SubLevel.Id.EastBranch].Screens[7].Sprites[0];
+            SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].RequiresMattock = true;
+            SubLevel.SubLevelDict[SubLevel.Id.EastTrunk].Screens[6].Sprites[0].RequiresWingBoots = true;
+            var branchHiddenItem = SubLevel.SubLevelDict[SubLevel.Id.EastBranch].Screens[8].Sprites[0];
             branchHiddenItem.RequiresWingBoots = true;
             SubLevel.SubLevelDict[SubLevel.Id.MasconTower].Screens[0].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.Dartmoor].Screens[11].SkipBosses = true;
@@ -536,7 +562,7 @@ namespace FaxanaduRando.Randomizer
                 (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed ||
                  EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Unchanged))
             {
-                SubLevel.SubLevelDict[SubLevel.Id.MasconTower].Screens[0].Sprites[0].RequiresWingBoots = true;
+                SubLevel.SubLevelDict[SubLevel.Id.MasconTower].Screens[0].Sprites[1].RequiresWingBoots = true;
                 SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair].Screens[14].Sprites[0].RequiresMattock = true;
             }
 
@@ -552,46 +578,54 @@ namespace FaxanaduRando.Randomizer
         {
             foreach (var level in levels)
             {
-                if (level.Start == Level.StartOffset.Trunk)
+                if (level.Number == WorldNumber.Eolis)
                 {
+                    var sublevel = new SubLevel(SubLevel.Id.Eolis, level.Screens.GetRange(1, level.Screens.Count - 1));
+                    SubLevel.SubLevelDict[SubLevel.Id.Eolis] = sublevel;
+                    level.SubLevels.Add(sublevel);
+                }
+                else if (level.Number == WorldNumber.Trunk)
+                {
+                    level.AddSubLevel(SubLevel.Id.EarlyTrunk, 0, 7);
+                    level.AddSubLevel(SubLevel.Id.MiddleTrunk, 8, 12);
+                    level.AddSubLevel(SubLevel.Id.LateTrunk, 22, 26);
                     level.AddSubLevel(SubLevel.Id.TowerOfTrunk, 13, 21);
-                    level.AddSubLevel(SubLevel.Id.TowerOfFortress, 42, level.Screens.Count - 3);
+                    level.AddSubLevel(SubLevel.Id.EastTrunk, 28, 40);
+                    level.AddSubLevel(SubLevel.Id.TowerOfFortress, 41, level.Screens.Count - 3);
                     level.AddSubLevel(SubLevel.Id.JokerHouse, level.Screens.Count - 2, level.Screens.Count - 1);
 
-                    var screens = new List<Screen>();
-                    screens.Add(level.Screens[12]);
-                    screens.Add(level.Screens[24]);
-                    var sublevel = new SubLevel(SubLevel.Id.EarlyTrunk, screens);
-                    level.SubLevels.Add(sublevel);
-                    SubLevel.SubLevelDict[sublevel.SubLevelId] = sublevel;
-
-                    screens = new List<Screen>();
-                    screens.Add(level.Screens[28]);
-                    screens.Add(level.Screens[32]);
-                    screens.Add(level.Screens[33]);
-                    sublevel = new SubLevel(SubLevel.Id.EastTrunk, screens);
-                    level.SubLevels.Add(sublevel);
-                    SubLevel.SubLevelDict[sublevel.SubLevelId] = sublevel;
+                    SubLevel.SkySpringSublevel = SubLevel.Id.EastTrunk;
+                    SubLevel.FortressSpringSublevel = SubLevel.Id.TowerOfFortress;
+                    SubLevel.JokerSpringSublevel = SubLevel.Id.JokerHouse;
                 }
-                else if (level.Start == Level.StartOffset.Mist)
+                else if (level.Number == WorldNumber.Mist)
                 {
-                    level.AddSubLevel(SubLevel.Id.EarlyMist, 15, 16);
-                    level.AddSubLevel(SubLevel.Id.LateMist, 26, 30);
-                    level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 46, 60);
-                    level.AddSubLevel(SubLevel.Id.TowerOfMist, 61, 74);
-                    level.AddSubLevel(SubLevel.Id.MasconTower, 75, 77);
-                    level.AddSubLevel(SubLevel.Id.VictimTower, 78, level.Screens.Count - 1);
+                    level.AddSubLevel(SubLevel.Id.EarlyMist, 16, 17);
+                    level.SubLevels[0].Screens.Add(level.Screens[1]);
+                    level.SubLevels[0].Screens.Add(level.Screens[9]);
+                    level.AddSubLevel(SubLevel.Id.MiddleMist, 12, 13);
+                    level.SubLevels[1].Screens.Add(level.Screens[0]);
+                    level.SubLevels[1].Screens.Add(level.Screens[6]);
+                    level.SubLevels[1].Screens.Add(level.Screens[13]);
+                    level.SubLevels[1].Screens.Add(level.Screens[22]);
+                    level.AddSubLevel(SubLevel.Id.LateMist, 23, 32);
+                    level.SubLevels[2].Screens.Add(level.Screens[41]);
+                    level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 47, 61);
+                    level.AddSubLevel(SubLevel.Id.TowerOfMist, 62, 76);
+                    level.AddSubLevel(SubLevel.Id.MasconTower, 77, 79);
+                    level.AddSubLevel(SubLevel.Id.VictimTower, 80, level.Screens.Count - 1);
                 }
-                else if (level.Start == Level.StartOffset.Branch)
+                else if (level.Number == WorldNumber.Branch)
                 {
                     level.AddSubLevel(SubLevel.Id.EarlyBranch, 3, 6);
-                    level.SubLevels[0].Screens.Add(level.Screens[11]);
+                    level.AddSubLevelScreens(level.SubLevels[0], 10, 14);
                     level.AddSubLevel(SubLevel.Id.BattleHelmetWing, 7, 9);
-                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 19);
+                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 18);
                     level.AddSubLevel(SubLevel.Id.DropDownWing, 22, 24);
-                    level.AddSubLevel(SubLevel.Id.EastBranch, 26, 34);
+                    level.AddSubLevel(SubLevel.Id.EastBranch, 25, 35);
+                    level.AddSubLevel(SubLevel.Id.BackFromEastBranch, 19, 19);
                 }
-                else if (level.Start == Level.StartOffset.DartmoorArea)
+                else if (level.Number == WorldNumber.Dartmoor)
                 {
                     level.AddSubLevel(SubLevel.Id.Dartmoor, 0, 14);
                     level.AddSubLevel(SubLevel.Id.CastleFraternal, 16, 20);
@@ -599,11 +633,11 @@ namespace FaxanaduRando.Randomizer
                     level.AddSubLevel(SubLevel.Id.KingGrieve, 21, 21);
 
                 }
-                else if (level.Start == Level.StartOffset.EvilOnesLair)
+                else if (level.Number == WorldNumber.EvilOnesLair)
                 {
                     level.AddSubLevel(SubLevel.Id.EvilOnesLair, 0, level.Screens.Count - 1);
                 }
-                else if (level.Start == Level.StartOffset.Buildings)
+                else if (level.Number == WorldNumber.Buildings)
                 {
                     var screens = new List<Screen>();
                     screens.Add(level.Screens[31]);
@@ -706,7 +740,20 @@ namespace FaxanaduRando.Randomizer
             }
 
             var times = new List<byte>();
-            if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Random)
+            if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Permanent)
+            {
+                times.Add(1);
+                times.Add(1);
+                times.Add(1);
+                times.Add(1);
+                UpdateWingBootsTimer(times, content);
+                var bootSection = new Section();
+                bootSection.Bytes.Add(OpCode.NOP);
+                bootSection.Bytes.Add(OpCode.NOP);
+                bootSection.Bytes.Add(OpCode.NOP);
+                bootSection.AddToContent(content, Section.GetOffset(15, 0xC5AE, 0xC000));
+            }
+            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Random)
             {
                 var duration = (byte)random.Next(10, 46);
                 times.Add(duration);

@@ -6,7 +6,7 @@ namespace FaxanaduRando.Randomizer
         {
             EolisGuru,
             FortressGuru,
-            JokerHouse,
+            JokerSpring,
             VictimBar,
             FireMage,
             AceKeyHouse,

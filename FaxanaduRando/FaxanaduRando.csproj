@@ -55,9 +55,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Randomizer\Branch.cs" />
+    <Compile Include="Randomizer\Buildings.cs" />
+    <Compile Include="Randomizer\Dartmoor.cs" />
     <Compile Include="Randomizer\Door.cs" />
     <Compile Include="Randomizer\EnemyOptions.cs" />
     <Compile Include="Randomizer\EnemyRandomizer.cs" />
+    <Compile Include="Randomizer\Eolis.cs" />
     <Compile Include="Randomizer\FlagConverter.cs" />
     <Compile Include="Randomizer\ExtraOptions.cs" />
     <Compile Include="Randomizer\GeneralOptions.cs" />
@@ -68,9 +72,11 @@
     <Compile Include="Randomizer\ItemOptions.cs" />
     <Compile Include="Randomizer\ItemRandomizer.cs" />
     <Compile Include="Randomizer\DoorRandomizer.cs" />
+    <Compile Include="Randomizer\Mist.cs" />
     <Compile Include="Randomizer\OpCode.cs" />
     <Compile Include="Randomizer\PaletteRandomizer.cs" />
     <Compile Include="Randomizer\Screen.cs" />
+    <Compile Include="Randomizer\ScrollingData.cs" />
     <Compile Include="Randomizer\Section.cs" />
     <Compile Include="Randomizer\Shop.cs" />
     <Compile Include="Randomizer\ShopEntry.cs" />
@@ -86,8 +92,12 @@
     <Compile Include="Randomizer\SubLevel.cs" />
     <Compile Include="Randomizer\Table.cs" />
     <Compile Include="Randomizer\Text.cs" />
+    <Compile Include="Randomizer\TextObject.cs" />
     <Compile Include="Randomizer\TextRandomizer.cs" />
+    <Compile Include="Randomizer\Towns.cs" />
+    <Compile Include="Randomizer\Trunk.cs" />
     <Compile Include="Randomizer\Util.cs" />
+    <Compile Include="Randomizer\Zenis.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

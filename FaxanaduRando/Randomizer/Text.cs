@@ -10,6 +10,7 @@ namespace FaxanaduRando.Randomizer
         public const char lineBreakWithPauseChar = 'Ä';
         public const char endOfTextChar = 'ö';
         public const char spaceChar = 'å';
+        public const char secondSpaceChar = 'Å';
 
         private const int textOffset = 0x34310;
         private const int textOffsetEnd = 0x373C9;
@@ -111,7 +112,7 @@ namespace FaxanaduRando.Randomizer
                 {0x7C, '|'},
                 {0x7D, '}'},
                 {0x7E, '~'},
-                {0xFB, 'Å'}, //space?
+                {0xFB, secondSpaceChar},
                 {0xFC, lineBreakWithPauseChar},
                 {0xFD, ' '},
                 {0xFE, lineBreakChar},

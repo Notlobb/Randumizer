@@ -3,6 +3,14 @@ using System.Collections.Generic;
 
 namespace FaxanaduRando.Randomizer
 {
+    public enum Direction : byte
+    {
+        Left,
+        Right,
+        Up,
+        Down,
+    }
+
     public class Screen
     {
         private static List<Sprite.SpriteId> nonBossIdList = new List<Sprite.SpriteId>();
@@ -15,6 +23,11 @@ namespace FaxanaduRando.Randomizer
         private static List<Sprite.SpriteId> largeIdList = new List<Sprite.SpriteId>();
         private static List<Sprite.SpriteId> hardIdList = new List<Sprite.SpriteId>();
         private static HashSet<Sprite.SpriteId> sourceIds = new HashSet<Sprite.SpriteId>();
+
+        public Screen(byte number)
+        {
+            Number = number;
+        }
 
         public static void SetupEnemyIds()
         {
@@ -37,14 +50,14 @@ namespace FaxanaduRando.Randomizer
             if (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy)
             {
                 nonBossIdList.Remove(Sprite.SpriteId.Psychic);
-                nonBossIdList.Remove(Sprite.SpriteId.EvilCreature);
+                nonBossIdList.Remove(Sprite.SpriteId.ExecutionHood);
                 idList.AddRange(nonBossIdList);
                 idList.AddRange(nonBossIdList);
             }
             else if (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Normal)
             {
                 nonBossIdList.Remove(Sprite.SpriteId.Psychic);
-                nonBossIdList.Remove(Sprite.SpriteId.EvilCreature);
+                nonBossIdList.Remove(Sprite.SpriteId.ExecutionHood);
                 nonBossIdList.AddRange(sourceIds);
                 nonBossIdList.Remove(Sprite.SpriteId.Psychic);
             }
@@ -53,16 +66,16 @@ namespace FaxanaduRando.Randomizer
             idList.AddRange(Sprite.bossIds);
             sourceIds.UnionWith(Sprite.bossIds);
 
-            easyIdList.Add(Sprite.SpriteId.Bee);
-            easyIdList.Add(Sprite.SpriteId.BipedCyclops);
+            easyIdList.Add(Sprite.SpriteId.Hornet);
+            easyIdList.Add(Sprite.SpriteId.Zombie);
             easyIdList.Add(Sprite.SpriteId.Ghost);
-            easyIdList.Add(Sprite.SpriteId.JumpingCyclops);
-            easyIdList.Add(Sprite.SpriteId.JumpingCreature);
+            easyIdList.Add(Sprite.SpriteId.Monodron);
+            easyIdList.Add(Sprite.SpriteId.Cricket);
             easyIdList.Add(Sprite.SpriteId.TeleCreature);
             easyIdList.Add(Sprite.SpriteId.Spiky);
-            easyIdList.Add(Sprite.SpriteId.FloatingFangs);
+            easyIdList.Add(Sprite.SpriteId.Metroid);
             easyIdList.Add(Sprite.SpriteId.StillKnight);
-            easyIdList.Add(Sprite.SpriteId.Goat);
+            easyIdList.Add(Sprite.SpriteId.Snowman);
 
             bossTargets[Sprite.SpriteId.DogBoss] = new List<Sprite.SpriteId>{
                                                     Sprite.SpriteId.DogBoss,
@@ -112,15 +125,117 @@ namespace FaxanaduRando.Randomizer
 
             largeIdList.AddRange(Sprite.bossIds);
             hardIdList.Add(Sprite.SpriteId.Psychic);
-            hardIdList.Add(Sprite.SpriteId.EvilCreature);
+            hardIdList.Add(Sprite.SpriteId.ExecutionHood);
             hardIdList.Add(Sprite.SpriteId.StillKnight);
         }
 
         public List<Sprite> Sprites { get; set; } = new List<Sprite>();
-        public List<byte> Text { get; set; } = new List<byte>();
-        public SubLevel ParentSubLevel { get; set; } = null;
-        public SubLevel.Id ParentSubLevelId { get { return ParentSubLevel != null ? ParentSubLevel.SubLevelId : SubLevel.Id.Other; } }
+        public List<TextObject> Text { get; set; } = new List<TextObject>();
+        public WorldNumber ParentWorld { get; set; } = WorldNumber.Unknown;
         public bool SkipBosses { get; set; } = false;
+        public ScrollingData ScrollData { get; set; }
+        public HashSet<Direction> Directions { get; set; } = new HashSet<Direction>();
+        public HashSet<Direction> AvailableDirections { get; set; } = new HashSet<Direction>();
+        public byte Number { get; set; }
+        public HashSet<byte> OpenTilesLeft { get; set; } = new HashSet<byte>();
+        public HashSet<byte> OpenTilesRight { get; set; } = new HashSet<byte>();
+        public HashSet<byte> OpenTilesUp { get; set; } = new HashSet<byte>();
+        public HashSet<byte> OpenTilesDown { get; set; } = new HashSet<byte>();
+        public List<DoorId> Doors { get; set; } = new List<DoorId>();
+        public List<GiftItem.Id> Gifts { get; set; } = new List<GiftItem.Id>();
+
+        public static Direction GetReverse(Direction direction)
+        {
+            if (direction == Direction.Left)
+            {
+                return Direction.Right;
+            }
+            else if (direction == Direction.Right)
+            {
+                return Direction.Left;
+            }
+            else if (direction == Direction.Up)
+            {
+                return Direction.Down;
+            }
+
+            return Direction.Up;
+        }
+
+        public HashSet<byte> GetTiles(Direction direction)
+        {
+            if (direction == Direction.Left)
+            {
+                return OpenTilesLeft;
+            }
+            else if (direction == Direction.Right)
+            {
+                return OpenTilesRight;
+            }
+            else if (direction == Direction.Up)
+            {
+                return OpenTilesUp;
+            }
+
+            return OpenTilesDown;
+        }
+
+        public bool CanConnect(Direction direction, Screen other)
+        {
+            if (!AvailableDirections.Contains(direction))
+            {
+                return false;
+            }
+
+            var reverse = GetReverse(direction);
+            if (!other.AvailableDirections.Contains(reverse))
+            {
+                return false;
+            }
+
+            var tiles = new HashSet<byte>(GetTiles(direction));
+            var otherTiles = other.GetTiles(reverse);
+            tiles.IntersectWith(otherTiles);
+
+            if (direction == Direction.Up || direction == Direction.Down)
+            {
+                return tiles.Count > 0;
+            }
+
+            var values = new List<byte>(tiles);
+            values.Sort();
+            for (int i = 0; i < values.Count - 1; i++)
+            {
+                if (values[i] == values[i + 1] - 1)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void Connect(Direction direction, byte number)
+        {
+            if (direction == Direction.Left)
+            {
+                ScrollData.Left = number;
+            }
+            else if (direction == Direction.Right)
+            {
+                ScrollData.Right = number;
+            }
+            else if (direction == Direction.Up)
+            {
+                ScrollData.Up = number;
+            }
+            else if (direction == Direction.Down)
+            {
+                ScrollData.Down = number;
+            }
+
+            AvailableDirections.Remove(direction);
+        }
 
         public void RandomizeEnemiesWithProbabilities(Random random,
                                                       bool eolis,
@@ -217,7 +332,7 @@ namespace FaxanaduRando.Randomizer
                 else if (smallIds.Contains(sprite.Id))
                 {
                     newId = smallIdList[random.Next(smallIdList.Count)];
-                    if (newId == Sprite.SpriteId.EvilCreature)
+                    if (newId == Sprite.SpriteId.ExecutionHood)
                     {
                         newId = smallIdList[random.Next(smallIdList.Count)];
                     }
@@ -290,32 +405,23 @@ namespace FaxanaduRando.Randomizer
                 {
                     if (sprite.Id == Sprite.SpriteId.Jason)
                     {
-                        sprite.Id = Sprite.SpriteId.JumpingCreature;
+                        sprite.Id = Sprite.SpriteId.Cricket;
                     }
                 }
             }
         }
 
-        public int WriteToContent(byte[] content, int offset)
+        public void AddToContent(byte[] content)
         {
+            ScrollData.AddToContent(content);
             foreach (var sprite in Sprites)
             {
-                sprite.WriteToContent(content, offset);
-                offset += 2;
-            }
-            offset++;
-            if (offset == Level.glitchedOffset)
-            {
-                return offset;
+                sprite.AddToContent(content);
             }
             foreach (var text in Text)
             {
-                content[offset] = text;
-                offset++;
+                text.AddToContent(content);
             }
-            offset++;
-            return offset;
         }
-
     }
 }

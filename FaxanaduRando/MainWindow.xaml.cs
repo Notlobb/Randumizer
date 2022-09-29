@@ -95,31 +95,31 @@ namespace FaxanaduRando
                 var box = (System.Windows.Controls.ComboBox)sender;
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "30B9FFF45k02v1k";
+                    flagsTextBox.Text = "30B9FFF45k02v1m";
                 }
                 else if (box.SelectedIndex == 1)
                 {
-                    flagsTextBox.Text = "7E9FFFF4za0cFbk";
+                    flagsTextBox.Text = "7E9FFFF4za0cFbl";
                 }
                 else if (box.SelectedIndex == 2)
                 {
-                    flagsTextBox.Text = "7E9FFFF5zc00Pak";
+                    flagsTextBox.Text = "7E9FFFF5zc00Pam";
                 }
                 else if (box.SelectedIndex == 3)
                 {
-                    flagsTextBox.Text = "5010FE00Ac00Z9bk";
+                    flagsTextBox.Text = "5010FE00Ac00Z9bm";
                 }
                 else if (box.SelectedIndex == 4)
                 {
-                    flagsTextBox.Text = "7E99DFC4ze0bPak";
+                    flagsTextBox.Text = "7E99DFC4ze0bPam";
                 }
                 else if (box.SelectedIndex == 5)
                 {
-                    flagsTextBox.Text = "7E9FFFF5ucma0aa";
+                    flagsTextBox.Text = "7E9FFFFDucmaZ9aa";
                 }
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3EDFFFF5Al02v1k";
+                    flagsTextBox.Text = "3EDFFFF5Al02v1m";
                 }
             }
         }

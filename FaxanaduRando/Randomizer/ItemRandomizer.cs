@@ -30,14 +30,14 @@ namespace FaxanaduRando.Randomizer
             { Sprite.SpriteId.Pendant, ShopRandomizer.Id.Pendant},
         };
 
-        private static readonly HashSet<Level.StartOffset> offsetsToShuffle= new HashSet<Level.StartOffset>
+        private static readonly HashSet<WorldNumber> offsetsToShuffle= new HashSet<WorldNumber>
         {
-            Level.StartOffset.Trunk,
-            Level.StartOffset.Mist,
-            Level.StartOffset.Branch,
-            Level.StartOffset.DartmoorArea,
-            Level.StartOffset.EvilOnesLair,
-            Level.StartOffset.Buildings,
+            WorldNumber.Trunk,
+            WorldNumber.Mist,
+            WorldNumber.Branch,
+            WorldNumber.Dartmoor,
+            WorldNumber.EvilOnesLair,
+            WorldNumber.Buildings,
         };
 
         public Random Rand {get; set;}
@@ -223,7 +223,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             int giftCount = giftRandomizer.GiftItems.Count;
-            if (!IncludeEolisGuru())
+            if ((!IncludeEolisGuru()) || (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords))
             {
                 giftCount--;
             }
@@ -277,7 +277,7 @@ namespace FaxanaduRando.Randomizer
             while (!valid && attempts < 1000000)
             {
                 attempts++;
-                #if !DEBUG
+#if !DEBUG
                 if (GeneralOptions.GenerateSpoilerLog)
                 {
                     if (Rand.Next(0, 2) > 2)
@@ -285,7 +285,7 @@ namespace FaxanaduRando.Randomizer
                         break;
                     }
                 }
-                #endif
+#endif
 
                 if (GeneralOptions.ShuffleWorlds && attempts > 100000)
                 {
@@ -377,10 +377,10 @@ namespace FaxanaduRando.Randomizer
             if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
             {
                 shopRandomizer.RandomizePrices(Rand, doorRandomizer);
-                shopRandomizer.AddToContent(content);
-                giftRandomizer.AddToContent(content);
             }
 
+            shopRandomizer.AddToContent(content);
+            giftRandomizer.AddToContent(content);
             return true;
         }
 
@@ -481,7 +481,7 @@ namespace FaxanaduRando.Randomizer
             if (!(GeneralOptions.IncludeEvilOnesFortress && GeneralOptions.ShuffleTowers) &&
                 GeneralOptions.MoveFinalRequirements)
             {
-                TraverseLevel(Level.LevelDict[Level.StartOffset.EvilOnesLair], ids);
+                TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
             }
 
             if (itemCount < ids.Count)
@@ -556,16 +556,9 @@ namespace FaxanaduRando.Randomizer
                                 HashSet<Guru.GuruId> gurus)
         {
             int itemCount = ids.Count;
-            CheckDoor(DoorId.TrunkSecretShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
-            CheckDoor(DoorId.ApoluneItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ApoluneKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ApoluneBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ApoluneGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ApoluneHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ApoluneHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.TowerOfTrunk, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -577,23 +570,19 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
+            var middleTrunk = SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk];
+            if (middleTrunk.Screens[middleTrunk.Screens.Count - 1].Number != Trunk.MattockScreen)
+            {
+                TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            }
+
             if (!ids.Contains(ShopRandomizer.Id.Mattock))
             {
                 return false;
             }
 
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.ForepawItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ForepawKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ForepawGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ForepawHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ForepawHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ForepawMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.TowerOfFortress, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.JokerHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -608,8 +597,9 @@ namespace FaxanaduRando.Randomizer
             if (ItemOptions.MattockUsage != ItemOptions.MattockUsages.AnywhereUpdateLogic &&
                 !GeneralOptions.MoveSpringQuestRequirement)
             {
-                if (!(traversedSublevels.Contains(SubLevel.Id.TowerOfFortress) &&
-                      traversedSublevels.Contains(SubLevel.Id.JokerHouse)))
+                if (!(traversedSublevels.Contains(SubLevel.SkySpringSublevel) &&
+                      traversedSublevels.Contains(SubLevel.FortressSpringSublevel) &&
+                      traversedSublevels.Contains(SubLevel.JokerSpringSublevel)))
                 {
                     return false;
                 }
@@ -658,19 +648,7 @@ namespace FaxanaduRando.Randomizer
             int itemCount = ids.Count;
 
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MasconMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.MistLargeHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.MistSmallHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.BirdHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.MasconTower, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.TowerOfSuffer, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleMist], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -687,23 +665,18 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            CheckDoor(DoorId.MistSecretShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.VictimItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.FireMage, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.AceKeyHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+            {
+                CheckDoor(DoorId.VictimBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                CheckDoor(DoorId.VictimMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            }
 
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.TowerOfMist, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.VictimTower, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -735,15 +708,6 @@ namespace FaxanaduRando.Randomizer
 
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
-            CheckDoor(DoorId.ConflateGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ConflateItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ConflateBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ConflateHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ConflateHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.ConflateMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.BattleHelmetWing, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
             if (itemCount < ids.Count)
             {
                 CheckValid(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus);
@@ -754,20 +718,16 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            if (!ids.Contains(doorRandomizer.GetLevelKey(doorRandomizer.LevelDoors[DoorId.EastBranch])))
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
             {
-                return false;
+                if (!ids.Contains(doorRandomizer.GetLevelKey(doorRandomizer.LevelDoors[DoorId.EastBranch])))
+                {
+                    return false;
+                }
             }
 
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DaybreakMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -797,23 +757,6 @@ namespace FaxanaduRando.Randomizer
         {
             int itemCount = ids.Count;
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorMeatShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorHospital, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.DartmoorHouse1, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorHouse2, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorHouse3, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.DartmoorHouse4, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.LeftOfDartmoor, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            CheckDoor(DoorId.FarLeftDartmoor, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.CastleFraternal, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-
-            CheckDoor(DoorId.EvilOnesLair, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -897,7 +840,7 @@ namespace FaxanaduRando.Randomizer
             if (!ItemOptions.AllowMultipleGifts)
             {
                 result &= CheckSingleGift(GiftItem.Id.FortressGuru, giftRandomizer);
-                result &= CheckSingleGift(GiftItem.Id.JokerHouse, giftRandomizer);
+                result &= CheckSingleGift(GiftItem.Id.JokerSpring, giftRandomizer);
             }
 
             return result;
@@ -916,22 +859,29 @@ namespace FaxanaduRando.Randomizer
 
         private bool GuaranteedMattock(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer)
         {
+            if ((ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged) &&
+                (!GeneralOptions.ShuffleTowers) &&
+                ((GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleExcludeTowns) ||
+                GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.Unchanged))
+            {
+                //Not supported for now
+                return true;
+            }
+
             var tempIds = new HashSet<ShopRandomizer.Id>();
             tempIds.Add(ShopRandomizer.Id.Book);
             var tempSublevels = new HashSet<SubLevel.Id>();
             var tempGurus = new HashSet<Guru.GuruId>();
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
 
-            CheckDoor(DoorId.ForepawItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-
-            CheckDoor(DoorId.TowerOfFortress, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.JokerHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            if (tempGurus.Count == 0)
+            {
+                return true;
+            }
 
             if (tempIds.Contains(ShopRandomizer.Id.Mattock))
             {
@@ -943,49 +893,26 @@ namespace FaxanaduRando.Randomizer
 
         private bool GuaranteedElixir(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, List<Level> levels)
         {
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            {
+                if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
+                    {
+                    //Not supported for now
+                    return true;
+                }
+            }
+
             var tempIds = new HashSet<ShopRandomizer.Id>();
             var tempSublevels = new HashSet<SubLevel.Id>();
             var tempGurus = new HashSet<Guru.GuruId>();
             tempIds.Add(ShopRandomizer.Id.Book);
 
-            CheckDoor(DoorId.TrunkSecretShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ApoluneHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.TowerOfTrunk, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-
-            if (tempSublevels.Contains(SubLevel.Id.TowerOfFortress))
-            {
-                if (tempIds.Contains(ShopRandomizer.Id.Elixir))
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            tempIds = new HashSet<ShopRandomizer.Id>();
-            tempSublevels = new HashSet<SubLevel.Id>();
-            tempGurus = new HashSet<Guru.GuruId>();
-            tempIds.Add(ShopRandomizer.Id.Book);
-
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ForepawMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.TowerOfFortress, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.JokerHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
 
-            if (tempSublevels.Contains(SubLevel.Id.TowerOfFortress))
+            if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
             {
                 if (tempIds.Contains(ShopRandomizer.Id.Elixir))
                 {
@@ -1002,18 +929,33 @@ namespace FaxanaduRando.Randomizer
             tempGurus = new HashSet<Guru.GuruId>();
             tempIds.Add(ShopRandomizer.Id.Book);
 
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MistSecretShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MistLargeHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MistSmallHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MistGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.BirdHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            {
+                TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            }
+
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+
+            if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
+            {
+                if (tempIds.Contains(ShopRandomizer.Id.Elixir))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            tempIds = new HashSet<ShopRandomizer.Id>();
+            tempSublevels = new HashSet<SubLevel.Id>();
+            tempGurus = new HashSet<Guru.GuruId>();
+            tempIds.Add(ShopRandomizer.Id.Book);
+
             CheckDoor(DoorId.VictimBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             CheckDoor(DoorId.VictimGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             CheckDoor(DoorId.VictimHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
@@ -1021,14 +963,14 @@ namespace FaxanaduRando.Randomizer
             CheckDoor(DoorId.VictimItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             CheckDoor(DoorId.VictimKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             CheckDoor(DoorId.VictimMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.FireMage, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.AceKeyHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.MasconTower, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.TowerOfSuffer, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.VictimTower, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.TowerOfMist, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
 
-            if (tempSublevels.Contains(SubLevel.Id.TowerOfFortress))
+            if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
             {
                 if (tempIds.Contains(ShopRandomizer.Id.Elixir))
                 {
@@ -1049,21 +991,12 @@ namespace FaxanaduRando.Randomizer
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.ConflateGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DaybreakMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.BattleHelmetWing, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
 
-            if (tempSublevels.Contains(SubLevel.Id.TowerOfFortress))
+            if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
             {
                 if (tempIds.Contains(ShopRandomizer.Id.Elixir))
                 {
@@ -1080,22 +1013,10 @@ namespace FaxanaduRando.Randomizer
             tempGurus = new HashSet<Guru.GuruId>();
             tempIds.Add(ShopRandomizer.Id.Book);
 
-            CheckDoor(DoorId.DartmoorBar, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorGuru, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorHospital, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorItemShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorKeyShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorMeatShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorHouse1, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorHouse2, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorHouse3, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.DartmoorHouse4, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.LeftOfDartmoor, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.FarLeftDartmoor, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.CastleFraternal, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            CheckDoor(DoorId.EvilOnesLair, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
 
-            if (tempSublevels.Contains(SubLevel.Id.TowerOfFortress))
+            if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
             {
                 if (tempIds.Contains(ShopRandomizer.Id.Elixir))
                 {
@@ -1176,9 +1097,9 @@ namespace FaxanaduRando.Randomizer
                     return false;
                 }
 
-                if (!traversedSublevels.Contains(SubLevel.Id.TowerOfFortress) ||
-                    !traversedSublevels.Contains(SubLevel.Id.JokerHouse) ||
-                    !traversedSublevels.Contains(SubLevel.Id.EastTrunk))
+                if (!traversedSublevels.Contains(SubLevel.SkySpringSublevel) ||
+                    !traversedSublevels.Contains(SubLevel.FortressSpringSublevel) ||
+                    !traversedSublevels.Contains(SubLevel.JokerSpringSublevel))
                 {
                     return false;
                 }
@@ -1230,6 +1151,14 @@ namespace FaxanaduRando.Randomizer
                                       HashSet<ShopRandomizer.Id> ids, HashSet<SubLevel.Id> traversedSublevels,
                                       HashSet<Guru.GuruId> gurus)
         {
+            if (subLevel.SubLevelId == SubLevel.Id.EvilOnesLair)
+            {
+                if ((GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged) && (!ids.Contains(ShopRandomizer.Id.WingBoots)))
+                {
+                    return;
+                }
+            }
+
             foreach (var screen in subLevel.Screens)
             {
                 foreach (var sprite in screen.Sprites)
@@ -1260,21 +1189,16 @@ namespace FaxanaduRando.Randomizer
                         ids.Add(shopIdDictionary[sprite.Id]);
                     }
                 }
-            }
 
-            if (subLevel.SubLevelId == SubLevel.Id.TowerOfFortress)
-            {
-                CheckDoor(DoorId.FortressGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            }
-            else if (subLevel.SubLevelId == SubLevel.Id.JokerHouse)
-            {
-                ids.Add(giftRandomizer.ItemDict[GiftItem.Id.JokerHouse].Item);
-            }
-            else if (subLevel.SubLevelId == SubLevel.Id.CastleFraternal)
-            {
-                CheckDoor(DoorId.FraternalHouse, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-                CheckDoor(DoorId.FraternalGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-                CheckDoor(DoorId.KingGrieve, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                foreach (var door in screen.Doors)
+                {
+                    CheckDoor(door, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                }
+
+                foreach (var gift in screen.Gifts)
+                {
+                    ids.Add(giftRandomizer.ItemDict[gift].Item);
+                }
             }
 
             traversedSublevels.Add(subLevel.SubLevelId);
@@ -1285,9 +1209,8 @@ namespace FaxanaduRando.Randomizer
         {
             if (gift.LocationId == GiftItem.Id.FortressGuru)
             {
-                if (!(ids.Contains(ShopRandomizer.Id.Mattock) &&
-                    ids.Contains(ShopRandomizer.Id.WingBoots) &&
-                    traversedSublevels.Contains(SubLevel.Id.EastTrunk)))
+                if (!(ids.Contains(ShopRandomizer.Id.WingBoots) &&
+                    traversedSublevels.Contains(SubLevel.SkySpringSublevel)))
                 {
                     return;
                 }
@@ -1351,7 +1274,7 @@ namespace FaxanaduRando.Randomizer
             var items = new List<Sprite>();
             foreach (var level in levels)
             {
-                if (offsetsToShuffle.Contains(level.Start))
+                if (offsetsToShuffle.Contains(level.Number))
                 {
                     var subItems = CollectItems(level);
                     items.AddRange(subItems);
@@ -1370,7 +1293,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     if (Sprite.vanillaItemIds.Contains(sprite.Id))
                     {
-                        if (level.Start == Level.StartOffset.DartmoorArea &&
+                        if (level.Number == WorldNumber.Dartmoor &&
                             sprite.Id == Sprite.SpriteId.RedPotion)
                         {
                             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.Unchanged ||
