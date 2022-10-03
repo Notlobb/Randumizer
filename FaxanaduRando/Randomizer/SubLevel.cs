@@ -40,6 +40,7 @@ namespace FaxanaduRando.Randomizer
 
         public Id SubLevelId { get; set; }
         public List<Screen> Screens { get; set; } = new List<Screen>();
+        public bool RequiresMattock { get; set; } = false;
 
         public static Dictionary<Id, SubLevel> SubLevelDict { get; set; } = new Dictionary<Id, SubLevel>();
 

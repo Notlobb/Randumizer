@@ -223,7 +223,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             int giftCount = giftRandomizer.GiftItems.Count;
-            if ((!IncludeEolisGuru()) || (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords))
+            if ((!IncludeEolisGuru()) || Util.AllWorldScreensRandomized())
             {
                 giftCount--;
             }
@@ -558,7 +558,8 @@ namespace FaxanaduRando.Randomizer
             int itemCount = ids.Count;
 
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+            var middleTrunk = SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk];
+            TraverseSubLevel(middleTrunk, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
             {
@@ -570,10 +571,21 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            var middleTrunk = SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk];
-            if (middleTrunk.Screens[middleTrunk.Screens.Count - 1].Number != Trunk.MattockScreen)
+            if (middleTrunk.RequiresMattock && !ids.Contains(ShopRandomizer.Id.Mattock))
             {
-                TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+                return false;
+            }
+
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
+
+            if (itemCount < ids.Count)
+            {
+                CheckValid(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus);
+            }
+
+            if (CanWin(ids, traversedSublevels))
+            {
+                return true;
             }
 
             if (!ids.Contains(ShopRandomizer.Id.Mattock))
@@ -581,7 +593,6 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
 
             if (itemCount < ids.Count)
@@ -665,7 +676,7 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+            if (!Util.AllWorldScreensRandomized())
             {
                 CheckDoor(DoorId.VictimBar, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
                 CheckDoor(DoorId.VictimGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus);
@@ -718,7 +729,7 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+            if (!Util.AllWorldScreensRandomized())
             {
                 if (!ids.Contains(doorRandomizer.GetLevelKey(doorRandomizer.LevelDoors[DoorId.EastBranch])))
                 {
@@ -893,7 +904,7 @@ namespace FaxanaduRando.Randomizer
 
         private bool GuaranteedElixir(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, List<Level> levels)
         {
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            if (Util.AllWorldScreensRandomized())
             {
                 if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
                     {
@@ -929,7 +940,7 @@ namespace FaxanaduRando.Randomizer
             tempGurus = new HashSet<Guru.GuruId>();
             tempIds.Add(ShopRandomizer.Id.Book);
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            if (Util.AllWorldScreensRandomized())
             {
                 TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
             }
@@ -1115,6 +1126,14 @@ namespace FaxanaduRando.Randomizer
             if (!doorRandomizer.Doors.ContainsKey(doorId))
             {
                 return;
+            }
+
+            if (doorId == DoorId.TowerOfFortress)
+            {
+                if (Util.AllWorldScreensRandomized() && (!ids.Contains(ShopRandomizer.Id.WingBoots)))
+                {
+                    return;
+                }
             }
 
             var building = doorRandomizer.Doors[doorId];

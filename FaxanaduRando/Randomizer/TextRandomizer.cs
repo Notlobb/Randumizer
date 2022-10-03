@@ -691,7 +691,7 @@ namespace FaxanaduRando.Randomizer
                 hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.EvilOnesLair], doorRandomizer));
             }
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            if (Util.AllWorldScreensRandomized())
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.DropdownWing], doorRandomizer));
                 hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.BackFromEastBranch], doorRandomizer));

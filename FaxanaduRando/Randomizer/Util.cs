@@ -33,6 +33,12 @@ namespace FaxanaduRando.Randomizer
                 GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus;
         }
 
+        public static bool AllWorldScreensRandomized()
+        {
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
+                GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots;
+        }
+
         public static Dictionary<T1, T2> Reverse<T1, T2>(Dictionary<T2, T1> dictionary)
         {
             var reverse = new Dictionary<T1, T2>();

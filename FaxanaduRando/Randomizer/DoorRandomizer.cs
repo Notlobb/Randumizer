@@ -109,7 +109,7 @@ namespace FaxanaduRando.Randomizer
             bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
             bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
 
-            bool includeEolisGuru = includeGurus && GeneralOptions.FastStart && (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords);
+            bool includeEolisGuru = includeGurus && GeneralOptions.FastStart && (!Util.AllWorldScreensRandomized());
 
             TownDoors[DoorId.EolisMeatShop] = new Door(DoorId.EolisMeatShop, OtherWorldNumber.Eolis, eolisPositions[1], eolisReqs, shouldShuffle: includeTownBuildings);
             TownDoors[DoorId.EolisHouse] = new Door(DoorId.EolisHouse, OtherWorldNumber.Eolis, eolisPositions[2], eolisReqs, shouldShuffle: includeTownBuildings);
@@ -452,7 +452,7 @@ namespace FaxanaduRando.Randomizer
 
             if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
-                if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+                if (!Util.AllWorldScreensRandomized())
                 {
                     LevelDoors[DoorId.BackFromEastBranch].Requirement.key = DoorRequirement.Nothing;
                 }
@@ -676,7 +676,7 @@ namespace FaxanaduRando.Randomizer
 
             requirements.Add(LevelDoors[DoorId.EastBranch].key);
             requirements.Add(LevelDoors[DoorId.DropdownWing].key);
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            if (Util.AllWorldScreensRandomized())
             {
                 requirements.Add(LevelDoors[DoorId.BackFromEastBranch].key);
             }
@@ -719,7 +719,7 @@ namespace FaxanaduRando.Randomizer
             index++;
             LevelDoors[DoorId.DropdownWing].key = requirements[index];
             index++;
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords)
+            if (Util.AllWorldScreensRandomized())
             {
                 LevelDoors[DoorId.BackFromEastBranch].key = requirements[index];
                 index++;

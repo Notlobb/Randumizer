@@ -31,7 +31,8 @@ namespace FaxanaduRando.Randomizer
 
         public enum ScreenRandomization
         {
-            AllWords,
+            AllWorlds,
+            AllWorldsLessWingboots,
             EolisAndZenisOnly,
             Unchanged,
         };
@@ -112,6 +113,7 @@ namespace FaxanaduRando.Randomizer
         public ScreenRandomizationSettings()
         {
             Add("Randomize for all worlds");
+            Add("Randomize for all worlds, less wingboot intense");
             Add("Randomize for Eolis and Zenis only");
             Add("Unchanged");
         }

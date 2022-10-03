@@ -13,6 +13,7 @@ namespace FaxanaduRando.Randomizer
     {
         public static bool RandomizePalettes { get; set; } = false;
         public static bool RandomizeSounds { get; set; } = false;
+        public static bool AppendSuffix { get; set; } = false;
         public static Music MusicSetting { get; set; } = Music.Unchanged;
     }
 

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25 Beta 2" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 3" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -282,7 +282,7 @@
                         IsEditable="true"
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:GeneralOptions.RandomizeScreens), Mode=TwoWay, Converter={StaticResource screenRandomizationConverter}}"
-                        ToolTip="If you randomize screen connections it is recommended that you also select ´permanent´ for the wing boot timer, to help prevent softlocks"
+                        ToolTip="If you randomize screen connections for all worlds and you don't choose the 'less wingboot intense' version, it is recommended that you also select ´permanent´ for the wing boot timer, to help prevent softlocks"
                         />
                 </StackPanel>
             </Grid>
@@ -591,9 +591,13 @@
                           ToolTip="Randomizes the different sound effects."/>
                 <TextBlock Grid.Column="1" Grid.Row="1" Text="Randomize sound effects"/>
 
-                <TextBlock Grid.Column="1" Grid.Row="2" Text="Music:"/>
+                <CheckBox Name="addSuffixCheckbox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ExtraOptions.AppendSuffix), Mode=TwoWay}"
+                          ToolTip="Append a random suffix to the filename"/>
+                <TextBlock Grid.Column="1" Grid.Row="2" Text="Append suffix"/>
+
+                <TextBlock Grid.Column="1" Grid.Row="3" Text="Music:"/>
                 <StackPanel  Grid.Column="2"
-                             Grid.Row="2">
+                             Grid.Row="3">
                     <ComboBox Name="musicComboBox"
                         ItemsSource="{StaticResource musicSettings}"
                         IsEditable="true"

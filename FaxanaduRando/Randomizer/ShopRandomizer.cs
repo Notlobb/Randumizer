@@ -11,10 +11,10 @@ namespace FaxanaduRando.Randomizer
             LongSword = 1,
             GiantBlade = 2,
             DragonSlayer = 3,
-            RingElf2 = 17,
-            RingRuby2 = 18,
-            RingDworf2 = 19,
-            RingDemon2 = 20,
+            //RingElf2 = 17,
+            //RingRuby2 = 18,
+            //RingDworf2 = 19,
+            //RingDemon2 = 20,
             LeatherArmour= 32,
             StuddedMail = 33,
             FullPlate = 34,
@@ -339,7 +339,7 @@ namespace FaxanaduRando.Randomizer
                             item.ShouldBeRandomized = false;
                         }
                     }
-                    if ((GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords) && (!GeneralOptions.FastStart))
+                    if (Util.AllWorldScreensRandomized() && (!GeneralOptions.FastStart))
                     {
                         if (tempShop.ShopId == Shop.Id.EolisItemShop && item.Id == Id.Elixir)
                         {
@@ -403,7 +403,7 @@ namespace FaxanaduRando.Randomizer
             ids.Add(Id.WingBoots);
             ids.Add(Id.Mattock);
 
-            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWords)
+            if (!Util.AllWorldScreensRandomized())
             {
                 ids.Add(Id.WingBoots);
             }

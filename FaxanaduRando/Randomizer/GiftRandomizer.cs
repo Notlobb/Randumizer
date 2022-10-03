@@ -95,7 +95,7 @@ namespace FaxanaduRando.Randomizer
             GiftItems.Add(giftItem);
             ItemDict.Add(giftItem.LocationId, giftItem);
 
-            if ((GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords) && GeneralOptions.FastStart)
+            if ((Util.AllWorldScreensRandomized()) && GeneralOptions.FastStart)
             {
                 giftItem.Item = ShopRandomizer.Id.WingBoots;
                 giftItem.ConditionItem = ShopRandomizer.Id.Book;

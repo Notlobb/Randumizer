@@ -80,7 +80,7 @@ namespace FaxanaduRando.Randomizer
 
         public virtual bool ShouldRandomizeScreens()
         {
-            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWords;
+            return Util.AllWorldScreensRandomized();
         }
 
         public void RandomizeEnemies(Random random)
@@ -199,7 +199,7 @@ namespace FaxanaduRando.Randomizer
             GetEnds(ref startScreens, ref endScreens, random);
 
             bool result = false;
-            while (!result && attempts < 100000)
+            while (!result && attempts < 200000)
             {
                 attempts++;
                 foreach (var screen in Screens)
@@ -210,6 +210,13 @@ namespace FaxanaduRando.Randomizer
                     screen.ScrollData.Down = 0xFF;
 
                     screen.AvailableDirections = new HashSet<Direction>(screen.Directions);
+                }
+
+                if (attempts % 10 == 0)
+                {
+                    startScreens = new List<Screen>();
+                    endScreens = new List<Screen>();
+                    GetEnds(ref startScreens, ref endScreens, random);
                 }
 
                 var candidates = GetCandidates(random);
@@ -285,12 +292,54 @@ namespace FaxanaduRando.Randomizer
                         }
                     }
 
-                    attemptedEnd = true;
+                    var endDirections = new HashSet<Direction>(end.AvailableDirections);
+                    bool foundEnd = false;
+                    foreach (var direction in endDirections)
+                    {
+                        for (int i = 0; i < candidates.Count; i++)
+                        {
+                            var candidate = candidates[i];
+                            if (end.CanConnect(direction, candidate))
+                            {
+                                end.Connect(direction, candidate.Number);
+                                var reverse = Screen.GetReverse(direction);
+                                candidate.Connect(reverse, end.Number);
+                                sublevel.Screens.Add(end);
+                                candidates.Remove(candidate);
+                                end = candidate;
+                                foundEnd = true;
+                                break;
+                            }
+                        }
+
+                        if (foundEnd)
+                        {
+                            break;
+                        }
+                    }
+
+                    foreach (var direction in directions)
+                    {
+                        if (current.CanConnect(direction, end))
+                        {
+                            current.Connect(direction, end.Number);
+                            var reverse = Screen.GetReverse(direction);
+                            end.Connect(reverse, current.Number);
+                            sublevel.Screens.Add(end);
+                            return true;
+                        }
+                    }
+
+                    if (!foundEnd)
+                    {
+                        attemptedEnd = true;
+                    }
+
+                    endProbability += 10;
                 }
 
                 while (directions.Count > 0 && !found)
                 {
-                    Util.ShuffleList(directions, 0, directions.Count - 1, random);
                     var direction = directions[random.Next(0, directions.Count)];
                     directions.Remove(direction);
 

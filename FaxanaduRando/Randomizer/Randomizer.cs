@@ -332,7 +332,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B2", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B3", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -345,10 +345,16 @@ namespace FaxanaduRando.Randomizer
 
             int dotIndex = inputFile.IndexOf(".nes");
             string outputFile;
+            string suffix = "";
+
+            if (ExtraOptions.AppendSuffix)
+            {
+                suffix = GetSuffix(random);
+            }
 #if DEBUG
-            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString());
+            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + suffix);
 #else
-            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags);
+            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
 #endif
 
             RandomizeExtras(content, random, doorRandomizer, out byte finalPalette, out bool addSection);
@@ -362,7 +368,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 2");
+                spoilers.Add("Randumizer v0.25 Beta 3");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -390,6 +396,289 @@ namespace FaxanaduRando.Randomizer
 
             message = "Randomized ROM created at " + outputFile;
             return true;
+        }
+
+        private string GetSuffix(Random random)
+        {
+            var beginningStrings = new List<string>()
+            {
+                "Red",
+                "Blue",
+                "Yellow",
+                "Green",
+                "White",
+                "Black",
+                "Gray",
+                "Icy",
+                "Orange",
+                "Purple",
+                "Amazing",
+                "Awesome",
+                "Attractive",
+                "Bald",
+                "Beautiful",
+                "Chubby",
+                "Clean",
+                "Dazzling",
+                "Drab",
+                "Elegant",
+                "Fancy",
+                "Fit",
+                "Flabby",
+                "Glamorous",
+                "Gorgeous",
+                "Handsome",
+                "Long",
+                "Magnificent",
+                "Muscular",
+                "Plain",
+                "Plump",
+                "Quaint",
+                "Scruffy",
+                "Shapely",
+                "Short",
+                "Skinny",
+                "Stocky",
+                "Careful",
+                "Clever",
+                "Famous",
+                "Gifted",
+                "Hallowed",
+                "Helpful",
+                "Important",
+                "Inexpensive",
+                "Odd",
+                "Poor",
+                "Powerful",
+                "Rich",
+                "Shy",
+                "Aggressive",
+                "Ambitious",
+                "Brave",
+                "Calm",
+                "Delightful",
+                "Eager",
+                "Faithful",
+                "Gentle",
+                "Happy",
+                "Jolly",
+                "Kind",
+                "Nice",
+                "Obedient",
+                "Polite",
+                "Proud",
+                "Silly",
+                "Victorious",
+                "Witty",
+                "Wonderful",
+                "Angry",
+                "Bewildered",
+                "Clumsy",
+                "Embarrassed",
+                "Embarrassing",
+                "Fierce",
+                "Grumpy",
+                "Itchy",
+                "Jealous",
+                "Lazy",
+                "Mysterious",
+                "Nervous",
+                "Obnoxious",
+                "Pitiful",
+                "Repulsive",
+                "Scary",
+                "Thoughtless",
+                "Worried",
+                "Big",
+                "Colossal",
+                "Gigantic",
+                "Great",
+                "Huge",
+                "Immense",
+                "Large",
+                "Massive",
+                "Microscopic",
+                "Short",
+                "Small",
+                "Tall",
+                "Tiny",
+                "Ancient",
+                "Early",
+                "Fast",
+                "Long",
+                "Modern",
+                "Old",
+                "Prehistoric",
+                "Quick",
+                "Slow",
+                "Swift",
+                "Young",
+                "Acidic",
+                "Bitter",
+                "Delicious",
+                "Fresh",
+                "Greasy",
+                "Juicy",
+                "Hot",
+                "Moldy",
+                "Salty",
+                "Sour",
+                "Spicy",
+                "Sweet",
+                "Tasteless",
+                "Tasty",
+                "Yummy",
+                "Chilly",
+                "Cold",
+                "Cool",
+                "Damaged",
+                "Damp",
+                "Dirty",
+                "Dry",
+                "Fluffy",
+                "Freezing",
+                "Greasy",
+                "Icy",
+                "Sharp",
+                "Slimy",
+                "Sticky",
+                "Strong",
+                "Warm",
+                "Weak",
+                "Wet",
+                "Wooden",
+                "Metal",
+                "Metallic",
+                "Smart",
+                "Wise",
+                "Negative",
+                "Positive",
+                "Chaotic",
+                "Shining",
+                "Evil",
+                "Good",
+                "Neutral",
+                "Dark",
+                "Shadow",
+                "Royal",
+                "Poisonous",
+                "Confused",
+                "Surprised",
+                "Bizarre",
+                "Heavenly",
+                "Holy",
+            };
+
+            var middleStrings = new List<string>()
+            {
+                "Eolis",
+                "Trunk",
+                "Mist",
+                "Branch",
+                "Dartmoor",
+                "Zenis",
+                "Apolune",
+                "Forepaw",
+                "Mascon",
+                "Victim",
+                "Conflate",
+                "Daybreak",
+                "Elven",
+                "Dwarven",
+                "Guru",
+                "Smoker",
+                "Tundra",
+                "Chaos",
+                "Cardinals",
+                "Zelda",
+                "Link",
+                "Mario",
+                "Luigi",
+                "Dragon",
+                "Duck",
+                "Metroid",
+                "MonoDron",
+                "Wyvern",
+                "Grieve",
+                "King",
+                "Queen",
+                "One",
+                "ShadowEura",
+                "Clown",
+                "American",
+                "European",
+                "Canadian",
+                "Stardust",
+                "Time",
+                "Mega",
+                "Killer",
+                "Skeleton",
+                "Mantra",
+                "Fencer",
+                "Titan",
+                "Alien",
+                "Cheese",
+                "Onion",
+                "Moogle",
+                "Chocobo",
+            };
+
+            var endingStrings = new List<string>()
+            {
+                "Poison",
+                "Posion",
+                "Elixir",
+                "Ointment",
+                "Thoughts",
+                "Smoke",
+                "Tundra",
+                "Beer",
+                "Duck",
+                "MonoDron",
+                "Wyvern",
+                "Grieve",
+                "King",
+                "Queen",
+                "Prince",
+                "Clown",
+                "Slime",
+                "Adventure",
+                "Diver",
+                "Crusader",
+                "Hero",
+                "Stopper",
+                "Man",
+                "Knight",
+                "Pokemon",
+                "Charmander",
+                "Squirtle",
+                "Bulbasaur",
+                "Mudkip",
+                "Piplup",
+                "Skeleton",
+                "Mantra",
+                "Key",
+                "Fencer",
+                "Titan",
+                "Alien",
+                "Cheese",
+                "Onion",
+                "Moogle",
+                "Chocobo",
+                "Warrior",
+                "Quest",
+            };
+
+            foreach (var id in Enum.GetValues(typeof(ShopRandomizer.Id)))
+            {
+                endingStrings.Add(id.ToString());
+            }
+
+            string suffix = "_";
+            suffix += beginningStrings[random.Next(beginningStrings.Count)];
+            suffix += middleStrings[random.Next(middleStrings.Count)];
+            suffix += endingStrings[random.Next(endingStrings.Count)];
+            return suffix;
         }
 
         private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette)
@@ -550,6 +839,7 @@ namespace FaxanaduRando.Randomizer
 
             AddSublevels(levels);
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].RequiresMattock = true;
+            SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].RequiresMattock = true;
             SubLevel.SubLevelDict[SubLevel.Id.EastTrunk].Screens[6].Sprites[0].RequiresWingBoots = true;
             var branchHiddenItem = SubLevel.SubLevelDict[SubLevel.Id.EastBranch].Screens[8].Sprites[0];
             branchHiddenItem.RequiresWingBoots = true;
