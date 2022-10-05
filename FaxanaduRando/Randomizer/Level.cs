@@ -241,7 +241,7 @@ namespace FaxanaduRando.Randomizer
             {
                 bool found = false;
                 attemptedEnd = false;
-                if (candidates.Count < 6)
+                if (candidates.Count < 8)
                 {
                     endProbability = 100;
                 }
@@ -249,28 +249,7 @@ namespace FaxanaduRando.Randomizer
                 var directions = new List<Direction>(current.AvailableDirections);
                 if (specialScreens.Count > 0 && random.Next(0, 100) < specialProbability)
                 {
-                    foreach (var direction in directions)
-                    {
-                        foreach (var special in specialScreens)
-                        {
-                            if (current.CanConnect(direction, special))
-                            {
-                                current.Connect(direction, special.Number);
-                                var reverse = Screen.GetReverse(direction);
-                                special.Connect(reverse, current.Number);
-                                sublevel.Screens.Add(special);
-                                current = special;
-                                specialScreens.Remove(special);
-                                found = true;
-                                break;
-                            }
-                        }
-
-                        if (found)
-                        {
-                            break;
-                        }
-                    }
+                    found = TryAddingSpecial(specialScreens, directions, sublevel, ref current);
                 }
 
                 if (found)
@@ -335,7 +314,7 @@ namespace FaxanaduRando.Randomizer
                         attemptedEnd = true;
                     }
 
-                    endProbability += 10;
+                    endProbability += 2;
                 }
 
                 while (directions.Count > 0 && !found)
@@ -363,10 +342,42 @@ namespace FaxanaduRando.Randomizer
 
                 if (!found)
                 {
+                    found = TryAddingSpecial(specialScreens, directions, sublevel, ref current);
+                }
+
+                if (!found)
+                {
                     endProbability = 100;
                     if (attemptedEnd)
                     {
                         keepGoing = false;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool TryAddingSpecial(List<Screen> specialScreens, List<Direction> directions, SubLevel sublevel, ref Screen current)
+        {
+            if (specialScreens.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (var direction in directions)
+            {
+                foreach (var special in specialScreens)
+                {
+                    if (current.CanConnect(direction, special))
+                    {
+                        current.Connect(direction, special.Number);
+                        var reverse = Screen.GetReverse(direction);
+                        special.Connect(reverse, current.Number);
+                        sublevel.Screens.Add(special);
+                        current = special;
+                        specialScreens.Remove(special);
+                        return true;
                     }
                 }
             }

@@ -155,7 +155,7 @@ namespace FaxanaduRando.Randomizer
             SpriteId.Poison,
             SpriteId.Elixir,
             SpriteId.Ointment,
-            SpriteId.Intro,
+            //SpriteId.Intro,
             SpriteId.MattockOrRingRuby,
             SpriteId.Wingboots,
             SpriteId.HourGlass,

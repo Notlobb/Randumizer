@@ -50,12 +50,12 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 30, 30, random, SubLevel.Id.EarlyBranch);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 50, 20, random, SubLevel.Id.EarlyBranch);
             if (!result)
             {
                 return result;
             }
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 30, 30, random, SubLevel.Id.MiddleBranch);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 50, 20, random, SubLevel.Id.MiddleBranch);
             if (!result)
             {
                 return result;
@@ -66,13 +66,13 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[2], endScreens[2], candidates, secondSpecialScreens, 30, 20, random, SubLevel.Id.BattleHelmetWing);
+            result = CreateSublevel(startScreens[2], endScreens[2], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.BattleHelmetWing);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[3], endScreens[3], candidates, secondSpecialScreens, 30, 20, random, SubLevel.Id.EastBranch);
+            result = CreateSublevel(startScreens[3], endScreens[3], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.EastBranch);
             if (!result)
             {
                 return result;

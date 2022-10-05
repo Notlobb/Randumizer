@@ -395,7 +395,16 @@ namespace FaxanaduRando.Randomizer
             ids.Add(Id.FullPlate);
             ids.Add(Id.LargeShield);
             ids.Add(Id.MagicShield);
-            ids.Add(Id.Hourglass);
+
+            if (Util.AllWorldScreensRandomized())
+            {
+                ids.Add(Id.Mattock);
+            }
+            else
+            {
+                ids.Add(Id.Hourglass);
+            }
+
             ids.Add(Id.Elixir);
             ids.Add(Id.Elixir);
             ids.Add(Id.WingBoots);

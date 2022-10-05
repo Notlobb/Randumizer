@@ -193,28 +193,6 @@ namespace FaxanaduRando.Randomizer
             var enemyRewardQuantityTable = new Table(Section.GetOffset(14, 0xACED, 0x8000), 63, 1, content);
             var magicResistanceTable = new Table(Section.GetOffset(14, 0xB73B, 0x8000), 100, 1, content);
 
-#if DEBUG
-            var spriteTypes = new Dictionary<Sprite.SpriteId, SpriteType>();
-            for (int i = 0; i < 100; i++)
-            {
-                var id = (Sprite.SpriteId)i;
-                var hp = enemyHPTable.Entries[i][0];
-                var damage = enemyDamageTable.Entries[i][0];
-                spriteTypes[id] = new SpriteType(id, hp, damage);
-            }
-
-            var spells = new Dictionary<Spell.Id, Spell>();
-            spells[Spell.Id.Deluge] = new Spell(Spell.Id.Deluge, content[Section.GetOffset(14, 0xB7A9, 0x8000)],
-                                                content[Section.GetOffset(14, 0xB7A0, 0x8000)]);
-            spells[Spell.Id.Thunder] = new Spell(Spell.Id.Thunder, content[Section.GetOffset(14, 0xB7AA, 0x8000)],
-                                                 content[Section.GetOffset(14, 0xB7A1, 0x8000)]);
-            spells[Spell.Id.Fire] = new Spell(Spell.Id.Fire, content[Section.GetOffset(14, 0xB7AB, 0x8000)],
-                                              content[Section.GetOffset(14, 0xB7A2, 0x8000)]);
-            spells[Spell.Id.Death] = new Spell(Spell.Id.Death, content[Section.GetOffset(14, 0xB7AC, 0x8000)],
-                                               content[Section.GetOffset(14, 0xB7A3, 0x8000)]);
-            spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, 0xB7AD, 0x8000)],
-                                               content[Section.GetOffset(14, 0xB7A4, 0x8000)]);
-#endif
             if (EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Unchanged)
             {
                 foreach (var level in levels)
@@ -332,7 +310,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B3", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B4", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -368,17 +346,12 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 3");
+                spoilers.Add("Randumizer v0.25 Beta 4");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
                 spoilers.Add($"Randomization attempts: {attempts}");
                 spoilers.Add($"Screen randomization attempts: {screenAttempts}");
-                spoilers.Add($"Title Experience Gold");
-                foreach (var data in textRandomizer.GetTitleData())
-                {
-                    spoilers.Add(data);
-                }
 #endif
                 var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, true);
                 foreach (var hint in hints)
@@ -390,6 +363,50 @@ namespace FaxanaduRando.Randomizer
                     spoiler = spoiler.Replace(Text.secondSpaceChar, ' ');
                     spoilers.Add(spoiler);
                 }
+#if DEBUG
+                spoilers.Add($"Title Experience Gold");
+                foreach (var data in textRandomizer.GetTitleData())
+                {
+                    spoilers.Add(data);
+                }
+
+                var enemyData = new Dictionary<Sprite.SpriteId, SpriteType>();
+                for (int i = 0; i < 100; i++)
+                {
+                    if (Sprite.enemies.Contains((Sprite.SpriteId)i))
+                    {
+                        var id = (Sprite.SpriteId)i;
+                        var hp = enemyHPTable.Entries[i][0];
+                        var damage = enemyDamageTable.Entries[i][0];
+                        enemyData[id] = new SpriteType(id, hp, damage);
+                    }
+                }
+
+                var spells = new Dictionary<Spell.Id, Spell>();
+                spells[Spell.Id.Deluge] = new Spell(Spell.Id.Deluge, content[Section.GetOffset(14, 0xB7A9, 0x8000)],
+                                                    content[Section.GetOffset(14, 0xB7A0, 0x8000)]);
+                spells[Spell.Id.Thunder] = new Spell(Spell.Id.Thunder, content[Section.GetOffset(14, 0xB7AA, 0x8000)],
+                                                     content[Section.GetOffset(14, 0xB7A1, 0x8000)]);
+                spells[Spell.Id.Fire] = new Spell(Spell.Id.Fire, content[Section.GetOffset(14, 0xB7AB, 0x8000)],
+                                                  content[Section.GetOffset(14, 0xB7A2, 0x8000)]);
+                spells[Spell.Id.Death] = new Spell(Spell.Id.Death, content[Section.GetOffset(14, 0xB7AC, 0x8000)],
+                                                   content[Section.GetOffset(14, 0xB7A3, 0x8000)]);
+                spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, 0xB7AD, 0x8000)],
+                                                   content[Section.GetOffset(14, 0xB7A4, 0x8000)]);
+
+
+                spoilers.Add($"Id Hp Damage");
+                foreach (var data in enemyData.Values)
+                {
+                    spoilers.Add($"{data.Id} {data.Hp} {data.Damage}");
+                }
+
+                spoilers.Add($"Id Manacost Damage");
+                foreach (var spell in spells.Values)
+                {
+                    spoilers.Add($"{spell.SpellId} {spell.ManaCost} {spell.Damage}");
+                }
+#endif
 
                 File.WriteAllLines(outputFile.Replace(".nes", ".txt"), spoilers);
             }

@@ -256,7 +256,7 @@ namespace FaxanaduRando.Randomizer
         {
             int specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 0 : 20;
 
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, specialProbability, 100, random, SubLevel.Id.EastTrunk);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, specialProbability, 50, random, SubLevel.Id.EastTrunk);
             if (!result)
             {
                 return result;

@@ -5,10 +5,6 @@ namespace FaxanaduRando.Randomizer
 {
     public class Mist : Level
     {
-        SubLevel.Id firstTowerId;
-        SubLevel.Id secondTowerId;
-        SubLevel.Id thirdTowerId;
-
         public static byte TowerOfSufferScreen = 0;
         public static byte MasconTowerScreen = 1;
         public static byte MistGuruScreen = 6;
@@ -17,6 +13,13 @@ namespace FaxanaduRando.Randomizer
         public static byte MistExitScreen = 31;
         public static byte VictimTowerScreen = 32;
         public static byte FireMageScreen = 41;
+
+        private SubLevel.Id firstTowerId;
+        private SubLevel.Id secondTowerId;
+        private SubLevel.Id thirdTowerId;
+
+        private byte firstSpecial;
+        private byte secondSpecial;
 
         public Mist(WorldNumber number, byte[] content) : base(number, content)
         {
@@ -110,17 +113,19 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-                startScreens.Add(Screens[69]);
-                startScreens.Add(Screens[79]);
                 startScreens.Add(Screens[80]);
+                startScreens.Add(Screens[79]);
                 startScreens.Add(Screens[62]);
+                startScreens.Add(Screens[69]);
                 firstTowerId = SubLevel.Id.VictimTower;
                 secondTowerId = SubLevel.Id.TowerOfSuffer;
                 thirdTowerId = SubLevel.Id.TowerOfMist;
+                firstSpecial = 39;
+                secondSpecial = 20;
 
-                endScreens.Add(Screens[23]);
+                possibleEnds.Insert(shuffleIndex, Screens[23]);
+                Util.ShuffleList(possibleEnds, shuffleIndex, possibleEnds.Count - 3, random);
                 endScreens.AddRange(possibleEnds);
-                Util.ShuffleList(possibleEnds, 2, possibleEnds.Count - 2, random);
             }
             else
             {
@@ -266,6 +271,14 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
+            {
+                if (specialScreens.Contains(Screens[firstSpecial]))
+                {
+                    return false;
+                }
+            }
+
             result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, specialProbability, initialProbability, random, firstTowerId);
             if (!result)
             {
@@ -295,7 +308,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-                if (specialScreens.Count > 0)
+                if (specialScreens.Contains(Screens[secondSpecial]))
                 {
                     return false;
                 }
@@ -318,7 +331,7 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            if (candidates.Count > 15)
+            if (candidates.Count > 12)
             {
                 return false;
             }

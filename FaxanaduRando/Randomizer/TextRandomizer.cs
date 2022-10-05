@@ -657,6 +657,7 @@ namespace FaxanaduRando.Randomizer
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], giftRandomizer, spoilerLog));
+            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleMist], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, spoilerLog));

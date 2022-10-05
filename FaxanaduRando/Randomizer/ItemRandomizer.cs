@@ -63,6 +63,8 @@ namespace FaxanaduRando.Randomizer
                                  out uint attempts)
         {
             var items = new List<Sprite>();
+            var itemIds = new HashSet<Sprite.SpriteId>();
+            int itemIdCount = 0;
             var extraItems = new List<Sprite.SpriteId>();
             var ids = new List<Sprite.SpriteId>();
             var startingWeapon = ShopRandomizer.Id.Dagger;
@@ -83,47 +85,30 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
             {
+                RandomizeIntro();
+
                 spells.AddRange(ShopRandomizer.spellIds);
                 int spellIndex = Rand.Next(spells.Count);
                 startingSpell = spells[spellIndex];
                 spells.RemoveAt(spellIndex);
 
-                foreach (var level in levels)
+                items = CollectItemsToShuffle(levels);
+                itemIds = new HashSet<Sprite.SpriteId>(items.Select(s => s.Id));
+                foreach (var itemId in Sprite.vanillaItemIds)
                 {
-                    if (level.IsEolis())
+                    if (!itemIds.Contains(itemId))
                     {
-                        //Not a shuffle but there's only one intro item in Eolis with a weird location
-                        var possibleItems = new List<Sprite.SpriteId>
+                        if (itemId == Sprite.SpriteId.Glove2OrKeyJoker ||
+                            itemId == Sprite.SpriteId.MattockOrRingRuby)
                         {
-                            Sprite.SpriteId.Glove,
-                            Sprite.SpriteId.Poison,
-                            Sprite.SpriteId.RedPotion,
-                            Sprite.SpriteId.Ointment,
-                            Sprite.SpriteId.Elixir,
-                            Sprite.SpriteId.WingbootsBossLocked,
-                        };
-
-                        if (ItemOptions.AlwaysSpawnSmallItems)
-                        {
-                            possibleItems.Add(Sprite.SpriteId.HourGlass);
+                            continue;
                         }
 
-                        foreach (var item in CollectItems(level))
-                        {
-                            item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
-                            if (item.Id == Sprite.SpriteId.WingbootsBossLocked ||
-                                item.Id == Sprite.SpriteId.HourGlass)
-                            {
-                                //These items don't fall down
-                                item.SetY(10);
-                            }
-                        }
-
-                        break;
+                        ids.Add(itemId);
+                        itemIdCount++;
                     }
                 }
 
-                items = CollectItemsToShuffle(levels);
                 for (int i = 0; i < items.Count; i++)
                 {
                     if (items[i].Id == Sprite.SpriteId.Glove2OrKeyJoker)
@@ -273,7 +258,6 @@ namespace FaxanaduRando.Randomizer
             bool valid = false;
             attempts = 0;
             bool shuffleWorlds = GeneralOptions.ShuffleWorlds;
-
             while (!valid && attempts < 1000000)
             {
                 attempts++;
@@ -295,7 +279,7 @@ namespace FaxanaduRando.Randomizer
                 if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
                 {
                     Util.ShuffleList(ids, 0, ids.Count - extraItems.Count - 1, Rand);
-                    SetIds(ids, 0, ids.Count - extraItems.Count, items);
+                    SetIds(ids, 0, items.Count - extraItems.Count, items, itemIdCount);
 
                     if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.NoMixed ||
                         ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
@@ -385,11 +369,11 @@ namespace FaxanaduRando.Randomizer
         }
 
         private void SetIds(List<Sprite.SpriteId> ids, int startIndex, int endIndex,
-                            List<Sprite> items)
+                            List<Sprite> items, int offset)
         {
             for (int index = startIndex; index < endIndex; index++)
             {
-                items[index].Id = ids[index];
+                items[index].Id = ids[index + offset];
             }
         }
 
@@ -1128,14 +1112,6 @@ namespace FaxanaduRando.Randomizer
                 return;
             }
 
-            if (doorId == DoorId.TowerOfFortress)
-            {
-                if (Util.AllWorldScreensRandomized() && (!ids.Contains(ShopRandomizer.Id.WingBoots)))
-                {
-                    return;
-                }
-            }
-
             var building = doorRandomizer.Doors[doorId];
             if (!ids.Contains(doorRandomizer.GetLevelKey(building)))
             {
@@ -1266,20 +1242,6 @@ namespace FaxanaduRando.Randomizer
             ids.Add(gift.Item);
         }
 
-        private void TraverseLevel(Level level, HashSet<ShopRandomizer.Id> ids)
-        {
-            foreach (var screen in level.Screens)
-            {
-                foreach (var sprite in screen.Sprites)
-                {
-                    if (shopIdDictionary.Keys.Contains(sprite.Id))
-                    {
-                        ids.Add(shopIdDictionary[sprite.Id]);
-                    }
-                }
-            }
-        }
-
         private void AddShopItems(Shop shop, HashSet<ShopRandomizer.Id> ids)
         {
             foreach (var item in shop.Items)
@@ -1306,31 +1268,35 @@ namespace FaxanaduRando.Randomizer
         private List<Sprite> CollectItems(Level level)
         {
             var items = new List<Sprite>();
-            foreach (var screen in level.Screens)
+            foreach (var sublevel in level.SubLevels)
             {
-                foreach (var sprite in screen.Sprites)
+                foreach (var screen in sublevel.Screens)
                 {
-                    if (Sprite.vanillaItemIds.Contains(sprite.Id))
+                    foreach (var sprite in screen.Sprites)
                     {
-                        if (level.Number == WorldNumber.Dartmoor &&
-                            sprite.Id == Sprite.SpriteId.RedPotion)
+                        if (Sprite.vanillaItemIds.Contains(sprite.Id))
                         {
-                            if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.Unchanged ||
-                                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle)
+                            if (level.Number == WorldNumber.Dartmoor &&
+                                sprite.Id == Sprite.SpriteId.RedPotion)
                             {
-                                //Skip unreachable item
-                                continue;
+                                if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.Unchanged ||
+                                    ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle)
+                                {
+                                    //Skip unreachable item
+                                    continue;
+                                }
+                                else
+                                {
+                                    sprite.RequiresMattock = true;
+                                }
                             }
-                            else
-                            {
-                                sprite.RequiresMattock = true;
-                            }
-                        }
 
-                        items.Add(sprite);
+                            items.Add(sprite);
+                        }
                     }
                 }
             }
+
             return items;
         }
 
@@ -1364,6 +1330,36 @@ namespace FaxanaduRando.Randomizer
         private bool IncludeEolisGuru()
         {
             return GeneralOptions.FastStart || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged;
+        }
+
+        private void RandomizeIntro()
+        {
+            foreach (var item in Level.LevelDict[WorldNumber.Eolis].Screens[0].Sprites)
+            {
+                //Not a shuffle but there's only one intro item in Eolis with a weird location
+                var possibleItems = new List<Sprite.SpriteId>
+                {
+                    Sprite.SpriteId.Glove,
+                    Sprite.SpriteId.Poison,
+                    Sprite.SpriteId.RedPotion,
+                    Sprite.SpriteId.Ointment,
+                    Sprite.SpriteId.Elixir,
+                    Sprite.SpriteId.WingbootsBossLocked,
+                };
+
+                if (ItemOptions.AlwaysSpawnSmallItems)
+                {
+                    possibleItems.Add(Sprite.SpriteId.HourGlass);
+                }
+
+                item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
+                if (item.Id == Sprite.SpriteId.WingbootsBossLocked ||
+                    item.Id == Sprite.SpriteId.HourGlass)
+                {
+                    //These items don't fall down
+                    item.SetY(10);
+                }
+            }
         }
     }
 }

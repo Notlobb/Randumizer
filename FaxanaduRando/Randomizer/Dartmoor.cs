@@ -281,10 +281,10 @@ namespace FaxanaduRando.Randomizer
                 Screens[13].Directions.Add(Direction.Up);
                 Screens[13].OpenTilesLeft.Add(2);
                 Screens[13].OpenTilesLeft.Add(3);
-                Screens[13].OpenTilesRight.Add(5);
-                Screens[13].OpenTilesRight.Add(6);
-                Screens[13].OpenTilesRight.Add(7);
-                Screens[13].OpenTilesRight.Add(8);
+                //Screens[13].OpenTilesRight.Add(5);
+                //Screens[13].OpenTilesRight.Add(6);
+                //Screens[13].OpenTilesRight.Add(7);
+                //Screens[13].OpenTilesRight.Add(8);
                 Screens[13].OpenTilesUp.Add(2);
                 Screens[14].Directions.Add(Direction.Left);
                 Screens[14].Directions.Add(Direction.Right);

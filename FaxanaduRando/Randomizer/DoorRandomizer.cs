@@ -506,19 +506,10 @@ namespace FaxanaduRando.Randomizer
             }
 
             Util.ShuffleList(tmp, 0, tmp.Count - 1, random);
+
             for (int i = 0; i < towers.Count; i++)
             {
-                towers[i].Id = tmp[i].Id;
-                towers[i].Sublevel = tmp[i].Sublevel;
-                towers[i].Gift = tmp[i].Gift;
-                towers[i].BuildingShop = tmp[i].BuildingShop;
-                towers[i].Guru = tmp[i].Guru;
-                towers[i].pos = tmp[i].pos;
-                towers[i].screen = tmp[i].screen;
-                towers[i].level = tmp[i].level;
-                towers[i].palette = tmp[i].palette;
-                towers[i].ReturnPosition = tmp[i].ReturnPosition;
-                towers[i].ReturnRequirement = tmp[i].ReturnRequirement;
+                SetDoorValues(towers[i], tmp[i], true);
             }
         }
 
@@ -546,15 +537,7 @@ namespace FaxanaduRando.Randomizer
 
             for (int i = 0; i < locations.Count; i++)
             {
-                locations[i].Id = tempDoors[i].Id;
-                locations[i].Sublevel = tempDoors[i].Sublevel;
-                locations[i].Gift = tempDoors[i].Gift;
-                locations[i].BuildingShop = tempDoors[i].BuildingShop;
-                locations[i].Guru = tempDoors[i].Guru;
-                locations[i].Position = tempDoors[i].Position;
-                locations[i].Requirement = tempDoors[i].Requirement;
-                locations[i].ReturnPosition = tempDoors[i].ReturnPosition;
-                locations[i].ReturnRequirement = tempDoors[i].ReturnRequirement;
+                SetDoorValues(locations[i], tempDoors[i]);
             }
 
             for (int i = 0; i < locations.Count; i++)
@@ -1297,6 +1280,30 @@ namespace FaxanaduRando.Randomizer
             else
             {
                 return possiblePalettes[random.Next(possiblePalettes.Count)];
+            }
+        }
+
+        private void SetDoorValues(Door destination, Door source, bool tower=false)
+        {
+            destination.Id = source.Id;
+            destination.Sublevel = source.Sublevel;
+            destination.Gift = source.Gift;
+            destination.BuildingShop = source.BuildingShop;
+            destination.Guru = source.Guru;
+            destination.ReturnPosition = source.ReturnPosition;
+            destination.ReturnRequirement = source.ReturnRequirement;
+
+            if (tower)
+            {
+                destination.palette = source.palette;
+                destination.pos = source.pos;
+                destination.screen = source.screen;
+                destination.level = source.level;
+            }
+            else
+            {
+                destination.Position = source.Position;
+                destination.Requirement = source.Requirement;
             }
         }
     }
