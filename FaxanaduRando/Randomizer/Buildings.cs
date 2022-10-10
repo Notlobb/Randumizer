@@ -24,7 +24,7 @@ namespace FaxanaduRando.Randomizer
             return false;
         }
 
-        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random)
+        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
             return true;
         }

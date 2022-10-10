@@ -10,21 +10,24 @@ namespace FaxanaduRando.Randomizer
 
         public static byte EarlyTrunkStartScreen = 0;
         public static byte MiddleTrunkStartScreen = 8;
+        public static byte TowerOfTrunkScreen = 11;
+        public static byte MattockScreen = 12;
         public static byte LateTrunkStartScreen = 22;
         public static byte EastTrunkStartScreen = 29;
-        public static byte MattockScreen = 12;
+        public static byte JokerHouseScreen = 30;
         public static byte SkySpringScreen = 37;
+        public static byte TowerOfFortressScreen = 40;
         public static byte FortressSpringScreen = 61;
         public static byte JokerSpringScreen = 63;
 
         public Trunk(WorldNumber number, byte[] content) : base(number, content)
         {
             Screens[6].Doors.Add(DoorId.TrunkSecretShop);
-            Screens[11].Doors.Add(DoorId.TowerOfTrunk);
-            Screens[30].Doors.Add(DoorId.JokerHouse);
-            Screens[40].Doors.Add(DoorId.TowerOfFortress);
+            Screens[TowerOfTrunkScreen].Doors.Add(DoorId.TowerOfTrunk);
+            Screens[JokerHouseScreen].Doors.Add(DoorId.JokerHouse);
+            Screens[TowerOfFortressScreen].Doors.Add(DoorId.TowerOfFortress);
             Screens[45].Doors.Add(DoorId.FortressGuru);
-            Screens[63].Gifts.Add(GiftItem.Id.JokerSpring);
+            Screens[JokerSpringScreen].Gifts.Add(GiftItem.Id.JokerSpring);
 
             Screens[7].Doors.Add(DoorId.ApoluneBar);
             Screens[7].Doors.Add(DoorId.ApoluneGuru);
@@ -72,10 +75,29 @@ namespace FaxanaduRando.Randomizer
         public override void GetEnds(ref List<Screen> startScreens, ref List<Screen> endScreens, Random random)
         {
             startScreens = new List<Screen>();
-            startScreens.Add(Screens[29]);
-            startScreens.Add(Screens[22]);
-            startScreens.Add(Screens[8]);
             startScreens.Add(Screens[0]);
+
+            var middleEnds = new List<byte> { 7, MiddleTrunkStartScreen };
+            var lateEnds = new List<byte> { MattockScreen, LateTrunkStartScreen };
+            var eastEnds = new List<byte> { 26, EastTrunkStartScreen };
+
+            if (random.Next(0, 2) == 0)
+            {
+                var tmp = middleEnds;
+                middleEnds = eastEnds;
+                eastEnds = tmp;
+            }
+
+            if (random.Next(0, 2) == 0)
+            {
+                var tmp = lateEnds;
+                lateEnds = eastEnds;
+                eastEnds = tmp;
+            }
+
+            startScreens.Add(Screens[middleEnds[1]]);
+            startScreens.Add(Screens[lateEnds[1]]);
+            startScreens.Add(Screens[eastEnds[1]]);
             startScreens.Add(Screens[41]);
             if (random.Next(0, 2) == 0)
             {
@@ -93,22 +115,24 @@ namespace FaxanaduRando.Randomizer
             }
 
             endScreens = new List<Screen>();
-            endScreens.Add(Screens[40]);
-            endScreens.Add(Screens[26]);
-            endScreens.Add(Screens[MattockScreen]);
-            endScreens.Add(Screens[7]);
-            if (random.Next(0, 2) == 0)
+            endScreens.Add(Screens[middleEnds[0]]);
+            endScreens.Add(Screens[lateEnds[0]]);
+            endScreens.Add(Screens[eastEnds[0]]);
+
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-                endScreens.Add(Screens[JokerSpringScreen]);
-                endScreens.Add(Screens[FortressSpringScreen]);
+                endScreens.Add(Screens[49]);
             }
             else
             {
-                endScreens.Add(Screens[FortressSpringScreen]);
-                endScreens.Add(Screens[JokerSpringScreen]);
+                endScreens.Add(Screens[40]);
             }
-            if ((random.Next(0, 2) == 0) ||
-                ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
+
+            endScreens.Add(Screens[JokerSpringScreen]);
+            endScreens.Add(Screens[FortressSpringScreen]);
+
+            if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged || 
+                (random.Next(0, 2) == 0))
             {
                 endScreens.Add(Screens[21]);
             }
@@ -117,15 +141,14 @@ namespace FaxanaduRando.Randomizer
                 endScreens.Add(Screens[60]);
             }
 
-            if (random.Next(0, 2) == 0)
+            if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
             {
-                var tmp = startScreens[0];
-                startScreens[0] = startScreens[2];
-                startScreens[2] = tmp;
-
-                tmp = endScreens[1];
-                endScreens[1] = endScreens[3];
-                endScreens[3] = tmp;
+                Util.ShuffleList(endScreens, endScreens.Count - 3, endScreens.Count - 2, random);
+                Util.ShuffleList(endScreens, endScreens.Count - 2, endScreens.Count - 1, random);
+            }
+            else
+            {
+                Util.ShuffleList(endScreens, endScreens.Count - 3, endScreens.Count - 1, random);
             }
         }
 
@@ -140,7 +163,11 @@ namespace FaxanaduRando.Randomizer
             candidates.AddRange(Screens.GetRange(38, 2));
             candidates.Add(Screens[42]);
             candidates.Add(Screens[43]);
-            candidates.AddRange(Screens.GetRange(46, 6));
+            candidates.Add(Screens[46]);
+            candidates.Add(Screens[47]);
+            candidates.Add(Screens[48]);
+            candidates.Add(Screens[50]);
+            candidates.Add(Screens[51]);
             candidates.Add(Screens[53]);
             candidates.Add(Screens[54]);
             candidates.Add(Screens[58]);
@@ -155,6 +182,7 @@ namespace FaxanaduRando.Randomizer
                 candidates.Add(Screens[34]);
                 candidates.Add(Screens[35]);
                 candidates.Add(Screens[36]);
+                candidates.Add(Screens[49]);
                 candidates.Add(Screens[52]);
                 candidates.Add(Screens[56]);
                 candidates.Add(Screens[55]);
@@ -169,15 +197,13 @@ namespace FaxanaduRando.Randomizer
         {
             var specialScreens = new List<Screen>();
             specialScreens.Add(Screens[6]);
-            specialScreens.Add(Screens[11]);
-            specialScreens.Add(Screens[30]);
+            specialScreens.Add(Screens[TowerOfTrunkScreen]);
+            specialScreens.Add(Screens[JokerHouseScreen]);
             specialScreens.Add(Screens[45]);
 
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
                 specialScreens.Add(Screens[32]);
-                Screens[32].Connect(Direction.Up, SkySpringScreen);
-                Screens[SkySpringScreen].Connect(Direction.Down, 32);
             }
             else
             {
@@ -196,38 +222,10 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
-            {
-                SubLevel sublevelToAddTo = null;
-                foreach (var sublevel in SubLevels)
-                {
-                    sublevel.RequiresMattock = false;
-                    foreach (var screen in sublevel.Screens)
-                    {
-                        if (screen.Number == 32)
-                        {
-                            sublevelToAddTo = sublevel;
-                            break;
-                        }
-                    }
-
-                    if (sublevelToAddTo != null)
-                    {
-                        break;
-                    }
-
-                }
-
-                if (sublevelToAddTo == null)
-                {
-                    return false;
-                }
-
-                sublevelToAddTo.Screens.Add(Screens[SkySpringScreen]);
-            }
-
             foreach (var sublevel in SubLevels)
             {
+                sublevel.RequiresMattock = false;
+
                 foreach (var screen in sublevel.Screens)
                 {
                     if (screen.Number == SkySpringScreen)
@@ -249,41 +247,53 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
+            {
+                if (Screens[EastTrunkStartScreen].ScrollData.Down == 255)
+                {
+                    Screens[EastTrunkStartScreen].ScrollData.Down = JokerSpringScreen;
+                }
+            }
+
             return result;
         }
 
-        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random)
+        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            int specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 0 : 20;
-
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, specialProbability, 50, random, SubLevel.Id.EastTrunk);
-            if (!result)
-            {
-                return result;
-            }
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.LateTrunk);
+            int specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 50 : 20;
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, specialProbability, 50, random, SubLevel.Id.EarlyTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 50 : 20;
-
-            result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.MiddleTrunk);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.MiddleTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.EarlyTrunk);
+            if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
+            {
+                if (specialScreens.Count > 0)
+                {
+                    return false;
+                }
+            }
+
+            result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.LateTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 0 : 70;
+            result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.EastTrunk, attempts);
+            if (!result)
+            {
+                return result;
+            }
 
-            result = CreateSublevel(startScreens[4], endScreens[4], candidates, specialScreens, specialProbability, 15, random, SubLevel.Id.TowerOfFortress);
+            result = CreateSublevel(startScreens[4], endScreens[4], candidates, specialScreens, specialProbability, 15, random, SubLevel.Id.TowerOfFortress, attempts);
             if (!result)
             {
                 return result;
@@ -294,13 +304,13 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[5], endScreens[5], candidates, specialScreens, 0, 20, random, firstTowerId);
+            result = CreateSublevel(startScreens[5], endScreens[5], candidates, specialScreens, 0, 20, random, firstTowerId, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens, 0, 10, random, secondTowerId);
+            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens, 0, 10, random, secondTowerId, attempts);
             if (!result)
             {
                 return result;
@@ -669,7 +679,7 @@ namespace FaxanaduRando.Randomizer
                 Screens[48].OpenTilesRight.Add(8);
                 Screens[48].OpenTilesRight.Add(9);
                 Screens[48].OpenTilesRight.Add(10);
-                Screens[49].Directions.Add(Direction.Left);
+                //Screens[49].Directions.Add(Direction.Left);
                 Screens[49].Directions.Add(Direction.Right);
                 Screens[49].OpenTilesLeft.Add(2);
                 Screens[49].OpenTilesLeft.Add(3);
@@ -760,6 +770,9 @@ namespace FaxanaduRando.Randomizer
                 Screens[63].OpenTilesLeft.Add(8);
                 Screens[63].OpenTilesLeft.Add(9);
                 Screens[63].OpenTilesLeft.Add(10);
+
+                Screens[32].FriendEnds[Direction.Up] = Screens[SkySpringScreen];
+                Screens[49].FriendEnds[Direction.Left] = Screens[40];
             }
             else
             {

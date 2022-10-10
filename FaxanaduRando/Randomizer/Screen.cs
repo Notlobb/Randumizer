@@ -143,6 +143,8 @@ namespace FaxanaduRando.Randomizer
         public HashSet<byte> OpenTilesDown { get; set; } = new HashSet<byte>();
         public List<DoorId> Doors { get; set; } = new List<DoorId>();
         public List<GiftItem.Id> Gifts { get; set; } = new List<GiftItem.Id>();
+        public Dictionary<Direction, Screen> FriendEnds { get; set; } = new Dictionary<Direction, Screen>();
+        public Dictionary<Direction, Screen> FriendConnections { get; set; } = new Dictionary<Direction, Screen>();
 
         public static Direction GetReverse(Direction direction)
         {
@@ -213,6 +215,13 @@ namespace FaxanaduRando.Randomizer
             }
 
             return false;
+        }
+
+        public void Connect(Direction direction, Screen other)
+        {
+            Connect(direction, other.Number);
+            var reverse = GetReverse(direction);
+            other.Connect(reverse, Number);
         }
 
         public void Connect(Direction direction, byte number)

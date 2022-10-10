@@ -184,7 +184,7 @@ namespace FaxanaduRando.Randomizer
         public abstract List<Screen> GetSpecialScreens(Random random);
         public abstract bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens,
                                              List<Screen> candidates, List<Screen> specialScreens,
-                                             Random random);
+                                             Random random, uint attempts);
 
         public virtual bool RandomizeScreens(Random random, ref uint attempts)
         {
@@ -222,14 +222,48 @@ namespace FaxanaduRando.Randomizer
                 var candidates = GetCandidates(random);
                 var specialScreens = GetSpecialScreens(random);
 
-                result = CreateSublevels(startScreens, endScreens, candidates, specialScreens, random);
+                result = CreateSublevels(startScreens, endScreens, candidates, specialScreens, random, attempts);
+            }
+
+            if (result)
+            {
+                foreach (var sublevel in SubLevels)
+                {
+                    var friends = new List<Screen>();
+                    CheckFriends(sublevel.Screens, friends);
+
+                    var temp = new List<Screen>(friends);
+                    var temp2 = new List<Screen>();
+                    while (temp.Count > 0)
+                    {
+                        CheckFriends(temp, temp2);
+                        friends.AddRange(temp2);
+                        temp = temp2;
+                        temp2 = new List<Screen>();
+                    }
+
+                    sublevel.Screens.AddRange(friends);
+                }
             }
 
             return result;
         }
 
+        private void CheckFriends(List<Screen> screens, List<Screen> friends)
+        {
+            foreach (var screen in screens)
+            {
+                foreach (var direction in screen.FriendEnds.Keys)
+                {
+                    var friend = screen.FriendEnds[direction];
+                    screen.Connect(direction, friend);
+                    friends.Add(friend);
+                }
+            }
+        }
+
         protected bool CreateSublevel(Screen start, Screen end, List<Screen> candidates, List<Screen> specialScreens,
-                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId)
+                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts)
         {
             var current = start;
             var sublevel = SubLevel.SubLevelDict[sublevelId];
@@ -244,6 +278,34 @@ namespace FaxanaduRando.Randomizer
                 if (candidates.Count < 8)
                 {
                     endProbability = 100;
+                }
+
+                if (attempts < 10000)
+                {
+                    if (specialProbability > 0 && specialProbability < 100)
+                    {
+                        specialProbability = random.Next(1, 100);
+                    }
+
+                    if (endProbability > 0 && endProbability < 100)
+                    {
+                        endProbability = random.Next(1, 100);
+                    }
+                }
+
+                foreach (var friendDirection in current.FriendConnections.Keys)
+                {
+                    var friend = current.FriendConnections[friendDirection];
+                    current.Connect(friendDirection, friend);
+                    sublevel.Screens.Add(friend);
+                    current = friend;
+                    found = true;
+                    break;
+                }
+
+                if (found)
+                {
+                    continue;
                 }
 
                 var directions = new List<Direction>(current.AvailableDirections);
@@ -263,9 +325,7 @@ namespace FaxanaduRando.Randomizer
                     {
                         if (current.CanConnect(direction, end))
                         {
-                            current.Connect(direction, end.Number);
-                            var reverse = Screen.GetReverse(direction);
-                            end.Connect(reverse, current.Number);
+                            current.Connect(direction, end);
                             sublevel.Screens.Add(end);
                             return true;
                         }
@@ -280,9 +340,7 @@ namespace FaxanaduRando.Randomizer
                             var candidate = candidates[i];
                             if (end.CanConnect(direction, candidate))
                             {
-                                end.Connect(direction, candidate.Number);
-                                var reverse = Screen.GetReverse(direction);
-                                candidate.Connect(reverse, end.Number);
+                                end.Connect(direction, candidate);
                                 sublevel.Screens.Add(end);
                                 candidates.Remove(candidate);
                                 end = candidate;
@@ -301,9 +359,7 @@ namespace FaxanaduRando.Randomizer
                     {
                         if (current.CanConnect(direction, end))
                         {
-                            current.Connect(direction, end.Number);
-                            var reverse = Screen.GetReverse(direction);
-                            end.Connect(reverse, current.Number);
+                            current.Connect(direction, end);
                             sublevel.Screens.Add(end);
                             return true;
                         }
@@ -327,9 +383,7 @@ namespace FaxanaduRando.Randomizer
                         if (current.CanConnect(direction, candidates[i]))
                         {
                             var candidate = candidates[i];
-                            current.Connect(direction, candidate.Number);
-                            var reverse = Screen.GetReverse(direction);
-                            candidate.Connect(reverse, current.Number);
+                            current.Connect(direction, candidate);
                             sublevel.Screens.Add(candidate);
                             current = candidate;
                             candidates.Remove(candidate);
@@ -371,9 +425,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     if (current.CanConnect(direction, special))
                     {
-                        current.Connect(direction, special.Number);
-                        var reverse = Screen.GetReverse(direction);
-                        special.Connect(reverse, current.Number);
+                        current.Connect(direction, special);
                         sublevel.Screens.Add(special);
                         current = special;
                         specialScreens.Remove(special);

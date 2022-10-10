@@ -29,9 +29,9 @@ namespace FaxanaduRando.Randomizer
             return GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged;
         }
 
-        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random)
+        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            return CreateSublevel(Screens[7], Screens[8], new List<Screen>(), specialScreens, 100, 100, random, SubLevel.Id.Eolis);
+            return CreateSublevel(Screens[7], Screens[8], new List<Screen>(), specialScreens, 100, 100, random, SubLevel.Id.Eolis, attempts);
         }
 
         public override List<Screen> GetCandidates(Random random)

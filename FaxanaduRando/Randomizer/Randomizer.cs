@@ -310,7 +310,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B4", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B5", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -346,7 +346,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 4");
+                spoilers.Add("Randumizer v0.25 Beta 5");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG

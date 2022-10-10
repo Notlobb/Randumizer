@@ -37,7 +37,7 @@ namespace FaxanaduRando.Randomizer
             return 0x2C8B1;
         }
 
-        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random)
+        public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
             var secondSpecialScreens = GetSecondSpecialScreens(random);
             int count = secondSpecialScreens.Count;
@@ -50,12 +50,12 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 50, 20, random, SubLevel.Id.EarlyBranch);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 50, 20, random, SubLevel.Id.EarlyBranch, attempts);
             if (!result)
             {
                 return result;
             }
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 50, 20, random, SubLevel.Id.MiddleBranch);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 50, 20, random, SubLevel.Id.MiddleBranch, attempts);
             if (!result)
             {
                 return result;
@@ -66,13 +66,13 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[2], endScreens[2], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.BattleHelmetWing);
+            result = CreateSublevel(startScreens[2], endScreens[2], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.BattleHelmetWing, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[3], endScreens[3], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.EastBranch);
+            result = CreateSublevel(startScreens[3], endScreens[3], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.EastBranch, attempts);
             if (!result)
             {
                 return result;
@@ -83,13 +83,13 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[4], endScreens[4], candidates, secondSpecialScreens, 0, 10, random, SubLevel.Id.BackFromEastBranch);
+            result = CreateSublevel(startScreens[4], endScreens[4], candidates, secondSpecialScreens, 0, 10, random, SubLevel.Id.BackFromEastBranch, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[5], endScreens[5], candidates, secondSpecialScreens, 0, 2, random, SubLevel.Id.DropDownWing);
+            result = CreateSublevel(startScreens[5], endScreens[5], candidates, secondSpecialScreens, 0, 2, random, SubLevel.Id.DropDownWing, attempts);
             if (!result)
             {
                 return result;
@@ -102,27 +102,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-                Screens[20].Connect(Direction.Down, 25);
-                Screens[25].Connect(Direction.Up, 20);
-                bool found = false;
-
-                foreach (var sublevel in SubLevels)
-                {
-                    foreach (var screen in sublevel.Screens)
-                    {
-                        if (screen.Number == 20)
-                        {
-                            sublevel.Screens.Add(Screens[25]);
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (found)
-                    {
-                        break;
-                    }
-                }
+                Screens[17].ScrollData.Down = 17;
             }
 
             return result;
@@ -135,12 +115,17 @@ namespace FaxanaduRando.Randomizer
             candidates.Add(Screens[8]);
             candidates.AddRange(Screens.GetRange(11, 2));
             candidates.AddRange(Screens.GetRange(16, 3));
-            candidates.Add(Screens[21]);
             candidates.Add(Screens[23]);
             candidates.AddRange(Screens.GetRange(26, 3));
             candidates.AddRange(Screens.GetRange(31, 2));
             candidates.Add(Screens[34]);
             candidates.AddRange(Screens.GetRange(37, 2));
+
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
+            {
+                candidates.Add(Screens[21]);
+            }
+
             Util.ShuffleList(candidates, 0, candidates.Count - 1, random);
             return candidates;
         }
@@ -234,10 +219,10 @@ namespace FaxanaduRando.Randomizer
                 Screens[3].OpenTilesRight.Add(7);
                 Screens[4].Directions.Add(Direction.Left);
                 Screens[4].Directions.Add(Direction.Up);
+                Screens[4].OpenTilesLeft.Add(4);
                 Screens[4].OpenTilesLeft.Add(5);
                 Screens[4].OpenTilesLeft.Add(6);
                 Screens[4].OpenTilesLeft.Add(7);
-                Screens[4].OpenTilesLeft.Add(8);
                 Screens[4].OpenTilesUp.Add(2);
                 Screens[5].Directions.Add(Direction.Right);
                 Screens[5].Directions.Add(Direction.Up);
@@ -360,7 +345,7 @@ namespace FaxanaduRando.Randomizer
                 Screens[19].OpenTilesRight.Add(8);
                 Screens[19].OpenTilesRight.Add(9);
                 Screens[20].Directions.Add(Direction.Left);
-                Screens[20].Directions.Add(Direction.Right);
+                //Screens[20].Directions.Add(Direction.Right);
                 Screens[20].OpenTilesLeft.Add(7);
                 Screens[20].OpenTilesLeft.Add(8);
                 Screens[20].OpenTilesLeft.Add(9);
@@ -368,7 +353,7 @@ namespace FaxanaduRando.Randomizer
                 Screens[20].OpenTilesRight.Add(4);
                 Screens[20].OpenTilesRight.Add(5);
                 Screens[20].OpenTilesRight.Add(6);
-                Screens[21].Directions.Add(Direction.Left);
+                //Screens[21].Directions.Add(Direction.Left);
                 Screens[21].Directions.Add(Direction.Up);
                 Screens[21].Directions.Add(Direction.Down);
                 Screens[21].OpenTilesLeft.Add(3);
@@ -514,6 +499,9 @@ namespace FaxanaduRando.Randomizer
                 Screens[39].OpenTilesLeft.Add(5);
                 Screens[39].OpenTilesLeft.Add(6);
                 Screens[39].OpenTilesLeft.Add(7);
+
+                Screens[20].FriendEnds[Direction.Down] = Screens[25];
+                Screens[20].FriendConnections[Direction.Right] = Screens[21];
             }
             else
             {
@@ -659,6 +647,7 @@ namespace FaxanaduRando.Randomizer
                 Screens[16].OpenTilesRight.Add(9);
                 Screens[17].Directions.Add(Direction.Left);
                 Screens[17].Directions.Add(Direction.Right);
+                Screens[17].Directions.Add(Direction.Up);
                 Screens[17].Directions.Add(Direction.Down);
                 Screens[17].OpenTilesLeft.Add(2);
                 Screens[17].OpenTilesLeft.Add(3);
