@@ -241,6 +241,7 @@ namespace FaxanaduRando.Randomizer
         public int Offset { get; set; }
         public bool RequiresMattock { get; set; } = false;
         public bool RequiresWingBoots { get; set; } = false;
+        public bool ShouldBeShuffled { get; set; } = true;
 
         public byte GetX()
         {

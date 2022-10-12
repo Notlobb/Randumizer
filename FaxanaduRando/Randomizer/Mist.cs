@@ -149,7 +149,7 @@ namespace FaxanaduRando.Randomizer
                 thirdTowerId = towerIds[pairs[2][0].Number];
 
                 startScreens.Add(pairs[0][1]);
-                startScreens.Add(Screens[MasconTowerScreen]);
+                startScreens.Add(Screens[MasconTowerEntranceScreen]);
                 startScreens.Add(pairs[1][1]);
                 startScreens.Add(pairs[2][1]);
 

@@ -7,6 +7,19 @@ namespace FaxanaduRando.Randomizer
     {
         public Zenis(WorldNumber number, byte[] content) : base(number, content)
         {
+            if (ShouldRandomizeScreens())
+            {
+                int pointerOffset = Section.GetOffset(11, 0x89CC, 0x8000);
+                content[pointerOffset] = 0xE0;
+                content[pointerOffset + 1] = 0xBC;
+                int newOffset = Section.GetOffset(11, 0xBCE0, 0x8000);
+                var sprite = new Sprite(content, newOffset);
+                sprite.Id = Sprite.SpriteId.WingbootsBossLocked;
+                sprite.SetX(13);
+                sprite.SetY(9);
+                sprite.ShouldBeShuffled = false;
+                Screens[8].Sprites.Add(sprite);
+            }
         }
 
         public override int GetStartOffset()

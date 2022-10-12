@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25 Beta 5" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 6" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -432,7 +432,7 @@
                 <TextBlock Grid.Column="1" Grid.Row="6" Text="Guarantee spell in Eolis"/>
 
                 <CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="7" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeMattock), Mode=TwoWay}"
-                          ToolTip="There will always be a mattock after the first breakable wall. Only guaranteed if there is a guru in the area."/>
+                          ToolTip="There will always be a mattock after the first breakable wall."/>
                 <TextBlock Grid.Column="1" Grid.Row="7" Text="Guarantee mattock near Forepaw"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="8" Text="Mattock usage:"/>

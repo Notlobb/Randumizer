@@ -339,11 +339,6 @@ namespace FaxanaduRando.Randomizer
                     continue;
                 }
 
-                if (ItemOptions.GuaranteeMattock && !GuaranteedMattock(shopRandomizer, giftRandomizer, doorRandomizer))
-                {
-                    continue;
-                }
-
                 if (!CheckSingleGifts(giftRandomizer))
                 {
                     continue;
@@ -852,40 +847,6 @@ namespace FaxanaduRando.Randomizer
             return true;
         }
 
-        private bool GuaranteedMattock(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer)
-        {
-            if ((ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged) &&
-                (!GeneralOptions.ShuffleTowers) &&
-                ((GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleExcludeTowns) ||
-                GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.Unchanged))
-            {
-                //Not supported for now
-                return true;
-            }
-
-            var tempIds = new HashSet<ShopRandomizer.Id>();
-            tempIds.Add(ShopRandomizer.Id.Book);
-            var tempSublevels = new HashSet<SubLevel.Id>();
-            var tempGurus = new HashSet<Guru.GuruId>();
-
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus);
-
-            if (tempGurus.Count == 0)
-            {
-                return true;
-            }
-
-            if (tempIds.Contains(ShopRandomizer.Id.Mattock))
-            {
-                return true;
-            }
-
-            return false;
-        }
-
         private bool GuaranteedElixir(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, List<Level> levels)
         {
             if (Util.AllWorldScreensRandomized())
@@ -1274,7 +1235,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     foreach (var sprite in screen.Sprites)
                     {
-                        if (Sprite.vanillaItemIds.Contains(sprite.Id))
+                        if (sprite.ShouldBeShuffled && Sprite.vanillaItemIds.Contains(sprite.Id))
                         {
                             if (level.Number == WorldNumber.Dartmoor &&
                                 sprite.Id == Sprite.SpriteId.RedPotion)
