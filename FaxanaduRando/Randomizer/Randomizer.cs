@@ -25,7 +25,6 @@ namespace FaxanaduRando.Randomizer
 #endif
 
             byte[] content = File.ReadAllBytes(inputFile);
-
             AddMiscHacks(content, random);
 
             var levels = GetLevels(content);
@@ -310,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B6", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B7", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -346,7 +345,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 6");
+                spoilers.Add("Randumizer v0.25 Beta 7");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -983,6 +982,33 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.AllowEquippingIndoors)
             {
                 content[Section.GetOffset(12, 0x8B87, 0x8000)] = 0xFF;
+            }
+
+            if (GeneralOptions.AddKillSwitch)
+            {
+                var switchSection = new Section();
+                switchSection.Bytes.Add(OpCode.JSR);
+                switchSection.Bytes.Add(0xE4);
+                switchSection.Bytes.Add(0xFE);
+                switchSection.AddToContent(content, Section.GetOffset(15, 0xE039, 0xC000));
+
+                switchSection = new Section();
+                switchSection.Bytes.Add(OpCode.JSR);
+                switchSection.Bytes.Add(0xA8);
+                switchSection.Bytes.Add(0xCB);
+                switchSection.Bytes.Add(OpCode.LDAZeroPage);
+                switchSection.Bytes.Add(0x19);
+                switchSection.Bytes.Add(OpCode.ANDImmediate);
+                switchSection.Bytes.Add(0x20);
+                switchSection.Bytes.Add(OpCode.BEQ);
+                switchSection.Bytes.Add(0x05);
+                switchSection.Bytes.Add(OpCode.LDAImmediate);
+                switchSection.Bytes.Add(0x01);
+                switchSection.Bytes.Add(OpCode.STAAbsolute);
+                switchSection.Bytes.Add(0x38);
+                switchSection.Bytes.Add(0x04);
+                switchSection.Bytes.Add(OpCode.RTS);
+                switchSection.AddToContent(content, Section.GetOffset(15, 0xFEE4, 0xC000));
             }
 
             if (GeneralOptions.AllowLoweringRespawn)

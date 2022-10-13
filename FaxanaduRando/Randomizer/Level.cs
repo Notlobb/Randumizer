@@ -280,7 +280,7 @@ namespace FaxanaduRando.Randomizer
                     endProbability = 100;
                 }
 
-                if (attempts < 10000)
+                if (attempts < 100000)
                 {
                     if (specialProbability > 0 && specialProbability < 100)
                     {

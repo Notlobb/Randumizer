@@ -875,11 +875,13 @@ namespace FaxanaduRando.Randomizer
                 Screens[76].OpenTilesLeft.Add(10);
                 Screens[76].OpenTilesLeft.Add(11);
                 Screens[77].Directions.Add(Direction.Right);
-                for (byte i = 1; i < 12; i++)
-                {
-                    Screens[77].OpenTilesRight.Add(i);
-                }
-                Screens[77].OpenTilesRight.Remove(4);
+                Screens[77].OpenTilesRight.Add(1);
+                Screens[77].OpenTilesRight.Add(2);
+                Screens[77].OpenTilesRight.Add(3);
+                Screens[77].OpenTilesRight.Add(8);
+                Screens[77].OpenTilesRight.Add(9);
+                Screens[77].OpenTilesRight.Add(10);
+                Screens[77].OpenTilesRight.Add(11);
                 Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Left);
                 Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Right);
                 Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(9);
