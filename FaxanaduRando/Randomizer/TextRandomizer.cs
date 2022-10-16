@@ -110,16 +110,18 @@ namespace FaxanaduRando.Randomizer
                     "I don't know how to say this... Faxanadu? Fax-anadu? Fazzanadu? Faxana-du? Faxanadu?",
                     "Why do they call it Faxanadu? It's not a fax and it's not du-ing anything!",
                     "What would Faxanadu?",
-                    "I love the smell of the Fire spell in the morning. It smells like... victory.",
+                    "I love the smell of the Fire spell in the morning. It smells like... victory",
                     "Dragon Slayer? I hardly know her!",
                     "In theory, this seed can be beaten. But in theory, communism works. In theory...",
-                    "Trying is the first step towards failure.",
+                    "Trying is the first step towards failure",
+                    "The fortress of what? Oh, Zenis. I thought you said something else...",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
                     "Shoutout to LoZCardsfan23",
                     "Shoutout to OdinSpack",
                     "Shoutout to MeowthRocket",
+                    "Shoutout to Songbirder",
                 };
 
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
@@ -661,9 +663,13 @@ namespace FaxanaduRando.Randomizer
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch], giftRandomizer, spoilerLog));
-            hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, spoilerLog));
+            if (!Util.AllWorldScreensRandomized())
+            {
+                hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, spoilerLog));
+                hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch], giftRandomizer, spoilerLog));
+                hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EastBranch], giftRandomizer, spoilerLog));
+            }
+
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], giftRandomizer, spoilerLog));
             if (!(GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress))
             {
@@ -683,7 +689,7 @@ namespace FaxanaduRando.Randomizer
             hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.VictimTower], doorRandomizer));
             hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.TowerOfMist], doorRandomizer));
             hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.BattleHelmetWing], doorRandomizer));
-            hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.EastBranch], doorRandomizer));
+            hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.EastBranch], doorRandomizer));
             hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.CastleFraternal], doorRandomizer));
             hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.DartmoorLateDoor], doorRandomizer));
             hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.KingGrieve], doorRandomizer));
@@ -694,8 +700,8 @@ namespace FaxanaduRando.Randomizer
 
             if (Util.AllWorldScreensRandomized())
             {
-                hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.DropdownWing], doorRandomizer));
-                hints.Add(GetLevelKeyHint(doorRandomizer.LevelDoors[DoorId.BackFromEastBranch], doorRandomizer));
+                hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.DropdownWing], doorRandomizer));
+                hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.BackFromEastBranch], doorRandomizer));
             }
 
             if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
@@ -854,7 +860,38 @@ namespace FaxanaduRando.Randomizer
                 {
                     foreach (var gift in screen.Gifts)
                     {
-                        hints.Add($"{gift} has {giftRandomizer.ItemDict[gift].Item} and is inside {door.Sublevel.SubLevelId}");
+                        var hint = $"{gift} has {giftRandomizer.ItemDict[gift].Item} in {door.Sublevel.SubLevelId}";
+                        if(GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged ||
+                           GeneralOptions.ShuffleTowers)
+                        {
+                            hint += $" at {oldDoor}";
+                        }
+
+                        hints.Add(hint);
+                    }
+                }
+
+                void GetSpringHint(string spring, List< string> springHints)
+                {
+                    var hint = $"{spring} is in {door.Sublevel.SubLevelId}";
+                    if (GeneralOptions.ShuffleTowers)
+                    {
+                        hint += $" at {oldDoor}";
+                    }
+
+                    springHints.Add(hint);
+                }
+
+                if (Util.AllWorldScreensRandomized())
+                {
+                    if (SubLevel.FortressSpringSublevel == door.Sublevel.SubLevelId)
+                    {
+                        GetSpringHint("FortressSpring", hints);
+                    }
+
+                    if (SubLevel.SkySpringSublevel == door.Sublevel.SubLevelId)
+                    {
+                        GetSpringHint("SkySpring", hints);
                     }
                 }
             }
@@ -1007,7 +1044,20 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var gift in screen.Gifts)
                 {
-                    hints.Add($"{gift} has {giftRandomizer.ItemDict[gift].Item} and is inside {sublevel.SubLevelId}");
+                    hints.Add($"{gift} has {giftRandomizer.ItemDict[gift].Item} and is in {sublevel.SubLevelId}");
+                }
+            }
+
+            if (Util.AllWorldScreensRandomized())
+            {
+                if (SubLevel.FortressSpringSublevel == sublevel.SubLevelId)
+                {
+                    hints.Add($"FortressSpring is in {sublevel.SubLevelId}");
+                }
+
+                if (SubLevel.SkySpringSublevel == sublevel.SubLevelId)
+                {
+                    hints.Add($"SkySpring is in {sublevel.SubLevelId}");
                 }
             }
 

@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B7", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B8", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -345,7 +345,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 7");
+                spoilers.Add("Randumizer v0.25 Beta 8");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -869,6 +869,13 @@ namespace FaxanaduRando.Randomizer
             SubLevel.SubLevelDict[SubLevel.Id.Dartmoor].Screens[11].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[4].SkipBosses = true;
+            SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].Sprites[2].RequiresMattock = true;
+            if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.Unchanged ||
+                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle)
+            {
+                SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].Sprites[2].ShouldBeShuffled = false;
+            }
+
             SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair].Screens[14].SkipBosses = true;
             if (ItemOptions.BigItemSpawns != ItemOptions.BigItemSpawning.AlwaysSpawn &&
                 (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed ||
@@ -921,7 +928,8 @@ namespace FaxanaduRando.Randomizer
                     level.SubLevels[1].Screens.Add(level.Screens[13]);
                     level.SubLevels[1].Screens.Add(level.Screens[22]);
                     level.AddSubLevel(SubLevel.Id.LateMist, 23, 32);
-                    level.SubLevels[2].Screens.Add(level.Screens[41]);
+                    level.SubLevels[2].Screens.Add(level.Screens[Mist.VictimRightScreen]);
+                    level.SubLevels[2].Screens.Add(level.Screens[Mist.FireMageScreen]);
                     level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 47, 61);
                     level.AddSubLevel(SubLevel.Id.TowerOfMist, 62, 76);
                     level.AddSubLevel(SubLevel.Id.MasconTower, 77, 79);

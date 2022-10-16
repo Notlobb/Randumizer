@@ -5,6 +5,9 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Branch : Level
     {
+        public static byte DaybreakLeftScreen = 35;
+        public static byte DaybreakRightScreen = 36;
+
         public Branch(WorldNumber number, byte[] content) : base(number, content)
         {
             Screens[10].Doors.Add(DoorId.BattleHelmetWing);
@@ -12,12 +15,18 @@ namespace FaxanaduRando.Randomizer
             Screens[20].Doors.Add(DoorId.BackFromEastBranch);
             Screens[25].Doors.Add(DoorId.DropdownWing);
 
-            Screens[35].Doors.Add(DoorId.DaybreakBar);
-            Screens[35].Doors.Add(DoorId.DaybreakGuru);
-            Screens[35].Doors.Add(DoorId.DaybreakHouse);
-            Screens[35].Doors.Add(DoorId.DaybreakItemShop);
-            Screens[35].Doors.Add(DoorId.DaybreakKeyShop);
-            Screens[35].Doors.Add(DoorId.DaybreakMeatShop);
+            void AddDaybreakDoors(byte screenNumber)
+            {
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakBar);
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakGuru);
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakHouse);
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakItemShop);
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakKeyShop);
+                Screens[screenNumber].Doors.Add(DoorId.DaybreakMeatShop);
+            }
+
+            AddDaybreakDoors(DaybreakLeftScreen);
+            AddDaybreakDoors(DaybreakRightScreen);
 
             Screens[13].Doors.Add(DoorId.ConflateBar);
             Screens[13].Doors.Add(DoorId.ConflateGuru);
@@ -39,17 +48,6 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            var secondSpecialScreens = GetSecondSpecialScreens(random);
-            int count = secondSpecialScreens.Count;
-            for (int i = 0; i < count; i++)
-            {
-                if (random.Next(0, 2) == 0)
-                {
-                    specialScreens.Add(secondSpecialScreens[0]);
-                    secondSpecialScreens.RemoveAt(0);
-                }
-            }
-
             bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 50, 20, random, SubLevel.Id.EarlyBranch, attempts);
             if (!result)
             {
@@ -61,41 +59,36 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
+            result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, 50, 20, random, SubLevel.Id.BattleHelmetWing, attempts);
+            if (!result)
+            {
+                return result;
+            }
+
+            result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, 50, 20, random, SubLevel.Id.EastBranch, attempts);
+            if (!result)
+            {
+                return result;
+            }
+
+            result = CreateSublevel(startScreens[4], endScreens[4], candidates, specialScreens, 10, 10, random, SubLevel.Id.BackFromEastBranch, attempts);
+            if (!result)
+            {
+                return result;
+            }
+
+            result = CreateSublevel(startScreens[5], endScreens[5], candidates, specialScreens, 10, 2, random, SubLevel.Id.DropDownWing, attempts);
+            if (!result)
+            {
+                return result;
+            }
+
             if (specialScreens.Count > 0)
             {
                 return false;
             }
 
-            result = CreateSublevel(startScreens[2], endScreens[2], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.BattleHelmetWing, attempts);
-            if (!result)
-            {
-                return result;
-            }
-
-            result = CreateSublevel(startScreens[3], endScreens[3], candidates, secondSpecialScreens, 50, 20, random, SubLevel.Id.EastBranch, attempts);
-            if (!result)
-            {
-                return result;
-            }
-
-            if (secondSpecialScreens.Count > 0)
-            {
-                return false;
-            }
-
-            result = CreateSublevel(startScreens[4], endScreens[4], candidates, secondSpecialScreens, 0, 10, random, SubLevel.Id.BackFromEastBranch, attempts);
-            if (!result)
-            {
-                return result;
-            }
-
-            result = CreateSublevel(startScreens[5], endScreens[5], candidates, secondSpecialScreens, 0, 2, random, SubLevel.Id.DropDownWing, attempts);
-            if (!result)
-            {
-                return result;
-            }
-
-            if (candidates.Count > 8)
+            if (candidates.Count > 10)
             {
                 return false;
             }
@@ -136,18 +129,24 @@ namespace FaxanaduRando.Randomizer
             endScreens = new List<Screen>();
 
             startScreens.Add(Screens[0]);
-            startScreens.Add(Screens[36]);
+            startScreens.Add(Screens[DaybreakRightScreen]);
             startScreens.Add(Screens[9]);
             startScreens.Add(Screens[15]);
             startScreens.Add(Screens[19]);
             startScreens.Add(Screens[24]);
 
-            endScreens.Add(Screens[35]);
+            endScreens.Add(Screens[DaybreakLeftScreen]);
             endScreens.Add(Screens[39]);
             endScreens.Add(Screens[13]);
             endScreens.Add(Screens[29]);
             endScreens.Add(Screens[33]);
             endScreens.Add(Screens[7]);
+
+            if (random.Next(0, 2) == 0)
+            {
+                (startScreens[1], endScreens[0]) = (endScreens[0], startScreens[1]);
+            }
+
             if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
             {
                 endScreens.Add(Screens[22]);
@@ -162,13 +161,6 @@ namespace FaxanaduRando.Randomizer
             var specialScreens = new List<Screen>();
             specialScreens.Add(Screens[10]);
             specialScreens.Add(Screens[14]);
-            Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
-            return specialScreens;
-        }
-
-        public List<Screen> GetSecondSpecialScreens(Random random)
-        {
-            var specialScreens = new List<Screen>();
             specialScreens.Add(Screens[20]);
 
             if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
@@ -182,8 +174,15 @@ namespace FaxanaduRando.Randomizer
 
         public override void SetupScreens()
         {
+            startToSpecial[9] = 10;
+            startToSpecial[15] = 14;
+            startToSpecial[19] = 20;
+
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
+                Screens[20].FriendEnds[Direction.Down] = Screens[25];
+                Screens[20].FriendConnections[Direction.Right] = Screens[21];
+
                 Screens[0].Directions.Add(Direction.Right);
                 Screens[0].OpenTilesRight.Add(8);
                 Screens[0].OpenTilesRight.Add(9);
@@ -499,9 +498,6 @@ namespace FaxanaduRando.Randomizer
                 Screens[39].OpenTilesLeft.Add(5);
                 Screens[39].OpenTilesLeft.Add(6);
                 Screens[39].OpenTilesLeft.Add(7);
-
-                Screens[20].FriendEnds[Direction.Down] = Screens[25];
-                Screens[20].FriendConnections[Direction.Right] = Screens[21];
             }
             else
             {
@@ -902,9 +898,8 @@ namespace FaxanaduRando.Randomizer
                 Screens[39].OpenTilesLeft.Add(6);
                 Screens[39].OpenTilesLeft.Add(7);
 
+                startToSpecial[24] = 25;
             }
-
-
         }
     }
 }

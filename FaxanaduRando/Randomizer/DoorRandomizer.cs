@@ -357,6 +357,66 @@ namespace FaxanaduRando.Randomizer
             TownDoors[DoorId.DartmoorKeyShop] = new Door(DoorId.DartmoorKeyShop, OtherWorldNumber.Towns, townPositions[41], townReqs, shouldShuffle: includeKeyShops, town: true);
             TownDoors[DoorId.DartmoorItemShop] = new Door(DoorId.DartmoorItemShop, OtherWorldNumber.Towns, townPositions[42], townReqs, shouldShuffle: includeTownBuildings, town: true);
 
+            foreach (var key in TowerDoors.Keys)
+            {
+                Doors[key] = TowerDoors[key];
+            }
+
+            foreach (var key in Buildings.Keys)
+            {
+                Doors[key] = Buildings[key];
+            }
+
+            foreach (var key in TownDoors.Keys)
+            {
+                Doors[key] = TownDoors[key];
+            }
+
+            foreach (var key in LevelDoors.Keys)
+            {
+                Doors[key] = LevelDoors[key];
+            }
+
+            foreach (var door in Doors.Values)
+            {
+                door.key = door.Requirement.key;
+            }
+
+            if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            {
+                Doors[DoorId.EolisKing].key = DoorRequirement.Nothing;
+                if (!ItemOptions.IncludeSomeEolisDoors)
+                {
+                    Doors[DoorId.MartialArtsShop].key = DoorRequirement.Nothing;
+                    Doors[DoorId.EolisMagicShop].key = DoorRequirement.Nothing;
+                    doorRequirementTable.Entries[(int)ExitDoor.EolisExit][0] = 0;
+                }
+            }
+
+            if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            {
+                Doors[DoorId.BackFromEastBranch].key = DoorRequirement.Nothing;
+            }
+
+            if (Util.AllWorldScreensRandomized())
+            {
+                Doors[DoorId.BackFromEastBranch].key = DoorRequirement.Nothing;
+                Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
+                TowerDoors[DoorId.EastBranch] = LevelDoors[DoorId.EastBranch];
+                TowerDoors[DoorId.BackFromEastBranch] = LevelDoors[DoorId.BackFromEastBranch];
+                TowerDoors[DoorId.DropdownWing] = LevelDoors[DoorId.DropdownWing];
+                LevelDoors.Remove(DoorId.EastBranch);
+                LevelDoors.Remove(DoorId.BackFromEastBranch);
+                LevelDoors.Remove(DoorId.DropdownWing);
+
+                if (GeneralOptions.ShuffleTowers)
+                {
+                    TowerDoors[DoorId.EastBranch].ShouldShuffle = true;
+                    TowerDoors[DoorId.BackFromEastBranch].ShouldShuffle = true;
+                    TowerDoors[DoorId.DropdownWing].ShouldShuffle = true;
+                }
+            }
+
             foreach (var tower in TowerDoors.Values)
             {
                 tower.pos = tower.Position.pos;
@@ -404,9 +464,9 @@ namespace FaxanaduRando.Randomizer
             TowerDoors[DoorId.CastleFraternal].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal];
             TowerDoors[DoorId.KingGrieve].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.KingGrieve];
 
-            LevelDoors[DoorId.EastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.EastBranch];
-            LevelDoors[DoorId.BackFromEastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch];
-            LevelDoors[DoorId.DropdownWing].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.DropDownWing];
+            Doors[DoorId.EastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.EastBranch];
+            Doors[DoorId.BackFromEastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch];
+            Doors[DoorId.DropdownWing].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.DropDownWing];
 
             if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
             {
@@ -449,50 +509,6 @@ namespace FaxanaduRando.Randomizer
             TownDoors[DoorId.DartmoorItemShop].BuildingShop = shopRandomizer.ShopDict[Shop.Id.DartmoorItemShop];
             TownDoors[DoorId.DartmoorKeyShop].BuildingShop = shopRandomizer.ShopDict[Shop.Id.DartmoorKeyShop];
             TownDoors[DoorId.DartmoorGuru].Guru = guruRandomizer.Gurus[Guru.GuruId.Dartmoor];
-
-            if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
-            {
-                if (!Util.AllWorldScreensRandomized())
-                {
-                    LevelDoors[DoorId.BackFromEastBranch].Requirement.key = DoorRequirement.Nothing;
-                }
-            }
-
-            if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
-            {
-                TownDoors[DoorId.EolisKing].Requirement.key = DoorRequirement.Nothing;
-                if (!ItemOptions.IncludeSomeEolisDoors)
-                {
-                    TownDoors[DoorId.MartialArtsShop].Requirement.key = DoorRequirement.Nothing;
-                    TownDoors[DoorId.EolisMagicShop].Requirement.key = DoorRequirement.Nothing;
-                    doorRequirementTable.Entries[(int)ExitDoor.EolisExit][0] = 0;
-                }
-            }
-
-            foreach (var key in TowerDoors.Keys)
-            {
-                Doors[key] = TowerDoors[key];
-            }
-
-            foreach (var key in Buildings.Keys)
-            {
-                Doors[key] = Buildings[key];
-            }
-
-            foreach (var key in TownDoors.Keys)
-            {
-                Doors[key] = TownDoors[key];
-            }
-
-            foreach (var key in LevelDoors.Keys)
-            {
-                Doors[key] = LevelDoors[key];
-            }
-
-            foreach (var door in Doors.Values)
-            {
-                door.key = door.Requirement.key;
-            }
         }
 
         public void ShuffleTowers(Random random)
@@ -657,13 +673,13 @@ namespace FaxanaduRando.Randomizer
                 requirements.Add(Doors[DoorId.MartialArtsShop].key);
             }
 
-            requirements.Add(LevelDoors[DoorId.EastBranch].key);
-            requirements.Add(LevelDoors[DoorId.DropdownWing].key);
-            if (Util.AllWorldScreensRandomized())
+            if (!Util.AllWorldScreensRandomized())
             {
-                requirements.Add(LevelDoors[DoorId.BackFromEastBranch].key);
+                requirements.Add(Doors[DoorId.EastBranch].key); 
+                requirements.Add(Doors[DoorId.DropdownWing].key);
             }
-            requirements.Add(LevelDoors[DoorId.DartmoorLateDoor].key);
+
+            requirements.Add(Doors[DoorId.DartmoorLateDoor].key);
 
             if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Shuffled)
             {
@@ -698,13 +714,11 @@ namespace FaxanaduRando.Randomizer
                 index++;
             }
 
-            LevelDoors[DoorId.EastBranch].key = requirements[index];
-            index++;
-            LevelDoors[DoorId.DropdownWing].key = requirements[index];
-            index++;
-            if (Util.AllWorldScreensRandomized())
+            if (!Util.AllWorldScreensRandomized())
             {
-                LevelDoors[DoorId.BackFromEastBranch].key = requirements[index];
+                Doors[DoorId.EastBranch].key = requirements[index];
+                index++;
+                Doors[DoorId.DropdownWing].key = requirements[index];
                 index++;
             }
 

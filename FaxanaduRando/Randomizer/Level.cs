@@ -14,6 +14,8 @@ namespace FaxanaduRando.Randomizer
         public WorldNumber Number { get; set; }
         public WorldNumber AdjustedNumber { get; set; }
 
+        protected Dictionary<byte, byte> startToSpecial = new Dictionary<byte, byte>();
+
         public Level(WorldNumber number, byte[] content)
         {
             Number = number;
@@ -249,22 +251,27 @@ namespace FaxanaduRando.Randomizer
             return result;
         }
 
-        private void CheckFriends(List<Screen> screens, List<Screen> friends)
-        {
-            foreach (var screen in screens)
-            {
-                foreach (var direction in screen.FriendEnds.Keys)
-                {
-                    var friend = screen.FriendEnds[direction];
-                    screen.Connect(direction, friend);
-                    friends.Add(friend);
-                }
-            }
-        }
-
         protected bool CreateSublevel(Screen start, Screen end, List<Screen> candidates, List<Screen> specialScreens,
                                       int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts)
         {
+            if (!GeneralOptions.ShuffleTowers)
+            {
+                if (startToSpecial.ContainsKey(start.Number))
+                {
+                    if (specialScreens.Contains(Screens[startToSpecial[start.Number]]))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            if (random.Next(2) == 0)
+            {
+                var tmp = start;
+                start = end;
+                end = tmp;
+            }
+
             var current = start;
             var sublevel = SubLevel.SubLevelDict[sublevelId];
             sublevel.Screens = new List<Screen>();
@@ -380,9 +387,9 @@ namespace FaxanaduRando.Randomizer
 
                     for (int i = 0; i < candidates.Count; i++)
                     {
-                        if (current.CanConnect(direction, candidates[i]))
+                        var candidate = candidates[i];
+                        if (current.CanConnect(direction, candidate))
                         {
-                            var candidate = candidates[i];
                             current.Connect(direction, candidate);
                             sublevel.Screens.Add(candidate);
                             current = candidate;
@@ -412,13 +419,37 @@ namespace FaxanaduRando.Randomizer
             return false;
         }
 
+        public void GetScrollingData(byte[] content)
+        {
+            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
+            int pointer = Util.GetPointer((byte)Door.OtherWorldDict[Number], content, 3);
+            byte b1 = content[bankOffset + pointer + 4];
+            byte b2 = content[bankOffset + pointer + 5];
+            var bytes = new byte[] { b1, b2 };
+            var newPointer = BitConverter.ToUInt16(bytes, 0);
+
+            for (int i = 0; i < Screens.Count; i++)
+            {
+                var data = new ScrollingData(content, bankOffset + newPointer + i * 4);
+                Screens[i].ScrollData = data;
+            }
+        }
+
+        private void CheckFriends(List<Screen> screens, List<Screen> friends)
+        {
+            foreach (var screen in screens)
+            {
+                foreach (var direction in screen.FriendEnds.Keys)
+                {
+                    var friend = screen.FriendEnds[direction];
+                    screen.Connect(direction, friend);
+                    friends.Add(friend);
+                }
+            }
+        }
+
         private bool TryAddingSpecial(List<Screen> specialScreens, List<Direction> directions, SubLevel sublevel, ref Screen current)
         {
-            if (specialScreens.Count == 0)
-            {
-                return false;
-            }
-
             foreach (var direction in directions)
             {
                 foreach (var special in specialScreens)
@@ -435,22 +466,6 @@ namespace FaxanaduRando.Randomizer
             }
 
             return false;
-        }
-
-        public void GetScrollingData( byte[] content)
-        {
-            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            int pointer = Util.GetPointer((byte)Door.OtherWorldDict[Number], content, 3);
-            byte b1 = content[bankOffset + pointer + 4];
-            byte b2 = content[bankOffset + pointer + 5];
-            var bytes = new byte[] { b1, b2 };
-            var newPointer = BitConverter.ToUInt16(bytes, 0);
-
-            for (int i = 0; i < Screens.Count; i++)
-            {
-                var data = new ScrollingData(content, bankOffset + newPointer + i * 4);
-                Screens[i].ScrollData = data;
-            }
         }
     }
 }
