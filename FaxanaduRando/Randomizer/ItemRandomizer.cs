@@ -1209,7 +1209,8 @@ namespace FaxanaduRando.Randomizer
                                 continue;
                             }
 
-                            if (Sprite.vanillaItemIds.Contains(sprite.Id) && !itemIds.Contains(sprite.Id))
+                            if (Sprite.vanillaItemIds.Contains(sprite.Id) && !itemIds.Contains(sprite.Id) &&
+                                sprite.ShouldBeShuffled)
                             {
                                 items.Add(sprite);
                                 itemIds.Add(sprite.Id);
