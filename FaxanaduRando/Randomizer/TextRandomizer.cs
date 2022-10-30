@@ -90,6 +90,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     "Hi",
                     "Ni",
+                    "Who's talkin'?",
                     "Stand back. I just farted... Sorry",
                     "I am Error",
                     "Sorry. I know nothing",
@@ -271,6 +272,7 @@ namespace FaxanaduRando.Randomizer
                     "Winners don't do potions",
                     "Winner winner chicken dinner!",
                     "You have finally managed to defeat the Evil One. But is he really dead? We're not telling! End.",
+                    "Worry not my children, for the light that will radiate from me and my flower crown will touch the hearts of all of you as well. My beauty is a beauty to be shared, thank you!!!!!!!"
                 };
 
                 AddText(mattockText[random.Next(mattockText.Count)], allText, 170);

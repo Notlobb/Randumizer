@@ -129,8 +129,7 @@ namespace FaxanaduRando.Randomizer
 
             while (offset <= textOffsetEnd)
             {
-                char c;
-                if (!charDict.TryGetValue(content[offset], out c))
+                if (!charDict.TryGetValue(content[offset], out char c))
                 {
                     c = ' ';
                 }

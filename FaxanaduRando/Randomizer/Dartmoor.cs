@@ -7,6 +7,7 @@ namespace FaxanaduRando.Randomizer
     {
         public static byte FraternalScreen = 12;
         public static byte DartmoorExitScreen = 14;
+        public static byte GrieveScreen = 20;
 
         public Dartmoor(WorldNumber number, byte[] content) : base(number, content)
         {
@@ -32,7 +33,7 @@ namespace FaxanaduRando.Randomizer
             Screens[3].Doors.Add(DoorId.DartmoorMeatShop);
             Screens[8].Doors.Add(DoorId.FarLeftDartmoor);
             Screens[FraternalScreen].Doors.Add(DoorId.CastleFraternal);
-            Screens[20].Doors.Add(DoorId.KingGrieve);
+            Screens[GrieveScreen].Doors.Add(DoorId.KingGrieve);
             Screens[30].Doors.Add(DoorId.FraternalGuru);
             Screens[31].Doors.Add(DoorId.FraternalHouse);
 
@@ -118,22 +119,21 @@ namespace FaxanaduRando.Randomizer
             startScreens.Add(Screens[0]);
             startScreens.Add(Screens[16]);
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-                endScreens.Add(Screens[20]);
+                endScreens.Add(Screens[18]);
+                endScreens.Add(Screens[26]);
             }
+            else
+            {
+                endScreens.Add(Screens[GrieveScreen]);
+            }
+
+            endScreens.Add(Screens[31]);
+            endScreens.Add(Screens[8]);
 
             if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
             {
-                endScreens.Add(Screens[31]);
-                endScreens.Add(Screens[8]);
-
-                if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
-                {
-                    endScreens.Add(Screens[18]);
-                    endScreens.Add(Screens[26]);
-                }
-
                 Util.ShuffleList(endScreens, 0, endScreens.Count - 1, random);
             }
             else
@@ -158,6 +158,7 @@ namespace FaxanaduRando.Randomizer
             {
                 specialScreens.Add(Screens[1]);
                 specialScreens.Add(Screens[3]);
+                specialScreens.Add(Screens[GrieveScreen]);
             }
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
@@ -168,9 +169,11 @@ namespace FaxanaduRando.Randomizer
         {
             startToSpecial[16] = FraternalScreen;
 
+            Screens[25].FriendEnds[Direction.Down] = Screens[30];
+            Screens[1].FriendEnds[Direction.Left] = Screens[2];
+
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
             {
-
                 Screens[24].FriendConnections[Direction.Right] = Screens[4];
                 Screens[4].FriendConnections[Direction.Up] = Screens[3];
                 Screens[3].FriendConnections[Direction.Up] = Screens[1];
@@ -324,12 +327,12 @@ namespace FaxanaduRando.Randomizer
                 Screens[19].OpenTilesRight.Add(2);
                 Screens[19].OpenTilesRight.Add(3);
                 Screens[19].OpenTilesDown.Add(9);
-                Screens[20].Directions.Add(Direction.Left);
-                Screens[20].Directions.Add(Direction.Down);
-                Screens[20].OpenTilesLeft.Add(1);
-                Screens[20].OpenTilesLeft.Add(2);
-                Screens[20].OpenTilesLeft.Add(3);
-                Screens[20].OpenTilesDown.Add(6);
+                Screens[GrieveScreen].Directions.Add(Direction.Left);
+                //Screens[GrieveScreen].Directions.Add(Direction.Down);
+                Screens[GrieveScreen].OpenTilesLeft.Add(1);
+                Screens[GrieveScreen].OpenTilesLeft.Add(2);
+                Screens[GrieveScreen].OpenTilesLeft.Add(3);
+                //Screens[GrieveScreen].OpenTilesDown.Add(6);
                 Screens[23].Directions.Add(Direction.Right);
                 Screens[23].Directions.Add(Direction.Up);
                 Screens[23].OpenTilesRight.Add(8);
@@ -576,12 +579,12 @@ namespace FaxanaduRando.Randomizer
                 Screens[19].OpenTilesRight.Add(2);
                 Screens[19].OpenTilesRight.Add(3);
                 Screens[19].OpenTilesDown.Add(9);
-                Screens[20].Directions.Add(Direction.Left);
-                Screens[20].Directions.Add(Direction.Down);
-                Screens[20].OpenTilesLeft.Add(1);
-                Screens[20].OpenTilesLeft.Add(2);
-                Screens[20].OpenTilesLeft.Add(3);
-                Screens[20].OpenTilesDown.Add(6);
+                Screens[GrieveScreen].Directions.Add(Direction.Left);
+                Screens[GrieveScreen].Directions.Add(Direction.Down);
+                Screens[GrieveScreen].OpenTilesLeft.Add(1);
+                Screens[GrieveScreen].OpenTilesLeft.Add(2);
+                Screens[GrieveScreen].OpenTilesLeft.Add(3);
+                Screens[GrieveScreen].OpenTilesDown.Add(6);
                 Screens[23].Directions.Add(Direction.Left);
                 Screens[23].Directions.Add(Direction.Right);
                 Screens[23].Directions.Add(Direction.Up);
@@ -674,9 +677,6 @@ namespace FaxanaduRando.Randomizer
                 Screens[31].Directions.Add(Direction.Up); //Fraternal house
                 Screens[31].OpenTilesUp.Add(2);
             }
-
-            Screens[25].FriendEnds[Direction.Down] = Screens[30];
-            Screens[1].FriendEnds[Direction.Left] = Screens[2];
         }
     }
 }
