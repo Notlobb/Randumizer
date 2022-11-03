@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25 Beta 10" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 11" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -242,7 +242,7 @@
 
                 <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
                           ToolTip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
-                <TextBlock Grid.Column="5" Grid.Row="7" Text="Include Evil One's fortress in the tower shuffle"/>
+                <TextBlock Grid.Column="5" Grid.Row="7" Text="Include Zenis in the tower shuffle"/>
 
                 <TextBlock Grid.Column="1" Grid.Row="13" Text="Hints:"/>
                 <StackPanel  Grid.Column="3"

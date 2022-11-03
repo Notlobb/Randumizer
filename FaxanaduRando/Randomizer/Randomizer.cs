@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B10", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B11", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -345,7 +345,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 10");
+                spoilers.Add("Randumizer v0.25 Beta 11");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -859,6 +859,11 @@ namespace FaxanaduRando.Randomizer
             {
                 SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].ShouldBeShuffled = false;
                 SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].Id = Sprite.SpriteId.MattockBossLocked;
+            }
+
+            if (Util.AllWorldScreensRandomized())
+            {
+                Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2].ShouldBeShuffled = false;
             }
 
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].RequiresMattock = true;

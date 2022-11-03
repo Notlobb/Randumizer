@@ -134,7 +134,7 @@ namespace FaxanaduRando.Randomizer
                 possibleEnds.Add(Screens[FireMageScreen]);
             }
 
-            int shuffleIndex = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 1 : 0;
+            int shuffleIndex = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 2 : 0;
             Util.ShuffleList(possibleEnds, shuffleIndex, possibleEnds.Count - 1, random);
 
             if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots)
@@ -147,7 +147,7 @@ namespace FaxanaduRando.Randomizer
                 secondTowerId = SubLevel.Id.TowerOfSuffer;
                 thirdTowerId = SubLevel.Id.TowerOfMist;
 
-                possibleEnds.Insert(shuffleIndex, Screens[23]);
+                possibleEnds.Insert(shuffleIndex, Screens[TowerOfMistScreen]);
                 Util.ShuffleList(possibleEnds, shuffleIndex, possibleEnds.Count - 3, random);
                 endScreens.AddRange(possibleEnds);
             }
@@ -189,9 +189,16 @@ namespace FaxanaduRando.Randomizer
                 endScreens.Add(pairs[0][0]);
                 endScreens.Add(pairs[1][0]);
                 endScreens.Add(pairs[2][0]);
-                endScreens.Add(Screens[MistSecretShopScreen]);
-
                 endScreens.Add(possibleEnds[0]);
+
+                if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
+                {
+                    endScreens.Add(possibleEnds[1]);
+                }
+                else
+                {
+                    endScreens.Add(Screens[MistSecretShopScreen]);
+                }
             }
         }
 
