@@ -109,7 +109,7 @@ namespace FaxanaduRando.Randomizer
             bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
             bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
 
-            bool includeEolisGuru = includeGurus && GeneralOptions.FastStart && (!Util.AllWorldScreensRandomized());
+            bool includeEolisGuru = includeGurus && (GeneralOptions.FastStart || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged);
 
             TownDoors[DoorId.EolisMeatShop] = new Door(DoorId.EolisMeatShop, OtherWorldNumber.Eolis, eolisPositions[1], eolisReqs, shouldShuffle: includeTownBuildings);
             TownDoors[DoorId.EolisHouse] = new Door(DoorId.EolisHouse, OtherWorldNumber.Eolis, eolisPositions[2], eolisReqs, shouldShuffle: includeTownBuildings);

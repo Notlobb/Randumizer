@@ -60,6 +60,13 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        public enum MultipleGiftOptions
+        {
+            AllGurusExceptConflate,
+            AllGurusExceptConflateAndEolis,
+            None,
+        };
+
         public static bool GuaranteeElixirNearFortress { get; set; } = true;
         public static bool FixPendantBug { get; set; } = true;
         public static bool BuffGloves { get; set; } = true;
@@ -68,7 +75,6 @@ namespace FaxanaduRando.Randomizer
         public static int ShieldSetting { get; set; } = 1;
         public static StartingWeaponOptions StartingWeapon { get; set; } = StartingWeaponOptions.LongSword;
         public static bool RandomizeBarRank { get; set; } = true;
-        public static bool AllowMultipleGifts { get; set; } = true;
         public static bool GuaranteeMattock { get; set; } = true;
         public static bool GuaranteeStartingSpell { get; set; } = true;
         public static bool ReplacePoison { get; set; } = true;
@@ -78,6 +84,7 @@ namespace FaxanaduRando.Randomizer
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
         public static ItemShuffle ShuffleItems { get; set; } = ItemShuffle.MixOnlyShopsAndGifts;
         public static KeyRandomization RandomizeKeys { get; set; } = KeyRandomization.Unchanged;
+        public static MultipleGiftOptions MultipleGifts { get; set; } = MultipleGiftOptions.AllGurusExceptConflateAndEolis;
     }
 
     public class WingBootSettings : ObservableCollection<string>
@@ -161,6 +168,16 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class MultipleGiftSettings : ObservableCollection<string>
+    {
+        public MultipleGiftSettings()
+        {
+            Add("All gift locations except Conflate guru");
+            Add("All gift locations except Conflate and Eolis gurus");
+            Add("None");
+        }
+    }
+
     public class StartingWeaponConverter : EnumConverter<ItemOptions.StartingWeaponOptions>
     {
     }
@@ -182,6 +199,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class RandomizeKeysConverter : EnumConverter<ItemOptions.KeyRandomization>
+    {
+    }
+
+    public class MultipleGiftsConverter : EnumConverter<ItemOptions.MultipleGiftOptions>
     {
     }
 

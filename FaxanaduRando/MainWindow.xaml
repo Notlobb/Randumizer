@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25 Beta 11" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 12" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -36,6 +36,8 @@
         <randomizer:ShuffleItemsConverter x:Key="itemShuffleSettingsConverter" />
         <randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
         <randomizer:RandomizeKeysConverter x:Key="randomizeKeysConverter" />
+        <randomizer:MultipleGiftSettings x:Key="multipleGiftSettings" />
+        <randomizer:MultipleGiftsConverter x:Key="multipleGiftsConverter" />
         <randomizer:MusicSettings x:Key="musicSettings" />
         <randomizer:MusicConverter x:Key="musicConverter" />
     </Window.Resources>
@@ -125,10 +127,9 @@
                             <Binding ElementName="randomizeBarRank" Path="IsChecked" />
                             <Binding ElementName="guaranteeStartingSpell" Path="IsChecked" />
                             <Binding ElementName="guaranteeMattock" Path="IsChecked" />
-                            <Binding ElementName="allowMultipleGifts" Path="IsChecked" />
                             <Binding ElementName="replacePoisonCheckBox" Path="IsChecked" />
                             <Binding ElementName="alwaysSpawnSmallItemsCheckBox" Path="IsChecked" />
-                            <Binding ElementName="allowEquippingIndoorsCheckbox" Path="IsChecked" />
+                            <Binding ElementName="flexibleItemsCheckbox" Path="IsChecked" />
                             <Binding ElementName="includeEvilOnesFortressCheckBox" Path="IsChecked" />
                             <Binding ElementName="darknessCheckBox" Path="IsChecked" />
                             <Binding ElementName="randomizeTitlesCheckBox" Path="IsChecked" />
@@ -148,6 +149,7 @@
                             <Binding ElementName="itemShuffleComboBox" Path="SelectedIndex" />
                             <Binding ElementName="keyRandomizationComboBox" Path="SelectedIndex" />
                             <Binding ElementName="randomizeScreensComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="multipleGiftsComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -224,9 +226,9 @@
                           ToolTip="This will prevent the player from being knocked off ladders when taking damage"/>
                 <TextBlock Grid.Column="3" Grid.Row="12" Text="Prevent knockback while on ladders"/>
 
-                <CheckBox Name="allowEquippingIndoorsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.AllowEquippingIndoors), Mode=TwoWay}"
-                          ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors."/>
-                <TextBlock Grid.Column="5" Grid.Row="0" Text="Allow equipping items indoors"/>
+                <CheckBox Name="flexibleItemsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.FlexibleItems), Mode=TwoWay}"
+                          ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air"/>
+                <TextBlock Grid.Column="5" Grid.Row="0" Text="Flexible items"/>
 
                 <CheckBox Name="darknessCheckBox" Grid.Column="4" Grid.Row="1" IsChecked="{Binding Path=(randomizer:GeneralOptions.DarkTowers), Mode=TwoWay}"
                           ToolTip="The inside of towers will be dark"/>
@@ -237,7 +239,7 @@
                 <TextBlock Grid.Column="5" Grid.Row="2" Text="Randomize titles"/>
 
                 <CheckBox Name="addKillSwitchCheckBox" Grid.Column="4" Grid.Row="3" IsChecked="{Binding Path=(randomizer:GeneralOptions.AddKillSwitch), Mode=TwoWay}"
-                          ToolTip="Pressing select while the game is paused and then unpausing will kill the player"/>
+                          ToolTip="Pressing select while the game is paused and then unpausing will kill the player. It is recommended you turn this on when doing screen randomization"/>
                 <TextBlock Grid.Column="5" Grid.Row="3" Text="Add kill switch"/>
 
                 <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
@@ -287,7 +289,7 @@
                         IsEditable="true"
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:GeneralOptions.RandomizeScreens), Mode=TwoWay, Converter={StaticResource screenRandomizationConverter}}"
-                        ToolTip="If you randomize screen connections for all worlds and you don't choose the 'less wingboot intense' version, it is recommended that you also select ´permanent´ for the wing boot timer, to help prevent softlocks"
+                        ToolTip="Randomizes how screens are connected to each other"
                         />
                 </StackPanel>
             </Grid>
@@ -524,22 +526,25 @@
                         />
                 </StackPanel>
 
-                <CheckBox Name="allowMultipleGifts" Grid.Column="3" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.AllowMultipleGifts), Mode=TwoWay}">
-                    <CheckBox.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Can collect as many of the item given as you can hold. Normally if you have one, you cannot receive another. This only applies to the gurus that normally give the joker key and the ring of ruby. For the Eolis and Conflate guru, they will only give you an item if you don't have it, and for all other places, you can always receive multiple gifts." TextWrapping="Wrap"/>
-                        </ToolTip>
-                    </CheckBox.ToolTip>
-                </CheckBox>
-                <TextBlock Grid.Column="4" Grid.Row="1" Text="Allow multiple gifts from Fortress and Joker gurus"/>
+                <TextBlock Grid.Column="1" Grid.Row="15" Text="Multiple gifts:"/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="15">
+                    <ComboBox Name="multipleGiftsComboBox"
+                        ItemsSource="{StaticResource multipleGiftSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.MultipleGifts), Mode=TwoWay, Converter={StaticResource multipleGiftsConverter}}"
+                        ToolTip="Allow multple gifts from these locations. Otherwise you can only get the gift if you don't have the item. You can always get multiple keys from locations other than the Conflate guru"
+                        />
+                </StackPanel>
 
-                <CheckBox Name="replacePoisonCheckBox" Grid.Column="3" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.ReplacePoison), Mode=TwoWay}"
+                <CheckBox Name="replacePoisonCheckBox" Grid.Column="3" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.ReplacePoison), Mode=TwoWay}"
                           ToolTip="Introduces a new item (Black Potion) that refills Mana, and removes all Poison from the game, replacing them with Black Potions"/>
-                <TextBlock Grid.Column="4" Grid.Row="2" Text="Replace poison with mana potions"/>
+                <TextBlock Grid.Column="4" Grid.Row="1" Text="Replace poison with mana potions"/>
 
-                <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="3" IsChecked="{Binding Path=(randomizer:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
-                          ToolTip="Small items will awlays spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
-                <TextBlock Grid.Column="4" Grid.Row="3" Text="Always spawn small items"/>
+                <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
+                          ToolTip="Small items will always spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
+                <TextBlock Grid.Column="4" Grid.Row="2" Text="Always spawn small items"/>
 
                 <CheckBox Name="includeSomeEolisDoorsCheckBox" Grid.Column="3" Grid.Row="14" IsChecked="{Binding Path=(randomizer:ItemOptions.IncludeSomeEolisDoors), Mode=TwoWay}"
                           ToolTip="Include the Eolis magic shop, martial arts shop and exit door in the key randomization"/>

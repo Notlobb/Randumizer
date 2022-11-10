@@ -32,7 +32,6 @@ namespace FaxanaduRando.Randomizer
         public enum ScreenRandomization
         {
             AllWorlds,
-            AllWorldsLessWingboots,
             EolisAndZenisOnly,
             Unchanged,
         };
@@ -50,7 +49,7 @@ namespace FaxanaduRando.Randomizer
         public static bool QuickSeed { get; set; } = false;
         public static bool AllowLoweringRespawn { get; set; } = true;
         public static bool PreventKnockbackOnLadders { get; set; } = true;
-        public static bool AllowEquippingIndoors { get; set; } = true;
+        public static bool FlexibleItems { get; set; } = true;
         public static bool IncludeEvilOnesFortress { get; set; } = false;
         public static bool DarkTowers { get; set; } = false;
         public static bool RandomizeTitles { get; set; } = true;
@@ -114,7 +113,6 @@ namespace FaxanaduRando.Randomizer
         public ScreenRandomizationSettings()
         {
             Add("Randomize for all worlds");
-            Add("Randomize for all worlds, less wingboot intense");
             Add("Randomize for Eolis and Zenis only");
             Add("Unchanged");
         }

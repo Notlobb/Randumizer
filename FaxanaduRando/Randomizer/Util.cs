@@ -35,8 +35,7 @@ namespace FaxanaduRando.Randomizer
 
         public static bool AllWorldScreensRandomized()
         {
-            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
-                GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldsLessWingboots;
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds;
         }
 
         public static Dictionary<T1, T2> Reverse<T1, T2>(Dictionary<T2, T1> dictionary)

@@ -17,6 +17,7 @@ namespace FaxanaduRando.Randomizer
         public Id LocationId { get; set; }
         public ShopRandomizer.Id ConditionItem { get; set; }
         public ShopRandomizer.Id Item { get; set; }
+        public bool ShouldBeRandomized { get; set; } = true;
 
         private int conditionOffset;
         private int itemOffset;

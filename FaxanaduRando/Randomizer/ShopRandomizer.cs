@@ -156,6 +156,29 @@ namespace FaxanaduRando.Randomizer
             Shops.Add(shop);
             ShopDict.Add(shop.ShopId, shop);
 
+            if (Util.AllWorldScreensRandomized())
+            {
+                var shopItem = new ShopItem(0x32441, content);
+                shop.Items.Add(shopItem);
+                shopItem.ShouldBeRandomized = false;
+                shopItem.Id = Id.WingBoots;
+                shopItem.MaxPriceOverride = 500;
+
+                int offset = Section.GetOffset(12, 0xAD90, 0x8000);
+                foreach (var item in shop.Items)
+                {
+                    item.offset = offset;
+                    offset += 3;
+                }
+
+                offset = Section.GetOffset(12, 0xA381, 0x8000);
+                content[offset] = 0x90;
+                content[offset + 1] = 0xAD;
+                offset = Section.GetOffset(12, 0xA387, 0x8000);
+                content[offset] = 0x90;
+                content[offset + 1] = 0xAD;
+            }
+
             var staticPrice = new StaticPrice(DoorId.MartialArtsShop, 0x32116, content);
             StaticPrices.Add(staticPrice);
             StaticPriceDict.Add(staticPrice.ShopId, staticPrice);
@@ -337,14 +360,6 @@ namespace FaxanaduRando.Randomizer
                         if (tempShop.ShopId == Shop.Id.EolisItemShop && item.Id == Id.Deluge)
                         {
                             item.ShouldBeRandomized = false;
-                        }
-                    }
-                    if (Util.AllWorldScreensRandomized() && (!GeneralOptions.FastStart))
-                    {
-                        if (tempShop.ShopId == Shop.Id.EolisItemShop && item.Id == Id.Elixir)
-                        {
-                            item.ShouldBeRandomized = false;
-                            item.Id = Id.WingBoots;
                         }
                     }
                 }
@@ -543,7 +558,7 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var item in shop.Items)
                 {
-                    int maxPrice = shop.MaxPrice;
+                    int maxPrice = item.MaxPriceOverride > 0 ? item.MaxPriceOverride : shop.MaxPrice;
                     bool cheap = CheapIds.Contains(item.Id);
                     int price = RandomizePrice(maxPrice, cheap, random);
                     item.Price = (ushort)price;

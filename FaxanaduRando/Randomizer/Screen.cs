@@ -304,7 +304,9 @@ namespace FaxanaduRando.Randomizer
                 if (sourceIds.Contains(sprite.Id))
                 {
                     Sprite.SpriteId newId;
-                    if (eolis && EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Hard)
+                    bool easy = eolis && EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Hard;
+                    easy |= (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy && random.Next(0, 2) == 0);
+                    if (easy)
                     {
                         newId = easyIdList[random.Next(easyIdList.Count)];
                     }

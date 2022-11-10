@@ -5,9 +5,11 @@ namespace FaxanaduRando.Randomizer
     public abstract class ShopEntry
     {
         public ushort Price { get; set; }
+        public ushort MaxPriceOverride { get; set; } = 0;
+
         public bool ShouldBeRandomized { get; set; } = true;
 
-        protected int offset;
+        public int offset;
         private int priceOffset;
 
         public ShopEntry(int offset, byte[] content, int priceOffset)

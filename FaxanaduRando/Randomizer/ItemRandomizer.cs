@@ -122,7 +122,7 @@ namespace FaxanaduRando.Randomizer
                     extraItems.Add(Sprite.SpriteId.HourGlass);
                     extraItems.Add(Sprite.SpriteId.Elixir);
 
-                    if (IncludeEolisGuru())
+                    if (IncludeEolisGuru(giftRandomizer))
                     {
                         extraItems.Add(Sprite.SpriteId.Elixir);
                     }
@@ -200,7 +200,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             int giftCount = giftRandomizer.GiftItems.Count;
-            if ((!IncludeEolisGuru()) || Util.AllWorldScreensRandomized())
+            if ((!IncludeEolisGuru(giftRandomizer)))
             {
                 giftCount--;
             }
@@ -228,7 +228,7 @@ namespace FaxanaduRando.Randomizer
                 shopIds.Add(GetMiscItem());
                 shopIds.Add(GetMiscItem());
 
-                if (IncludeEolisGuru())
+                if (IncludeEolisGuru(giftRandomizer))
                 {
                     shopIds.Add(GetMiscItem());
                 }
@@ -326,12 +326,12 @@ namespace FaxanaduRando.Randomizer
                     }
                 }
 
-                if (ItemOptions.GuaranteeElixirNearFortress && !GuaranteedElixir(shopRandomizer, giftRandomizer, doorRandomizer, levels))
+                if (!CheckSingleGifts(giftRandomizer))
                 {
                     continue;
                 }
 
-                if (!CheckSingleGifts(giftRandomizer))
+                if (ItemOptions.GuaranteeElixirNearFortress && !GuaranteedElixir(shopRandomizer, giftRandomizer, doorRandomizer, levels))
                 {
                     continue;
                 }
@@ -795,31 +795,19 @@ namespace FaxanaduRando.Randomizer
 
         private bool CheckSingleGifts(GiftRandomizer giftRandomizer)
         {
-            if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged ||
-                ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
+            var conflateGift = giftRandomizer.ItemDict[GiftItem.Id.ConflateGuru].Item;
+            if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Randomized)
             {
-                return true;
+                if (conflateGift == ShopRandomizer.Id.JokerKey ||
+                    conflateGift == ShopRandomizer.Id.AceKey)
+                {
+                    return false;
+                }
             }
 
-            var result = CheckSingleGift(GiftItem.Id.ConflateGuru, giftRandomizer);
-            if (!Util.GurusShuffled())
-            {
-                result &= CheckSingleGift(GiftItem.Id.EolisGuru, giftRandomizer);
-            }
-
-            if (!ItemOptions.AllowMultipleGifts)
-            {
-                result &= CheckSingleGift(GiftItem.Id.FortressGuru, giftRandomizer);
-                result &= CheckSingleGift(GiftItem.Id.JokerSpring, giftRandomizer);
-            }
-
-            return result;
-        }
-
-        private bool CheckSingleGift(GiftItem.Id id, GiftRandomizer giftRandomizer)
-        {
-            if (giftRandomizer.ItemDict[id].Item == ShopRandomizer.Id.JokerKey ||
-                giftRandomizer.ItemDict[id].Item == ShopRandomizer.Id.AceKey)
+            if (conflateGift == ShopRandomizer.Id.KingKey ||
+                conflateGift == ShopRandomizer.Id.QueenKey ||
+                conflateGift == ShopRandomizer.Id.JackKey)
             {
                 return false;
             }
@@ -1265,9 +1253,9 @@ namespace FaxanaduRando.Randomizer
             return ShopRandomizer.miscList[Rand.Next(ShopRandomizer.miscList.Count)];
         }
 
-        private bool IncludeEolisGuru()
+        private bool IncludeEolisGuru(GiftRandomizer giftRandomizer)
         {
-            return GeneralOptions.FastStart || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged;
+            return giftRandomizer.ItemDict[GiftItem.Id.EolisGuru].ShouldBeRandomized;
         }
 
         private void RandomizeIntro()
@@ -1277,17 +1265,25 @@ namespace FaxanaduRando.Randomizer
                 //Not a shuffle but there's only one intro item in Eolis with a weird location
                 var possibleItems = new List<Sprite.SpriteId>
                 {
-                    Sprite.SpriteId.Glove,
-                    Sprite.SpriteId.Poison,
                     Sprite.SpriteId.RedPotion,
                     Sprite.SpriteId.Ointment,
                     Sprite.SpriteId.Elixir,
                     Sprite.SpriteId.WingbootsBossLocked,
                 };
 
-                if (ItemOptions.AlwaysSpawnSmallItems)
+                if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.Unchanged ||
+                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy ||
+                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Normal ||
+                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed ||
+                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Scaling ||
+                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Unchanged)
                 {
-                    possibleItems.Add(Sprite.SpriteId.HourGlass);
+                    possibleItems.Add(Sprite.SpriteId.Glove);
+                    possibleItems.Add(Sprite.SpriteId.Poison);
+                    if (ItemOptions.AlwaysSpawnSmallItems)
+                    {
+                        possibleItems.Add(Sprite.SpriteId.HourGlass);
+                    }
                 }
 
                 item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));

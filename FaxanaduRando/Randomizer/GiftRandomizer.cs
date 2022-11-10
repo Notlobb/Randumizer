@@ -8,13 +8,8 @@ namespace FaxanaduRando.Randomizer
         public Dictionary<GiftItem.Id, GiftItem> ItemDict { get; set; } = new Dictionary<GiftItem.Id, GiftItem>();
         public int BarRank { get; set; } = 10;
 
-        private static readonly HashSet<ShopRandomizer.Id> regiftableItems = new HashSet<ShopRandomizer.Id>
+        private static readonly HashSet<ShopRandomizer.Id> optionallyRegiftableItems = new HashSet<ShopRandomizer.Id>
         {
-            ShopRandomizer.Id.AceKey,
-            ShopRandomizer.Id.KingKey,
-            ShopRandomizer.Id.QueenKey,
-            ShopRandomizer.Id.JackKey,
-            ShopRandomizer.Id.JokerKey,
             ShopRandomizer.Id.Hourglass,
             ShopRandomizer.Id.RedPotion,
             ShopRandomizer.Id.WingBoots,
@@ -23,26 +18,21 @@ namespace FaxanaduRando.Randomizer
             ShopRandomizer.Id.Mattock,
         };
 
-        private static readonly HashSet<GiftItem.Id> regiftableLocations = new HashSet<GiftItem.Id>
+        private static readonly HashSet<ShopRandomizer.Id> regiftableItems = new HashSet<ShopRandomizer.Id>
         {
-            GiftItem.Id.VictimBar,
-            GiftItem.Id.FireMage,
-            GiftItem.Id.AceKeyHouse,
-            GiftItem.Id.FraternalGuru,
-        };
-
-        private static readonly HashSet<GiftItem.Id> optionallyRegiftableLocations = new HashSet<GiftItem.Id>
-        {
-            GiftItem.Id.FortressGuru,
-            GiftItem.Id.JokerSpring,
+            ShopRandomizer.Id.AceKey,
+            ShopRandomizer.Id.KingKey,
+            ShopRandomizer.Id.QueenKey,
+            ShopRandomizer.Id.JackKey,
+            ShopRandomizer.Id.JokerKey,
         };
 
         public GiftRandomizer(byte[] content)
         {
             var giftItem = new GiftItem(GiftItem.Id.FortressGuru,
-                                    Section.GetOffset(12, 0xA193, 0x8000),
-                                    Section.GetOffset(12, 0xA199, 0x8000),
-                                    content);
+                                        Section.GetOffset(12, 0xA193, 0x8000),
+                                        Section.GetOffset(12, 0xA199, 0x8000),
+                                        content);
             GiftItems.Add(giftItem);
             ItemDict.Add(giftItem.LocationId, giftItem);
 
@@ -95,10 +85,9 @@ namespace FaxanaduRando.Randomizer
             GiftItems.Add(giftItem);
             ItemDict.Add(giftItem.LocationId, giftItem);
 
-            if ((Util.AllWorldScreensRandomized()) && GeneralOptions.FastStart)
+            if (!GeneralOptions.FastStart && ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
             {
-                giftItem.Item = ShopRandomizer.Id.WingBoots;
-                giftItem.ConditionItem = ShopRandomizer.Id.Book;
+                giftItem.ShouldBeRandomized = false;
             }
         }
 
@@ -112,18 +101,17 @@ namespace FaxanaduRando.Randomizer
                     return;
                 }
 
-                if (ItemOptions.AllowMultipleGifts &&
-                    regiftableItems.Contains(ids[index]) &&
-                    optionallyRegiftableLocations.Contains(item.LocationId))
+                if (!item.ShouldBeRandomized)
+                {
+                    continue;
+                }
+
+                item.Item = ids[index];
+                if (regiftableItems.Contains(item.Item))
                 {
                     item.ConditionItem = ShopRandomizer.Id.Book;
                 }
-                else if (regiftableItems.Contains(ids[index]) &&
-                         regiftableLocations.Contains(item.LocationId))
-                {
-                    item.ConditionItem = ShopRandomizer.Id.Book;
-                }
-                else if (regiftableItems.Contains(ids[index]) && item.LocationId == GiftItem.Id.EolisGuru && Util.GurusShuffled())
+                else if (AllowMultipleGifts(item) && optionallyRegiftableItems.Contains(item.Item))
                 {
                     item.ConditionItem = ShopRandomizer.Id.Book;
                 }
@@ -132,7 +120,6 @@ namespace FaxanaduRando.Randomizer
                     item.ConditionItem = ids[index];
                 }
 
-                item.Item = ids[index];
                 index++;
             }
         }
@@ -142,6 +129,23 @@ namespace FaxanaduRando.Randomizer
             foreach (var giftItem in GiftItems)
             {
                 giftItem.AddToContent(content);
+            }
+        }
+
+        private bool AllowMultipleGifts(GiftItem item)
+        {
+            if (ItemOptions.MultipleGifts == ItemOptions.MultipleGiftOptions.AllGurusExceptConflate)
+            {
+                return item.LocationId != GiftItem.Id.ConflateGuru;
+            }
+            else if (ItemOptions.MultipleGifts == ItemOptions.MultipleGiftOptions.AllGurusExceptConflateAndEolis)
+            {
+                return item.LocationId != GiftItem.Id.ConflateGuru &&
+                       item.LocationId != GiftItem.Id.EolisGuru;
+            }
+            else
+            {
+                return false;
             }
         }
     }

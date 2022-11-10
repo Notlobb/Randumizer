@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B11", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B12", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -345,7 +345,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 11");
+                spoilers.Add("Randumizer v0.25 Beta 12");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -992,9 +992,11 @@ namespace FaxanaduRando.Randomizer
                 content[Section.GetOffset(14, 0x8879, 0x8000)] = OpCode.BEQ;
             }
 
-            if (GeneralOptions.AllowEquippingIndoors)
+            if (GeneralOptions.FlexibleItems)
             {
                 content[Section.GetOffset(12, 0x8B87, 0x8000)] = 0xFF;
+                content[Section.GetOffset(15, 0xC47C, 0xC000)] = OpCode.NOP;
+                content[Section.GetOffset(15, 0xC47D, 0xC000)] = OpCode.NOP;
             }
 
             if (GeneralOptions.AddKillSwitch)

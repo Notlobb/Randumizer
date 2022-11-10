@@ -113,7 +113,7 @@ namespace FaxanaduRando.Randomizer
                     }
                     else if (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.ExtremelyHard)
                     {
-                        evilOneProbability = 50;
+                        evilOneProbability = 30;
                         hardProbability = 45;
                         grieveProbability = hardProbability + 10;
                         bossProbability = grieveProbability + 35;
