@@ -27,7 +27,7 @@ namespace FaxanaduRando.Randomizer
             byte[] content = File.ReadAllBytes(inputFile);
             AddMiscHacks(content, random);
 
-            var levels = GetLevels(content);
+            var levels = GetLevels(content, random);
             uint screenAttempts = 0;
             if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged)
             {
@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B12", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B13", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -345,7 +345,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 12");
+                spoilers.Add("Randumizer v0.25 Beta 13");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -836,7 +836,7 @@ namespace FaxanaduRando.Randomizer
             newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
         }
 
-        private List<Level> GetLevels(byte[] content)
+        private List<Level> GetLevels(byte[] content, Random random)
         {
             var levels = new List<Level>();
             levels.Add(new Eolis(WorldNumber.Eolis, content));
@@ -863,7 +863,22 @@ namespace FaxanaduRando.Randomizer
 
             if (Util.AllWorldScreensRandomized())
             {
-                Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2].ShouldBeShuffled = false;
+                var topItem = Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2];
+                topItem.ShouldBeShuffled = false;
+                var possibleItems = new List<Sprite.SpriteId>
+                {
+                    Sprite.SpriteId.HourGlass,
+                    Sprite.SpriteId.Poison,
+                    Sprite.SpriteId.Poison2,
+                    Sprite.SpriteId.RedPotion,
+                    Sprite.SpriteId.RedPotion2,
+                    Sprite.SpriteId.Glove,
+                    Sprite.SpriteId.Ointment,
+                    Sprite.SpriteId.Ointment2,
+                    Sprite.SpriteId.Wingboots,
+                    Sprite.SpriteId.WingbootsBossLocked,
+                };
+                topItem.Id = possibleItems[random.Next(0, possibleItems.Count)];
             }
 
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].RequiresMattock = true;
@@ -876,7 +891,7 @@ namespace FaxanaduRando.Randomizer
             SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[4].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].Sprites[2].RequiresMattock = true;
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.Unchanged ||
-                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle)
+                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)
             {
                 SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].Sprites[2].ShouldBeShuffled = false;
             }
@@ -925,16 +940,16 @@ namespace FaxanaduRando.Randomizer
                 else if (level.Number == WorldNumber.Mist)
                 {
                     level.AddSubLevel(SubLevel.Id.EarlyMist, 16, 17);
-                    level.SubLevels[0].Screens.Add(level.Screens[1]);
-                    level.SubLevels[0].Screens.Add(level.Screens[9]);
+                    level.SubLevels[0].AddScreen(level.Screens[1]);
+                    level.SubLevels[0].AddScreen(level.Screens[9]);
                     level.AddSubLevel(SubLevel.Id.MiddleMist, 12, 13);
-                    level.SubLevels[1].Screens.Add(level.Screens[0]);
-                    level.SubLevels[1].Screens.Add(level.Screens[6]);
-                    level.SubLevels[1].Screens.Add(level.Screens[13]);
-                    level.SubLevels[1].Screens.Add(level.Screens[22]);
+                    level.SubLevels[1].AddScreen(level.Screens[0]);
+                    level.SubLevels[1].AddScreen(level.Screens[6]);
+                    level.SubLevels[1].AddScreen(level.Screens[13]);
+                    level.SubLevels[1].AddScreen(level.Screens[22]);
                     level.AddSubLevel(SubLevel.Id.LateMist, 23, 32);
-                    level.SubLevels[2].Screens.Add(level.Screens[Mist.VictimRightScreen]);
-                    level.SubLevels[2].Screens.Add(level.Screens[Mist.FireMageScreen]);
+                    level.SubLevels[2].AddScreen(level.Screens[Mist.VictimRightScreen]);
+                    level.SubLevels[2].AddScreen(level.Screens[Mist.FireMageScreen]);
                     level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 47, 61);
                     level.AddSubLevel(SubLevel.Id.TowerOfMist, 62, 76);
                     level.AddSubLevel(SubLevel.Id.MasconTower, 77, 79);
@@ -1410,8 +1425,8 @@ namespace FaxanaduRando.Randomizer
                 newSection.AddToContent(content, Section.GetOffset(15, 0xFE80, 0xC000));
             }
 
-            if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntrance ||
-                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle)
+            if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreensAllowMattockLockedItems ||
+                ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)
             {
                 var mattocksection = new Section();
                 mattocksection.Bytes.Add(OpCode.JSR);
@@ -1435,6 +1450,23 @@ namespace FaxanaduRando.Randomizer
                 mattocksection.Bytes.Add(0x00);
                 mattocksection.Bytes.Add(OpCode.CMPImmediate);
                 mattocksection.Bytes.Add(0x28);
+                mattocksection.Bytes.Add(OpCode.BNE);
+                mattocksection.Bytes.Add(0x03);
+                mattocksection.Bytes.Add(OpCode.LDAImmediate);
+                mattocksection.Bytes.Add(0x1);
+                mattocksection.Bytes.Add(OpCode.RTS);
+                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
+                mattocksection.Bytes.Add(0x24);
+                mattocksection.Bytes.Add(0x00);
+                mattocksection.Bytes.Add(OpCode.CMPImmediate);
+                mattocksection.Bytes.Add(0x05);
+                mattocksection.Bytes.Add(OpCode.BNE);
+                mattocksection.Bytes.Add(0x0A);
+                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
+                mattocksection.Bytes.Add(0x63);
+                mattocksection.Bytes.Add(0x00);
+                mattocksection.Bytes.Add(OpCode.CMPImmediate);
+                mattocksection.Bytes.Add(0x1E);
                 mattocksection.Bytes.Add(OpCode.BNE);
                 mattocksection.Bytes.Add(0x03);
                 mattocksection.Bytes.Add(OpCode.LDAImmediate);

@@ -87,7 +87,7 @@ namespace FaxanaduRando.Randomizer
 
             foreach (var number in toBeAdded)
             {
-                sublevel.Screens.Add(Screens[number]);
+                sublevel.AddScreen(Screens[number]);
             }
 
             return newConnection;

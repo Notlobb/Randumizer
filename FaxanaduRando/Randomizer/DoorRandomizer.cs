@@ -402,6 +402,8 @@ namespace FaxanaduRando.Randomizer
             {
                 Doors[DoorId.BackFromEastBranch].key = DoorRequirement.Nothing;
                 Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
+                Doors[DoorId.EastBranch].key = DoorRequirement.Nothing;
+                Doors[DoorId.BattleHelmetWing].key = DoorRequirement.Nothing;
                 TowerDoors[DoorId.EastBranch] = LevelDoors[DoorId.EastBranch];
                 TowerDoors[DoorId.BackFromEastBranch] = LevelDoors[DoorId.BackFromEastBranch];
                 TowerDoors[DoorId.DropdownWing] = LevelDoors[DoorId.DropdownWing];

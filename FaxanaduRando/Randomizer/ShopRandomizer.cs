@@ -432,7 +432,8 @@ namespace FaxanaduRando.Randomizer
                 ids.Add(Id.WingBoots);
             }
 
-            if (GeneralOptions.ShuffleWorlds && ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
+            if (GeneralOptions.ShuffleWorlds &&
+                ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
             {
                 ids.Add(Id.KingKey);
             }

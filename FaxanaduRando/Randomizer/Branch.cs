@@ -5,8 +5,9 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Branch : Level
     {
-        public static byte DaybreakLeftScreen = 35;
-        public static byte DaybreakRightScreen = 36;
+        public const byte DoubleItemScreen = 30;
+        public const byte DaybreakLeftScreen = 35;
+        public const byte DaybreakRightScreen = 36;
 
         public Branch(WorldNumber number, byte[] content) : base(number, content)
         {
@@ -48,6 +49,45 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
+            Screens[28].OpenTilesLeft = new HashSet<byte>();
+            Screens[28].OpenTilesRight = new HashSet<byte>();
+            if (random.Next(0, 2) == 0)
+            {
+                Screens[28].OpenTilesLeft.Add(3);
+                Screens[28].OpenTilesLeft.Add(4);
+                Screens[28].OpenTilesLeft.Add(5);
+                Screens[28].OpenTilesLeft.Add(6);
+                Screens[28].SecondOpenTilesLeft.Add(8);
+                Screens[28].SecondOpenTilesLeft.Add(9);
+                Screens[28].SecondOpenTilesLeft.Add(10);
+                Screens[28].SecondOpenTilesLeft.Add(11);
+                Screens[28].OpenTilesRight.Add(3);
+                Screens[28].OpenTilesRight.Add(4);
+                Screens[28].OpenTilesRight.Add(5);
+                Screens[28].OpenTilesRight.Add(6);
+                Screens[28].OpenTilesRight.Add(8);
+                Screens[28].OpenTilesRight.Add(9);
+                Screens[28].OpenTilesRight.Add(10);
+            }
+            else
+            {
+                Screens[28].OpenTilesLeft.Add(3);
+                Screens[28].OpenTilesLeft.Add(4);
+                Screens[28].OpenTilesLeft.Add(5);
+                Screens[28].OpenTilesLeft.Add(6);
+                Screens[28].OpenTilesLeft.Add(8);
+                Screens[28].OpenTilesLeft.Add(9);
+                Screens[28].OpenTilesLeft.Add(10);
+                Screens[28].OpenTilesLeft.Add(11);
+                Screens[28].OpenTilesRight.Add(3);
+                Screens[28].OpenTilesRight.Add(4);
+                Screens[28].OpenTilesRight.Add(5);
+                Screens[28].OpenTilesRight.Add(6);
+                Screens[28].SecondOpenTilesRight.Add(8);
+                Screens[28].SecondOpenTilesRight.Add(9);
+                Screens[28].SecondOpenTilesRight.Add(10);
+            }
+
             bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 50, 20, random, SubLevel.Id.EarlyBranch, attempts);
             if (!result)
             {
@@ -93,10 +133,9 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds)
-            {
-                Screens[17].ScrollData.Down = 17;
-            }
+            Screens[17].ScrollData.Down = 17;
+            Screens[33].ScrollData.Down = DoubleItemScreen;
+            Screens[DoubleItemScreen].ScrollData.Up = 33;
 
             return result;
         }
@@ -108,9 +147,12 @@ namespace FaxanaduRando.Randomizer
             candidates.Add(Screens[8]);
             candidates.AddRange(Screens.GetRange(11, 2));
             candidates.AddRange(Screens.GetRange(16, 3));
+            candidates.Add(Screens[21]);
             candidates.Add(Screens[23]);
             candidates.Add(Screens[26]);
+            candidates.Add(Screens[27]);
             candidates.AddRange(Screens.GetRange(31, 2));
+            candidates.Add(Screens[33]);
             candidates.Add(Screens[34]);
             candidates.AddRange(Screens.GetRange(37, 2));
 
@@ -134,21 +176,15 @@ namespace FaxanaduRando.Randomizer
             endScreens.Add(Screens[39]);
             endScreens.Add(Screens[13]);
             endScreens.Add(Screens[29]);
-            endScreens.Add(Screens[33]);
             endScreens.Add(Screens[7]);
+            endScreens.Add(Screens[22]);
 
             if (random.Next(0, 2) == 0)
             {
                 (startScreens[1], endScreens[0]) = (endScreens[0], startScreens[1]);
             }
 
-            if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
-            {
-                endScreens.Add(Screens[22]);
-            }
-
-            Util.ShuffleList(endScreens, 3, endScreens.Count - 1, random);
-            Util.ShuffleList(endScreens, 2, endScreens.Count - 2, random);
+            Util.ShuffleList(endScreens, 2, endScreens.Count - 1, random);
         }
 
         public override List<Screen> GetSpecialScreens(Random random)
@@ -157,7 +193,7 @@ namespace FaxanaduRando.Randomizer
             specialScreens.Add(Screens[10]);
             specialScreens.Add(Screens[14]);
             specialScreens.Add(Screens[20]);
-            specialScreens.Add(Screens[27]);
+            specialScreens.Add(Screens[28]);
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
             return specialScreens;
@@ -170,10 +206,9 @@ namespace FaxanaduRando.Randomizer
             startToSpecial[19] = 20;
 
             Screens[27].FriendConnections[Direction.Right] = Screens[28];
-            Screens[28].FriendEnds[Direction.Up] = Screens[30];
+            Screens[28].FriendEnds[Direction.Up] = Screens[DoubleItemScreen];
 
             Screens[20].FriendEnds[Direction.Down] = Screens[25];
-            Screens[20].FriendConnections[Direction.Right] = Screens[21];
 
             Screens[0].Directions.Add(Direction.Right);
             Screens[0].OpenTilesRight.Add(8);
@@ -234,16 +269,25 @@ namespace FaxanaduRando.Randomizer
             Screens[7].OpenTilesRight.Add(10);
             Screens[8].Directions.Add(Direction.Left);
             Screens[8].Directions.Add(Direction.Right);
+            Screens[8].OpenTilesLeft.Add(3);
+            Screens[8].OpenTilesLeft.Add(4);
+            Screens[8].OpenTilesLeft.Add(5);
+            Screens[8].OpenTilesLeft.Add(6);
             Screens[8].OpenTilesLeft.Add(7);
             Screens[8].OpenTilesLeft.Add(8);
             Screens[8].OpenTilesLeft.Add(9);
             Screens[8].OpenTilesLeft.Add(10);
+            Screens[8].OpenTilesRight.Add(1);
+            Screens[8].OpenTilesRight.Add(2);
+            Screens[8].OpenTilesRight.Add(3);
+            Screens[8].OpenTilesRight.Add(4);
             Screens[8].OpenTilesRight.Add(6);
             Screens[8].OpenTilesRight.Add(7);
             Screens[8].OpenTilesRight.Add(8);
             Screens[8].OpenTilesRight.Add(9);
             Screens[9].Directions.Add(Direction.Left);
             Screens[9].Directions.Add(Direction.Right);
+            Screens[9].OpenTilesLeft.Add(5);
             Screens[9].OpenTilesLeft.Add(6);
             Screens[9].OpenTilesLeft.Add(7);
             Screens[9].OpenTilesLeft.Add(8);
@@ -268,7 +312,7 @@ namespace FaxanaduRando.Randomizer
             Screens[11].OpenTilesRight.Add(6);
             Screens[11].OpenTilesDown.Add(7);
             Screens[12].Directions.Add(Direction.Left);
-            Screens[12].Directions.Add(Direction.Right);
+            //Screens[12].Directions.Add(Direction.Right);
             Screens[12].Directions.Add(Direction.Up);
             Screens[12].OpenTilesLeft.Add(4);
             Screens[12].OpenTilesLeft.Add(5);
@@ -336,7 +380,7 @@ namespace FaxanaduRando.Randomizer
             Screens[19].OpenTilesRight.Add(8);
             Screens[19].OpenTilesRight.Add(9);
             Screens[20].Directions.Add(Direction.Left);
-            //Screens[20].Directions.Add(Direction.Right);
+            Screens[20].Directions.Add(Direction.Right);
             Screens[20].OpenTilesLeft.Add(7);
             Screens[20].OpenTilesLeft.Add(8);
             Screens[20].OpenTilesLeft.Add(9);
@@ -344,13 +388,18 @@ namespace FaxanaduRando.Randomizer
             Screens[20].OpenTilesRight.Add(4);
             Screens[20].OpenTilesRight.Add(5);
             Screens[20].OpenTilesRight.Add(6);
-            //Screens[21].Directions.Add(Direction.Left);
+            Screens[20].SecondOpenTilesRight.Add(8);
+            Screens[20].SecondOpenTilesRight.Add(9);
+            Screens[21].Directions.Add(Direction.Left);
             Screens[21].Directions.Add(Direction.Up);
             Screens[21].Directions.Add(Direction.Down);
+            Screens[21].OpenTilesLeft.Add(2);
             Screens[21].OpenTilesLeft.Add(3);
             Screens[21].OpenTilesLeft.Add(4);
             Screens[21].OpenTilesLeft.Add(5);
-            Screens[21].OpenTilesLeft.Add(6);
+            Screens[21].SecondOpenTilesLeft.Add(7);
+            Screens[21].SecondOpenTilesLeft.Add(8);
+            Screens[21].SecondOpenTilesLeft.Add(9);
             Screens[21].OpenTilesUp.Add(5);
             Screens[21].OpenTilesDown.Add(7);
             Screens[22].Directions.Add(Direction.Right);
@@ -392,33 +441,22 @@ namespace FaxanaduRando.Randomizer
             Screens[26].OpenTilesRight.Add(8);
             Screens[26].OpenTilesUp.Add(7);
             Screens[27].Directions.Add(Direction.Left);
-            //Screens[27].Directions.Add(Direction.Right);
+            Screens[27].Directions.Add(Direction.Right);
+            Screens[28].Directions.Add(Direction.Left);
+            Screens[28].Directions.Add(Direction.Right);
             Screens[27].OpenTilesLeft.Add(5);
             Screens[27].OpenTilesLeft.Add(6);
             Screens[27].OpenTilesLeft.Add(7);
             Screens[27].OpenTilesLeft.Add(8);
-            //Screens[27].OpenTilesRight.Add(3);
-            //Screens[27].OpenTilesRight.Add(4);
-            //Screens[27].OpenTilesRight.Add(5);
-            //Screens[27].OpenTilesRight.Add(6);
-            //Screens[27].OpenTilesRight.Add(8);
-            //Screens[27].OpenTilesRight.Add(9);
-            //Screens[27].OpenTilesRight.Add(10);
-            //Screens[27].OpenTilesRight.Add(11);
-            //Screens[28].Directions.Add(Direction.Left);
-            Screens[28].Directions.Add(Direction.Right);
-            //Screens[28].OpenTilesLeft.Add(8);
-            //Screens[28].OpenTilesLeft.Add(9);
-            //Screens[28].OpenTilesLeft.Add(10);
-            //Screens[28].OpenTilesLeft.Add(11);
-            Screens[28].OpenTilesRight.Add(8);
-            Screens[28].OpenTilesRight.Add(9);
-            Screens[28].OpenTilesRight.Add(10);
+            Screens[27].OpenTilesRight.Add(3);
+            Screens[27].OpenTilesRight.Add(4);
+            Screens[27].OpenTilesRight.Add(5);
+            Screens[27].OpenTilesRight.Add(6);
+            Screens[27].OpenTilesRight.Add(8);
+            Screens[27].OpenTilesRight.Add(9);
+            Screens[27].OpenTilesRight.Add(10);
+            Screens[27].OpenTilesRight.Add(11);
             Screens[29].Directions.Add(Direction.Left);
-            Screens[29].OpenTilesLeft.Add(3);
-            Screens[29].OpenTilesLeft.Add(4);
-            Screens[29].OpenTilesLeft.Add(5);
-            Screens[29].OpenTilesLeft.Add(6);
             Screens[29].OpenTilesLeft.Add(8);
             Screens[29].OpenTilesLeft.Add(9);
             Screens[29].OpenTilesLeft.Add(10);
@@ -443,9 +481,17 @@ namespace FaxanaduRando.Randomizer
             Screens[32].OpenTilesRight.Add(7);
             Screens[32].OpenTilesRight.Add(8);
             Screens[33].Directions.Add(Direction.Left);
+            Screens[33].Directions.Add(Direction.Up);
+            //Screens[33].Directions.Add(Direction.Down);
             Screens[33].OpenTilesLeft.Add(1);
             Screens[33].OpenTilesLeft.Add(2);
             Screens[33].OpenTilesLeft.Add(3);
+            Screens[33].SecondOpenTilesLeft.Add(5);
+            Screens[33].SecondOpenTilesLeft.Add(6);
+            Screens[33].SecondOpenTilesLeft.Add(7);
+            Screens[33].SecondOpenTilesLeft.Add(8);
+            //Screens[33].OpenTilesDown.Add(6);
+            Screens[33].OpenTilesUp.Add(12);
             Screens[34].Directions.Add(Direction.Right);
             Screens[34].Directions.Add(Direction.Down);
             Screens[34].OpenTilesRight.Add(2);
@@ -477,6 +523,8 @@ namespace FaxanaduRando.Randomizer
             Screens[37].OpenTilesRight.Add(9);
             Screens[38].Directions.Add(Direction.Left);
             Screens[38].Directions.Add(Direction.Right);
+            Screens[38].OpenTilesLeft.Add(4);
+            Screens[38].OpenTilesLeft.Add(5);
             Screens[38].OpenTilesLeft.Add(6);
             Screens[38].OpenTilesLeft.Add(7);
             Screens[38].OpenTilesLeft.Add(8);

@@ -132,6 +132,7 @@ namespace FaxanaduRando.Randomizer
         public List<Sprite> Sprites { get; set; } = new List<Sprite>();
         public List<TextObject> Text { get; set; } = new List<TextObject>();
         public WorldNumber ParentWorld { get; set; } = WorldNumber.Unknown;
+        public SubLevel.Id ParentSublevel { get; set; } = SubLevel.Id.Other;
         public bool SkipBosses { get; set; } = false;
         public ScrollingData ScrollData { get; set; }
         public HashSet<Direction> Directions { get; set; } = new HashSet<Direction>();
@@ -141,6 +142,10 @@ namespace FaxanaduRando.Randomizer
         public HashSet<byte> OpenTilesRight { get; set; } = new HashSet<byte>();
         public HashSet<byte> OpenTilesUp { get; set; } = new HashSet<byte>();
         public HashSet<byte> OpenTilesDown { get; set; } = new HashSet<byte>();
+        public HashSet<byte> SecondOpenTilesLeft { get; set; } = new HashSet<byte>();
+        public HashSet<byte> SecondOpenTilesRight { get; set; } = new HashSet<byte>();
+        public HashSet<byte> SecondOpenTilesUp { get; set; } = new HashSet<byte>();
+        public HashSet<byte> SecondOpenTilesDown { get; set; } = new HashSet<byte>();
         public List<DoorId> Doors { get; set; } = new List<DoorId>();
         public List<GiftItem.Id> Gifts { get; set; } = new List<GiftItem.Id>();
         public Dictionary<Direction, Screen> FriendEnds { get; set; } = new Dictionary<Direction, Screen>();
@@ -182,6 +187,24 @@ namespace FaxanaduRando.Randomizer
             return OpenTilesDown;
         }
 
+        public HashSet<byte> GetSecondTiles(Direction direction)
+        {
+            if (direction == Direction.Left)
+            {
+                return SecondOpenTilesLeft;
+            }
+            else if (direction == Direction.Right)
+            {
+                return SecondOpenTilesRight;
+            }
+            else if (direction == Direction.Up)
+            {
+                return SecondOpenTilesUp;
+            }
+
+            return SecondOpenTilesDown;
+        }
+
         public bool CanConnect(Direction direction, Screen other)
         {
             if (!AvailableDirections.Contains(direction))
@@ -195,15 +218,44 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            var tiles = new HashSet<byte>(GetTiles(direction));
+            var tiles = GetTiles(direction);
             var otherTiles = other.GetTiles(reverse);
-            tiles.IntersectWith(otherTiles);
+            var secondTiles = GetSecondTiles(direction);
+            var secondOtherTiles = other.GetSecondTiles(reverse);
 
-            if (direction == Direction.Up || direction == Direction.Down)
+            bool result = CanConnect(direction, tiles, otherTiles);
+            if (secondTiles.Count == 0 && secondOtherTiles.Count == 0)
             {
-                return tiles.Count > 0;
+                return result;
             }
 
+            if (secondTiles.Count > 0 && secondOtherTiles.Count > 0)
+            {
+                return false;
+            }
+
+            if (secondTiles.Count > 0)
+            {
+                result &= CanConnect(direction, secondTiles, otherTiles);
+            }
+
+            if (secondOtherTiles.Count > 0)
+            {
+                result &= other.CanConnect(reverse, secondOtherTiles, tiles);
+            }
+
+            return result; 
+        }
+
+        private bool CanConnect(Direction direction, HashSet<byte> tiles, HashSet<byte> otherTiles)
+        {
+            if (direction == Direction.Up || direction == Direction.Down)
+            {
+                return tiles.Overlaps(otherTiles);
+            }
+
+            tiles = new HashSet<byte>(tiles);
+            tiles.IntersectWith(otherTiles);
             var values = new List<byte>(tiles);
             values.Sort();
             for (int i = 0; i < values.Count - 1; i++)
@@ -305,7 +357,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     Sprite.SpriteId newId;
                     bool easy = eolis && EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Hard;
-                    easy |= (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy && random.Next(0, 2) == 0);
+                    easy |= (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy && random.Next(0, 3) != 0);
                     if (easy)
                     {
                         newId = easyIdList[random.Next(easyIdList.Count)];

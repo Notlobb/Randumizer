@@ -1060,14 +1060,6 @@ namespace FaxanaduRando.Randomizer
                                       HashSet<ShopRandomizer.Id> ids, HashSet<SubLevel.Id> traversedSublevels,
                                       HashSet<Guru.GuruId> gurus)
         {
-            if (subLevel.SubLevelId == SubLevel.Id.EvilOnesLair)
-            {
-                if ((GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged) && (!ids.Contains(ShopRandomizer.Id.WingBoots)))
-                {
-                    return;
-                }
-            }
-
             foreach (var screen in subLevel.Screens)
             {
                 foreach (var sprite in screen.Sprites)
@@ -1280,6 +1272,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     possibleItems.Add(Sprite.SpriteId.Glove);
                     possibleItems.Add(Sprite.SpriteId.Poison);
+                    possibleItems.Add(Sprite.SpriteId.MattockBossLocked);
                     if (ItemOptions.AlwaysSpawnSmallItems)
                     {
                         possibleItems.Add(Sprite.SpriteId.HourGlass);
@@ -1288,7 +1281,8 @@ namespace FaxanaduRando.Randomizer
 
                 item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
                 if (item.Id == Sprite.SpriteId.WingbootsBossLocked ||
-                    item.Id == Sprite.SpriteId.HourGlass)
+                    item.Id == Sprite.SpriteId.HourGlass ||
+                    item.Id == Sprite.SpriteId.MattockBossLocked)
                 {
                     //These items don't fall down
                     item.SetY(10);

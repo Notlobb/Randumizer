@@ -172,7 +172,7 @@ namespace FaxanaduRando.Randomizer
         {
             for (int i = start; i <= end; i++)
             {
-                sublevel.Screens.Add(Screens[i]);
+                sublevel.AddScreen(Screens[i]);
             }
         }
 
@@ -244,7 +244,10 @@ namespace FaxanaduRando.Randomizer
                         temp2 = new List<Screen>();
                     }
 
-                    sublevel.Screens.AddRange(friends);
+                    foreach (var screen in friends)
+                    {
+                        sublevel.AddScreen(screen);
+                    }
                 }
             }
 
@@ -252,7 +255,7 @@ namespace FaxanaduRando.Randomizer
         }
 
         protected bool CreateSublevel(Screen start, Screen end, List<Screen> candidates, List<Screen> specialScreens,
-                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts)
+                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts, bool newSublevelScreens=true)
         {
             if (!GeneralOptions.ShuffleTowers)
             {
@@ -265,17 +268,27 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            bool swapped = false;
             if (random.Next(2) == 0)
             {
                 var tmp = start;
                 start = end;
                 end = tmp;
+                swapped = true;
             }
 
             var current = start;
             var sublevel = SubLevel.SubLevelDict[sublevelId];
-            sublevel.Screens = new List<Screen>();
-            sublevel.Screens.Add(current);
+            if (newSublevelScreens)
+            {
+                sublevel.Screens = new List<Screen>();
+                sublevel.AddScreen(current);
+            }
+            else if (swapped)
+            {
+                sublevel.AddScreen(current);
+            }
+
             bool keepGoing = true;
             bool attemptedEnd;
             while (keepGoing)
@@ -304,7 +317,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     var friend = current.FriendConnections[friendDirection];
                     current.Connect(friendDirection, friend);
-                    sublevel.Screens.Add(friend);
+                    sublevel.AddScreen(friend);
                     current = friend;
                     found = true;
                     break;
@@ -333,7 +346,7 @@ namespace FaxanaduRando.Randomizer
                         if (current.CanConnect(direction, end))
                         {
                             current.Connect(direction, end);
-                            sublevel.Screens.Add(end);
+                            AddEnd(sublevel, newSublevelScreens, swapped, end);
                             return true;
                         }
                     }
@@ -348,7 +361,7 @@ namespace FaxanaduRando.Randomizer
                             if (end.CanConnect(direction, candidate))
                             {
                                 end.Connect(direction, candidate);
-                                sublevel.Screens.Add(end);
+                                AddEnd(sublevel, newSublevelScreens, swapped, end);
                                 candidates.Remove(candidate);
                                 end = candidate;
                                 foundEnd = true;
@@ -367,7 +380,7 @@ namespace FaxanaduRando.Randomizer
                         if (current.CanConnect(direction, end))
                         {
                             current.Connect(direction, end);
-                            sublevel.Screens.Add(end);
+                            sublevel.AddScreen(end);
                             return true;
                         }
                     }
@@ -391,7 +404,7 @@ namespace FaxanaduRando.Randomizer
                         if (current.CanConnect(direction, candidate))
                         {
                             current.Connect(direction, candidate);
-                            sublevel.Screens.Add(candidate);
+                            sublevel.AddScreen(candidate);
                             current = candidate;
                             candidates.Remove(candidate);
                             found = true;
@@ -435,6 +448,18 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
+        private void AddEnd(SubLevel sublevel, bool newSublevelScreens, bool swapped, Screen end)
+        {
+            if (newSublevelScreens)
+            {
+                sublevel.AddScreen(end);
+            }
+            else if (!swapped)
+            {
+                sublevel.AddScreen(end);
+            }
+        }
+
         private void CheckFriends(List<Screen> screens, List<Screen> friends)
         {
             foreach (var screen in screens)
@@ -457,7 +482,7 @@ namespace FaxanaduRando.Randomizer
                     if (current.CanConnect(direction, special))
                     {
                         current.Connect(direction, special);
-                        sublevel.Screens.Add(special);
+                        sublevel.AddScreen(special);
                         current = special;
                         specialScreens.Remove(special);
                         return true;

@@ -5,22 +5,22 @@ namespace FaxanaduRando.Randomizer
 {
     public class Trunk : Level
     {
-        public static byte EarlyTrunkStartScreen = 0;
-        public static byte ApoluneLeftScreen = 7;
-        public static byte ApoluneRightScreen = 8;
-        public static byte TowerOfTrunkScreen = 11;
-        public static byte TowerOfTrunkEntanceScreen = 13;
-        public static byte MattockScreen = 12;
-        public static byte LateTrunkStartScreen = 22;
-        public static byte ForePawLeftScreen = 26;
-        public static byte ForePawRightScreen = 29;
-        public static byte JokerHouseScreen = 30;
-        public static byte SkySpringScreen = 37;
-        public static byte TowerOfFortressScreen = 40;
-        public static byte TowerOfFortressEntranceScreen = 41;
-        public static byte FortressSpringScreen = 61;
-        public static byte JokerHouseEntranceScreen = 62;
-        public static byte JokerSpringScreen = 63;
+        public const byte EarlyTrunkStartScreen = 0;
+        public const byte ApoluneLeftScreen = 7;
+        public const byte ApoluneRightScreen = 8;
+        public const byte TowerOfTrunkScreen = 11;
+        public const byte TowerOfTrunkEntanceScreen = 13;
+        public const byte MattockScreen = 12;
+        public const byte LateTrunkStartScreen = 22;
+        public const byte ForePawLeftScreen = 26;
+        public const byte ForePawRightScreen = 29;
+        public const byte JokerHouseScreen = 30;
+        public const byte SkySpringScreen = 37;
+        public const byte TowerOfFortressScreen = 40;
+        public const byte TowerOfFortressEntranceScreen = 41;
+        public const byte FortressSpringScreen = 61;
+        public const byte JokerHouseEntranceScreen = 62;
+        public const byte JokerSpringScreen = 63;
 
         public Trunk(WorldNumber number, byte[] content) : base(number, content)
         {
@@ -143,7 +143,7 @@ namespace FaxanaduRando.Randomizer
             endScreens.Add(Screens[middleEnds[0]]);
             endScreens.Add(Screens[lateEnds[0]]);
             endScreens.Add(Screens[eastEnds[0]]);
-            endScreens.Add(Screens[49]);
+            endScreens.Add(Screens[TowerOfFortressScreen]);
 
             endScreens.Add(Screens[JokerSpringScreen]);
             endScreens.Add(Screens[FortressSpringScreen]);
@@ -174,6 +174,7 @@ namespace FaxanaduRando.Randomizer
             candidates.Add(Screens[46]);
             candidates.Add(Screens[47]);
             candidates.Add(Screens[48]);
+            candidates.Add(Screens[49]);
             candidates.Add(Screens[50]);
             candidates.Add(Screens[51]);
             candidates.Add(Screens[53]);
@@ -314,7 +315,6 @@ namespace FaxanaduRando.Randomizer
             startToSpecial[JokerHouseEntranceScreen] = JokerHouseScreen;
 
             Screens[32].FriendEnds[Direction.Up] = Screens[SkySpringScreen];
-            Screens[49].FriendEnds[Direction.Left] = Screens[TowerOfFortressScreen];
 
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Left);
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Right);
@@ -348,6 +348,13 @@ namespace FaxanaduRando.Randomizer
             Screens[2].OpenTilesRight.Add(11);
             Screens[3].Directions.Add(Direction.Left);
             Screens[3].Directions.Add(Direction.Up);
+            Screens[3].OpenTilesLeft.Add(1);
+            Screens[3].OpenTilesLeft.Add(2);
+            Screens[3].OpenTilesLeft.Add(3);
+            Screens[3].OpenTilesLeft.Add(4);
+            Screens[3].OpenTilesLeft.Add(5);
+            Screens[3].OpenTilesLeft.Add(6);
+            Screens[3].OpenTilesLeft.Add(7);
             Screens[3].OpenTilesLeft.Add(8);
             Screens[3].OpenTilesLeft.Add(9);
             Screens[3].OpenTilesLeft.Add(10);
@@ -599,10 +606,10 @@ namespace FaxanaduRando.Randomizer
             Screens[TowerOfFortressScreen].OpenTilesRight.Add(2);
             Screens[TowerOfFortressScreen].OpenTilesRight.Add(3);
             Screens[TowerOfFortressScreen].OpenTilesRight.Add(4);
-            Screens[TowerOfFortressScreen].OpenTilesRight.Add(7);
-            Screens[TowerOfFortressScreen].OpenTilesRight.Add(8);
-            Screens[TowerOfFortressScreen].OpenTilesRight.Add(9);
-            Screens[TowerOfFortressScreen].OpenTilesRight.Add(10);
+            Screens[TowerOfFortressScreen].SecondOpenTilesRight.Add(7);
+            Screens[TowerOfFortressScreen].SecondOpenTilesRight.Add(8);
+            Screens[TowerOfFortressScreen].SecondOpenTilesRight.Add(9);
+            Screens[TowerOfFortressScreen].SecondOpenTilesRight.Add(10);
             Screens[TowerOfFortressEntranceScreen].Directions.Add(Direction.Right);
             Screens[TowerOfFortressEntranceScreen].OpenTilesRight.Add(7);
             Screens[TowerOfFortressEntranceScreen].OpenTilesRight.Add(8);
@@ -667,7 +674,7 @@ namespace FaxanaduRando.Randomizer
             Screens[48].OpenTilesRight.Add(8);
             Screens[48].OpenTilesRight.Add(9);
             Screens[48].OpenTilesRight.Add(10);
-            //Screens[49].Directions.Add(Direction.Left);
+            Screens[49].Directions.Add(Direction.Left);
             Screens[49].Directions.Add(Direction.Right);
             Screens[49].OpenTilesLeft.Add(2);
             Screens[49].OpenTilesLeft.Add(3);

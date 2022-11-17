@@ -52,6 +52,16 @@ namespace FaxanaduRando.Randomizer
         {
             SubLevelId = id;
             Screens = screens;
+            foreach (var screen in screens)
+            {
+                screen.ParentSublevel = SubLevelId;
+            }
+        }
+
+        public void AddScreen(Screen screen)
+        {
+            Screens.Add(screen);
+            screen.ParentSublevel = SubLevelId;
         }
 
         public bool ContainsItem(Sprite.SpriteId itemId)

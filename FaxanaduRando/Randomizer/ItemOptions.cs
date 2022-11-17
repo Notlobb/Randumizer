@@ -31,8 +31,8 @@ namespace FaxanaduRando.Randomizer
 
         public enum MattockUsages
         {
-            AnywhereExceptMistEntranceNoFraternalItemShuffle,
-            AnywhereExceptMistEntrance,
+            AnywhereExceptBannedScreens,
+            AnywhereExceptBannedScreensAllowMattockLockedItems,
             Anywhere,
             AnywhereUpdateLogic,
             Unchanged,
@@ -78,7 +78,7 @@ namespace FaxanaduRando.Randomizer
         public static bool GuaranteeMattock { get; set; } = true;
         public static bool GuaranteeStartingSpell { get; set; } = true;
         public static bool ReplacePoison { get; set; } = true;
-        public static MattockUsages MattockUsage { get; set; } = MattockUsages.AnywhereExceptMistEntranceNoFraternalItemShuffle;
+        public static MattockUsages MattockUsage { get; set; } = MattockUsages.AnywhereExceptBannedScreens;
         public static bool AlwaysSpawnSmallItems { get; set; } = true;
         public static bool IncludeSomeEolisDoors { get; set; } = false;
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
@@ -119,10 +119,10 @@ namespace FaxanaduRando.Randomizer
     {
         public MattockUsageSettings()
         {
-            Add("Anywhere except Mist entrance");
-            Add("Anywhere except Mist entrance, include Fraternal red potion in item shuffle");
-            Add("Anywhere, spring quest will still be considered required");
-            Add("Anywhere, spring quest won't be considered required");
+            Add("Anywhere except banned screens (Trunk exit or Branch double item screen)");
+            Add("Anywhere except banned screens, allow mattock-locked items");
+            Add("Anywhere, allow mattock-locked items, spring quest will still be considered required");
+            Add("Anywhere, allow mattock-locked items, spring quest won't be considered required");
             Add("Unchanged");
         }
     }
