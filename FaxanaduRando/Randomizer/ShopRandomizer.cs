@@ -410,27 +410,13 @@ namespace FaxanaduRando.Randomizer
             ids.Add(Id.FullPlate);
             ids.Add(Id.LargeShield);
             ids.Add(Id.MagicShield);
-
-            if (Util.AllWorldScreensRandomized())
-            {
-                ids.Add(Id.Mattock);
-            }
-            else
-            {
-                ids.Add(Id.Hourglass);
-            }
-
+            ids.Add(Id.Hourglass);
             ids.Add(Id.Elixir);
             ids.Add(Id.Elixir);
             ids.Add(Id.WingBoots);
             ids.Add(Id.WingBoots);
             ids.Add(Id.WingBoots);
             ids.Add(Id.Mattock);
-
-            if (!Util.AllWorldScreensRandomized())
-            {
-                ids.Add(Id.WingBoots);
-            }
 
             if (GeneralOptions.ShuffleWorlds &&
                 ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)

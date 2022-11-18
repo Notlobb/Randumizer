@@ -94,8 +94,12 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
-            addedFirstFork = !specialScreens.Contains(Screens[4]);
-            if (addedFirstFork)
+            if (specialScreens.Count > 0)
+            {
+                return false;
+            }
+
+            if (!addedFirstFork)
             {
                 result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false, true);
                 if (!result)
@@ -104,19 +108,13 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            addedSecondFork = !specialScreens.Contains(Screens[GrieveScreen]);
-            if (addedSecondFork)
+            if (!addedSecondFork)
             {
                 result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false, true);
                 if (!result)
                 {
                     return result;
                 }
-            }
-
-            if (specialScreens.Count > 0)
-            {
-                return false;
             }
 
             if (candidates.Count > 10)
