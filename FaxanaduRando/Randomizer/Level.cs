@@ -255,7 +255,7 @@ namespace FaxanaduRando.Randomizer
         }
 
         protected bool CreateSublevel(Screen start, Screen end, List<Screen> candidates, List<Screen> specialScreens,
-                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts, bool newSublevelScreens=true)
+                                      int specialProbability, int endProbability, Random random, SubLevel.Id sublevelId, uint attempts, bool newSublevelScreens=true, bool highProbabilities=false)
         {
             if (!GeneralOptions.ShuffleTowers)
             {
@@ -305,11 +305,19 @@ namespace FaxanaduRando.Randomizer
                     if (specialProbability > 0 && specialProbability < 100)
                     {
                         specialProbability = random.Next(1, 100);
+                        if (highProbabilities)
+                        {
+                            specialProbability = Math.Min(100, specialProbability * 2);
+                        }
                     }
 
                     if (endProbability > 0 && endProbability < 100)
                     {
                         endProbability = random.Next(1, 100);
+                        if (highProbabilities)
+                        {
+                            endProbability = Math.Min(100, endProbability * 2);
+                        }
                     }
                 }
 

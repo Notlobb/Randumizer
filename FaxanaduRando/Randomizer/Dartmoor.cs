@@ -57,35 +57,30 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 35, 10, random, SubLevel.Id.Dartmoor, attempts);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 35, 10, random, SubLevel.Id.Dartmoor, attempts, highProbabilities: true);
             if (!result)
             {
                 return result;
             }
 
-            if (specialScreens.Contains(Screens[DartmoorExitScreen]) &&
-                specialScreens.Contains(Screens[4]) &&
-                specialScreens.Contains(Screens[26]))
+            bool addedFirstFork = !specialScreens.Contains(Screens[4]);
+            if (addedFirstFork)
             {
-                return false;
+                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
-            result = CreateSublevel(Screens[26], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false);
-            if (!result)
+            bool addedSecondFork = !specialScreens.Contains(Screens[GrieveScreen]);
+            if (addedSecondFork)
             {
-                return result;
-            }
-
-            if (specialScreens.Contains(Screens[DartmoorExitScreen]) &&
-                specialScreens.Contains(Screens[4]))
-            {
-                return false;
-            }
-
-            result = CreateSublevel(Screens[1], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false);
-            if (!result)
-            {
-                return result;
+                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
             if (specialScreens.Contains(Screens[DartmoorExitScreen]))
@@ -93,10 +88,30 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 30, 2, random, SubLevel.Id.CastleFraternal, attempts);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 30, 2, random, SubLevel.Id.CastleFraternal, attempts, highProbabilities: true);
             if (!result)
             {
                 return result;
+            }
+
+            addedFirstFork = !specialScreens.Contains(Screens[4]);
+            if (addedFirstFork)
+            {
+                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
+            }
+
+            addedSecondFork = !specialScreens.Contains(Screens[GrieveScreen]);
+            if (addedSecondFork)
+            {
+                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
             if (specialScreens.Count > 0)
@@ -122,7 +137,7 @@ namespace FaxanaduRando.Randomizer
             //candidates.Add(Screens[15]); //unused screen?
             candidates.Add(Screens[17]);
             candidates.Add(Screens[23]);
-            candidates.Add(Screens[26]);
+            //candidates.Add(Screens[26]);
             candidates.Add(Screens[27]);
             candidates.Add(Screens[29]);
 
@@ -164,6 +179,7 @@ namespace FaxanaduRando.Randomizer
         {
             startToSpecial[16] = FraternalScreen;
 
+            Screens[GrieveScreen].FriendConnections[Direction.Down] = Screens[26];
             Screens[25].FriendEnds[Direction.Down] = Screens[30];
 
             Screens[4].FriendConnections[Direction.Up] = Screens[3];
@@ -322,7 +338,7 @@ namespace FaxanaduRando.Randomizer
             Screens[19].OpenTilesRight.Add(3);
             //Screens[19].OpenTilesDown.Add(9);
             Screens[GrieveScreen].Directions.Add(Direction.Left);
-            Screens[GrieveScreen].Directions.Add(Direction.Down);
+            //Screens[GrieveScreen].Directions.Add(Direction.Down);
             Screens[GrieveScreen].OpenTilesLeft.Add(1);
             Screens[GrieveScreen].OpenTilesLeft.Add(2);
             Screens[GrieveScreen].OpenTilesLeft.Add(3);
@@ -362,7 +378,7 @@ namespace FaxanaduRando.Randomizer
             Screens[25].OpenTilesDown.Add(14);
             Screens[26].Directions.Add(Direction.Left);
             Screens[26].Directions.Add(Direction.Right);
-            Screens[26].Directions.Add(Direction.Up);
+            //Screens[26].Directions.Add(Direction.Up);
             Screens[26].OpenTilesLeft.Add(2);
             Screens[26].OpenTilesLeft.Add(3);
             Screens[26].OpenTilesLeft.Add(4);

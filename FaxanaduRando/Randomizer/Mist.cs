@@ -292,15 +292,15 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
+            if (specialScreens.Count > 0)
+            {
+                return false;
+            }
+
             result = CreateSublevel(Screens[5], endScreens[7], candidates, specialScreens, 95, 10, random, Screens[5].ParentSublevel, attempts, false);
             if (!result)
             {
                 return result;
-            }
-
-            if (specialScreens.Count > 0)
-            {
-                return false;
             }
 
             if (candidates.Count > 10)
