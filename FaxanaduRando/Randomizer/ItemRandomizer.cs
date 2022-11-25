@@ -331,13 +331,16 @@ namespace FaxanaduRando.Randomizer
                     continue;
                 }
 
-                if (ItemOptions.GuaranteeElixirNearFortress && !GuaranteedElixir(shopRandomizer, giftRandomizer, doorRandomizer, levels))
-                {
-                    continue;
-                }
-
                 valid = CheckValid(shopRandomizer, giftRandomizer, doorRandomizer, levels, new HashSet<ShopRandomizer.Id>(),
                                    new HashSet<SubLevel.Id>(), new HashSet<Guru.GuruId>());
+
+                if (valid)
+                {
+                    if (ItemOptions.GuaranteeElixirNearFortress)
+                    {
+                        valid = GuaranteedElixir(shopRandomizer, giftRandomizer, doorRandomizer, levels);
+                    }
+                }
             }
 
             if (!valid)
@@ -826,6 +829,23 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            var items = new List<Sprite>();
+            var itemIds = new HashSet<Sprite.SpriteId>();
+
+            bool SetElixir()
+            {
+                foreach (var item in items)
+                {
+                    if (!Sprite.KeyItems.Contains(item.Id))
+                    {
+                        item.Id = Sprite.SpriteId.Elixir;
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
             var tempIds = new HashSet<ShopRandomizer.Id>();
             var tempSublevels = new HashSet<SubLevel.Id>();
             var tempGurus = new HashSet<Guru.GuruId>();
@@ -842,10 +862,11 @@ namespace FaxanaduRando.Randomizer
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.EarlyTrunk], items, itemIds, doorRandomizer);
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk], items, itemIds, doorRandomizer);
+                Util.ShuffleList(items, 0, items.Count - 1, Rand);
+                return SetElixir();
             }
 
             tempIds = new HashSet<ShopRandomizer.Id>();
@@ -864,10 +885,11 @@ namespace FaxanaduRando.Randomizer
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], items, itemIds, doorRandomizer);
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], items, itemIds, doorRandomizer);
+                Util.ShuffleList(items, 0, items.Count - 1, Rand);
+                return SetElixir();
             }
 
             tempIds = new HashSet<ShopRandomizer.Id>();
@@ -888,10 +910,12 @@ namespace FaxanaduRando.Randomizer
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.EarlyMist], items, itemIds, doorRandomizer);
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.MiddleMist], items, itemIds, doorRandomizer);
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.LateMist], items, itemIds, doorRandomizer);
+                Util.ShuffleList(items, 0, items.Count - 1, Rand);
+                return SetElixir();
             }
 
             tempIds = new HashSet<ShopRandomizer.Id>();
@@ -911,10 +935,11 @@ namespace FaxanaduRando.Randomizer
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], items, itemIds, doorRandomizer);
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], items, itemIds, doorRandomizer);
+                Util.ShuffleList(items, 0, items.Count - 1, Rand);
+                return SetElixir();
             }
 
             tempIds = new HashSet<ShopRandomizer.Id>();
@@ -931,10 +956,10 @@ namespace FaxanaduRando.Randomizer
                 {
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
+
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.Dartmoor], items, itemIds, doorRandomizer);
+                Util.ShuffleList(items, 0, items.Count - 1, Rand);
+                return SetElixir();
             }
 
             return false;
@@ -1214,6 +1239,23 @@ namespace FaxanaduRando.Randomizer
                         items.Add(sprite);
                         itemIds.Add(sprite.Id);
                     }
+                }
+            }
+        }
+
+        private void CollectSublevelItems(SubLevel subLevel, List<Sprite> items, HashSet<Sprite.SpriteId> itemIds, DoorRandomizer doorRandomizer)
+        {
+            if (subLevel == null)
+            {
+                return;
+            }
+
+            CollectItems(subLevel.Screens, items, itemIds);
+            foreach (var screen in subLevel.Screens)
+            {
+                foreach (var door in screen.Doors)
+                {
+                    CollectSublevelItems(doorRandomizer.Doors[door].Sublevel, items, itemIds, doorRandomizer);
                 }
             }
         }

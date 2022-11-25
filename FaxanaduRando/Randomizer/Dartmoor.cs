@@ -6,6 +6,7 @@ namespace FaxanaduRando.Randomizer
     internal class Dartmoor : Level
     {
         public const byte FraternalScreen = 12;
+        public const byte DartmoorCityLeftScreen = 3;
         public const byte DartmoorExitScreen = 14;
         public const byte GrieveScreen = 20;
 
@@ -24,13 +25,13 @@ namespace FaxanaduRando.Randomizer
             Screens[2].Doors.Add(DoorId.DartmoorHouse3);
             Screens[2].Doors.Add(DoorId.DartmoorHouse4);
 
-            Screens[3].Doors.Add(DoorId.LeftOfDartmoor);
-            Screens[3].Doors.Add(DoorId.DartmoorBar);
-            Screens[3].Doors.Add(DoorId.DartmoorGuru);
-            Screens[3].Doors.Add(DoorId.DartmoorHospital);
-            Screens[3].Doors.Add(DoorId.DartmoorItemShop);
-            Screens[3].Doors.Add(DoorId.DartmoorKeyShop);
-            Screens[3].Doors.Add(DoorId.DartmoorMeatShop);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.LeftOfDartmoor);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorBar);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorGuru);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorHospital);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorItemShop);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorKeyShop);
+            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorMeatShop);
             Screens[8].Doors.Add(DoorId.FarLeftDartmoor);
             Screens[FraternalScreen].Doors.Add(DoorId.CastleFraternal);
             Screens[GrieveScreen].Doors.Add(DoorId.KingGrieve);
@@ -180,8 +181,8 @@ namespace FaxanaduRando.Randomizer
             Screens[GrieveScreen].FriendConnections[Direction.Down] = Screens[26];
             Screens[25].FriendEnds[Direction.Down] = Screens[30];
 
-            Screens[4].FriendConnections[Direction.Up] = Screens[3];
-            Screens[3].FriendConnections[Direction.Up] = Screens[1];
+            Screens[4].FriendConnections[Direction.Up] = Screens[DartmoorCityLeftScreen];
+            Screens[DartmoorCityLeftScreen].FriendConnections[Direction.Up] = Screens[1];
 
             Screens[0].Directions.Add(Direction.Left);
             Screens[0].Directions.Add(Direction.Right);
@@ -217,10 +218,10 @@ namespace FaxanaduRando.Randomizer
             Screens[2].OpenTilesRight.Add(9);
             Screens[2].OpenTilesRight.Add(10);
             Screens[2].OpenTilesRight.Add(11);
-            //Screens[3].Directions.Add(Direction.Up);
-            Screens[3].Directions.Add(Direction.Down);
-            Screens[3].OpenTilesUp.Add(2);
-            Screens[3].OpenTilesDown.Add(5);
+            //Screens[DartmoorCityLeftScreen].Directions.Add(Direction.Up);
+            //Screens[DartmoorCityLeftScreen].Directions.Add(Direction.Down);
+            //Screens[DartmoorCityLeftScreen].OpenTilesUp.Add(2);
+            //Screens[DartmoorCityLeftScreen].OpenTilesDown.Add(5);
             Screens[4].Directions.Add(Direction.Left);
             //Screens[4].Directions.Add(Direction.Up);
             Screens[4].OpenTilesLeft.Add(2);

@@ -1012,7 +1012,7 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void FinalizeWorlds(List<Level> levels, Random random)
+        public void FinalizeWorlds(List<Level> levels, Random random, byte[] content)
         {
             for (int i = 1; i < worlds.Count; i++)
             {
@@ -1032,11 +1032,14 @@ namespace FaxanaduRando.Randomizer
                 {
                     foreach (var screen in sublevel.Screens)
                     {
-                        foreach (var door in screen.Doors)
+                        foreach (var doorId in screen.Doors)
                         {
-                            if (Doors.ContainsKey(door))
+                            if (Doors.ContainsKey(doorId))
                             {
-                                var subSublevel = Doors[door].Sublevel;
+                                var door = Doors[doorId];
+                                door.ParentSublevel = sublevel;
+
+                                var subSublevel = door.Sublevel;
                                 if (subSublevel != null)
                                 {
                                     if (subSublevel.SubLevelId != sublevel.SubLevelId)
@@ -1048,6 +1051,20 @@ namespace FaxanaduRando.Randomizer
                                     }
                                 }
                             }
+                        }
+
+                        if (level.Number == WorldNumber.Branch &&
+                            screen.Number == Branch.ConflateLeftScreen &&
+                            sublevel.Palette != SubLevel.UndefinedPalette)
+                        {
+                            content[Section.GetOffset(15, 0xEAF2, 0xC000)] = sublevel.Palette;
+                        }
+
+                        if (level.Number == WorldNumber.Dartmoor &&
+                            screen.Number == Dartmoor.DartmoorCityLeftScreen &&
+                            sublevel.Palette != SubLevel.UndefinedPalette)
+                        {
+                            content[Section.GetOffset(15, 0xEB01, 0xC000)] = sublevel.Palette;
                         }
 
                         if (screen.ParentWorld == WorldNumber.Unknown)
@@ -1197,105 +1214,40 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void RandomizeTowerPalettes(byte[] content, Random random, out byte finalPalette)
+        public void RandomizeTowerPalettes(PaletteRandomizer paletteRandomizer, byte[] content)
         {
-            finalPalette = PaletteRandomizer.FinalPalette;
             var doors = new List<Door>(Doors.Values.Where(t => IsTower(t.Id)));
             doors.AddRange(LevelDoors.Values);
 
+            foreach (var door in doors)
+            {
+                if (!GeneralOptions.DarkTowers)
+                {
+                    door.Requirement.palette = paletteRandomizer.GetRandomPalette(door.Requirement.palette);
+                }
+
+                if (door.Id == DoorId.EvilOnesLair)
+                {
+                    paletteRandomizer.FinalPalette = door.Requirement.palette;
+                }
+
+                if (door.ReturnRequirement != null &&
+                    door.ReturnRequirement.palette != PaletteRandomizer.DarkPalette)
+                {
+                    door.ReturnRequirement.palette = paletteRandomizer.GetRandomPalette(door.ReturnRequirement.palette);
+                }
+            }
+
             if (ExtraOptions.MusicSetting == Music.Unchanged)
             {
-                var towerPalettes = new Dictionary<byte, byte>();
                 var paletteTable = new Table(Section.GetOffset(15, 0xE569, 0xC000), 7, 1, content);
-                var possiblePalettes = new List<byte>();
-
-                for(byte i = 0; i < 32; i++)
-                {
-                    if (PaletteRandomizer.badPalettes.Contains(i) || i == PaletteRandomizer.BranchPalette)
-                    {
-                        continue;
-                    }
-
-                    possiblePalettes.Add(i);
-                }
-
-                Util.ShuffleList(possiblePalettes, 0, possiblePalettes.Count - 1, random);
-
-                foreach (var entry in paletteTable.Entries)
-                {
-                    towerPalettes[entry[0]] = possiblePalettes[possiblePalettes.Count - 1];
-                    possiblePalettes.RemoveAt(possiblePalettes.Count - 1);
-                }
-
-                foreach (var door in doors)
-                {
-                    if (!GeneralOptions.DarkTowers)
-                    {
-                        door.Requirement.palette = GetTowerPalette(door.Requirement.palette, random, towerPalettes, possiblePalettes);
-                        if (door.Id == DoorId.EvilOnesLair)
-                        {
-                            finalPalette = door.Requirement.palette;
-                        }
-                    }
-
-                    if (door.ReturnRequirement != null &&
-                        door.ReturnRequirement.palette != PaletteRandomizer.DarkPalette)
-                    {
-                        door.ReturnRequirement.palette = GetTowerPalette(door.ReturnRequirement.palette, random, towerPalettes, possiblePalettes);
-                        if (door.OriginalId == DoorId.BattleHelmetWing)
-                        {
-                            door.ReturnRequirement.palette = PaletteRandomizer.BranchPalette;
-                        }
-                    }
-                }
-
-                for (int i = 0; i < paletteTable.Entries.Count; i++)
-                {
-                    var palette = towerPalettes[paletteTable.Entries[i][0]];
-                    if (palette == PaletteRandomizer.DarkPalette ||
-                        paletteTable.Entries[i][0] == PaletteRandomizer.DarkPalette)
-                    {
-                        continue;
-                    }
-
-                    paletteTable.Entries[i][0] = palette;
-                }
-
+                paletteRandomizer.SetTowerPalettes(paletteTable);
                 paletteTable.AddToContent(content);
-            }
-            else
-            {
-                foreach (var door in doors)
-                {
-                    if (!GeneralOptions.DarkTowers)
-                    {
-                        door.Requirement.palette = PaletteRandomizer.GetRandomPalette(random);
-                    }
-
-                    if (door.ReturnRequirement != null &&
-                        door.ReturnRequirement.palette != PaletteRandomizer.DarkPalette)
-                    {
-                        door.ReturnRequirement.palette = PaletteRandomizer.GetRandomPalette(random);
-                    }
-                }
             }
 
             foreach (var door in Doors.Values)
             {
                 door.AddToContent(content);
-            }
-        }
-
-        private byte GetTowerPalette(byte palette, Random random, Dictionary<byte, byte> towerPalettes,
-                                     List<byte> possiblePalettes)
-        {
-            if (towerPalettes.ContainsKey(palette))
-            {
-                return towerPalettes[palette];
-            }
-            else
-            {
-                return possiblePalettes[random.Next(possiblePalettes.Count)];
             }
         }
 

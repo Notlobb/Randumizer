@@ -38,9 +38,12 @@ namespace FaxanaduRando.Randomizer
             Other,
         }
 
+        public const byte UndefinedPalette = 0xFF;
+
         public Id SubLevelId { get; set; }
         public List<Screen> Screens { get; set; } = new List<Screen>();
         public bool RequiresMattock { get; set; } = false;
+        public byte Palette { get; set; } = UndefinedPalette;
 
         public static Dictionary<Id, SubLevel> SubLevelDict { get; set; } = new Dictionary<Id, SubLevel>();
 
@@ -56,6 +59,11 @@ namespace FaxanaduRando.Randomizer
             {
                 screen.ParentSublevel = SubLevelId;
             }
+        }
+
+        public SubLevel(Id id, List<Screen> screens, byte palette) : this(id, screens)
+        {
+            Palette = palette;
         }
 
         public void AddScreen(Screen screen)

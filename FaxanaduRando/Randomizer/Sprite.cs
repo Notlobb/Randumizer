@@ -214,6 +214,7 @@ namespace FaxanaduRando.Randomizer
             SpriteId.Pendant,
             SpriteId.Rod,
             SpriteId.WingbootsBossLocked,
+            SpriteId.Elixir,
         };
 
         public static readonly HashSet<SpriteId> enemies = GetEnemies();

@@ -6,6 +6,7 @@ namespace FaxanaduRando.Randomizer
     internal class Branch : Level
     {
         public const byte DoubleItemScreen = 30;
+        public const byte ConflateLeftScreen = 13;
         public const byte DaybreakLeftScreen = 35;
         public const byte DaybreakRightScreen = 36;
 
@@ -29,12 +30,12 @@ namespace FaxanaduRando.Randomizer
             AddDaybreakDoors(DaybreakLeftScreen);
             AddDaybreakDoors(DaybreakRightScreen);
 
-            Screens[13].Doors.Add(DoorId.ConflateBar);
-            Screens[13].Doors.Add(DoorId.ConflateGuru);
-            Screens[13].Doors.Add(DoorId.ConflateHospital);
-            Screens[13].Doors.Add(DoorId.ConflateHouse);
-            Screens[13].Doors.Add(DoorId.ConflateItemShop);
-            Screens[13].Doors.Add(DoorId.ConflateMeatShop);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateBar);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateGuru);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateHospital);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateHouse);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateItemShop);
+            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateMeatShop);
         }
 
         public override int GetStartOffset()
@@ -174,7 +175,7 @@ namespace FaxanaduRando.Randomizer
 
             endScreens.Add(Screens[DaybreakLeftScreen]);
             endScreens.Add(Screens[39]);
-            endScreens.Add(Screens[13]);
+            endScreens.Add(Screens[ConflateLeftScreen]);
             endScreens.Add(Screens[29]);
             endScreens.Add(Screens[7]);
             endScreens.Add(Screens[22]);
@@ -312,7 +313,7 @@ namespace FaxanaduRando.Randomizer
             Screens[11].OpenTilesRight.Add(6);
             Screens[11].OpenTilesDown.Add(7);
             Screens[12].Directions.Add(Direction.Left);
-            //Screens[12].Directions.Add(Direction.Right);
+            Screens[12].Directions.Add(Direction.Right);
             Screens[12].Directions.Add(Direction.Up);
             Screens[12].OpenTilesLeft.Add(4);
             Screens[12].OpenTilesLeft.Add(5);
@@ -322,11 +323,11 @@ namespace FaxanaduRando.Randomizer
             Screens[12].OpenTilesRight.Add(6);
             Screens[12].OpenTilesRight.Add(7);
             Screens[12].OpenTilesUp.Add(8);
-            Screens[13].Directions.Add(Direction.Left);
-            Screens[13].OpenTilesLeft.Add(4);
-            Screens[13].OpenTilesLeft.Add(5);
-            Screens[13].OpenTilesLeft.Add(6);
-            Screens[13].OpenTilesLeft.Add(7);
+            Screens[ConflateLeftScreen].Directions.Add(Direction.Left);
+            Screens[ConflateLeftScreen].OpenTilesLeft.Add(4);
+            Screens[ConflateLeftScreen].OpenTilesLeft.Add(5);
+            Screens[ConflateLeftScreen].OpenTilesLeft.Add(6);
+            Screens[ConflateLeftScreen].OpenTilesLeft.Add(7);
             Screens[14].Directions.Add(Direction.Right);
             Screens[14].Directions.Add(Direction.Down);
             Screens[14].OpenTilesRight.Add(6);

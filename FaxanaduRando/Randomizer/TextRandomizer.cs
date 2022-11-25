@@ -112,10 +112,11 @@ namespace FaxanaduRando.Randomizer
                     "Why do they call it Faxanadu? It's not a fax and it's not du-ing anything!",
                     "What would Faxanadu?",
                     "I love the smell of the Fire spell in the morning. It smells like... victory",
-                    "Dragon Slayer? I hardly know her!",
+                    "Dragon Slayer? I hardly knew her!",
                     "In theory, this seed can be beaten. But in theory, communism works. In theory...",
                     "Trying is the first step towards failure",
                     "The fortress of what? Oh, Zenis. I thought you said something else...",
+                    "Are you in a race? If so, good luck!",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -486,10 +487,11 @@ namespace FaxanaduRando.Randomizer
                 "Donald",
                 "Ronald",
                 "OfficeWorker",
-                "Plummer",
+                "Plumber",
                 "Janitor",
                 "Baker",
                 "Butcher",
+                "Cook",
                 "MeatEater",
                 "King",
                 "CrimsonKing",
@@ -827,10 +829,21 @@ namespace FaxanaduRando.Randomizer
         private List<string> GetDoorHints(DoorId oldDoor, Door door, GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
+            string locationHint;
+            if (Util.AllWorldScreensRandomized() &&
+                door.ParentSublevel != null)
+            {
+                locationHint = $" in {door.ParentSublevel.SubLevelId}";
+            }
+            else
+            {
+                locationHint = "";
+            }
+
             if (door.Gift != null)
             {
                 string hint = $"{door.Id} has {door.Gift.Item}";
-                hint = GetTail(hint, oldDoor, door.ShouldShuffle, true);
+                hint = GetTail(hint, oldDoor, door.ShouldShuffle, locationHint);
                 hints.Add(hint);
             }
             if (door.Sublevel != null)
@@ -842,7 +855,7 @@ namespace FaxanaduRando.Randomizer
                     string hint = $"{door.Id} has {item}";
                     if (!weakHints)
                     {
-                        hint = GetTail(hint, oldDoor, door.ShouldShuffle, true);
+                        hint = GetTail(hint, oldDoor, door.ShouldShuffle, locationHint);
                     }
 
                     hints.Add(hint);
@@ -850,8 +863,8 @@ namespace FaxanaduRando.Randomizer
 
                 if (weakHints)
                 {
-                    string prefix = $"{door.Id}";
-                    string hint = GetTail(prefix, oldDoor, door.ShouldShuffle, false);
+                    string prefix = $"{door.Id} is";
+                    string hint = GetTail(prefix, oldDoor, door.ShouldShuffle, "");
                     if (hint != prefix)
                     {
                         hints.Add(hint);
@@ -875,12 +888,7 @@ namespace FaxanaduRando.Randomizer
 
                 void GetSpringHint(string spring, List< string> springHints)
                 {
-                    var hint = $"{spring} is in {door.Sublevel.SubLevelId}";
-                    if (GeneralOptions.ShuffleTowers)
-                    {
-                        hint += $" at {oldDoor}";
-                    }
-
+                    var hint = $"{spring} is in {door.Sublevel.SubLevelId} at {oldDoor}";
                     springHints.Add(hint);
                 }
 
@@ -903,7 +911,7 @@ namespace FaxanaduRando.Randomizer
                 foreach (var item in items)
                 {
                     string hint = $"{door.Id} has {item}";
-                    hint = GetTail(hint, door.OriginalId, door.ShouldShuffle, true);
+                    hint = GetTail(hint, door.OriginalId, door.ShouldShuffle, locationHint);
                     hints.Add(hint);
                 }
             }
@@ -911,20 +919,12 @@ namespace FaxanaduRando.Randomizer
             return hints;
         }
 
-        private string GetTail(string hint, DoorId oldDoor, bool shouldShuffle, bool appendAnd)
+        private string GetTail(string hint, DoorId oldDoor, bool shouldShuffle, string locationHint)
         {
+            hint += locationHint;
             if (shouldShuffle)
             {
-                if (appendAnd)
-                {
-                    hint += " and is at ";
-                }
-                else
-                {
-                    hint += " is at ";
-                }
-
-                hint += $"{oldDoor}";
+                hint += $" at {oldDoor}";
             }
 
             return hint;

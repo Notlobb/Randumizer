@@ -58,7 +58,7 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            doorRandomizer.FinalizeWorlds(levels, random);
+            doorRandomizer.FinalizeWorlds(levels, random, content);
 
             if (ItemOptions.AlwaysSpawnSmallItems)
             {
@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B15", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B16", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -334,18 +334,19 @@ namespace FaxanaduRando.Randomizer
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
 #endif
 
-            RandomizeExtras(content, random, doorRandomizer, out byte finalPalette, out bool addSection);
+            var paletteRandomizer = new PaletteRandomizer(random);
+            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
 
             if (GeneralOptions.ShuffleTowers)
             {
-                AddTowerShuffleModifications(content, addSection, finalPalette);
+                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
 
             File.WriteAllBytes(outputFile, content);
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 15");
+                spoilers.Add("Randumizer v0.25 Beta 16");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -697,7 +698,7 @@ namespace FaxanaduRando.Randomizer
             return suffix;
         }
 
-        private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette)
+        private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette, byte branchPalette)
         {
             var newSection = new Section();
             newSection.Bytes.Add(OpCode.JMPAbsolute);
@@ -791,7 +792,7 @@ namespace FaxanaduRando.Randomizer
 
                 newSection = new Section();
                 newSection.Bytes.Add(OpCode.CMPImmediate);
-                newSection.Bytes.Add(PaletteRandomizer.BranchPalette);
+                newSection.Bytes.Add(branchPalette);
                 newSection.Bytes.Add(OpCode.BNE);
                 newSection.Bytes.Add(0x04);
                 newSection.Bytes.Add(OpCode.LDAImmediate);
@@ -925,13 +926,13 @@ namespace FaxanaduRando.Randomizer
                 }
                 else if (level.Number == WorldNumber.Trunk)
                 {
-                    level.AddSubLevel(SubLevel.Id.EarlyTrunk, 0, 7);
-                    level.AddSubLevel(SubLevel.Id.MiddleTrunk, 8, 12);
-                    level.AddSubLevel(SubLevel.Id.LateTrunk, 22, 26);
-                    level.AddSubLevel(SubLevel.Id.TowerOfTrunk, 13, 21);
-                    level.AddSubLevel(SubLevel.Id.EastTrunk, 28, 40);
-                    level.AddSubLevel(SubLevel.Id.TowerOfFortress, 41, level.Screens.Count - 3);
-                    level.AddSubLevel(SubLevel.Id.JokerHouse, level.Screens.Count - 2, level.Screens.Count - 1);
+                    level.AddSubLevel(SubLevel.Id.EarlyTrunk, 0, 7, 6);
+                    level.AddSubLevel(SubLevel.Id.MiddleTrunk, 8, 12, 6);
+                    level.AddSubLevel(SubLevel.Id.LateTrunk, 22, 26, 6);
+                    level.AddSubLevel(SubLevel.Id.TowerOfTrunk, 13, 21, 7);
+                    level.AddSubLevel(SubLevel.Id.EastTrunk, 28, 40, 6);
+                    level.AddSubLevel(SubLevel.Id.TowerOfFortress, 41, level.Screens.Count - 3, 7);
+                    level.AddSubLevel(SubLevel.Id.JokerHouse, level.Screens.Count - 2, level.Screens.Count - 1, 7);
 
                     SubLevel.SkySpringSublevel = SubLevel.Id.EastTrunk;
                     SubLevel.FortressSpringSublevel = SubLevel.Id.TowerOfFortress;
@@ -939,43 +940,43 @@ namespace FaxanaduRando.Randomizer
                 }
                 else if (level.Number == WorldNumber.Mist)
                 {
-                    level.AddSubLevel(SubLevel.Id.EarlyMist, 16, 17);
+                    level.AddSubLevel(SubLevel.Id.EarlyMist, 16, 17, 10);
                     level.SubLevels[0].AddScreen(level.Screens[1]);
                     level.SubLevels[0].AddScreen(level.Screens[9]);
-                    level.AddSubLevel(SubLevel.Id.MiddleMist, 12, 13);
+                    level.AddSubLevel(SubLevel.Id.MiddleMist, 12, 13, 10);
                     level.SubLevels[1].AddScreen(level.Screens[0]);
                     level.SubLevels[1].AddScreen(level.Screens[6]);
                     level.SubLevels[1].AddScreen(level.Screens[13]);
                     level.SubLevels[1].AddScreen(level.Screens[22]);
-                    level.AddSubLevel(SubLevel.Id.LateMist, 23, 32);
+                    level.AddSubLevel(SubLevel.Id.LateMist, 23, 32, 10);
                     level.SubLevels[2].AddScreen(level.Screens[Mist.VictimRightScreen]);
                     level.SubLevels[2].AddScreen(level.Screens[Mist.FireMageScreen]);
-                    level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 47, 61);
-                    level.AddSubLevel(SubLevel.Id.TowerOfMist, 62, 76);
-                    level.AddSubLevel(SubLevel.Id.MasconTower, 77, 79);
-                    level.AddSubLevel(SubLevel.Id.VictimTower, 80, level.Screens.Count - 1);
+                    level.AddSubLevel(SubLevel.Id.TowerOfSuffer, 47, 61, 11);
+                    level.AddSubLevel(SubLevel.Id.TowerOfMist, 62, 76, 11);
+                    level.AddSubLevel(SubLevel.Id.MasconTower, 77, 79, 11);
+                    level.AddSubLevel(SubLevel.Id.VictimTower, 80, level.Screens.Count - 1, 11);
                 }
                 else if (level.Number == WorldNumber.Branch)
                 {
-                    level.AddSubLevel(SubLevel.Id.EarlyBranch, 3, 6);
+                    level.AddSubLevel(SubLevel.Id.EarlyBranch, 3, 6, 8);
                     level.AddSubLevelScreens(level.SubLevels[0], 10, 14);
-                    level.AddSubLevel(SubLevel.Id.BattleHelmetWing, 7, 9);
-                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 18);
-                    level.AddSubLevel(SubLevel.Id.DropDownWing, 22, 24);
-                    level.AddSubLevel(SubLevel.Id.EastBranch, 25, 35);
-                    level.AddSubLevel(SubLevel.Id.BackFromEastBranch, 19, 19);
+                    level.AddSubLevel(SubLevel.Id.BattleHelmetWing, 7, 9, 9);
+                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 18, 8);
+                    level.AddSubLevel(SubLevel.Id.DropDownWing, 22, 24, 9);
+                    level.AddSubLevel(SubLevel.Id.EastBranch, 25, 35, 9);
+                    level.AddSubLevel(SubLevel.Id.BackFromEastBranch, 19, 19, 9);
                 }
                 else if (level.Number == WorldNumber.Dartmoor)
                 {
-                    level.AddSubLevel(SubLevel.Id.Dartmoor, 0, 14);
-                    level.AddSubLevel(SubLevel.Id.CastleFraternal, 16, 20);
+                    level.AddSubLevel(SubLevel.Id.Dartmoor, 0, 14, 12);
+                    level.AddSubLevel(SubLevel.Id.CastleFraternal, 16, 20, 13);
                     level.AddSubLevelScreens(level.SubLevels[1], 22, level.Screens.Count - 1);
-                    level.AddSubLevel(SubLevel.Id.KingGrieve, 21, 21);
+                    level.AddSubLevel(SubLevel.Id.KingGrieve, 21, 21, 13);
 
                 }
                 else if (level.Number == WorldNumber.EvilOnesLair)
                 {
-                    level.AddSubLevel(SubLevel.Id.EvilOnesLair, 0, level.Screens.Count - 1);
+                    level.AddSubLevel(SubLevel.Id.EvilOnesLair, 0, level.Screens.Count - 1, 15);
                 }
                 else if (level.Number == WorldNumber.Buildings)
                 {
@@ -1537,16 +1538,13 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        private void RandomizeExtras(byte[] content, Random random, DoorRandomizer doorRandomizer, out byte finalPalette,
-                                     out bool addSection)
+        private void RandomizeExtras(byte[] content, Random random, DoorRandomizer doorRandomizer, PaletteRandomizer paletteRandomizer, out bool addSection)
         {
-            finalPalette = PaletteRandomizer.FinalPalette;
             addSection = false;
-            var paletteRandomizer = new PaletteRandomizer();
             if (ExtraOptions.RandomizePalettes)
             {
                 paletteRandomizer.RandomizePalettes(content, random);
-                doorRandomizer.RandomizeTowerPalettes(content, random, out finalPalette);
+                doorRandomizer.RandomizeTowerPalettes(paletteRandomizer, content);
             }
 
             if (ExtraOptions.MusicSetting != Music.Unchanged)

@@ -156,14 +156,14 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void AddSubLevel(SubLevel.Id id, int start, int end)
+        public void AddSubLevel(SubLevel.Id id, int start, int end, byte palette)
         {
             var screens = new List<Screen>();
             for (int i = start; i <= end; i++)
             {
                 screens.Add(Screens[i]);
             }
-            var sublevel = new SubLevel(id, screens);
+            var sublevel = new SubLevel(id, screens, palette);
             SubLevels.Add(sublevel);
             SubLevel.SubLevelDict[sublevel.SubLevelId] = sublevel;
         }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25 Beta 15" Height="450" Width="900">
+        Title="Randumizer v0.25 Beta 16" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -415,8 +415,8 @@
                 </Grid.RowDefinitions>
 
                 <CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="1" IsChecked="{Binding Path=(randomizer:ItemOptions.GuaranteeElixirNearFortress), Mode=TwoWay}"
-                          ToolTip="Guarantees that there will be an Elixir near the fountain that requires it"/>
-                <TextBlock Grid.Column="1" Grid.Row="1" Text="Guarantee elixir near Tower of Fortress spring"/>
+                          ToolTip="The randomizer will try to ensure that there is an Elixir near the spring that requires it"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="Elixir near Tower of Fortress spring"/>
 
                 <CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.FixPendantBug), Mode=TwoWay}"
                           ToolTip="Collecting the pendant makes you stronger instead of weaker, but you will also be weaker at the start"/>

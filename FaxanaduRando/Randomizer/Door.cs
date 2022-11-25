@@ -105,6 +105,7 @@ namespace FaxanaduRando.Randomizer
         public GiftItem Gift { get; set; } = null;
         public Shop BuildingShop { get; set; } = null;
         public Guru Guru { get; set; } = null;
+        public SubLevel ParentSublevel { get; set; } = null;
 
         public bool ShouldShuffle { get; set; } = false;
 
@@ -210,6 +211,12 @@ namespace FaxanaduRando.Randomizer
 
         public byte GetPalette(DoorId id)
         {
+            if (ParentSublevel != null &&
+                ParentSublevel.Palette != SubLevel.UndefinedPalette)
+            {
+                return ParentSublevel.Palette;
+            }
+
             if (doorPalettes.ContainsKey(id))
             {
                 return doorPalettes[id];
