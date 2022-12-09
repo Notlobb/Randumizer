@@ -31,7 +31,7 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            return CreateSublevel(Screens[7], Screens[8], new List<Screen>(), specialScreens, 100, 100, random, SubLevel.Id.Eolis, attempts);
+            return CreateSublevel(Screens[7], Screens[8], new List<Screen>(), specialScreens, random, SubLevel.Id.Eolis, attempts);
         }
 
         public override List<Screen> GetCandidates(Random random)

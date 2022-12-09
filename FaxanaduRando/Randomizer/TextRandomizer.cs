@@ -91,7 +91,6 @@ namespace FaxanaduRando.Randomizer
                     "Hi",
                     "Ni",
                     "Who's talkin'?",
-                    "Stand back. I just farted... Sorry",
                     "I am Error",
                     "Sorry. I know nothing",
                     "Faxanadu or du not. There is no Faxanatry",
@@ -127,7 +126,6 @@ namespace FaxanaduRando.Randomizer
                 };
 
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
-
                 if (GeneralOptions.HintSetting == GeneralOptions.Hints.Community)
                 {
                     hints.AddRange(communityHints);
@@ -369,6 +367,404 @@ namespace FaxanaduRando.Randomizer
             SetTitleData(titleRewards, content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
+        public List<string> GetHints(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, bool spoilerLog = false)
+        {
+            var hints = new List<string>();
+
+            hints.AddRange(GetTowerHints(doorRandomizer, giftRandomizer, spoilerLog));
+            hints.AddRange(GetAllSublevelHints(giftRandomizer, spoilerLog));
+            hints.AddRange(GetBuildingHints(doorRandomizer, giftRandomizer, spoilerLog));
+
+            if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            {
+                var levelKeyHints = GetLevelKeyHints(doorRandomizer);
+                var exitKeyHints = GetExitKeyHints(doorRandomizer);
+                hints.AddRange(levelKeyHints);
+                hints.AddRange(exitKeyHints);
+            }
+
+            if (GeneralOptions.ShuffleWorlds)
+            {
+                var worldHints = GetWorldHints(doorRandomizer);
+                hints.AddRange(worldHints);
+            }
+
+            if (GeneralOptions.HintSetting == GeneralOptions.Hints.Strong &&
+                !spoilerLog)
+            {
+                hints.AddRange(hints);
+            }
+
+            return hints;
+        }
+
+        public static string GetSuffix(Random random)
+        {
+            var beginningStrings = new List<string>()
+            {
+                "Red",
+                "Blue",
+                "Yellow",
+                "Green",
+                "White",
+                "Black",
+                "Gray",
+                "Icy",
+                "Orange",
+                "Purple",
+                "Silver",
+                "Brown",
+                "Cyan",
+                "Tan",
+                "Teal",
+                "Amazing",
+                "Awesome",
+                "Attractive",
+                "Bald",
+                "Beautiful",
+                "Chubby",
+                "Clean",
+                "Dazzling",
+                "Drab",
+                "Elegant",
+                "Fancy",
+                "Fit",
+                "Flabby",
+                "Glamorous",
+                "Gorgeous",
+                "Handsome",
+                "Long",
+                "Magnificent",
+                "Muscular",
+                "Plain",
+                "Plump",
+                "Quaint",
+                "Scruffy",
+                "Shapely",
+                "Short",
+                "Skinny",
+                "Stocky",
+                "Careful",
+                "Clever",
+                "Famous",
+                "Gifted",
+                "Hallowed",
+                "Helpful",
+                "Important",
+                "Inexpensive",
+                "Odd",
+                "Poor",
+                "Powerful",
+                "Rich",
+                "Shy",
+                "Aggressive",
+                "Ambitious",
+                "Brave",
+                "Calm",
+                "Delightful",
+                "Eager",
+                "Faithful",
+                "Gentle",
+                "Happy",
+                "Jolly",
+                "Kind",
+                "Nice",
+                "Obedient",
+                "Polite",
+                "Proud",
+                "Silly",
+                "Victorious",
+                "Witty",
+                "Wonderful",
+                "Angry",
+                "Bewildered",
+                "Clumsy",
+                "Embarrassed",
+                "Embarrassing",
+                "Fierce",
+                "Grumpy",
+                "Itchy",
+                "Jealous",
+                "Lazy",
+                "Mysterious",
+                "Nervous",
+                "Obnoxious",
+                "Pitiful",
+                "Repulsive",
+                "Scary",
+                "Thoughtless",
+                "Worried",
+                "Big",
+                "Colossal",
+                "Gigantic",
+                "Great",
+                "Huge",
+                "Immense",
+                "Large",
+                "Massive",
+                "Microscopic",
+                "Short",
+                "Small",
+                "Tall",
+                "Tiny",
+                "Ancient",
+                "Early",
+                "Fast",
+                "Long",
+                "Modern",
+                "Old",
+                "Prehistoric",
+                "Quick",
+                "Slow",
+                "Swift",
+                "Young",
+                "Acidic",
+                "Bitter",
+                "Delicious",
+                "Fresh",
+                "Greasy",
+                "Juicy",
+                "Hot",
+                "Moldy",
+                "Salty",
+                "Sour",
+                "Spicy",
+                "Sweet",
+                "Tasteless",
+                "Tasty",
+                "Yummy",
+                "Chilly",
+                "Cold",
+                "Cool",
+                "Damaged",
+                "Damp",
+                "Dirty",
+                "Dry",
+                "Fluffy",
+                "Freezing",
+                "Greasy",
+                "Icy",
+                "Sharp",
+                "Slimy",
+                "Sticky",
+                "Strong",
+                "Warm",
+                "Weak",
+                "Wet",
+                "Wooden",
+                "Metal",
+                "Metallic",
+                "Smart",
+                "Wise",
+                "Negative",
+                "Positive",
+                "Chaotic",
+                "Shining",
+                "Evil",
+                "Good",
+                "Neutral",
+                "Dark",
+                "Shadow",
+                "Royal",
+                "Poisonous",
+                "Confused",
+                "Surprised",
+                "Bizarre",
+                "Heavenly",
+                "Holy",
+                "Funny",
+                "Hilarious",
+                "Talented",
+                "Skilled",
+                "Weird",
+                "Shady",
+                "Tricky",
+                "Adamant",
+                "Bold",
+                "Crazy",
+                "Deadly",
+                "Exotic",
+                "Frantic",
+                "Giant",
+                "Heroic",
+                "Imperial",
+                "Solid",
+                "Unexpected",
+            };
+
+            var middleStrings = new List<string>()
+            {
+                "Eolis",
+                "Trunk",
+                "Mist",
+                "Branch",
+                "Dartmoor",
+                "Zenis",
+                "Apolune",
+                "Forepaw",
+                "Mascon",
+                "Victim",
+                "Conflate",
+                "Daybreak",
+                "Elven",
+                "Dwarven",
+                "Guru",
+                "Smoker",
+                "Tundra",
+                "Chaos",
+                "Cardinals",
+                "Zelda",
+                "Link",
+                "Mario",
+                "Luigi",
+                "Dragon",
+                "Duck",
+                "Metroid",
+                "MonoDron",
+                "Wyvern",
+                "Grieve",
+                "King",
+                "Queen",
+                "One",
+                "ShadowEura",
+                "Clown",
+                "Arctic",
+                "Australian",
+                "Asian",
+                "African",
+                "American",
+                "European",
+                "British",
+                "Canadian",
+                "Norwegian",
+                "Swedish",
+                "Danish",
+                "Dutch",
+                "French",
+                "German",
+                "Italian",
+                "Spanish",
+                "Stardust",
+                "Time",
+                "Mega",
+                "Killer",
+                "Skeleton",
+                "Mantra",
+                "Fencer",
+                "Titan",
+                "Alien",
+                "Cheese",
+                "Onion",
+                "Moogle",
+                "Chocobo",
+                "Ghost",
+                "Pirate",
+                "Zombie",
+                "Giant",
+                "Snow",
+                "Rock",
+                "Death",
+                "Deluge",
+                "Fire",
+                "Thunder",
+                "Tilte",
+                "Magic",
+                "Monster",
+                "Snake",
+            };
+
+            var endingStrings = new List<string>()
+            {
+                "Poison",
+                "Posion",
+                "Elixir",
+                "Ointment",
+                "Thoughts",
+                "Smoke",
+                "Tundra",
+                "Bat",
+                "Bee",
+                "Beer",
+                "Creature",
+                "Cricket",
+                "Dog",
+                "Duck",
+                "Dragon",
+                "Giant",
+                "Hornet",
+                "Lobster",
+                "Monodron",
+                "Monster",
+                "Naga",
+                "Slug",
+                "Strider",
+                "Snowman",
+                "Wolfman",
+                "Wyvern",
+                "Zombie",
+                "Grieve",
+                "King",
+                "Queen",
+                "Prince",
+                "Capitalist",
+                "Communist",
+                "Dictator",
+                "Emperor",
+                "Clown",
+                "Slime",
+                "Adventure",
+                "Diver",
+                "Crusader",
+                "Hero",
+                "Stopper",
+                "Man",
+                "Knight",
+                "Pokemon",
+                "Charmander",
+                "Squirtle",
+                "Bulbasaur",
+                "Mudkip",
+                "Piplup",
+                "Slowpoke",
+                "Skeleton",
+                "Mantra",
+                "Key",
+                "Fencer",
+                "Titan",
+                "Alien",
+                "Cheese",
+                "Onion",
+                "Moogle",
+                "Chocobo",
+                "Warrior",
+                "Quest",
+                "Zelda",
+                "Link",
+                "Mario",
+                "Luigi",
+                "Ghost",
+                "Pirate",
+                "Cook",
+                "Guy",
+                "Inquisition",
+                "Snake",
+                "Swallow",
+                "Magic",
+                "Party",
+            };
+
+            foreach (var id in Enum.GetValues(typeof(ShopRandomizer.Id)))
+            {
+                endingStrings.Add(id.ToString());
+            }
+
+            string suffix = "_";
+            suffix += beginningStrings[random.Next(beginningStrings.Count)];
+            suffix += middleStrings[random.Next(middleStrings.Count)];
+            suffix += endingStrings[random.Next(endingStrings.Count)];
+            return suffix;
+        }
+
         public List<string> GetTitleData()
         {
             var titleData = new List<string>();
@@ -565,6 +961,14 @@ namespace FaxanaduRando.Randomizer
                 "NinjaTurtle",
                 "Shredder",
                 "Hippie",
+                "Wyvern",
+                "Sentinel",
+                "MangoSentinel",
+                "Priest",
+                "Inquisitor",
+                "Emperor",
+                "GodEmperor",
+                "Monster",
             };
         }
 
@@ -624,37 +1028,6 @@ namespace FaxanaduRando.Randomizer
             return newText;
         }
 
-        public List<string> GetHints(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, bool spoilerLog=false)
-        {
-            var hints = new List<string>();
-
-            hints.AddRange(GetTowerHints(doorRandomizer, giftRandomizer, spoilerLog));
-            hints.AddRange(GetAllSublevelHints(giftRandomizer, spoilerLog));
-            hints.AddRange(GetBuildingHints(doorRandomizer, giftRandomizer, spoilerLog));
-
-            if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
-            {
-                var levelKeyHints = GetLevelKeyHints(doorRandomizer);
-                var exitKeyHints = GetExitKeyHints(doorRandomizer);
-                hints.AddRange(levelKeyHints);
-                hints.AddRange(exitKeyHints);
-            }
-
-            if (GeneralOptions.ShuffleWorlds)
-            {
-                var worldHints = GetWorldHints(doorRandomizer);
-                hints.AddRange(worldHints);
-            }
-
-            if (GeneralOptions.HintSetting == GeneralOptions.Hints.Strong &&
-                !spoilerLog)
-            {
-                hints.AddRange(hints);
-            }
-
-            return hints;
-        }
-
         private List<string> GetAllSublevelHints(GiftRandomizer giftRandomizer, bool spoilerLog)
         {
             var hints = new List<string>();
@@ -705,7 +1078,7 @@ namespace FaxanaduRando.Randomizer
             if (Util.AllWorldScreensRandomized())
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.DropdownWing], doorRandomizer));
-                hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.BackFromEastBranch], doorRandomizer));
+                hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.EastBranchLeft], doorRandomizer));
             }
 
             if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)

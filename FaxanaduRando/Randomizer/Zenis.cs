@@ -39,7 +39,7 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 0, 6, random, SubLevel.Id.EvilOnesLair, attempts);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, random, SubLevel.Id.EvilOnesLair, attempts);
             if (!result)
             {
                 return result;

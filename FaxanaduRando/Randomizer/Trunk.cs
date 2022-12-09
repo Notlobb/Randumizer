@@ -245,14 +245,13 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            int specialProbability = ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged ? 50 : 20;
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, specialProbability, 50, random, SubLevel.Id.EarlyTrunk, attempts);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, random, SubLevel.Id.EarlyTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.MiddleTrunk, attempts);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, random, SubLevel.Id.MiddleTrunk, attempts);
             if (!result)
             {
                 return result;
@@ -266,25 +265,37 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.LateTrunk, attempts);
+            result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, random, SubLevel.Id.LateTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, specialProbability, 20, random, SubLevel.Id.EastTrunk, attempts);
+            result = CreateSublevel(startScreens[3], endScreens[3], candidates, specialScreens, random, SubLevel.Id.EastTrunk, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[4], endScreens[4], candidates, specialScreens, specialProbability, 15, random, SubLevel.Id.TowerOfFortress, attempts);
+            result = CreateSublevel(startScreens[4], endScreens[4], candidates, specialScreens, random, SubLevel.Id.TowerOfFortress, attempts);
             if (!result)
             {
                 return result;
             }
 
-            result = CreateSublevel(startScreens[5], endScreens[5], candidates, specialScreens, 0, 20, random, SubLevel.Id.TowerOfTrunk, attempts);
+            result = CreateSublevel(startScreens[5], endScreens[5], candidates, specialScreens, random, SubLevel.Id.TowerOfTrunk, attempts);
+            if (!result)
+            {
+                return result;
+            }
+
+            if (!GeneralOptions.ShuffleTowers &&
+                specialScreens.Count > 0)
+            {
+                return false;
+            }
+
+            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens,  random, SubLevel.Id.JokerHouse, attempts);
             if (!result)
             {
                 return result;
@@ -293,12 +304,6 @@ namespace FaxanaduRando.Randomizer
             if (specialScreens.Count > 0)
             {
                 return false;
-            }
-
-            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens, 0, 10, random, SubLevel.Id.JokerHouse, attempts);
-            if (!result)
-            {
-                return result;
             }
 
             if (candidates.Count > 10)

@@ -160,7 +160,7 @@ namespace FaxanaduRando.Randomizer
             TowerDoors[DoorId.BattleHelmetWing] = new Door(DoorId.BattleHelmetWing, OtherWorldNumber.Branch, branchPositions[0], branchReqs, branchPositions[1], shouldShuffle: shuffleTowers);
 
             LevelDoors[DoorId.EastBranch] = new Door(DoorId.EastBranch, OtherWorldNumber.Branch, branchPositions[2], branchReqs, branchPositions[3]);
-            LevelDoors[DoorId.BackFromEastBranch] = new Door(DoorId.BackFromEastBranch, OtherWorldNumber.Branch, branchPositions[5], branchReqs, branchPositions[4]);
+            LevelDoors[DoorId.EastBranchLeft] = new Door(DoorId.EastBranchLeft, OtherWorldNumber.Branch, branchPositions[5], branchReqs, branchPositions[4]);
             LevelDoors[DoorId.DropdownWing] = new Door(DoorId.DropdownWing, OtherWorldNumber.Branch, branchPositions[7], branchReqs, branchPositions[6]);
 
             worlds[3].backwardPosition = branchPositions[8];
@@ -253,8 +253,8 @@ namespace FaxanaduRando.Randomizer
 
                 LevelDoors[DoorId.EastBranch].Requirement.level = WorldNumber.Branch;
                 LevelDoors[DoorId.EastBranch].ReturnRequirement.level = WorldNumber.Branch;
-                LevelDoors[DoorId.BackFromEastBranch].Requirement.level = WorldNumber.Branch;
-                LevelDoors[DoorId.BackFromEastBranch].ReturnRequirement.level = WorldNumber.Branch;
+                LevelDoors[DoorId.EastBranchLeft].Requirement.level = WorldNumber.Branch;
+                LevelDoors[DoorId.EastBranchLeft].ReturnRequirement.level = WorldNumber.Branch;
                 LevelDoors[DoorId.DropdownWing].Requirement.level = WorldNumber.Branch;
                 LevelDoors[DoorId.DropdownWing].ReturnRequirement.level = WorldNumber.Branch;
 
@@ -395,26 +395,26 @@ namespace FaxanaduRando.Randomizer
 
             if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
-                Doors[DoorId.BackFromEastBranch].key = DoorRequirement.Nothing;
+                Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
             }
 
             if (Util.AllWorldScreensRandomized())
             {
-                Doors[DoorId.BackFromEastBranch].key = DoorRequirement.Nothing;
+                Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
                 Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
                 Doors[DoorId.EastBranch].key = DoorRequirement.Nothing;
                 Doors[DoorId.BattleHelmetWing].key = DoorRequirement.Nothing;
                 TowerDoors[DoorId.EastBranch] = LevelDoors[DoorId.EastBranch];
-                TowerDoors[DoorId.BackFromEastBranch] = LevelDoors[DoorId.BackFromEastBranch];
+                TowerDoors[DoorId.EastBranchLeft] = LevelDoors[DoorId.EastBranchLeft];
                 TowerDoors[DoorId.DropdownWing] = LevelDoors[DoorId.DropdownWing];
                 LevelDoors.Remove(DoorId.EastBranch);
-                LevelDoors.Remove(DoorId.BackFromEastBranch);
+                LevelDoors.Remove(DoorId.EastBranchLeft);
                 LevelDoors.Remove(DoorId.DropdownWing);
 
                 if (GeneralOptions.ShuffleTowers)
                 {
                     TowerDoors[DoorId.EastBranch].ShouldShuffle = true;
-                    TowerDoors[DoorId.BackFromEastBranch].ShouldShuffle = true;
+                    TowerDoors[DoorId.EastBranchLeft].ShouldShuffle = true;
                     TowerDoors[DoorId.DropdownWing].ShouldShuffle = true;
                 }
             }
@@ -467,7 +467,7 @@ namespace FaxanaduRando.Randomizer
             TowerDoors[DoorId.KingGrieve].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.KingGrieve];
 
             Doors[DoorId.EastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.EastBranch];
-            Doors[DoorId.BackFromEastBranch].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch];
+            Doors[DoorId.EastBranchLeft].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch];
             Doors[DoorId.DropdownWing].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.DropDownWing];
 
             if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
@@ -1158,7 +1158,6 @@ namespace FaxanaduRando.Randomizer
                     tower.ReturnPosition.pos = tower.Position.oldPos;
                     tower.ReturnRequirement.screen = tower.Position.screen;
                     tower.ReturnRequirement.level = tower.GetWorld();
-                    tower.ReturnRequirement.palette = tower.GetPalette(tower.OriginalId);
                 }
 
                 if (GeneralOptions.IncludeEvilOnesFortress)
@@ -1171,6 +1170,13 @@ namespace FaxanaduRando.Randomizer
                     worlds[4].forward = worlds[0];
                     worlds[4].forwardPosition.SetPos(2, 8);
                 }
+            }
+
+            var allTowers = new List<Door>(Doors.Values.Where(t => IsTower(t.Id)));
+            for (int i = 0; i < allTowers.Count; i++)
+            {
+                var tower = allTowers[i];
+                tower.ReturnRequirement.palette = tower.GetPalette(tower.OriginalId);
             }
 
             if (GeneralOptions.DarkTowers)

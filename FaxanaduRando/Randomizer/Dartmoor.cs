@@ -58,7 +58,7 @@ namespace FaxanaduRando.Randomizer
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
         {
-            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, 35, 10, random, SubLevel.Id.Dartmoor, attempts, highProbabilities: true);
+            bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, random, SubLevel.Id.Dartmoor, attempts, highProbabilities: true);
             if (!result)
             {
                 return result;
@@ -67,7 +67,7 @@ namespace FaxanaduRando.Randomizer
             bool addedFirstFork = !specialScreens.Contains(Screens[4]);
             if (addedFirstFork)
             {
-                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false, true);
+                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, random, Screens[1].ParentSublevel, attempts, false, true);
                 if (!result)
                 {
                     return result;
@@ -77,7 +77,7 @@ namespace FaxanaduRando.Randomizer
             bool addedSecondFork = !specialScreens.Contains(Screens[GrieveScreen]);
             if (addedSecondFork)
             {
-                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false, true);
+                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, random, Screens[26].ParentSublevel, attempts, false, true);
                 if (!result)
                 {
                     return result;
@@ -89,7 +89,7 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, 30, 2, random, SubLevel.Id.CastleFraternal, attempts, highProbabilities: true);
+            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, random, SubLevel.Id.CastleFraternal, attempts, highProbabilities: true);
             if (!result)
             {
                 return result;
@@ -102,7 +102,7 @@ namespace FaxanaduRando.Randomizer
 
             if (!addedFirstFork)
             {
-                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, 30, 2, random, Screens[1].ParentSublevel, attempts, false, true);
+                result = CreateSublevel(Screens[1], endScreens[2], candidates, specialScreens, random, Screens[1].ParentSublevel, attempts, false, true);
                 if (!result)
                 {
                     return result;
@@ -111,7 +111,7 @@ namespace FaxanaduRando.Randomizer
 
             if (!addedSecondFork)
             {
-                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, 30, 2, random, Screens[26].ParentSublevel, attempts, false, true);
+                result = CreateSublevel(Screens[26], endScreens[3], candidates, specialScreens, random, Screens[26].ParentSublevel, attempts, false, true);
                 if (!result)
                 {
                     return result;
@@ -136,6 +136,7 @@ namespace FaxanaduRando.Randomizer
             //candidates.Add(Screens[15]); //unused screen?
             candidates.Add(Screens[17]);
             candidates.Add(Screens[23]);
+            candidates.Add(Screens[24]);
             //candidates.Add(Screens[26]);
             candidates.Add(Screens[27]);
             candidates.Add(Screens[29]);
