@@ -10,19 +10,19 @@ namespace FaxanaduRando.Randomizer
     {
         private Dictionary<Sprite.SpriteId, ShopRandomizer.Id> shopIdDictionary = new Dictionary<Sprite.SpriteId, ShopRandomizer.Id>
         {
-            { Sprite.SpriteId.BattleHelmet, ShopRandomizer.Id.BattleHelmet},
-            { Sprite.SpriteId.BattleSuit, ShopRandomizer.Id.BattleSuit},
-            { Sprite.SpriteId.DragonSlayer, ShopRandomizer.Id.DragonSlayer},
+            { Sprite.SpriteId.Battlehelmet, ShopRandomizer.Id.Battlehelmet},
+            { Sprite.SpriteId.Battlesuit, ShopRandomizer.Id.Battlesuit},
+            { Sprite.SpriteId.Dragonslayer, ShopRandomizer.Id.Dragonslayer},
             { Sprite.SpriteId.Glove2OrKeyJoker, ShopRandomizer.Id.JokerKey},
             { Sprite.SpriteId.KeyAce, ShopRandomizer.Id.AceKey},
             { Sprite.SpriteId.MattockOrRingRuby, ShopRandomizer.Id.RubyRing},
             { Sprite.SpriteId.RingDworf, ShopRandomizer.Id.DworfRing},
             { Sprite.SpriteId.RingDemon, ShopRandomizer.Id.DemonRing},
-            { Sprite.SpriteId.Wingboots, ShopRandomizer.Id.WingBoots},
-            { Sprite.SpriteId.WingbootsBossLocked, ShopRandomizer.Id.WingBoots},
+            { Sprite.SpriteId.Wingboots, ShopRandomizer.Id.Wingboots},
+            { Sprite.SpriteId.WingbootsBossLocked, ShopRandomizer.Id.Wingboots},
             { Sprite.SpriteId.RedPotion, ShopRandomizer.Id.RedPotion},
             { Sprite.SpriteId.RedPotion2, ShopRandomizer.Id.RedPotion},
-            { Sprite.SpriteId.HourGlass, ShopRandomizer.Id.Hourglass},
+            { Sprite.SpriteId.Hourglass, ShopRandomizer.Id.Hourglass},
             { Sprite.SpriteId.MattockBossLocked, ShopRandomizer.Id.Mattock},
             { Sprite.SpriteId.Rod, ShopRandomizer.Id.Rod},
             { Sprite.SpriteId.Elixir, ShopRandomizer.Id.Elixir},
@@ -68,7 +68,7 @@ namespace FaxanaduRando.Randomizer
             var startingWeapon = ShopRandomizer.Id.Dagger;
             if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.Random)
             {
-                startingWeapon = Rand.Next(3) == 0 ? ShopRandomizer.Id.Dagger : ShopRandomizer.Id.LongSword;
+                startingWeapon = Rand.Next(3) == 0 ? ShopRandomizer.Id.Dagger : ShopRandomizer.Id.Longsword;
             }
             else if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.Dagger)
             {
@@ -76,7 +76,7 @@ namespace FaxanaduRando.Randomizer
             }
             else if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.LongSword)
             {
-                startingWeapon = ShopRandomizer.Id.LongSword;
+                startingWeapon = ShopRandomizer.Id.Longsword;
             }
             var startingSpell = ShopRandomizer.Id.Deluge;
             var spells = new List<ShopRandomizer.Id>();
@@ -119,7 +119,7 @@ namespace FaxanaduRando.Randomizer
 
                     extraItems.Add(Sprite.SpriteId.Wingboots);
                     extraItems.Add(Sprite.SpriteId.Wingboots);
-                    extraItems.Add(Sprite.SpriteId.HourGlass);
+                    extraItems.Add(Sprite.SpriteId.Hourglass);
                     extraItems.Add(Sprite.SpriteId.Elixir);
 
                     if (IncludeEolisGuru(giftRandomizer))
@@ -136,7 +136,7 @@ namespace FaxanaduRando.Randomizer
 
             shopRandomizer.SetStaticItems(startingWeapon, startingSpell);
 
-            var shopIds = shopRandomizer.GetBaseIds();
+            var shopIds = shopRandomizer.GetBaseIds(Rand);
             if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
                 shopIds.Add(ShopRandomizer.Id.JackKey);
@@ -152,29 +152,29 @@ namespace FaxanaduRando.Randomizer
                 if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Shuffled &&
                     !ItemOptions.IncludeSomeEolisDoors)
                 {
-                    shopIds.Add(GetMiscItem());
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
                 }
                 else
                 {
                     shopIds.Add(ShopRandomizer.Id.ElfRing);
                 }
 
-                shopIds.Add(GetMiscItem());
+                shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
             }
 
             if (ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.NoGuaranteed ||
                 ItemOptions.StartingWeapon == ItemOptions.StartingWeaponOptions.GuaranteeOnlyWithNoSpells)
             {
                 shopIds.Add(ShopRandomizer.Id.Dagger);
-                shopIds.Add(ShopRandomizer.Id.LongSword);
+                shopIds.Add(ShopRandomizer.Id.Longsword);
             }
             else if (startingWeapon == ShopRandomizer.Id.Dagger)
             {
-                shopIds.Add(ShopRandomizer.Id.LongSword);
+                shopIds.Add(ShopRandomizer.Id.Longsword);
             }
             else
             {
-                var miscId = GetMiscItem();
+                var miscId = ShopRandomizer.GetMiscItem(Rand);
                 shopIds.Add(miscId);
             }
 
@@ -194,7 +194,7 @@ namespace FaxanaduRando.Randomizer
                 }
                 else
                 {
-                    var miscId = GetMiscItem();
+                    var miscId = ShopRandomizer.GetMiscItem(Rand);
                     shopIds.Add(miscId);
                 }
             }
@@ -218,19 +218,19 @@ namespace FaxanaduRando.Randomizer
                 }
                 else
                 {
-                    shopIds.Add(GetMiscItem());
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
                 }
 
-                shopIds.Add(ShopRandomizer.Id.WingBoots);
+                shopIds.Add(ShopRandomizer.Id.Wingboots);
                 shopIds.Add(ShopRandomizer.Id.Elixir);
                 shopIds.Add(ShopRandomizer.Id.Hourglass);
 
-                shopIds.Add(GetMiscItem());
-                shopIds.Add(GetMiscItem());
+                shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
 
                 if (IncludeEolisGuru(giftRandomizer))
                 {
-                    shopIds.Add(GetMiscItem());
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
                 }
 
                 var giftItems = new List<ShopRandomizer.Id>();
@@ -591,7 +591,7 @@ namespace FaxanaduRando.Randomizer
 
                 if (!ids.Contains(ShopRandomizer.Id.RubyRing) ||
                     !ids.Contains(ShopRandomizer.Id.Elixir) ||
-                    !ids.Contains(ShopRandomizer.Id.WingBoots))
+                    !ids.Contains(ShopRandomizer.Id.Wingboots))
                 {
                     return false;
                 }
@@ -608,7 +608,7 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereUpdateLogic)
             {
-                if (!ids.Contains(ShopRandomizer.Id.WingBoots))
+                if (!ids.Contains(ShopRandomizer.Id.Wingboots))
                 {
                     return false;
                 }
@@ -645,7 +645,7 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            if (!ids.Contains(ShopRandomizer.Id.WingBoots))
+            if (!ids.Contains(ShopRandomizer.Id.Wingboots))
             {
                 return false;
             }
@@ -997,9 +997,9 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.DragonSlayerRequired)
             {
-                if (!(ids.Contains(ShopRandomizer.Id.DragonSlayer) &&
-                    ids.Contains(ShopRandomizer.Id.BattleSuit) &&
-                    ids.Contains(ShopRandomizer.Id.BattleHelmet)))
+                if (!(ids.Contains(ShopRandomizer.Id.Dragonslayer) &&
+                    ids.Contains(ShopRandomizer.Id.Battlesuit) &&
+                    ids.Contains(ShopRandomizer.Id.Battlehelmet)))
                 {
                     return false;
                 }
@@ -1026,7 +1026,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.MoveSpringQuestRequirement)
             {
                 if (!ids.Contains(ShopRandomizer.Id.Elixir) ||
-                    !ids.Contains(ShopRandomizer.Id.WingBoots))
+                    !ids.Contains(ShopRandomizer.Id.Wingboots))
                 {
                     return false;
                 }
@@ -1106,7 +1106,7 @@ namespace FaxanaduRando.Randomizer
 
                         if (sprite.RequiresWingBoots)
                         {
-                            if (!ids.Contains(ShopRandomizer.Id.WingBoots))
+                            if (!ids.Contains(ShopRandomizer.Id.Wingboots))
                             {
                                 continue;
                             }
@@ -1135,7 +1135,7 @@ namespace FaxanaduRando.Randomizer
         {
             if (gift.LocationId == GiftItem.Id.FortressGuru)
             {
-                if (!(ids.Contains(ShopRandomizer.Id.WingBoots) &&
+                if (!(ids.Contains(ShopRandomizer.Id.Wingboots) &&
                     traversedSublevels.Contains(SubLevel.SkySpringSublevel)))
                 {
                     return;
@@ -1150,14 +1150,14 @@ namespace FaxanaduRando.Randomizer
             }
             else if (gift.LocationId == GiftItem.Id.ConflateGuru)
             {
-                if (!ids.Contains(ShopRandomizer.Id.BattleSuit))
+                if (!ids.Contains(ShopRandomizer.Id.Battlesuit))
                 {
                     return;
                 }
             }
             else if (gift.LocationId == GiftItem.Id.FraternalGuru)
             {
-                if (!ids.Contains(ShopRandomizer.Id.DragonSlayer))
+                if (!ids.Contains(ShopRandomizer.Id.Dragonslayer))
                 {
                     return;
                 }
@@ -1277,16 +1277,6 @@ namespace FaxanaduRando.Randomizer
             return false;
         }
 
-        private ShopRandomizer.Id GetMiscItem()
-        {
-            if (ItemOptions.ReplacePoison && Rand.Next(0, 8) == 0)
-            {
-                return ShopRandomizer.Id.BlackPotion;
-            }
-
-            return ShopRandomizer.miscList[Rand.Next(ShopRandomizer.miscList.Count)];
-        }
-
         private bool IncludeEolisGuru(GiftRandomizer giftRandomizer)
         {
             return giftRandomizer.ItemDict[GiftItem.Id.EolisGuru].ShouldBeRandomized;
@@ -1317,13 +1307,13 @@ namespace FaxanaduRando.Randomizer
                     possibleItems.Add(Sprite.SpriteId.MattockBossLocked);
                     if (ItemOptions.AlwaysSpawnSmallItems)
                     {
-                        possibleItems.Add(Sprite.SpriteId.HourGlass);
+                        possibleItems.Add(Sprite.SpriteId.Hourglass);
                     }
                 }
 
                 item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
                 if (item.Id == Sprite.SpriteId.WingbootsBossLocked ||
-                    item.Id == Sprite.SpriteId.HourGlass ||
+                    item.Id == Sprite.SpriteId.Hourglass ||
                     item.Id == Sprite.SpriteId.MattockBossLocked)
                 {
                     //These items don't fall down

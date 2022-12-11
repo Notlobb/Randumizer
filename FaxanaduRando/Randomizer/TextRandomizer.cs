@@ -17,13 +17,13 @@ namespace FaxanaduRando.Randomizer
         private static readonly Dictionary<Sprite.SpriteId, string> itemDict = new Dictionary<Sprite.SpriteId, string>
         {
             {Sprite.SpriteId.Elixir, "Elixir" },
-            {Sprite.SpriteId.HourGlass, "Hourglass" },
+            {Sprite.SpriteId.Hourglass, "Hourglass" },
             {Sprite.SpriteId.Wingboots, "Wingboots" },
             {Sprite.SpriteId.WingbootsBossLocked, "Wingboots" },
             {Sprite.SpriteId.BlackOnyx, "Black Onyx" },
-            {Sprite.SpriteId.BattleHelmet, "BattleHelmet" },
-            {Sprite.SpriteId.BattleSuit, "BattleSuit" },
-            {Sprite.SpriteId.DragonSlayer, "DragonSlayer" },
+            {Sprite.SpriteId.Battlehelmet, "Battlehelmet" },
+            {Sprite.SpriteId.Battlesuit, "Battlesuit" },
+            {Sprite.SpriteId.Dragonslayer, "Dragonslayer" },
             {Sprite.SpriteId.KeyAce, "AceKey" },
             {Sprite.SpriteId.Pendant, "Pendant" },
             {Sprite.SpriteId.RingDemon, "DemonRing" },

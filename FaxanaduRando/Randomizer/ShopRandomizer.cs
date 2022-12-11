@@ -8,21 +8,21 @@ namespace FaxanaduRando.Randomizer
         public enum Id
         {
             Dagger = 0,
-            LongSword = 1,
-            GiantBlade = 2,
-            DragonSlayer = 3,
+            Longsword = 1,
+            Giantblade = 2,
+            Dragonslayer = 3,
             //RingElf2 = 17,
             //RingRuby2 = 18,
             //RingDworf2 = 19,
             //RingDemon2 = 20,
-            LeatherArmour= 32,
-            StuddedMail = 33,
-            FullPlate = 34,
-            BattleSuit = 35,
-            SmallShield = 64,
-            LargeShield = 65,
-            MagicShield = 66,
-            BattleHelmet = 67,
+            Leatherarmour= 32,
+            Studdedmail = 33,
+            Fullplate = 34,
+            Battlesuit = 35,
+            Smallshield = 64,
+            Largeshield = 65,
+            Magicshield = 66,
+            Battlehelmet = 67,
             Deluge = 96,
             Thunder = 97,
             Fire = 98,
@@ -43,7 +43,7 @@ namespace FaxanaduRando.Randomizer
             Lamp = 140,
             Hourglass = 141,
             Book = 142,
-            WingBoots = 143,
+            Wingboots = 143,
             RedPotion = 144,
             BlackPotion = 145,
             Elixir = 146,
@@ -56,29 +56,29 @@ namespace FaxanaduRando.Randomizer
         {
             Id.RedPotion,
             Id.Hourglass,
-            Id.WingBoots,
+            Id.Wingboots,
             Id.Elixir,
         };
 
         public static HashSet<Id> weaponIds = new HashSet<Id>
         {
             Id.Dagger,
-            Id.LongSword,
-            Id.GiantBlade,
+            Id.Longsword,
+            Id.Giantblade,
         };
 
         public static HashSet<Id> armorIds = new HashSet<Id>
         {
-            Id.LeatherArmour,
-            Id.StuddedMail,
-            Id.FullPlate,
+            Id.Leatherarmour,
+            Id.Studdedmail,
+            Id.Fullplate,
         };
 
         public static HashSet<Id> shieldIds = new HashSet<Id>
         {
-            Id.SmallShield,
-            Id.LargeShield,
-            Id.MagicShield,
+            Id.Smallshield,
+            Id.Largeshield,
+            Id.Magicshield,
         };
 
         public static HashSet<Id> spellIds = new HashSet<Id>
@@ -103,7 +103,7 @@ namespace FaxanaduRando.Randomizer
         {
             Id.Hourglass,
             Id.Elixir,
-            Id.WingBoots,
+            Id.Wingboots,
             Id.Mattock,
         };
 
@@ -123,9 +123,9 @@ namespace FaxanaduRando.Randomizer
 
         public static HashSet<Id> KeyItems = new HashSet<Id>
         {
-            Id.DragonSlayer,
-            Id.BattleSuit,
-            Id.BattleHelmet,
+            Id.Dragonslayer,
+            Id.Battlesuit,
+            Id.Battlehelmet,
             Id.ElfRing,
             Id.RubyRing,
             Id.DworfRing,
@@ -161,7 +161,7 @@ namespace FaxanaduRando.Randomizer
                 var shopItem = new ShopItem(0x32441, content);
                 shop.Items.Add(shopItem);
                 shopItem.ShouldBeRandomized = false;
-                shopItem.Id = Id.WingBoots;
+                shopItem.Id = Id.Wingboots;
                 shopItem.MaxPriceOverride = 500;
 
                 int offset = Section.GetOffset(12, 0xAD90, 0x8000);
@@ -401,22 +401,23 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public List<Id> GetBaseIds()
+        public List<Id> GetBaseIds(Random random)
         {
             var ids = new List<Id>();
-            ids.Add(Id.GiantBlade);
-            ids.Add(Id.GiantBlade);
-            ids.Add(Id.StuddedMail);
-            ids.Add(Id.FullPlate);
-            ids.Add(Id.LargeShield);
-            ids.Add(Id.MagicShield);
+            ids.Add(Id.Giantblade);
+            ids.Add(Id.Giantblade);
+            ids.Add(Id.Studdedmail);
+            ids.Add(Id.Fullplate);
+            ids.Add(Id.Largeshield);
+            ids.Add(Id.Magicshield);
             ids.Add(Id.Hourglass);
             ids.Add(Id.Elixir);
             ids.Add(Id.Elixir);
-            ids.Add(Id.WingBoots);
-            ids.Add(Id.WingBoots);
-            ids.Add(Id.WingBoots);
+            ids.Add(Id.Wingboots);
+            ids.Add(Id.Wingboots);
+            ids.Add(Id.Wingboots);
             ids.Add(Id.Mattock);
+            ids.Add(GetMiscItem(random));
 
             if (GeneralOptions.ShuffleWorlds &&
                 ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
@@ -431,7 +432,7 @@ namespace FaxanaduRando.Randomizer
                 }
                 else
                 {
-                    ids.Add(Id.Hourglass);
+                    ids.Add(GetMiscItem(random));
                 }
             }
 
@@ -452,6 +453,16 @@ namespace FaxanaduRando.Randomizer
             {
                 staticPrice.AddToContent(content);
             }
+        }
+
+        public static Id GetMiscItem(Random random)
+        {
+            if (ItemOptions.ReplacePoison && random.Next(0, 8) == 0)
+            {
+                return Id.BlackPotion;
+            }
+
+            return miscList[random.Next(miscList.Count)];
         }
 
         private void SetShopPrice(Door building, int price)

@@ -62,7 +62,7 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.AlwaysSpawnSmallItems)
             {
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.HourGlass] =
+                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Hourglass] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RedPotion2] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
@@ -309,7 +309,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V25B17", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V25B18", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -346,7 +346,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.25 Beta 17");
+                spoilers.Add("Randumizer v0.25 Beta 18");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -585,7 +585,7 @@ namespace FaxanaduRando.Randomizer
                 topItem.ShouldBeShuffled = false;
                 var possibleItems = new List<Sprite.SpriteId>
                 {
-                    Sprite.SpriteId.HourGlass,
+                    Sprite.SpriteId.Hourglass,
                     Sprite.SpriteId.Poison,
                     Sprite.SpriteId.Poison2,
                     Sprite.SpriteId.RedPotion,

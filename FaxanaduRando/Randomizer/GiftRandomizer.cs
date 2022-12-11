@@ -12,7 +12,7 @@ namespace FaxanaduRando.Randomizer
         {
             ShopRandomizer.Id.Hourglass,
             ShopRandomizer.Id.RedPotion,
-            ShopRandomizer.Id.WingBoots,
+            ShopRandomizer.Id.Wingboots,
             ShopRandomizer.Id.Elixir,
             ShopRandomizer.Id.BlackPotion,
             ShopRandomizer.Id.Mattock,
