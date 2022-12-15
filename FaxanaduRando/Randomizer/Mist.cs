@@ -321,6 +321,10 @@ namespace FaxanaduRando.Randomizer
             Screens[39].FriendEnds[Direction.Up] = Screens[VictimTowerScreen];
 
             Screens[MasconTowerScreen].Directions.Add(Direction.Right);
+            Screens[MasconTowerScreen].OpenTilesRight.Add(2);
+            Screens[MasconTowerScreen].OpenTilesRight.Add(3);
+            Screens[MasconTowerScreen].OpenTilesRight.Add(4);
+            Screens[MasconTowerScreen].OpenTilesRight.Add(5);
             Screens[MasconTowerScreen].OpenTilesRight.Add(6);
             Screens[MasconTowerScreen].OpenTilesRight.Add(7);
             Screens[MasconTowerScreen].OpenTilesRight.Add(8);

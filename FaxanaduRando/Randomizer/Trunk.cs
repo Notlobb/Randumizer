@@ -145,18 +145,19 @@ namespace FaxanaduRando.Randomizer
             endScreens.Add(Screens[eastEnds[0]]);
             endScreens.Add(Screens[TowerOfFortressScreen]);
 
+            endScreens.Add(Screens[33]);
             endScreens.Add(Screens[JokerSpringScreen]);
             endScreens.Add(Screens[FortressSpringScreen]);
             endScreens.Add(Screens[21]);
 
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
             {
-                Util.ShuffleList(endScreens, endScreens.Count - 3, endScreens.Count - 2, random);
+                Util.ShuffleList(endScreens, endScreens.Count - 4, endScreens.Count - 2, random);
                 Util.ShuffleList(endScreens, endScreens.Count - 2, endScreens.Count - 1, random);
             }
             else
             {
-                Util.ShuffleList(endScreens, endScreens.Count - 3, endScreens.Count - 1, random);
+                Util.ShuffleList(endScreens, endScreens.Count - 4, endScreens.Count - 1, random);
             }
         }
 
@@ -164,15 +165,18 @@ namespace FaxanaduRando.Randomizer
         {
             var candidates = Screens.GetRange(1, 5);
             candidates.AddRange(Screens.GetRange(9, 2));
-            candidates.AddRange(Screens.GetRange(14, 7));
+            candidates.Add(Screens[14]);
+            candidates.Add(Screens[15]);
+            candidates.Add(Screens[17]);
+            candidates.Add(Screens[18]);
+            candidates.Add(Screens[19]);
+            candidates.Add(Screens[20]);
             candidates.Add(Screens[24]);
             candidates.Add(Screens[25]);
             candidates.Add(Screens[31]);
             candidates.AddRange(Screens.GetRange(38, 2));
             candidates.Add(Screens[42]);
-            candidates.Add(Screens[43]);
             candidates.Add(Screens[46]);
-            candidates.Add(Screens[47]);
             candidates.Add(Screens[48]);
             candidates.Add(Screens[49]);
             candidates.Add(Screens[50]);
@@ -193,6 +197,7 @@ namespace FaxanaduRando.Randomizer
             specialScreens.Add(Screens[TowerOfTrunkScreen]);
             specialScreens.Add(Screens[JokerHouseScreen]);
             specialScreens.Add(Screens[32]);
+            specialScreens.Add(Screens[43]);
             specialScreens.Add(Screens[45]);
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
@@ -295,7 +300,7 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens,  random, SubLevel.Id.JokerHouse, attempts);
+            result = CreateSublevel(startScreens[6], endScreens[6], candidates, specialScreens, random, SubLevel.Id.JokerHouse, attempts);
             if (!result)
             {
                 return result;
@@ -306,10 +311,29 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
+            result = CreateSublevel(Screens[47], endScreens[7], candidates, specialScreens, random, Screens[47].ParentSublevel, attempts, false, true);
+            if (!result)
+            {
+                return result;
+            }
+
             if (candidates.Count > 10)
             {
-                result = false;
+                return false;
             }
+
+            var skyScreens = new List<Screen>()
+            {
+                Screens[34],
+                Screens[35],
+                Screens[36],
+            };
+
+            Util.ShuffleList(skyScreens, 0, skyScreens.Count - 1, random);
+            Screens[32].FriendEnds[Direction.Up] = skyScreens[0];
+            skyScreens[0].FriendEnds[Direction.Up] = skyScreens[1];
+            skyScreens[1].FriendEnds[Direction.Up] = skyScreens[2];
+            skyScreens[2].FriendEnds[Direction.Up] = Screens[SkySpringScreen];
 
             return result;
         }
@@ -319,7 +343,9 @@ namespace FaxanaduRando.Randomizer
             startToSpecial[TowerOfTrunkEntanceScreen] = TowerOfTrunkScreen;
             startToSpecial[JokerHouseEntranceScreen] = JokerHouseScreen;
 
-            Screens[32].FriendEnds[Direction.Up] = Screens[SkySpringScreen];
+            Screens[43].FriendEnds[Direction.Right] = Screens[44];
+
+            Screens[43].FriendConnections[Direction.Up] = Screens[47];
 
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Left);
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Right);
@@ -553,7 +579,7 @@ namespace FaxanaduRando.Randomizer
             Screens[ForePawRightScreen].Directions.Add(Direction.Up);
             Screens[ForePawRightScreen].Directions.Add(Direction.Down);
             Screens[ForePawRightScreen].OpenTilesUp.Add(4);
-            Screens[ForePawRightScreen].OpenTilesDown.Add(2);
+            //Screens[ForePawRightScreen].OpenTilesDown.Add(2);
             Screens[JokerHouseScreen].Directions.Add(Direction.Left);
             Screens[JokerHouseScreen].Directions.Add(Direction.Right);
             Screens[JokerHouseScreen].OpenTilesLeft.Add(7);
@@ -635,7 +661,8 @@ namespace FaxanaduRando.Randomizer
             Screens[42].OpenTilesRight.Add(9);
             Screens[42].OpenTilesRight.Add(10);
             Screens[43].Directions.Add(Direction.Left);
-            Screens[43].Directions.Add(Direction.Right);
+            //Screens[43].Directions.Add(Direction.Right);
+            //Screens[43].Directions.Add(Direction.Up);
             Screens[43].OpenTilesLeft.Add(7);
             Screens[43].OpenTilesLeft.Add(8);
             Screens[43].OpenTilesLeft.Add(9);
@@ -644,6 +671,7 @@ namespace FaxanaduRando.Randomizer
             Screens[43].OpenTilesRight.Add(8);
             Screens[43].OpenTilesRight.Add(9);
             Screens[43].OpenTilesRight.Add(10);
+            Screens[43].OpenTilesUp.Add(6);
             Screens[45].Directions.Add(Direction.Right);
             //Screens[45].Directions.Add(Direction.Up);
             Screens[45].Directions.Add(Direction.Down);
@@ -664,7 +692,7 @@ namespace FaxanaduRando.Randomizer
             Screens[46].OpenTilesRight.Add(4);
             Screens[47].Directions.Add(Direction.Left);
             Screens[47].Directions.Add(Direction.Right);
-            Screens[47].Directions.Add(Direction.Down);
+            //Screens[47].Directions.Add(Direction.Down);
             Screens[47].OpenTilesLeft.Add(2);
             Screens[47].OpenTilesLeft.Add(3);
             Screens[47].OpenTilesLeft.Add(4);
