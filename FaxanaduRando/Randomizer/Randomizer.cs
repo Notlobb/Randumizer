@@ -6,7 +6,7 @@ namespace FaxanaduRando.Randomizer
 {
     public class Randomizer
     {
-        public bool Randomize(string inputFile, string flags, int seed, out string message)
+        public bool Randomize(string inputFile, string customTextFile, string flags, int seed, out string message)
         {
             message = "Failed to find a valid randomization for this seed";
             Random random = new Random(seed);
@@ -299,10 +299,10 @@ namespace FaxanaduRando.Randomizer
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
             {
-                textRandomizer.RandomizeTitles(content);
+                textRandomizer.RandomizeTitles(content, customTextFile);
             }
 
-            if (!textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content))
+            if (!textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content, customTextFile))
             {
                 return false;
             }

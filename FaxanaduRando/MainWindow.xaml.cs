@@ -39,6 +39,31 @@ namespace FaxanaduRando
             }
         }
 
+        private void CustomTextBrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var openFileDialog = new OpenFileDialog()
+            {
+                Title = "Select Custom Text File",
+
+                CheckFileExists = true,
+                CheckPathExists = true,
+
+                DefaultExt = "txt",
+                Filter = "txt files (*.txt)|*.txt",
+                FilterIndex = 2,
+
+                ReadOnlyChecked = true,
+                ShowReadOnly = true
+            };
+
+            bool? result = openFileDialog.ShowDialog();
+            if (result == true)
+            {
+                customTextPathTextBox.Text = openFileDialog.FileName;
+            }
+        }
+
+
         private void NewSeedButton_Click(object sender, RoutedEventArgs e)
         {
             var random = new Random();
@@ -74,7 +99,7 @@ namespace FaxanaduRando
             {
                 var randomizer = new Randomizer.Randomizer();
                 string message;
-                bool result = randomizer.Randomize(pathTextBox.Text, flagsTextBox.Text, seed, out message);
+                bool result = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, flagsTextBox.Text, seed, out message);
                 if (!result)
                 {
                     MessageBox.Show(message, "Failed");

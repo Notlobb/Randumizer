@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -49,10 +50,11 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public bool UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content)
+        public bool UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content, string customTextFile)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
+            var customTexts = new List<string>() {};
 
             if (GeneralOptions.FastText)
             {
@@ -71,6 +73,13 @@ namespace FaxanaduRando.Randomizer
                     hints = GetHints(shopRandomizer, giftRandomizer, doorRandomizer);
                 }
 
+                // notes; 38 & 39 first NPC pre- and post- King talk
+                /* known indices
+
+                    38: first NPC, pre-King talk
+                    39: first NPC, post-King talk
+                */
+
                 var indices = new List<int> { 38, 39, 41, 42, 45, 46, 47, 48, 49, 50,
                                               51, 54, 55,
                                               56, 57, 58, 59, 60,
@@ -86,8 +95,8 @@ namespace FaxanaduRando.Randomizer
                                               150, 151,
                                               154, 155, 156, 157, 158, 159 };
 
-                var communityHints = new List<string>()
-                {
+            var communityHints = new List<string>()
+            {
                     "Hi",
                     "Ni",
                     "Who's talkin'?",
@@ -123,9 +132,34 @@ namespace FaxanaduRando.Randomizer
                     "Shoutout to OdinSpack",
                     "Shoutout to MeowthRocket",
                     "Shoutout to Songbirder",
+                    "Shoutout to Bogledowdee",
                 };
 
+                if (!string.IsNullOrEmpty(customTextFile)) {
+    
+                    string[] customTextLines = File.ReadAllLines(customTextFile); 
+
+                    communityHints = new List<string>() {};
+                    foreach (string customText in customTextLines)
+                    {
+                        if (customText.Trim().StartsWith(":"))
+                        {
+                            communityHints.Add(customText.Remove(0,1));
+                        }
+                        else if (customText.Trim().StartsWith("title:"))
+                        {
+                            // do nothing
+                        }
+                        else
+                        {
+                            customTexts.Add(customText);
+                        }
+                    }
+                        
+                } 
+            
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
+
                 if (GeneralOptions.HintSetting == GeneralOptions.Hints.Community)
                 {
                     hints.AddRange(communityHints);
@@ -309,39 +343,46 @@ namespace FaxanaduRando.Randomizer
                 AddText("Hi", allText, 139); //Conflate guru
                 AddText("Hi", allText, 161); //Fraternal guru
 
+                foreach (string customText in customTexts)
+                {
+                    string[] parts = customText.Split(':');
+                    var textIndex = Int32.Parse(parts[0]);
+                    AddText(parts[1], allText, textIndex);
+                }
+
                 var price = shopRandomizer.StaticPriceDict[DoorId.MartialArtsShop].Price;
-                AddText($"Martial arts for {price}?", allText, 24);
+                AddText(GetMartialArtsText(price, GetCustomText(customTexts, 24)), allText, 24);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.EolisMagicShop].Price;
-                AddText($"Magic for {price}?", allText, 20);
+                AddText(GetMagicShopText(price, GetCustomText(customTexts, 20)), allText, 20);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.ApoluneHospital].Price;
-                AddText(GetHospitalText(price), allText, 27);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 27)), allText, 27);
                 price = shopRandomizer.StaticPriceDict[DoorId.ForepawHospital].Price;
-                AddText(GetHospitalText(price), allText, 28);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 28)), allText, 28);
                 price = shopRandomizer.StaticPriceDict[DoorId.MasconHospital].Price;
-                AddText(GetHospitalText(price), allText, 29);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 29)), allText, 29);
                 price = shopRandomizer.StaticPriceDict[DoorId.VictimHospital].Price;
-                AddText(GetHospitalText(price), allText, 30);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 30)), allText, 30);
                 price = shopRandomizer.StaticPriceDict[DoorId.ConflateHospital].Price;
-                AddText(GetHospitalText(price), allText, 31);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 31)), allText, 31);
                 price = shopRandomizer.StaticPriceDict[DoorId.DartmoorHospital].Price;
-                AddText(GetHospitalText(price), allText, 32);
+                AddText(GetHospitalText(price, GetCustomText(customTexts, 32)), allText, 32);
 
                 price = shopRandomizer.StaticPriceDict[DoorId.EolisMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 6);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 6)), allText, 6);
                 price = shopRandomizer.StaticPriceDict[DoorId.ForepawMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 7);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 7)), allText, 7);
                 price = shopRandomizer.StaticPriceDict[DoorId.MasconMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 8);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 8)), allText, 8);
                 price = shopRandomizer.StaticPriceDict[DoorId.VictimMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 9);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 9)), allText, 9);
                 price = shopRandomizer.StaticPriceDict[DoorId.ConflateMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 10);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 10)), allText, 10);
                 price = shopRandomizer.StaticPriceDict[DoorId.DaybreakMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 11);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 11)), allText, 11);
                 price = shopRandomizer.StaticPriceDict[DoorId.DartmoorMeatShop].Price;
-                AddText(GetMeatShopText(price), allText, 12);
+                AddText(GetMeatShopText(price, GetCustomText(customTexts, 12)), allText, 12);
             }
 
             int newLength = getLength(allText);
@@ -354,9 +395,16 @@ namespace FaxanaduRando.Randomizer
             return true;
         }
 
-        public void RandomizeTitles(byte[] content)
+        public void RandomizeTitles(byte[] content, string customTextFile)
         {
-            var newTitles = GetNewTitles();
+
+            var newTitles = customTextFile.Length > 0 ? GetCustomTitles(customTextFile) : GetNewTitles();
+
+            // if not enough titles are provided, then append existing list.
+            if (newTitles.Count < 16) {
+                newTitles.Concat(GetNewTitles()).ToList();
+            }
+
             Util.ShuffleList(newTitles, 0, newTitles.Count - 1, random);
             titles = newTitles.GetRange(0, titles.Count);
             Text.SetTitles(titles, content);
@@ -813,6 +861,22 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
+        private List<string> GetCustomTitles(string customTextFile)
+        {
+
+            string[] customTextFileLines = File.ReadAllLines(customTextFile); 
+
+            var customTitles = new List<string>() {};
+            foreach (string line in customTextFileLines)
+            {
+                if (line.Trim().StartsWith("title:")) {
+                    customTitles.Add(line.Remove(0,6));
+                }
+            }
+
+            return customTitles;
+        }
+
         private List<string> GetNewTitles()
         {
             return new List<string>()
@@ -972,14 +1036,40 @@ namespace FaxanaduRando.Randomizer
             };
         }
 
-        private string GetHospitalText(ushort price)
+        private string GetCustomText(List<string> customTexts, int idNumber)
         {
-            return $"{price}?";
+            var customText = "";
+            foreach (string text in customTexts)
+            {
+                string[] parts = text.Split(':');
+
+                if (Int32.Parse(parts[0]) == idNumber)
+                {
+                    customText = parts[1];
+                }
+            }
+
+            return customText;
         }
 
-        private string GetMeatShopText(ushort price)
+        private string GetHospitalText(ushort price, string customText)
         {
-            return $"Eat my meat for {price}?";
+            return customText.Length > 0 ? String.Format(customText, price) : $"{price}?";;
+        }
+
+        private string GetMeatShopText(ushort price, string customText)
+        {
+            return customText.Length > 0 ? String.Format(customText, price) : $"Eat my meat for {price}?";
+        }
+
+        private string GetMartialArtsText(ushort price, string customText)
+        {
+            return customText.Length > 0 ? String.Format(customText, price) : $"Martial arts for {price}?";
+        }
+
+        private string GetMagicShopText(ushort price, string customText)
+        {
+            return customText.Length > 0 ? String.Format(customText, price) : $"Magic for {price}?";
         }
 
         private int getLength(List<string> texts)
@@ -998,14 +1088,56 @@ namespace FaxanaduRando.Randomizer
             texts[index] = text + Text.endOfTextChar;
         }
 
+        private string AddLine(string text, List<string> lines, int index, int previousIndex)
+        {
+            var length = index - previousIndex;
+            
+            var line = text.Substring(previousIndex, length);
+            var paddingMax = length > 14 ? 16 - length : 2;
+            var padding = "".PadRight(paddingMax < 0 ? 0 : paddingMax, ' ');
+
+            // bug: sometimes an extra line appears...
+            // probably not that big of a deal though.
+
+            if ((index >= 0) && (index < text.Length) && text[index] == '|')
+                line = line + Text.lineBreakWithPauseChar + padding;
+
+            return line;
+        }
+
         private string InsertLineBreaks(string text)
         {
             var indices = new List<int>();
 
             for (int i = 16; i < text.Length; i += 16)
             {
-                int j = i;
-                int k = j - 16;
+                bool indexed = false;
+                int j = i - 15;
+                int k = i;
+                int highest_j = 0;
+
+                while (j < k)
+                {
+                    if (text[j] == '|')
+                    {
+                        indices.Add(j);
+                        indexed = true;
+                        highest_j = j;
+                        // don't break as there could be more than one.
+                    }
+
+                    j++;
+                }
+
+                if (indexed == true)
+                {
+                    i = highest_j;
+                    continue;
+                }
+
+                j = i;
+                k = j - 16;
+
                 while (j > k)
                 {
                     if (text[j] == ' ')
@@ -1019,11 +1151,20 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            var newText = text;
+            var lines =  new List<string>();
+            int previousIndex = 0;
+
             foreach (var index in indices)
             {
-                newText = newText.Substring(0, index) + Text.lineBreakChar + text.Substring(index + 1);
+                var line = AddLine(text, lines, index, previousIndex);
+                lines.Add(line + Text.lineBreakChar.ToString());
+                previousIndex = index + 1; // add one to skip the space or pausebreak
             }
+
+            var lastLine = AddLine(text, lines, text.Length, previousIndex);
+            lines.Add(lastLine);
+
+            var newText = string.Join("", lines);
 
             return newText;
         }

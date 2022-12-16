@@ -618,5 +618,29 @@
                 </StackPanel>
             </Grid>
         </TabItem>
+        <TabItem Header="Custom Text">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="Custom Text File Path"/>
+
+                <TextBox Name ="customTextPathTextBox" Grid.Column="0" Grid.Row="1"/>
+                <Button Content="Browse" Grid.Column="1" Grid.Row="1" Click="CustomTextBrowseButton_Click"/>
+            </Grid>
+        </TabItem>
     </TabControl>
 </Window>
