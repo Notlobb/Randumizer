@@ -668,7 +668,7 @@ namespace FaxanaduRando.Randomizer
                 "Dragon",
                 "Duck",
                 "Metroid",
-                "MonoDron",
+                "Monodron",
                 "Wyvern",
                 "Grieve",
                 "King",

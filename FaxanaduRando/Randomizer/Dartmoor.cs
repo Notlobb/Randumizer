@@ -118,6 +118,12 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            result = CreateSublevel(Screens[6], endScreens[4], candidates, specialScreens, random, Screens[6].ParentSublevel, attempts, false, true);
+            if (!result)
+            {
+                return result;
+            }
+
             if (candidates.Count > 10)
             {
                 return false;
@@ -129,7 +135,8 @@ namespace FaxanaduRando.Randomizer
         public override List<Screen> GetCandidates(Random random)
         {
             var candidates = new List<Screen>();
-            candidates.AddRange(Screens.GetRange(5, 3));
+            candidates.Add(Screens[5]);
+            candidates.Add(Screens[7]);
             candidates.AddRange(Screens.GetRange(9, 2));
             candidates.Add(Screens[11]);
             candidates.Add(Screens[13]);
@@ -170,6 +177,7 @@ namespace FaxanaduRando.Randomizer
             specialScreens.Add(Screens[4]);
             specialScreens.Add(Screens[GrieveScreen]);
             specialScreens.Add(Screens[25]);
+            specialScreens.Add(Screens[6]);
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
             return specialScreens;
