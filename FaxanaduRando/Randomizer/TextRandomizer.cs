@@ -402,7 +402,7 @@ namespace FaxanaduRando.Randomizer
 
             // if not enough titles are provided, then append existing list.
             if (newTitles.Count < 16) {
-                newTitles.Concat(GetNewTitles()).ToList();
+                newTitles.AddRange(GetNewTitles());
             }
 
             Util.ShuffleList(newTitles, 0, newTitles.Count - 1, random);
