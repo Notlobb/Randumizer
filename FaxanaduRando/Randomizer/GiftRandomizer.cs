@@ -107,7 +107,8 @@ namespace FaxanaduRando.Randomizer
                 }
 
                 item.Item = ids[index];
-                if (regiftableItems.Contains(item.Item))
+                if (regiftableItems.Contains(item.Item) &&
+                    item.LocationId != GiftItem.Id.ConflateGuru)
                 {
                     item.ConditionItem = ShopRandomizer.Id.Book;
                 }
