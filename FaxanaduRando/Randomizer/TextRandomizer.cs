@@ -55,6 +55,7 @@ namespace FaxanaduRando.Randomizer
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
             var customTexts = new List<string>() {};
+            string defaultHint = "Hi";
 
             if (GeneralOptions.FastText)
             {
@@ -97,7 +98,7 @@ namespace FaxanaduRando.Randomizer
 
             var communityHints = new List<string>()
             {
-                    "Hi",
+                    defaultHint,
                     "Ni",
                     "Who's talkin'?",
                     "I am Error",
@@ -135,8 +136,8 @@ namespace FaxanaduRando.Randomizer
                     "Shoutout to Bogledowdee",
                 };
 
-                if (!string.IsNullOrEmpty(customTextFile)) {
-    
+                if (TextOptions.UseCustomText)
+                {
                     string[] customTextLines = File.ReadAllLines(customTextFile); 
 
                     communityHints = new List<string>() {};
@@ -144,7 +145,11 @@ namespace FaxanaduRando.Randomizer
                     {
                         if (customText.Trim().StartsWith(":"))
                         {
-                            communityHints.Add(customText.Remove(0,1));
+                            communityHints.Add(customText.Remove(0, 1));
+                        }
+                        else if (customText.Trim().StartsWith("default:"))
+                        {
+                            defaultHint = customText.Split(':')[1];
                         }
                         else if (customText.Trim().StartsWith("title:"))
                         {
@@ -155,7 +160,6 @@ namespace FaxanaduRando.Randomizer
                             customTexts.Add(customText);
                         }
                     }
-                        
                 } 
             
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
@@ -167,6 +171,7 @@ namespace FaxanaduRando.Randomizer
 
                 int index = 0;
                 int communityHintCount = GeneralOptions.HintSetting == GeneralOptions.Hints.Strong ? 2 : 10;
+                communityHintCount = Math.Min(communityHintCount, communityHints.Count);
                 for (; index < communityHintCount; index++)
                 {
                     hints.Add(communityHints[index]);
@@ -180,7 +185,7 @@ namespace FaxanaduRando.Randomizer
 
                 while (hints.Count < indices.Count)
                 {
-                    hints.Add("Hi");
+                    hints.Add(defaultHint);
                 }
 
                 Util.ShuffleList(hints, 0, hints.Count - 1, random);
@@ -328,7 +333,7 @@ namespace FaxanaduRando.Randomizer
                 else
                 {
                     //Intro text
-                    AddText("Hi", allText, 37);
+                    AddText(defaultHint, allText, 37);
                 }
 
                 var kingTexts = new List<string>()
@@ -337,16 +342,16 @@ namespace FaxanaduRando.Randomizer
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
-                AddText("Hi", allText, 43); //Eolis guru
-                AddText("Hi", allText, 86); //Sky fountain
-                AddText("Hi", allText, 125); //Ace key guy
-                AddText("Hi", allText, 139); //Conflate guru
-                AddText("Hi", allText, 161); //Fraternal guru
+                AddText(defaultHint, allText, 43); //Eolis guru
+                AddText(defaultHint, allText, 86); //Sky fountain
+                AddText(defaultHint, allText, 125); //Ace key guy
+                AddText(defaultHint, allText, 139); //Conflate guru
+                AddText(defaultHint, allText, 161); //Fraternal guru
 
                 foreach (string customText in customTexts)
                 {
                     string[] parts = customText.Split(':');
-                    var textIndex = Int32.Parse(parts[0]);
+                    var textIndex = int.Parse(parts[0]);
                     AddText(parts[1], allText, textIndex);
                 }
 
@@ -397,8 +402,7 @@ namespace FaxanaduRando.Randomizer
 
         public void RandomizeTitles(byte[] content, string customTextFile)
         {
-
-            var newTitles = customTextFile.Length > 0 ? GetCustomTitles(customTextFile) : GetNewTitles();
+            var newTitles = TextOptions.UseCustomText ? GetCustomTitles(customTextFile) : GetNewTitles();
 
             // if not enough titles are provided, then append existing list.
             if (newTitles.Count < 16) {
@@ -863,7 +867,6 @@ namespace FaxanaduRando.Randomizer
 
         private List<string> GetCustomTitles(string customTextFile)
         {
-
             string[] customTextFileLines = File.ReadAllLines(customTextFile); 
 
             var customTitles = new List<string>() {};
@@ -1043,9 +1046,10 @@ namespace FaxanaduRando.Randomizer
             {
                 string[] parts = text.Split(':');
 
-                if (Int32.Parse(parts[0]) == idNumber)
+                if (int.Parse(parts[0]) == idNumber)
                 {
                     customText = parts[1];
+                    break;
                 }
             }
 
@@ -1054,22 +1058,22 @@ namespace FaxanaduRando.Randomizer
 
         private string GetHospitalText(ushort price, string customText)
         {
-            return customText.Length > 0 ? String.Format(customText, price) : $"{price}?";;
+            return customText.Length > 0 ? string.Format(customText, price) : $"{price}?";;
         }
 
         private string GetMeatShopText(ushort price, string customText)
         {
-            return customText.Length > 0 ? String.Format(customText, price) : $"Eat my meat for {price}?";
+            return customText.Length > 0 ? string.Format(customText, price) : $"Eat my meat for {price}?";
         }
 
         private string GetMartialArtsText(ushort price, string customText)
         {
-            return customText.Length > 0 ? String.Format(customText, price) : $"Martial arts for {price}?";
+            return customText.Length > 0 ? string.Format(customText, price) : $"Martial arts for {price}?";
         }
 
         private string GetMagicShopText(ushort price, string customText)
         {
-            return customText.Length > 0 ? String.Format(customText, price) : $"Magic for {price}?";
+            return customText.Length > 0 ? string.Format(customText, price) : $"Magic for {price}?";
         }
 
         private int getLength(List<string> texts)
@@ -1108,65 +1112,95 @@ namespace FaxanaduRando.Randomizer
         private string InsertLineBreaks(string text)
         {
             var indices = new List<int>();
-
-            for (int i = 16; i < text.Length; i += 16)
+            if (TextOptions.UseCustomText)
             {
-                bool indexed = false;
-                int j = i - 15;
-                int k = i;
-                int highest_j = 0;
-
-                while (j < k)
+                for (int i = 16; i < text.Length; i += 16)
                 {
-                    if (text[j] == '|')
+                    bool indexed = false;
+                    int j = i - 15;
+                    int k = i;
+                    int highest_j = 0;
+
+                    while (j < k)
                     {
-                        indices.Add(j);
-                        indexed = true;
-                        highest_j = j;
-                        // don't break as there could be more than one.
+                        if (text[j] == '|')
+                        {
+                            indices.Add(j);
+                            indexed = true;
+                            highest_j = j;
+                            // don't break as there could be more than one.
+                        }
+
+                        j++;
                     }
 
-                    j++;
-                }
-
-                if (indexed == true)
-                {
-                    i = highest_j;
-                    continue;
-                }
-
-                j = i;
-                k = j - 16;
-
-                while (j > k)
-                {
-                    if (text[j] == ' ')
+                    if (indexed == true)
                     {
-                        indices.Add(j);
-                        i = j;
-                        break;
+                        i = highest_j;
+                        continue;
                     }
 
-                    j--;
+                    j = i;
+                    k = j - 16;
+
+                    while (j > k)
+                    {
+                        if (text[j] == ' ')
+                        {
+                            indices.Add(j);
+                            i = j;
+                            break;
+                        }
+
+                        j--;
+                    }
                 }
+
+                var lines = new List<string>();
+                int previousIndex = 0;
+
+                foreach (var index in indices)
+                {
+                    var line = AddLine(text, lines, index, previousIndex);
+                    lines.Add(line + Text.lineBreakChar.ToString());
+                    previousIndex = index + 1; // add one to skip the space or pausebreak
+                }
+
+                var lastLine = AddLine(text, lines, text.Length, previousIndex);
+                lines.Add(lastLine);
+
+                var newText = string.Join("", lines);
+
+                return newText;
             }
-
-            var lines =  new List<string>();
-            int previousIndex = 0;
-
-            foreach (var index in indices)
+            else
             {
-                var line = AddLine(text, lines, index, previousIndex);
-                lines.Add(line + Text.lineBreakChar.ToString());
-                previousIndex = index + 1; // add one to skip the space or pausebreak
+
+                for (int i = 16; i < text.Length; i += 16)
+                {
+                    int j = i;
+                    int k = j - 16;
+                    while (j > k)
+                    {
+                        if (text[j] == ' ')
+                        {
+                            indices.Add(j);
+                            i = j;
+                            break;
+                        }
+
+                        j--;
+                    }
+                }
+
+                var newText = text;
+                foreach (var index in indices)
+                {
+                    newText = newText.Substring(0, index) + Text.lineBreakChar + text.Substring(index + 1);
+                }
+
+                return newText;
             }
-
-            var lastLine = AddLine(text, lines, text.Length, previousIndex);
-            lines.Add(lastLine);
-
-            var newText = string.Join("", lines);
-
-            return newText;
         }
 
         private List<string> GetAllSublevelHints(GiftRandomizer giftRandomizer, bool spoilerLog)

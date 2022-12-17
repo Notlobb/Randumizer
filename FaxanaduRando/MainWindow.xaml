@@ -135,6 +135,7 @@
                             <Binding ElementName="randomizeTitlesCheckBox" Path="IsChecked" />
                             <Binding ElementName="includeSomeEolisDoorsCheckBox" Path="IsChecked" />
                             <Binding ElementName="addKillSwitchCheckBox" Path="IsChecked" />
+                            <Binding ElementName="useCustomTextCheckBox" Path="IsChecked" />
                             <Binding ElementName="hintsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="miscDoorsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="worldDoorsComboBox" Path="SelectedIndex" />
@@ -640,6 +641,11 @@
 
                 <TextBox Name ="customTextPathTextBox" Grid.Column="0" Grid.Row="1"/>
                 <Button Content="Browse" Grid.Column="1" Grid.Row="1" Click="CustomTextBrowseButton_Click"/>
+
+                <CheckBox Name="useCustomTextCheckBox" Grid.Column="2" Grid.Row="0" IsChecked="{Binding Path=(randomizer:TextOptions.UseCustomText), Mode=TwoWay}"
+                          ToolTip="Use custom text from a text file"/>
+                <TextBlock Grid.Column="3" Grid.Row="0" Text="Use custom text"/>
+
             </Grid>
         </TabItem>
     </TabControl>
