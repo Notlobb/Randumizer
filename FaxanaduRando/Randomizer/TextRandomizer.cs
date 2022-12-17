@@ -404,9 +404,12 @@ namespace FaxanaduRando.Randomizer
         {
             var newTitles = TextOptions.UseCustomText ? GetCustomTitles(customTextFile) : GetNewTitles();
 
-            // if not enough titles are provided, then append existing list.
-            if (newTitles.Count < 16) {
-                newTitles.AddRange(GetNewTitles());
+            // if not enough titles are provided, then append existing titles.
+            if (newTitles.Count < 16)
+            {
+                var standardTitles = GetNewTitles();
+                Util.ShuffleList(standardTitles, 0, standardTitles.Count - 1, random);
+                newTitles.AddRange(standardTitles.GetRange(0, 16 - newTitles.Count));
             }
 
             Util.ShuffleList(newTitles, 0, newTitles.Count - 1, random);
