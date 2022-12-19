@@ -4,11 +4,24 @@ using System.IO;
 
 namespace FaxanaduRando.Randomizer
 {
+    public enum Result
+    {
+        Success,
+        failure,
+        TextTooLong,
+    }
+
     public class Randomizer
     {
-        public bool Randomize(string inputFile, string flags, int seed, out string message)
+        public bool Randomize(string inputFile, string customTextFile, string flags, int seed, out string message)
         {
-            message = "Failed to find a valid randomization for this seed";
+            if (TextOptions.UseCustomText &&
+                string.IsNullOrEmpty(customTextFile))
+            {
+                message = "Please supply a path to a text file when using custom text. For a reference to the format of the file, check the Readme file";
+                return false;
+            }
+
             Random random = new Random(seed);
 
 #if !DEBUG
@@ -33,10 +46,11 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var level in levels)
                 {
-                    bool result = level.RandomizeScreens(random, ref screenAttempts);
-                    if (!result)
+                    bool screenResult = level.RandomizeScreens(random, ref screenAttempts);
+                    if (!screenResult)
                     {
-                        return result;
+                        message = "Screen randomization failed";
+                        return screenResult;
                     }
                 }
             }
@@ -55,6 +69,7 @@ namespace FaxanaduRando.Randomizer
             var itemRandomizer = new ItemRandomizer(random);
             if (!itemRandomizer.ShuffleItems(levels, shopRandomizer, giftRandomizer, doorRandomizer, content, out uint attempts))
             {
+                message = "Item randomization failed";
                 return false;
             }
 
@@ -299,11 +314,19 @@ namespace FaxanaduRando.Randomizer
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
             {
-                textRandomizer.RandomizeTitles(content);
+                textRandomizer.RandomizeTitles(content, customTextFile);
             }
 
-            if (!textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content))
+            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content, customTextFile);
+            if (result != Result.Success)
             {
+                if (result == Result.TextTooLong)
+                {
+                    message = "Text randomization failed, generated text was too long for this seed";
+                    return false;
+                }
+
+                message = "Text randomization failed";
                 return false;
             }
 

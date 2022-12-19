@@ -93,6 +93,7 @@
     <Compile Include="Randomizer\Table.cs" />
     <Compile Include="Randomizer\Text.cs" />
     <Compile Include="Randomizer\TextObject.cs" />
+    <Compile Include="Randomizer\TextOptions.cs" />
     <Compile Include="Randomizer\TextRandomizer.cs" />
     <Compile Include="Randomizer\Towns.cs" />
     <Compile Include="Randomizer\Trunk.cs" />
