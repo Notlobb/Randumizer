@@ -31,6 +31,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     if (random.Next(0, 2) > 2)
                     {
+                        message = "Unexpected error";
                         return false;
                     }
                 }
