@@ -45,8 +45,8 @@ namespace FaxanaduRando.Randomizer
         public static EnemySetType EnemySet { get; set; } = EnemySetType.NonMixed;
         public static EnemyHP EnemyHPSetting { get; set; } = EnemyHP.Unchanged;
         public static EnemyDamage EnemyDamageSetting { get; set; } = EnemyDamage.Unchanged;
-        public static bool RandomizeExperience { get; set; } = false;
-        public static bool RandomizeRewards { get; set; } = false;
+        public static bool RandomizeExperience { get; set; } = true;
+        public static bool RandomizeRewards { get; set; } = true;
         public static bool RandomizeMagicImmunities { get; set; } = true;
         public static bool TryToMoveBosses { get; set; } = true;
     }

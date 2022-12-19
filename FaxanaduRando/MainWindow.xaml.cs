@@ -120,7 +120,7 @@ namespace FaxanaduRando
                 var box = (System.Windows.Controls.ComboBox)sender;
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "30B9FF7205k02v1ma";
+                    flagsTextBox.Text = "30BFFF7205k02v1ma";
                 }
                 else if (box.SelectedIndex == 1)
                 {
