@@ -50,7 +50,7 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public bool UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content, string customTextFile)
+        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content, string customTextFile)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
@@ -393,11 +393,11 @@ namespace FaxanaduRando.Randomizer
             int newLength = getLength(allText);
             if (newLength > oldLength)
             {
-                return false;
+                return Result.TextTooLong;
             }
 
             Text.SetAllText(content, allText);
-            return true;
+            return Result.Success;
         }
 
         public void RandomizeTitles(byte[] content, string customTextFile)
