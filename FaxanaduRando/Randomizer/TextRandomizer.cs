@@ -290,7 +290,7 @@ namespace FaxanaduRando.Randomizer
                 else
                 {
                     poisonText.Add("SOAP POISONING");
-                    poisonText.Add("ETHEL'S BEANS");
+                    poisonText.Add("I've touched posion");
                 }
 
                 var gloveText = new List<string>()
@@ -989,8 +989,18 @@ namespace FaxanaduRando.Randomizer
                 "VampireHunter",
                 "VampireKiller",
                 "HeroOfTime",
+                "Link",
+                "Zelda",
+                "Gibdo",
+                "Goriya",
+                "Moblin",
+                "Stalfos",
+                "Darknut",
+                "IronKnuckle",
+                "Goblin",
                 "Ogre",
                 "Orc",
+                "Troll",
                 "GrandVizier",
                 "PerfectMan",
                 "PillarMan",
@@ -1003,7 +1013,13 @@ namespace FaxanaduRando.Randomizer
                 "Jedi",
                 "Sith",
                 "MarioBrother",
+                "Mario",
+                "Luigi",
+                "Bowser",
+                "Goomba",
                 "KoopaTroopa",
+                "KoopaKing",
+                "KingKoopa",
                 "Koopaling",
                 "Yoshi",
                 "Cannibal",
@@ -1039,6 +1055,11 @@ namespace FaxanaduRando.Randomizer
                 "Emperor",
                 "GodEmperor",
                 "Monster",
+                "Santa",
+                "SantaClaus",
+                "RobotSanta",
+                "Elf",
+                "Grinch",
             };
         }
 
