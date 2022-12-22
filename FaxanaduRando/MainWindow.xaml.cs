@@ -105,6 +105,16 @@ namespace FaxanaduRando
                 }
             }
 
+            if (!string.IsNullOrEmpty(customTextPathTextBox.Text) &&
+                !Randomizer.TextOptions.UseCustomText)
+            {
+                if (MessageBox.Show("Custom text won't be used unless the 'Use custom text' flag is checked. Continue?", "Warning", MessageBoxButton.YesNo) ==
+                    MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
             try
             {
                 var randomizer = new Randomizer.Randomizer();
