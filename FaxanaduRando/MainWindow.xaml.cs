@@ -95,6 +95,16 @@ namespace FaxanaduRando
                 }
             }
 
+            if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
+                !Randomizer.GeneralOptions.AddKillSwitch)
+            {
+                if (MessageBox.Show("It is recommended that you turn on the 'Add kill switch' flag when doing screen randomization to prevent softlocks. Continue?", "Warning", MessageBoxButton.YesNo) ==
+                    MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
             try
             {
                 var randomizer = new Randomizer.Randomizer();
