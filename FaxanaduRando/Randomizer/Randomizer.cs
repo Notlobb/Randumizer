@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -199,7 +200,7 @@ namespace FaxanaduRando.Randomizer
                 giftRandomizer.BarRank = rank;
             }
 
-            var ememyRandomizer = new EnemyRandomizer();
+            var enemyRandomizer = new EnemyRandomizer();
             Screen.SetupEnemyIds();
             var enemyHPTable = new Table(Section.GetOffset(14, 0xB5A9, 0x8000), 100, 1, content);
             var enemyDamageTable = new Table(Section.GetOffset(14, 0xB6D7, 0x8000), 100, 1, content);
@@ -220,69 +221,40 @@ namespace FaxanaduRando.Randomizer
                     EnemyOptions.EnemySet == EnemyOptions.EnemySetType.ExtremelyHard ||
                     EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Scaling)
                 {
-                    ememyRandomizer.RandomizeBehaviour((int)Sprite.SpriteId.StillKnight, spriteBehaviourTable, random);
-                    ememyRandomizer.UpdateSpriteValues((int)Sprite.SpriteId.StillKnight, 40, 20, 100, 50, enemyHPTable, enemyDamageTable, enemyExperienceTable, enemyRewardTypeTable);
+                    enemyRandomizer.RandomizeBehaviour((int)Sprite.SpriteId.StillKnight, spriteBehaviourTable, random);
+                    enemyRandomizer.UpdateSpriteValues((int)Sprite.SpriteId.StillKnight, 40, 20, 100, 50, enemyHPTable, enemyDamageTable, enemyExperienceTable, enemyRewardTypeTable);
                 }
             }
 
             if (EnemyOptions.EnemyHPSetting != EnemyOptions.EnemyHP.Unchanged)
             {
-                ememyRandomizer.RandomizeEnemyHP(enemyHPTable, random);
+                enemyRandomizer.RandomizeEnemyHP(enemyHPTable, random);
             }
 
             if (EnemyOptions.EnemyDamageSetting != EnemyOptions.EnemyDamage.Unchanged)
             {
-                ememyRandomizer.RandomizeEnemyDamage(enemyDamageTable, random);
+                enemyRandomizer.RandomizeEnemyDamage(enemyDamageTable, random);
             }
 
             if (EnemyOptions.RandomizeExperience)
             {
-                ememyRandomizer.RandomizeExperience(enemyExperienceTable, random);
+                enemyRandomizer.RandomizeExperience(enemyExperienceTable, random);
             }
 
             if (EnemyOptions.RandomizeRewards)
             {
-                ememyRandomizer.RandomizeRewards(enemyRewardTypeTable, enemyRewardQuantityTable, random);
+                enemyRandomizer.RandomizeRewards(enemyRewardTypeTable, enemyRewardQuantityTable, random);
             }
 
             if (EnemyOptions.RandomizeMagicImmunities)
             {
-                ememyRandomizer.RandomizeMagicImmunities(magicResistanceTable, random);
-                var resistSection = new Section();
-                resistSection.Bytes.Add(OpCode.JMPAbsolute);
-                resistSection.Bytes.Add(0xD2);
-                resistSection.Bytes.Add(0x81);
-                resistSection.AddToContent(content, Section.GetOffset(14, 0x8AFF, 0x8000));
+                enemyRandomizer.RandomizeMagicImmunities(magicResistanceTable, random, content);
+            }
 
-                resistSection = new Section();
-                resistSection.Bytes.Add(OpCode.JMPAbsolute);
-                resistSection.Bytes.Add(0xFD);
-                resistSection.Bytes.Add(0x81);
-                resistSection.Bytes.Add(OpCode.STYAbsolute);
-                resistSection.Bytes.Add(0x01);
-                resistSection.Bytes.Add(0x00);
-                resistSection.Bytes.Add(OpCode.LDYAbsoluteX);
-                resistSection.Bytes.Add(0xCC);
-                resistSection.Bytes.Add(0x02);
-                resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
-                resistSection.Bytes.Add(0x3B);
-                resistSection.Bytes.Add(0xB7);
-                resistSection.Bytes.Add(OpCode.CMPAbsolute);
-                resistSection.Bytes.Add(0x01);
-                resistSection.Bytes.Add(0x00);
-                resistSection.Bytes.Add(OpCode.BNE);
-                resistSection.Bytes.Add(0x01);
-                resistSection.Bytes.Add(OpCode.RTS);
-                resistSection.Bytes.Add(OpCode.LDYAbsolute);
-                resistSection.Bytes.Add(0x01);
-                resistSection.Bytes.Add(0x00);
-                resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
-                resistSection.Bytes.Add(0x73);
-                resistSection.Bytes.Add(0x8B);
-                resistSection.Bytes.Add(OpCode.JMPAbsolute);
-                resistSection.Bytes.Add(0x02);
-                resistSection.Bytes.Add(0x8B);
-                resistSection.AddToContent(content, Section.GetOffset(14, 0x81CF, 0x8000));
+            var enemyBehaviourDict = new Dictionary<Sprite.SpriteId, Sprite.SpriteId>();
+            if (EnemyOptions.AISetting != EnemyOptions.AIShuffle.Unchanged)
+            {
+                enemyRandomizer.RandomizeBehaviours(spriteBehaviourTable, random, enemyBehaviourDict);
             }
 
             doorRandomizer.AddToContent(content, random);
@@ -402,7 +374,17 @@ namespace FaxanaduRando.Randomizer
                         var id = (Sprite.SpriteId)i;
                         var hp = enemyHPTable.Entries[i][0];
                         var damage = enemyDamageTable.Entries[i][0];
-                        enemyData[id] = new SpriteType(id, hp, damage);
+                        Sprite.SpriteId ai;
+                        if (enemyBehaviourDict.ContainsKey(id))
+                        {
+                            ai = enemyBehaviourDict[id];
+                        }
+                        else
+                        {
+                            ai = id;
+                        }
+
+                        enemyData[id] = new SpriteType(id, hp, damage, ai);
                     }
                 }
 
@@ -418,11 +400,10 @@ namespace FaxanaduRando.Randomizer
                 spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, 0xB7AD, 0x8000)],
                                                    content[Section.GetOffset(14, 0xB7A4, 0x8000)]);
 
-
-                spoilers.Add($"Id Hp Damage");
+                spoilers.Add($"Id Hp Damage AI");
                 foreach (var data in enemyData.Values)
                 {
-                    spoilers.Add($"{data.Id} {data.Hp} {data.Damage}");
+                    spoilers.Add($"{data.Id} {data.Hp} {data.Damage} {data.AI}");
                 }
 
                 spoilers.Add($"Id Manacost Damage");

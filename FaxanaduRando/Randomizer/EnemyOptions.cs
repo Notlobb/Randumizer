@@ -42,9 +42,17 @@ namespace FaxanaduRando.Randomizer
             AlwaysPlus100Percent,
         };
 
+        public enum AIShuffle
+        {
+            Full,
+            Partial,
+            Unchanged,
+        };
+
         public static EnemySetType EnemySet { get; set; } = EnemySetType.NonMixed;
         public static EnemyHP EnemyHPSetting { get; set; } = EnemyHP.Unchanged;
         public static EnemyDamage EnemyDamageSetting { get; set; } = EnemyDamage.Unchanged;
+        public static AIShuffle AISetting { get; set; } = AIShuffle.Unchanged;
         public static bool RandomizeExperience { get; set; } = true;
         public static bool RandomizeRewards { get; set; } = true;
         public static bool RandomizeMagicImmunities { get; set; } = true;
@@ -98,6 +106,16 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class AISettings : ObservableCollection<string>
+    {
+        public AISettings()
+        {
+            Add("Full shuffle");
+            Add("Partial shuffle");
+            Add("Unchanged");
+        }
+    }
+
     public class EnemyHPConverter : EnumConverter<EnemyOptions.EnemyHP>
     {
     }
@@ -107,6 +125,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class EnemySetConverter : EnumConverter<EnemyOptions.EnemySetType>
+    {
+    }
+
+    public class AIConverter : EnumConverter<EnemyOptions.AIShuffle>
     {
     }
 }

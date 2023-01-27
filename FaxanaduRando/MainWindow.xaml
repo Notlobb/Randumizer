@@ -19,6 +19,8 @@
         <randomizer:EnemyDamageConverter x:Key="enemyDamageConverter" />
         <randomizer:EnemySetSettings x:Key="enemySetSettings" />
         <randomizer:EnemySetConverter x:Key="enemySetConverter" />
+        <randomizer:AISettings x:Key="aiSettings" />
+        <randomizer:AIConverter x:Key="aiConverter" />
         <randomizer:StartingWeaponSettings x:Key="startingWeapon" />
         <randomizer:StartingWeaponConverter x:Key="startingWeaponConverter" />
         <randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
@@ -151,6 +153,7 @@
                             <Binding ElementName="keyRandomizationComboBox" Path="SelectedIndex" />
                             <Binding ElementName="randomizeScreensComboBox" Path="SelectedIndex" />
                             <Binding ElementName="multipleGiftsComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="aiComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -304,10 +307,12 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -370,6 +375,18 @@
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemyDamageSetting), Mode=TwoWay, Converter={StaticResource enemyDamageConverter}}"
                         ToolTip="Changes enemy Damage by a random numerical value or percantage value. Affects each enemy type seperately"
+                        />
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Grid.Row="7" Text="Enemy AI: "/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="7">
+                    <ComboBox Name="aiComboBox"
+                        ItemsSource="{StaticResource aiSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.AISetting), Mode=TwoWay, Converter={StaticResource aiConverter}}"
+                        ToolTip="Shuffle the AI used by the enemies. Partial will exclude superbosses like King Grieve and the Evil One from the shuffle but will still randomize their AI"
                         />
                 </StackPanel>
 
