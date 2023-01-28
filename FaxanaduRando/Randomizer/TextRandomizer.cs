@@ -126,6 +126,9 @@ namespace FaxanaduRando.Randomizer
                     "Trying is the first step towards failure",
                     "The fortress of what? Oh, Zenis. I thought you said something else...",
                     "Are you in a race? If so, good luck!",
+                    "I'm here to kick ass and drink red potions. And I'm all out of red potions",
+                    "Ran ran ruuuuu!",
+                    "Shop smart. Shop Eolis mart!",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -339,6 +342,7 @@ namespace FaxanaduRando.Randomizer
                 var kingTexts = new List<string>()
                 {
                     "Shut up and take my money!",
+                    "Keep the change you fílthy animal",
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
