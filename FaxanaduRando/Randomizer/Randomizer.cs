@@ -584,7 +584,7 @@ namespace FaxanaduRando.Randomizer
                 SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].Id = Sprite.SpriteId.MattockBossLocked;
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 var topItem = Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2];
                 topItem.ShouldBeShuffled = false;

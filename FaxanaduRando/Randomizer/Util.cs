@@ -33,9 +33,16 @@ namespace FaxanaduRando.Randomizer
                 GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus;
         }
 
-        public static bool AllWorldScreensRandomized()
+        public static bool AllCoreWorldScreensRandomized()
         {
-            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds;
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
+                   GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldExceptEolisAndZenis;
+        }
+
+        public static bool AllEndWorldScreensRandomized()
+        {
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
+                   GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.EolisAndZenisOnly;
         }
 
         public static Dictionary<T1, T2> Reverse<T1, T2>(Dictionary<T2, T1> dictionary)

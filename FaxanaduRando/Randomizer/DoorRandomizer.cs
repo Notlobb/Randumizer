@@ -398,7 +398,7 @@ namespace FaxanaduRando.Randomizer
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
                 Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
@@ -675,7 +675,7 @@ namespace FaxanaduRando.Randomizer
                 requirements.Add(Doors[DoorId.MartialArtsShop].key);
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 requirements.Add(Doors[DoorId.EastBranch].key); 
                 requirements.Add(Doors[DoorId.DropdownWing].key);
@@ -716,7 +716,7 @@ namespace FaxanaduRando.Randomizer
                 index++;
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 Doors[DoorId.EastBranch].key = requirements[index];
                 index++;

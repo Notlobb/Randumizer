@@ -140,7 +140,7 @@ namespace FaxanaduRando
                 var box = (System.Windows.Controls.ComboBox)sender;
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "30BFFF7205k02v1mc";
+                    flagsTextBox.Text = "30BFFF7205k02v1nc";
                 }
                 else if (box.SelectedIndex == 1)
                 {
@@ -152,7 +152,7 @@ namespace FaxanaduRando
                 }
                 else if (box.SelectedIndex == 3)
                 {
-                    flagsTextBox.Text = "50105E000Am00Zocmm";
+                    flagsTextBox.Text = "50105E000Am00Zocnm";
                 }
                 else if (box.SelectedIndex == 4)
                 {
@@ -164,7 +164,7 @@ namespace FaxanaduRando
                 }
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3EDFFFFA0Al02vbmc";
+                    flagsTextBox.Text = "3EDFFFFA0Al02vbnc";
                 }
             }
         }

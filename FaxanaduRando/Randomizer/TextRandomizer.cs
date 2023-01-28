@@ -1239,7 +1239,7 @@ namespace FaxanaduRando.Randomizer
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, spoilerLog));
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, spoilerLog));
                 hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch], giftRandomizer, spoilerLog));
@@ -1274,7 +1274,7 @@ namespace FaxanaduRando.Randomizer
                 hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.EvilOnesLair], doorRandomizer));
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.DropdownWing], doorRandomizer));
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.EastBranchLeft], doorRandomizer));
@@ -1402,7 +1402,7 @@ namespace FaxanaduRando.Randomizer
         {
             var hints = new List<string>();
             string locationHint;
-            if (Util.AllWorldScreensRandomized() &&
+            if (Util.AllCoreWorldScreensRandomized() &&
                 door.ParentSublevel != null)
             {
                 locationHint = $" in {door.ParentSublevel.SubLevelId}";
@@ -1464,7 +1464,7 @@ namespace FaxanaduRando.Randomizer
                     springHints.Add(hint);
                 }
 
-                if (Util.AllWorldScreensRandomized())
+                if (Util.AllCoreWorldScreensRandomized())
                 {
                     if (SubLevel.FortressSpringSublevel == door.Sublevel.SubLevelId)
                     {
@@ -1622,7 +1622,7 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 if (SubLevel.FortressSpringSublevel == sublevel.SubLevelId)
                 {

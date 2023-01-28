@@ -82,7 +82,7 @@ namespace FaxanaduRando.Randomizer
 
         public virtual bool ShouldRandomizeScreens()
         {
-            return Util.AllWorldScreensRandomized();
+            return Util.AllCoreWorldScreensRandomized();
         }
 
         public void RandomizeEnemies(Random random)

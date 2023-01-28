@@ -156,7 +156,7 @@ namespace FaxanaduRando.Randomizer
             Shops.Add(shop);
             ShopDict.Add(shop.ShopId, shop);
 
-            if (Util.AllWorldScreensRandomized())
+            if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged)
             {
                 var shopItem = new ShopItem(0x32441, content);
                 shop.Items.Add(shopItem);

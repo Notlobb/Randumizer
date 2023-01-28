@@ -692,7 +692,7 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 if (!ids.Contains(doorRandomizer.GetLevelKey(doorRandomizer.Doors[DoorId.EastBranch])))
                 {
@@ -820,7 +820,7 @@ namespace FaxanaduRando.Randomizer
 
         private bool GuaranteedElixir(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, List<Level> levels)
         {
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
                     {
