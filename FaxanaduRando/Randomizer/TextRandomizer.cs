@@ -1280,7 +1280,7 @@ namespace FaxanaduRando.Randomizer
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.EastBranchLeft], doorRandomizer));
             }
 
-            if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+            if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.Buildings[DoorId.TrunkSecretShop], doorRandomizer));
                 hints.Add(GetLevelKeyHint(doorRandomizer.Buildings[DoorId.FortressGuru], doorRandomizer));
@@ -1448,7 +1448,7 @@ namespace FaxanaduRando.Randomizer
                     foreach (var gift in screen.Gifts)
                     {
                         var hint = $"{gift} has {giftRandomizer.ItemDict[gift].Item} in {door.Sublevel.SubLevelId}";
-                        if(GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged ||
+                        if(GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged ||
                            GeneralOptions.ShuffleTowers)
                         {
                             hint += $" at {oldDoor}";

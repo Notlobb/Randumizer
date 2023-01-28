@@ -106,8 +106,8 @@ namespace FaxanaduRando.Randomizer
                                    GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurusAndKeyshops;
             bool includeGurus = includeTownBuildings && GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus &&
                                 GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurusAndKeyshops;
-            bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
-            bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
+            bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged;
+            bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged;
 
             bool includeEolisGuru = includeGurus && (GeneralOptions.FastStart || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged);
 
@@ -531,14 +531,14 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void ShuffleWorldDoors(Random random)
+        public void ShuffleDoorTypes(Random random)
         {
-            ShuffleWorldDoors(OtherWorldNumber.Trunk, random);
-            ShuffleWorldDoors(OtherWorldNumber.Mist, random);
-            ShuffleWorldDoors(OtherWorldNumber.Dartmoor, random);
+            ShuffleDoorTypes(OtherWorldNumber.Trunk, random);
+            ShuffleDoorTypes(OtherWorldNumber.Mist, random);
+            ShuffleDoorTypes(OtherWorldNumber.Dartmoor, random);
         }
 
-        public void ShuffleWorldDoors(OtherWorldNumber world, Random random)
+        public void ShuffleDoorTypes(OtherWorldNumber world, Random random)
         {
             var towers = TowerDoors.Values.Where(d => d.World == world && d.ShouldShuffle);
             var buildings = Buildings.Values.Where(d => d.World == world && d.ShouldShuffle);
@@ -570,7 +570,7 @@ namespace FaxanaduRando.Randomizer
                     locations[i].ReturnRequirement.palette = locations[i].GetPalette(locations[i].OriginalId);
                 }
 
-                if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+                if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
                 {
                     locations[i].key = tempDoors[i].key;
                 }
@@ -655,7 +655,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             var towerDoorsToRandomize = new List<Door>();
-            if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+            if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
             {
                 towerDoorsToRandomize = new List<Door>(Doors.Values.Where(t => IsTower(t.Id)));
             }

@@ -30,8 +30,8 @@
         <randomizer:ShieldSettings x:Key="shieldSettings" />
         <randomizer:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
         <randomizer:BigItemSpawnsSettingsConverter x:Key="bigItemSpawnsSettingsConverter" />
-        <randomizer:WorldDoorSettings x:Key="worldDoorSettings" />
-        <randomizer:WorldDoorConverter x:Key="worldDoorConverter" />
+        <randomizer:DoorTypeSettings x:Key="doorTypeSettings" />
+        <randomizer:DoorTypeConverter x:Key="doorTypeConverter" />
         <randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
         <randomizer:ScreenRandomizationConverter x:Key="screenRandomizationConverter" />
         <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
@@ -140,7 +140,7 @@
                             <Binding ElementName="useCustomTextCheckBox" Path="IsChecked" />
                             <Binding ElementName="hintsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="miscDoorsComboBox" Path="SelectedIndex" />
-                            <Binding ElementName="worldDoorsComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="doorTypeComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemySetComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemyHPComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemyDamageComboBox" Path="SelectedIndex" />
@@ -274,14 +274,14 @@
                         />
                 </StackPanel>
 
-                <TextBlock Grid.Column="1" Grid.Row="15" Text="World doors:"/>
+                <TextBlock Grid.Column="1" Grid.Row="15" Text="Door types:"/>
                 <StackPanel  Grid.Column="3"
                              Grid.Row="15">
-                    <ComboBox Name="worldDoorsComboBox"
-                        ItemsSource="{StaticResource worldDoorSettings}"
+                    <ComboBox Name="doorTypeComboBox"
+                        ItemsSource="{StaticResource doorTypeSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.WorldDoorSetting), Mode=TwoWay, Converter={StaticResource worldDoorConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.DoorTypeSetting), Mode=TwoWay, Converter={StaticResource doorTypeConverter}}"
                         ToolTip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."
                         />
                 </StackPanel>

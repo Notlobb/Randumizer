@@ -22,7 +22,7 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
-        public enum WorldDoors
+        public enum DoorTypeShuffle
         {
             ShuffleMoveKeys,
             ShuffleDontMoveKeys,
@@ -57,7 +57,7 @@ namespace FaxanaduRando.Randomizer
         public static bool AddKillSwitch { get; set; } = false;
         public static Hints HintSetting { get; set; } = Hints.Strong;
         public static MiscDoors MiscDoorSetting { get; set; } = MiscDoors.Unchanged;
-        public static WorldDoors WorldDoorSetting { get; set; } = WorldDoors.Unchanged;
+        public static DoorTypeShuffle DoorTypeSetting { get; set; } = DoorTypeShuffle.Unchanged;
         public static ScreenRandomization RandomizeScreens { get; set; } = ScreenRandomization.Unchanged;
     }
 
@@ -99,9 +99,9 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
-    public class WorldDoorSettings : ObservableCollection<string>
+    public class DoorTypeSettings : ObservableCollection<string>
     {
-        public WorldDoorSettings()
+        public DoorTypeSettings()
         {
             Add("Shuffle, also move key requirements");
             Add("Shuffle, don't move key requirements");
@@ -128,7 +128,7 @@ namespace FaxanaduRando.Randomizer
     {
     }
 
-    public class WorldDoorConverter : EnumConverter<GeneralOptions.WorldDoors>
+    public class DoorTypeConverter : EnumConverter<GeneralOptions.DoorTypeShuffle>
     {
     }
 

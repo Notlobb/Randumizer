@@ -308,9 +308,9 @@ namespace FaxanaduRando.Randomizer
                     doorRandomizer.RandomizeKeys(content, Rand);
                 }
 
-                if (GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged)
+                if (GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged)
                 {
-                    doorRandomizer.ShuffleWorldDoors(Rand);
+                    doorRandomizer.ShuffleDoorTypes(Rand);
                 }
 
                 if (GeneralOptions.ShuffleTowers)
