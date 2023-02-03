@@ -129,6 +129,8 @@ namespace FaxanaduRando.Randomizer
                     "I'm here to kick ass and drink red potions. And I'm all out of red potions",
                     "Ran ran ruuuuu!",
                     "Shop smart. Shop Eolis mart!",
+                    "This is the second biggest World Tree I've ever seen!",
+                    "...And you call them 'Black Potions' despite the fact that they're obviously green?",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -342,7 +344,7 @@ namespace FaxanaduRando.Randomizer
                 var kingTexts = new List<string>()
                 {
                     "Shut up and take my money!",
-                    "Keep the change you fílthy animal",
+                    "Keep the change you filthy animal",
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
