@@ -11,6 +11,7 @@ namespace FaxanaduRando.Randomizer
         public const byte MasconLeftScreen = 9;
         public const byte MasconRightScreen = 12;
         public const byte MistSecretShopScreen = 13;
+        public const byte MistEntranceScreen = 17;
         public const byte TowerOfMistScreen = 23;
         public const byte MistExitScreen = 31; 
         public const byte VictimTowerScreen = 32;
@@ -32,16 +33,22 @@ namespace FaxanaduRando.Randomizer
 
         public Mist(WorldNumber number, byte[] content) : base(number, content)
         {
+            Screens[MistEntranceScreen].Doors.Add(DoorId.MistEntrance);
             Screens[TowerOfSufferScreen].Doors.Add(DoorId.TowerOfSuffer);
+            Screens[TowerOfSufferEntranceScreen].Doors.Add(DoorId.TowerOfSufferReturn);
             Screens[MasconTowerScreen].Doors.Add(DoorId.MasconTower);
+            Screens[MasconTowerEntranceScreen].Doors.Add(DoorId.MasconTowerReturn);
             Screens[MistGuruScreen].Doors.Add(DoorId.MistSmallHouse);
             Screens[MistGuruScreen].Doors.Add(DoorId.MistGuru);
             Screens[MistGuruScreen].Doors.Add(DoorId.BirdHospital);
             Screens[MistSecretShopScreen].Doors.Add(DoorId.MistSecretShop);
             Screens[22].Doors.Add(DoorId.MistLargeHouse);
             Screens[TowerOfMistScreen].Doors.Add(DoorId.TowerOfMist);
+            Screens[TowerOfMistEntranceScreen].Doors.Add(DoorId.TowerOfMistReturn);
             Screens[MistExitScreen].Doors.Add(DoorId.AceKeyHouse);
-            Screens[32].Doors.Add(DoorId.VictimTower);
+            Screens[MistExitScreen].Doors.Add(DoorId.MistExit);
+            Screens[VictimTowerScreen].Doors.Add(DoorId.VictimTower);
+            Screens[VictimTowerEntranceScreen].Doors.Add(DoorId.VictimTowerReturn);
             Screens[FireMageScreen].Doors.Add(DoorId.FireMage);
 
             void AddMasconDoors(byte screenNumber)

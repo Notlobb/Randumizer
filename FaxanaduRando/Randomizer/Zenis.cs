@@ -5,6 +5,10 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Zenis : Level
     {
+        public const byte ZenisEntrance = 8;
+        public const byte FinalDoorRoom = 1;
+        public const byte EvilOnesRoom = 0;
+
         public Zenis(WorldNumber number, byte[] content) : base(number, content)
         {
             if (ShouldRandomizeScreens())
@@ -18,8 +22,11 @@ namespace FaxanaduRando.Randomizer
                 sprite.SetX(13);
                 sprite.SetY(9);
                 sprite.ShouldBeShuffled = false;
-                Screens[8].Sprites.Add(sprite);
+                Screens[ZenisEntrance].Sprites.Add(sprite);
             }
+
+            Screens[ZenisEntrance].Doors.Add(DoorId.ZenisReturn);
+            Screens[FinalDoorRoom].Doors.Add(DoorId.FinalDoor);
         }
 
         public override int GetStartOffset()

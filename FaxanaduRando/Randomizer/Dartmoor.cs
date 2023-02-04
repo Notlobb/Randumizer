@@ -5,13 +5,16 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Dartmoor : Level
     {
+        public const byte DartmoorEntrance = 0;
         public const byte FraternalScreen = 12;
+        public const byte FraternalEntranceScreen = 16;
         public const byte DartmoorCityLeftScreen = 3;
         public const byte DartmoorExitScreen = 14;
         public const byte GrieveScreen = 20;
 
         public Dartmoor(WorldNumber number, byte[] content) : base(number, content)
         {
+            Screens[DartmoorEntrance].Doors.Add(DoorId.DartmoorEntrance);
             if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
             {
                 Screens[2].Doors.Add(DoorId.EvilOnesLair);
@@ -34,6 +37,8 @@ namespace FaxanaduRando.Randomizer
             Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorMeatShop);
             Screens[8].Doors.Add(DoorId.FarLeftDartmoor);
             Screens[FraternalScreen].Doors.Add(DoorId.CastleFraternal);
+            Screens[FraternalEntranceScreen].Doors.Add(DoorId.CastleFraternalReturn);
+            Screens[DartmoorExitScreen].Doors.Add(DoorId.DartmoorExit);
             Screens[GrieveScreen].Doors.Add(DoorId.KingGrieve);
             Screens[30].Doors.Add(DoorId.FraternalGuru);
             Screens[31].Doors.Add(DoorId.FraternalHouse);
@@ -157,8 +162,8 @@ namespace FaxanaduRando.Randomizer
             startScreens = new List<Screen>();
             endScreens = new List<Screen>();
 
-            startScreens.Add(Screens[0]);
-            startScreens.Add(Screens[16]);
+            startScreens.Add(Screens[DartmoorEntrance]);
+            startScreens.Add(Screens[FraternalEntranceScreen]);
 
             endScreens.Add(Screens[2]);
             endScreens.Add(Screens[8]);
@@ -193,18 +198,18 @@ namespace FaxanaduRando.Randomizer
             Screens[4].FriendConnections[Direction.Up] = Screens[DartmoorCityLeftScreen];
             Screens[DartmoorCityLeftScreen].FriendConnections[Direction.Up] = Screens[1];
 
-            Screens[0].Directions.Add(Direction.Left);
-            Screens[0].Directions.Add(Direction.Right);
-            Screens[0].OpenTilesLeft.Add(2);
-            Screens[0].OpenTilesLeft.Add(3);
-            Screens[0].OpenTilesLeft.Add(4);
-            Screens[0].OpenTilesLeft.Add(5);
-            Screens[0].OpenTilesLeft.Add(8);
-            Screens[0].OpenTilesLeft.Add(9);
-            Screens[0].OpenTilesLeft.Add(10);
-            Screens[0].OpenTilesLeft.Add(11);
-            Screens[0].OpenTilesRight.Add(10);
-            Screens[0].OpenTilesRight.Add(11);
+            Screens[DartmoorEntrance].Directions.Add(Direction.Left);
+            Screens[DartmoorEntrance].Directions.Add(Direction.Right);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(2);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(3);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(4);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(5);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(8);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(9);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(10);
+            Screens[DartmoorEntrance].OpenTilesLeft.Add(11);
+            Screens[DartmoorEntrance].OpenTilesRight.Add(10);
+            Screens[DartmoorEntrance].OpenTilesRight.Add(11);
             Screens[1].Directions.Add(Direction.Left);
             Screens[1].Directions.Add(Direction.Right);
             Screens[1].OpenTilesLeft.Add(2);
@@ -317,14 +322,14 @@ namespace FaxanaduRando.Randomizer
             Screens[DartmoorExitScreen].OpenTilesLeft.Add(6);
             Screens[DartmoorExitScreen].OpenTilesRight.Add(2);
             Screens[DartmoorExitScreen].OpenTilesRight.Add(3);
-            Screens[16].Directions.Add(Direction.Left);
-            Screens[16].Directions.Add(Direction.Right);
-            Screens[16].OpenTilesLeft.Add(7);
-            Screens[16].OpenTilesLeft.Add(8);
-            Screens[16].OpenTilesLeft.Add(9);
-            Screens[16].OpenTilesLeft.Add(10);
-            Screens[16].OpenTilesRight.Add(2);
-            Screens[16].OpenTilesRight.Add(3);
+            Screens[FraternalEntranceScreen].Directions.Add(Direction.Left);
+            Screens[FraternalEntranceScreen].Directions.Add(Direction.Right);
+            Screens[FraternalEntranceScreen].OpenTilesLeft.Add(7);
+            Screens[FraternalEntranceScreen].OpenTilesLeft.Add(8);
+            Screens[FraternalEntranceScreen].OpenTilesLeft.Add(9);
+            Screens[FraternalEntranceScreen].OpenTilesLeft.Add(10);
+            Screens[FraternalEntranceScreen].OpenTilesRight.Add(2);
+            Screens[FraternalEntranceScreen].OpenTilesRight.Add(3);
             Screens[17].Directions.Add(Direction.Left);
             Screens[17].Directions.Add(Direction.Down);
             Screens[17].OpenTilesLeft.Add(1);

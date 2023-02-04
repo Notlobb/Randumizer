@@ -1255,7 +1255,10 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var door in screen.Doors)
                 {
-                    CollectSublevelItems(doorRandomizer.Doors[door].Sublevel, items, itemIds, doorRandomizer);
+                    if (doorRandomizer.Doors.ContainsKey(door))
+                    {
+                        CollectSublevelItems(doorRandomizer.Doors[door].Sublevel, items, itemIds, doorRandomizer);
+                    }
                 }
             }
         }
