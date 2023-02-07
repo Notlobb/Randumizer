@@ -528,7 +528,7 @@
                         IsEditable="true"
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:ItemOptions.ShuffleItems), Mode=TwoWay, Converter={StaticResource itemShuffleSettingsConverter}}"
-                        ToolTip="Change how to shuffle items. Mixing types fully will result in some items having an incorrect appearance, but they can still be collected."
+                        ToolTip="Change how to shuffle items. Mixing types fully will allow for some key items to appear in the overworld that normally would not."
                         />
                 </StackPanel>
 

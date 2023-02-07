@@ -27,6 +27,7 @@ namespace FaxanaduRando.Randomizer
             {Sprite.SpriteId.Dragonslayer, "Dragonslayer" },
             {Sprite.SpriteId.KeyAce, "AceKey" },
             {Sprite.SpriteId.Pendant, "Pendant" },
+            {Sprite.SpriteId.RockSnakeOrJokerKey, "JokerKey" },
             {Sprite.SpriteId.RingDemon, "DemonRing" },
             {Sprite.SpriteId.RingDworf, "DworfRing" },
             {Sprite.SpriteId.Rod, "Rod" },
@@ -39,7 +40,7 @@ namespace FaxanaduRando.Randomizer
             {Sprite.SpriteId.Poison2, "Poison" },
             {Sprite.SpriteId.MattockBossLocked, "Mattock" },
             {Sprite.SpriteId.MattockOrRingRuby, "Mattock2" },
-            {Sprite.SpriteId.Glove2OrKeyJoker, "Glove2" },
+            {Sprite.SpriteId.Glove2, "Glove2" },
         };
 
         public TextRandomizer(byte[] content, Random random)
@@ -1532,14 +1533,7 @@ namespace FaxanaduRando.Randomizer
 
                     if (itemText == "Glove2")
                     {
-                        if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
-                        {
-                            itemText = "JokerKey";
-                        }
-                        else
-                        {
-                            itemText = "Glove";
-                        }
+                        itemText = "Glove";
                     }
 
                     if (itemText == "Mattock2")

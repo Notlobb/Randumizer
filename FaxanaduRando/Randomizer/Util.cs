@@ -72,5 +72,15 @@ namespace FaxanaduRando.Randomizer
 
             return pointer;
         }
+
+        public static int GetPointer(byte[] content, int offset)
+        {
+            byte b1 = content[offset];
+            byte b2 = content[offset + 1];
+            var bytes = new byte[] { b1, b2 };
+            var pointer = BitConverter.ToUInt16(bytes, 0);
+
+            return pointer;
+        }
     }
 }

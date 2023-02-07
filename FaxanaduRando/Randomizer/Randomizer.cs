@@ -91,7 +91,7 @@ namespace FaxanaduRando.Randomizer
                 {
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby] =
                         spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
-                    spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Glove2OrKeyJoker] =
+                    spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Glove2] =
                         spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
                 }
 
@@ -1329,7 +1329,7 @@ namespace FaxanaduRando.Randomizer
                         {
                             sprite.Id = Sprite.SpriteId.MattockBossLocked;
                         }
-                        else if (sprite.Id == Sprite.SpriteId.Glove2OrKeyJoker)
+                        else if (sprite.Id == Sprite.SpriteId.Glove2)
                         {
                             sprite.Id = Sprite.SpriteId.Glove;
                         }
@@ -1347,7 +1347,7 @@ namespace FaxanaduRando.Randomizer
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
             spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RingDemon] =
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Glove2OrKeyJoker] =
+            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey] =
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
             spriteBehaviourTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby] =
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
@@ -1438,7 +1438,7 @@ namespace FaxanaduRando.Randomizer
             newSection.Bytes.Add(0xD0);
             newSection.Bytes.Add(OpCode.TXA);
             newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x5F);
+            newSection.Bytes.Add(0x12);
             newSection.Bytes.Add(OpCode.BNE);
             newSection.Bytes.Add(0x0A);
             newSection.Bytes.Add(OpCode.LDAImmediate);
@@ -1457,36 +1457,108 @@ namespace FaxanaduRando.Randomizer
             newSection.Bytes.Add(0xC7);
             newSection.AddToContent(content, Section.GetOffset(15, 0xFCD0, 0xC000));
 
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0x50);
-            newSection.Bytes.Add(0xFD);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xCD8F, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0x8B);
-            newSection.Bytes.Add(0x03);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add((byte)Sprite.SpriteId.MattockOrRingRuby);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x02);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add((byte)Sprite.SpriteId.Glove2OrKeyJoker);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x02);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x61);
-            newSection.Bytes.Add(OpCode.RTS);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFD50, 0xC000));
-
             var spriteTypeTable = new Table(Section.GetOffset(14, 0xB544, 0x8000), 100, 1, content);
+            spriteTypeTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 5;
             spriteTypeTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 5;
             spriteTypeTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 5;
             spriteTypeTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 5;
             spriteTypeTable.AddToContent(content);
+
+            var phaseIndexTable = new Table(Section.GetOffset(14, 0x8C9F, 0x8000), 100, 1, content);
+            var index1 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
+            var index2 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDworf][0];
+            var index3 = phaseIndexTable.Entries[(int)Sprite.SpriteId.KeyAce][0];
+            var index4 = phaseIndexTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0];
+            var index5 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0];
+
+            int bank7Offset = Section.GetOffset(7, 0x8000, 0x8000);
+            int animationPointerOffset = bank7Offset + Util.GetPointer(content, bank7Offset + 6);
+            int animationOffset1 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index1 * 2);
+            int animationOffset2 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index2 * 2);
+            int animationOffset3 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index3 * 2);
+            int animationOffset4 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index4 * 2);
+            int animationOffset5 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index5 * 2);
+
+            //First byte seems to be size/layout
+            content[animationOffset1] = 1 | (1 << 4);
+            content[animationOffset2] = 1 | (1 << 4);
+            content[animationOffset3] = 1 | (1 << 4);
+            content[animationOffset4] = 1 | (1 << 4);
+            content[animationOffset5] = 1 | (1 << 4);
+
+            int bank6Offset = Section.GetOffset(6, 0x8000, 0x8000);
+            int bank10Offset = Section.GetOffset(10, 0x8000, 0x8000);
+            int spritePointer1 = Util.GetPointer(content, bank6Offset);
+            int spritePointer2 = Util.GetPointer(content, bank7Offset);
+            int spriteDataPointerOffset1 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RingDemon) * 2;
+            int spriteDataPointerOffset2 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RingDworf) * 2;
+            int spriteDataPointerOffset3 = bank7Offset + spritePointer2 + ((int)Sprite.SpriteId.KeyAce - 0x37) * 2;
+            int spriteDataPointerOffset4 = bank7Offset + spritePointer2 + ((int)Sprite.SpriteId.MattockOrRingRuby - 0x37) * 2;
+            int spriteDataPointerOffset5 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RockSnakeOrJokerKey) * 2;
+            var pointer = Util.GetPointer(content, spriteDataPointerOffset3);
+            pointer += 64;
+            var bytes = BitConverter.GetBytes(pointer);
+            content[spriteDataPointerOffset4] = bytes[0];
+            content[spriteDataPointerOffset4 + 1] = bytes[1];
+            int spriteDataOffset1 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset1);
+            int spriteDataOffset2 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset2);
+            int spriteDataOffset3 = bank7Offset + Util.GetPointer(content, spriteDataPointerOffset3);
+            int spriteDataOffset4 = bank7Offset + Util.GetPointer(content, spriteDataPointerOffset4);
+            int spriteDataOffset5 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset5);
+
+            for (int i = 0; i < 32; i++)
+            {
+                content[spriteDataOffset1 + i] = content[bank10Offset + 84 * 16 + i];
+                content[spriteDataOffset1 + 32 + i] = content[bank10Offset + 92 * 16 + i];
+                content[spriteDataOffset2 + i] = content[bank10Offset + 86 * 16 + i];
+                content[spriteDataOffset2 + 32 + i] = content[bank10Offset + 92 * 16 + i];
+                content[spriteDataOffset3 + i] = content[bank10Offset + 118 * 16 + i];
+                content[spriteDataOffset3 + 32 + i] = content[bank10Offset + 120 * 16 + i];
+                content[spriteDataOffset4 + i] = content[bank10Offset + 88 * 16 + i];
+                content[spriteDataOffset4 + 32 + i] = content[bank10Offset + 92 * 16 + i];
+            }
+
+            for (int i = 0; i < 16; i++)
+            {
+                content[spriteDataOffset5 + i] = content[bank10Offset + 197 * 16 + i];
+                content[spriteDataOffset5 + 16 + i] = content[bank10Offset + 119 * 16 + i];
+            }
+
+            for (int i = 0; i < 16; i++)
+            {
+                content[spriteDataOffset5 + 32 + i] = content[bank10Offset + 198 * 16 + i];
+                content[spriteDataOffset5 + 32 + 16 + i] = content[bank10Offset + 121 * 16 + i];
+            }
+
+            var tilesTable = new Table(Section.GetOffset(15, 0xCE1B, 0xC000), 100, 1, content);
+            var sizeTable = new Table(Section.GetOffset(14, 0xB4DF, 0x8000), 100, 1, content);
+            var subBehaviourTable = new Table(Section.GetOffset(14, 0x8087, 0x8000), 100, 2, content);
+
+            phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
+            phaseIndexTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
+            phaseIndexTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
+            phaseIndexTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
+            sizeTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 0;
+            sizeTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 0;
+            sizeTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 0;
+            sizeTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = 0;
+            sizeTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 0;
+            tilesTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 4;
+            tilesTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 4;
+            tilesTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 4;
+            tilesTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = 4;
+            tilesTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 4;
+
+            subBehaviourTable.Entries[(int)Sprite.SpriteId.RingDemon] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
+            subBehaviourTable.Entries[(int)Sprite.SpriteId.RingDworf] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
+            subBehaviourTable.Entries[(int)Sprite.SpriteId.KeyAce] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
+            subBehaviourTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
+            subBehaviourTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
+
+            phaseIndexTable.AddToContent(content);
+            tilesTable.AddToContent(content);
+            sizeTable.AddToContent(content);
+            subBehaviourTable.AddToContent(content);
         }
 
         private void UpdateWingBootsQuest(byte[] content)

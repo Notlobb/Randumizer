@@ -770,11 +770,8 @@ namespace FaxanaduRando.Randomizer
         public List<Requirement> GetRequirements(OtherWorldNumber world, byte[] content)
         {
             int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            int pointer = GetPointer((byte)world, content);
-            byte b1 = content[bankOffset + pointer + 8];
-            byte b2 = content[bankOffset + pointer + 9];
-            var bytes = new byte[] { b1, b2 };
-            var newPointer = BitConverter.ToUInt16(bytes, 0);
+            int pointer = Util.GetPointer((byte)world, content, 3);
+            var newPointer = Util.GetPointer(content, bankOffset + pointer + 8);
 
             var requirements = new List<Requirement>();
             for (int i = 0; i < 64; i++)
@@ -789,11 +786,8 @@ namespace FaxanaduRando.Randomizer
         public List<PositionData> GetPositions(OtherWorldNumber world, byte[] content)
         {
             int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            int pointer = GetPointer((byte)world, content);
-            byte b1 = content[bankOffset + pointer + 6];
-            byte b2 = content[bankOffset + pointer + 7];
-            var bytes = new byte[] { b1, b2 };
-            var newPointer = BitConverter.ToUInt16(bytes, 0);
+            int pointer = Util.GetPointer((byte)world, content, 3);
+            var newPointer = Util.GetPointer(content, bankOffset + pointer + 6);
             var positions = new List<PositionData>();
 
             for (int i = 0; i < 64; i++)
@@ -810,8 +804,8 @@ namespace FaxanaduRando.Randomizer
             if (world == OtherWorldNumber.Trunk)
             {
                 int newOffset = Section.GetOffset(3, 0xBF00, 0x8000);
-                b1 = 0x00;
-                b2 = 0x3F;
+                byte b1 = 0x00;
+                byte b2 = 0x3F;
                 content[bankOffset + pointer + 6] = b1;
                 content[bankOffset + pointer + 7] = b2;
 
@@ -835,23 +829,6 @@ namespace FaxanaduRando.Randomizer
             }
 
             return positions;
-        }
-
-        public int GetPointer(byte world, byte[] content)
-        {
-            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            byte b1 = content[bankOffset];
-            byte b2 = content[bankOffset + 1];
-            int levelOffset = world * 2;
-            var bytes = new byte[] { b1, b2 };
-            int pointer = BitConverter.ToUInt16(bytes, 0);
-
-            b1 = content[bankOffset + pointer + levelOffset];
-            b2 = content[bankOffset + pointer + levelOffset + 1];
-            bytes = new byte[] { b1, b2 };
-            pointer = BitConverter.ToUInt16(bytes, 0);
-
-            return pointer;
         }
 
         public void AddToContent(byte[] content, Random random)
