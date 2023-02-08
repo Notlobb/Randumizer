@@ -1465,26 +1465,14 @@ namespace FaxanaduRando.Randomizer
             spriteTypeTable.AddToContent(content);
 
             var phaseIndexTable = new Table(Section.GetOffset(14, 0x8C9F, 0x8000), 100, 1, content);
-            var index1 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-            var index2 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDworf][0];
-            var index3 = phaseIndexTable.Entries[(int)Sprite.SpriteId.KeyAce][0];
-            var index4 = phaseIndexTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0];
-            var index5 = phaseIndexTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0];
+            var index = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
 
             int bank7Offset = Section.GetOffset(7, 0x8000, 0x8000);
             int animationPointerOffset = bank7Offset + Util.GetPointer(content, bank7Offset + 6);
-            int animationOffset1 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index1 * 2);
-            int animationOffset2 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index2 * 2);
-            int animationOffset3 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index3 * 2);
-            int animationOffset4 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index4 * 2);
-            int animationOffset5 = bank7Offset + Util.GetPointer(content, animationPointerOffset + index5 * 2);
+            int animationOffset = bank7Offset + Util.GetPointer(content, animationPointerOffset + index * 2);
 
-            //First byte seems to be size/layout
-            content[animationOffset1] = 1 | (1 << 4);
-            content[animationOffset2] = 1 | (1 << 4);
-            content[animationOffset3] = 1 | (1 << 4);
-            content[animationOffset4] = 1 | (1 << 4);
-            content[animationOffset5] = 1 | (1 << 4);
+            //First byte seems to be size
+            content[animationOffset] = 1 | (1 << 4);
 
             int bank6Offset = Section.GetOffset(6, 0x8000, 0x8000);
             int bank10Offset = Section.GetOffset(10, 0x8000, 0x8000);
