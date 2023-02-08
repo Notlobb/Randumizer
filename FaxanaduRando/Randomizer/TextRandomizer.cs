@@ -131,6 +131,7 @@ namespace FaxanaduRando.Randomizer
                     "Ran ran ruuuuu!",
                     "Shop smart. Shop Eolis mart!",
                     "This is the second biggest World Tree I've ever seen!",
+                    "You stepped into the wrong World Tree, fool!",
                     "...And you call them 'Black Potions' despite the fact that they're obviously green?",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
@@ -345,7 +346,7 @@ namespace FaxanaduRando.Randomizer
                 var kingTexts = new List<string>()
                 {
                     "Shut up and take my money!",
-                    "Keep the change you filthy animal",
+                    "Keep the change you filthy animal!",
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
@@ -647,11 +648,21 @@ namespace FaxanaduRando.Randomizer
                 "Deadly",
                 "Exotic",
                 "Frantic",
+                "Filthy",
                 "Giant",
                 "Heroic",
                 "Imperial",
+                "Lame",
+                "Moist",
+                "Noisy",
+                "Oozing",
+                "Perfect",
+                "Quaint",
+                "Rusty",
                 "Solid",
                 "Unexpected",
+                "Wealthy",
+                "Wide",
             };
 
             var middleStrings = new List<string>()
@@ -813,6 +824,8 @@ namespace FaxanaduRando.Randomizer
                 "Swallow",
                 "Magic",
                 "Party",
+                "Animal",
+                "Beast",
             };
 
             foreach (var id in Enum.GetValues(typeof(ShopRandomizer.Id)))
@@ -1067,6 +1080,8 @@ namespace FaxanaduRando.Randomizer
                 "RobotSanta",
                 "Elf",
                 "Grinch",
+                "Animal",
+                "Beast",
             };
         }
 
