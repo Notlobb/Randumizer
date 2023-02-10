@@ -242,12 +242,9 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds)
+            if (Screens[ForePawRightScreen].ScrollData.Down == 255)
             {
-                if (Screens[ForePawRightScreen].ScrollData.Down == 255)
-                {
-                    Screens[ForePawRightScreen].ScrollData.Down = JokerSpringScreen;
-                }
+                Screens[ForePawRightScreen].ScrollData.Down = JokerSpringScreen;
             }
 
             return result;
