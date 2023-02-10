@@ -133,6 +133,7 @@ namespace FaxanaduRando.Randomizer
                     "This is the second biggest World Tree I've ever seen!",
                     "You stepped into the wrong World Tree, fool!",
                     "...And you call them 'Black Potions' despite the fact that they're obviously green?",
+                    "Klaatu barada nikto",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -744,6 +745,8 @@ namespace FaxanaduRando.Randomizer
                 "Magic",
                 "Monster",
                 "Snake",
+                "Animal",
+                "Beast",
             };
 
             var endingStrings = new List<string>()
@@ -1081,7 +1084,9 @@ namespace FaxanaduRando.Randomizer
                 "Elf",
                 "Grinch",
                 "Animal",
+                "FilthyAnimal",
                 "Beast",
+                "Alien",
             };
         }
 
