@@ -126,12 +126,48 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void RandomizeMagicImmunities(Table magicResistanceTable, Random random)
+        public void RandomizeMagicImmunities(Table magicResistanceTable, Random random, byte[] content)
         {
             foreach (var entry in magicResistanceTable.Entries)
             {
                 entry[0] = (byte)random.Next(0, 5);
             }
+
+            var resistSection = new Section();
+            resistSection.Bytes.Add(OpCode.JMPAbsolute);
+            resistSection.Bytes.Add(0xD2);
+            resistSection.Bytes.Add(0x81);
+            resistSection.AddToContent(content, Section.GetOffset(14, 0x8AFF, 0x8000));
+
+            resistSection = new Section();
+            resistSection.Bytes.Add(OpCode.JMPAbsolute);
+            resistSection.Bytes.Add(0xFD);
+            resistSection.Bytes.Add(0x81);
+            resistSection.Bytes.Add(OpCode.STYAbsolute);
+            resistSection.Bytes.Add(0x01);
+            resistSection.Bytes.Add(0x00);
+            resistSection.Bytes.Add(OpCode.LDYAbsoluteX);
+            resistSection.Bytes.Add(0xCC);
+            resistSection.Bytes.Add(0x02);
+            resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
+            resistSection.Bytes.Add(0x3B);
+            resistSection.Bytes.Add(0xB7);
+            resistSection.Bytes.Add(OpCode.CMPAbsolute);
+            resistSection.Bytes.Add(0x01);
+            resistSection.Bytes.Add(0x00);
+            resistSection.Bytes.Add(OpCode.BNE);
+            resistSection.Bytes.Add(0x01);
+            resistSection.Bytes.Add(OpCode.RTS);
+            resistSection.Bytes.Add(OpCode.LDYAbsolute);
+            resistSection.Bytes.Add(0x01);
+            resistSection.Bytes.Add(0x00);
+            resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
+            resistSection.Bytes.Add(0x73);
+            resistSection.Bytes.Add(0x8B);
+            resistSection.Bytes.Add(OpCode.JMPAbsolute);
+            resistSection.Bytes.Add(0x02);
+            resistSection.Bytes.Add(0x8B);
+            resistSection.AddToContent(content, Section.GetOffset(14, 0x81CF, 0x8000));
         }
 
         public void RandomizeBehaviour(int id, Table spriteBehaviourTable, Random random)
@@ -147,6 +183,60 @@ namespace FaxanaduRando.Randomizer
 
             var newBehaviour = possibleBehaviours[random.Next(0, possibleBehaviours.Count)];
             spriteBehaviourTable.Entries[id] = spriteBehaviourTable.Entries[(int)newBehaviour];
+        }
+
+        public void RandomizeBehaviours(Table spriteBehaviourTable, Random random, Dictionary<Sprite.SpriteId, Sprite.SpriteId> enemyBehaviourDict)
+        {
+            var enemyBehaviours = new List<byte[]>();
+            var enemyBaseBehaviourDict = new Dictionary<byte[], Sprite.SpriteId>();
+            var excludedEnemies = new List<Sprite.SpriteId>() { Sprite.SpriteId.BurrowingCyclops };
+            if (EnemyOptions.AISetting == EnemyOptions.AIShuffle.Partial)
+            {
+                excludedEnemies.Add(Sprite.SpriteId.RockLobster);
+                excludedEnemies.Add(Sprite.SpriteId.KingGrieve);
+                excludedEnemies.Add(Sprite.SpriteId.EvilOne);
+            }
+
+            for (int i = 0; i < spriteBehaviourTable.Entries.Count; i++)
+            {
+                var id = (Sprite.SpriteId)i;
+                if (Sprite.enemies.Contains(id))
+                {
+                    if (excludedEnemies.Contains(id))
+                    {
+                        continue;
+                    }
+
+                    enemyBehaviours.Add(spriteBehaviourTable.Entries[i]);
+                    enemyBaseBehaviourDict[spriteBehaviourTable.Entries[i]] = id;
+                }
+            }
+
+            Util.ShuffleList(enemyBehaviours, 0, enemyBehaviours.Count - 1, random);
+            int enemyCount = 0;
+
+            for (int i = 0; i < spriteBehaviourTable.Entries.Count; i++)
+            {
+                if (Sprite.enemies.Contains((Sprite.SpriteId)i))
+                {
+                    var id = (Sprite.SpriteId)i;
+                    if (excludedEnemies.Contains(id))
+                    {
+                        continue;
+                    }
+
+                    spriteBehaviourTable.Entries[i] = enemyBehaviours[enemyCount];
+                    enemyBehaviourDict[id] = enemyBaseBehaviourDict[enemyBehaviours[enemyCount]];
+                    enemyCount++;
+                }
+            }
+
+            foreach (var oldId in excludedEnemies)
+            {
+                var newId = enemyBehaviours[random.Next(enemyBehaviours.Count)];
+                spriteBehaviourTable.Entries[(int)oldId] = newId;
+                enemyBehaviourDict[oldId] = enemyBaseBehaviourDict[newId];
+            }
         }
 
         public void UpdateSpriteValues(int id, byte hp, byte damage, byte experience, byte rewardType,

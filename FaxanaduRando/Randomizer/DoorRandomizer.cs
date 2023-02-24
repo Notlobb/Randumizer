@@ -106,8 +106,8 @@ namespace FaxanaduRando.Randomizer
                                    GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurusAndKeyshops;
             bool includeGurus = includeTownBuildings && GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus &&
                                 GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurusAndKeyshops;
-            bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
-            bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged;
+            bool shuffleTowers = GeneralOptions.ShuffleTowers || GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged;
+            bool shuffleBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged || GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged;
 
             bool includeEolisGuru = includeGurus && (GeneralOptions.FastStart || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged);
 
@@ -398,7 +398,7 @@ namespace FaxanaduRando.Randomizer
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
                 Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
@@ -531,14 +531,14 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void ShuffleWorldDoors(Random random)
+        public void ShuffleDoorTypes(Random random)
         {
-            ShuffleWorldDoors(OtherWorldNumber.Trunk, random);
-            ShuffleWorldDoors(OtherWorldNumber.Mist, random);
-            ShuffleWorldDoors(OtherWorldNumber.Dartmoor, random);
+            ShuffleDoorTypes(OtherWorldNumber.Trunk, random);
+            ShuffleDoorTypes(OtherWorldNumber.Mist, random);
+            ShuffleDoorTypes(OtherWorldNumber.Dartmoor, random);
         }
 
-        public void ShuffleWorldDoors(OtherWorldNumber world, Random random)
+        public void ShuffleDoorTypes(OtherWorldNumber world, Random random)
         {
             var towers = TowerDoors.Values.Where(d => d.World == world && d.ShouldShuffle);
             var buildings = Buildings.Values.Where(d => d.World == world && d.ShouldShuffle);
@@ -570,7 +570,7 @@ namespace FaxanaduRando.Randomizer
                     locations[i].ReturnRequirement.palette = locations[i].GetPalette(locations[i].OriginalId);
                 }
 
-                if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+                if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
                 {
                     locations[i].key = tempDoors[i].key;
                 }
@@ -655,7 +655,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             var towerDoorsToRandomize = new List<Door>();
-            if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+            if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
             {
                 towerDoorsToRandomize = new List<Door>(Doors.Values.Where(t => IsTower(t.Id)));
             }
@@ -675,7 +675,7 @@ namespace FaxanaduRando.Randomizer
                 requirements.Add(Doors[DoorId.MartialArtsShop].key);
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 requirements.Add(Doors[DoorId.EastBranch].key); 
                 requirements.Add(Doors[DoorId.DropdownWing].key);
@@ -716,7 +716,7 @@ namespace FaxanaduRando.Randomizer
                 index++;
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 Doors[DoorId.EastBranch].key = requirements[index];
                 index++;
@@ -770,11 +770,8 @@ namespace FaxanaduRando.Randomizer
         public List<Requirement> GetRequirements(OtherWorldNumber world, byte[] content)
         {
             int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            int pointer = GetPointer((byte)world, content);
-            byte b1 = content[bankOffset + pointer + 8];
-            byte b2 = content[bankOffset + pointer + 9];
-            var bytes = new byte[] { b1, b2 };
-            var newPointer = BitConverter.ToUInt16(bytes, 0);
+            int pointer = Util.GetPointer((byte)world, content, 3);
+            var newPointer = Util.GetPointer(content, bankOffset + pointer + 8);
 
             var requirements = new List<Requirement>();
             for (int i = 0; i < 64; i++)
@@ -789,11 +786,8 @@ namespace FaxanaduRando.Randomizer
         public List<PositionData> GetPositions(OtherWorldNumber world, byte[] content)
         {
             int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            int pointer = GetPointer((byte)world, content);
-            byte b1 = content[bankOffset + pointer + 6];
-            byte b2 = content[bankOffset + pointer + 7];
-            var bytes = new byte[] { b1, b2 };
-            var newPointer = BitConverter.ToUInt16(bytes, 0);
+            int pointer = Util.GetPointer((byte)world, content, 3);
+            var newPointer = Util.GetPointer(content, bankOffset + pointer + 6);
             var positions = new List<PositionData>();
 
             for (int i = 0; i < 64; i++)
@@ -810,8 +804,8 @@ namespace FaxanaduRando.Randomizer
             if (world == OtherWorldNumber.Trunk)
             {
                 int newOffset = Section.GetOffset(3, 0xBF00, 0x8000);
-                b1 = 0x00;
-                b2 = 0x3F;
+                byte b1 = 0x00;
+                byte b2 = 0x3F;
                 content[bankOffset + pointer + 6] = b1;
                 content[bankOffset + pointer + 7] = b2;
 
@@ -835,23 +829,6 @@ namespace FaxanaduRando.Randomizer
             }
 
             return positions;
-        }
-
-        public int GetPointer(byte world, byte[] content)
-        {
-            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
-            byte b1 = content[bankOffset];
-            byte b2 = content[bankOffset + 1];
-            int levelOffset = world * 2;
-            var bytes = new byte[] { b1, b2 };
-            int pointer = BitConverter.ToUInt16(bytes, 0);
-
-            b1 = content[bankOffset + pointer + levelOffset];
-            b2 = content[bankOffset + pointer + levelOffset + 1];
-            bytes = new byte[] { b1, b2 };
-            pointer = BitConverter.ToUInt16(bytes, 0);
-
-            return pointer;
         }
 
         public void AddToContent(byte[] content, Random random)

@@ -151,7 +151,7 @@ namespace FaxanaduRando.Randomizer
     {
         public ShuffleItemsSettings()
         {
-            Add("Shuffle, mix item types (beta)");
+            Add("Shuffle, mix item types");
             Add("Shuffle, mix only shop and gift items");
             Add("Shuffle, don't mix most gifts with shops");
             Add("Unchanged");

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.25" Height="450" Width="900">
+        Title="Randumizer v0.26" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -19,6 +19,8 @@
         <randomizer:EnemyDamageConverter x:Key="enemyDamageConverter" />
         <randomizer:EnemySetSettings x:Key="enemySetSettings" />
         <randomizer:EnemySetConverter x:Key="enemySetConverter" />
+        <randomizer:AISettings x:Key="aiSettings" />
+        <randomizer:AIConverter x:Key="aiConverter" />
         <randomizer:StartingWeaponSettings x:Key="startingWeapon" />
         <randomizer:StartingWeaponConverter x:Key="startingWeaponConverter" />
         <randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
@@ -28,8 +30,8 @@
         <randomizer:ShieldSettings x:Key="shieldSettings" />
         <randomizer:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
         <randomizer:BigItemSpawnsSettingsConverter x:Key="bigItemSpawnsSettingsConverter" />
-        <randomizer:WorldDoorSettings x:Key="worldDoorSettings" />
-        <randomizer:WorldDoorConverter x:Key="worldDoorConverter" />
+        <randomizer:DoorTypeSettings x:Key="doorTypeSettings" />
+        <randomizer:DoorTypeConverter x:Key="doorTypeConverter" />
         <randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
         <randomizer:ScreenRandomizationConverter x:Key="screenRandomizationConverter" />
         <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
@@ -138,7 +140,7 @@
                             <Binding ElementName="useCustomTextCheckBox" Path="IsChecked" />
                             <Binding ElementName="hintsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="miscDoorsComboBox" Path="SelectedIndex" />
-                            <Binding ElementName="worldDoorsComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="doorTypeComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemySetComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemyHPComboBox" Path="SelectedIndex" />
                             <Binding ElementName="enemyDamageComboBox" Path="SelectedIndex" />
@@ -151,6 +153,7 @@
                             <Binding ElementName="keyRandomizationComboBox" Path="SelectedIndex" />
                             <Binding ElementName="randomizeScreensComboBox" Path="SelectedIndex" />
                             <Binding ElementName="multipleGiftsComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="aiComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -271,14 +274,14 @@
                         />
                 </StackPanel>
 
-                <TextBlock Grid.Column="1" Grid.Row="15" Text="World doors:"/>
+                <TextBlock Grid.Column="1" Grid.Row="15" Text="Door types:"/>
                 <StackPanel  Grid.Column="3"
                              Grid.Row="15">
-                    <ComboBox Name="worldDoorsComboBox"
-                        ItemsSource="{StaticResource worldDoorSettings}"
+                    <ComboBox Name="doorTypeComboBox"
+                        ItemsSource="{StaticResource doorTypeSettings}"
                         IsEditable="true"
                         IsReadOnly="true"
-                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.WorldDoorSetting), Mode=TwoWay, Converter={StaticResource worldDoorConverter}}"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.DoorTypeSetting), Mode=TwoWay, Converter={StaticResource doorTypeConverter}}"
                         ToolTip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."
                         />
                 </StackPanel>
@@ -304,10 +307,12 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -370,6 +375,18 @@
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:EnemyOptions.EnemyDamageSetting), Mode=TwoWay, Converter={StaticResource enemyDamageConverter}}"
                         ToolTip="Changes enemy Damage by a random numerical value or percantage value. Affects each enemy type seperately"
+                        />
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Grid.Row="7" Text="Enemy AI: "/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="7">
+                    <ComboBox Name="aiComboBox"
+                        ItemsSource="{StaticResource aiSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.AISetting), Mode=TwoWay, Converter={StaticResource aiConverter}}"
+                        ToolTip="Shuffle the AI used by the enemies. Partial will exclude superbosses like King Grieve and the Evil One from the shuffle but will still randomize their AI"
                         />
                 </StackPanel>
 
@@ -511,7 +528,7 @@
                         IsEditable="true"
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:ItemOptions.ShuffleItems), Mode=TwoWay, Converter={StaticResource itemShuffleSettingsConverter}}"
-                        ToolTip="Change how to shuffle items. Mixing types fully will result in some items having an incorrect appearance, but they can still be collected."
+                        ToolTip="Change how to shuffle items. Mixing types fully will allow for some key items to appear in the overworld that normally would not."
                         />
                 </StackPanel>
 

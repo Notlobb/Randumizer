@@ -13,7 +13,7 @@ namespace FaxanaduRando.Randomizer
             { Sprite.SpriteId.Battlehelmet, ShopRandomizer.Id.Battlehelmet},
             { Sprite.SpriteId.Battlesuit, ShopRandomizer.Id.Battlesuit},
             { Sprite.SpriteId.Dragonslayer, ShopRandomizer.Id.Dragonslayer},
-            { Sprite.SpriteId.Glove2OrKeyJoker, ShopRandomizer.Id.JokerKey},
+            { Sprite.SpriteId.RockSnakeOrJokerKey, ShopRandomizer.Id.JokerKey},
             { Sprite.SpriteId.KeyAce, ShopRandomizer.Id.AceKey},
             { Sprite.SpriteId.MattockOrRingRuby, ShopRandomizer.Id.RubyRing},
             { Sprite.SpriteId.RingDworf, ShopRandomizer.Id.DworfRing},
@@ -46,7 +46,7 @@ namespace FaxanaduRando.Randomizer
             Rand = random;
             if (ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Mixed)
             {
-                shopIdDictionary.Remove(Sprite.SpriteId.Glove2OrKeyJoker);
+                shopIdDictionary.Remove(Sprite.SpriteId.RockSnakeOrJokerKey);
                 shopIdDictionary.Remove(Sprite.SpriteId.MattockOrRingRuby);
                 shopIdDictionary.Remove(Sprite.SpriteId.KeyAce);
                 shopIdDictionary.Remove(Sprite.SpriteId.RingDemon);
@@ -93,7 +93,7 @@ namespace FaxanaduRando.Randomizer
                 items = CollectItemsToShuffle(levels, itemIds);
                 for (int i = 0; i < items.Count; i++)
                 {
-                    if (items[i].Id == Sprite.SpriteId.Glove2OrKeyJoker)
+                    if (items[i].Id == Sprite.SpriteId.Glove2)
                     {
                         ids.Add(Sprite.SpriteId.Glove);
                     }
@@ -109,7 +109,7 @@ namespace FaxanaduRando.Randomizer
 
                 if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
                 {
-                    extraItems.Add(Sprite.SpriteId.Glove2OrKeyJoker);
+                    extraItems.Add(Sprite.SpriteId.RockSnakeOrJokerKey);
                     extraItems.Add(Sprite.SpriteId.MattockOrRingRuby);
                     extraItems.Add(Sprite.SpriteId.KeyAce);
                     extraItems.Add(Sprite.SpriteId.RingDworf);
@@ -308,9 +308,9 @@ namespace FaxanaduRando.Randomizer
                     doorRandomizer.RandomizeKeys(content, Rand);
                 }
 
-                if (GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged)
+                if (GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged)
                 {
-                    doorRandomizer.ShuffleWorldDoors(Rand);
+                    doorRandomizer.ShuffleDoorTypes(Rand);
                 }
 
                 if (GeneralOptions.ShuffleTowers)
@@ -692,7 +692,7 @@ namespace FaxanaduRando.Randomizer
                 return true;
             }
 
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 if (!ids.Contains(doorRandomizer.GetLevelKey(doorRandomizer.Doors[DoorId.EastBranch])))
                 {
@@ -820,7 +820,7 @@ namespace FaxanaduRando.Randomizer
 
         private bool GuaranteedElixir(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, List<Level> levels)
         {
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
                     {
@@ -1208,7 +1208,7 @@ namespace FaxanaduRando.Randomizer
                     {
                         foreach (var sprite in screen.Sprites)
                         {
-                            if (sprite.Id == Sprite.SpriteId.Glove2OrKeyJoker ||
+                            if (sprite.Id == Sprite.SpriteId.Glove2 ||
                                 sprite.Id == Sprite.SpriteId.MattockOrRingRuby)
                             {
                                 continue;
@@ -1255,7 +1255,10 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var door in screen.Doors)
                 {
-                    CollectSublevelItems(doorRandomizer.Doors[door].Sublevel, items, itemIds, doorRandomizer);
+                    if (doorRandomizer.Doors.ContainsKey(door))
+                    {
+                        CollectSublevelItems(doorRandomizer.Doors[door].Sublevel, items, itemIds, doorRandomizer);
+                    }
                 }
             }
         }

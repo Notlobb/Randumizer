@@ -82,7 +82,7 @@ namespace FaxanaduRando.Randomizer
 
         public virtual bool ShouldRandomizeScreens()
         {
-            return Util.AllWorldScreensRandomized();
+            return Util.AllCoreWorldScreensRandomized();
         }
 
         public void RandomizeEnemies(Random random)
@@ -97,7 +97,7 @@ namespace FaxanaduRando.Randomizer
                 }
                 else if (EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed)
                 {
-                    screen.RandomizeEnemiesNonMixed(random, IsEolis());
+                    screen.RandomizeEnemiesNonMixed(random);
                 }
                 else
                 {
@@ -142,8 +142,8 @@ namespace FaxanaduRando.Randomizer
                         }
                     }
 
-                    screen.RandomizeEnemiesWithProbabilities(random, IsEolis(), evilOneProbability,
-                                                             grieveProbability, bossProbability, hardProbability);
+                    screen.RandomizeEnemiesWithProbabilities(random, evilOneProbability, grieveProbability,
+                                                             bossProbability, hardProbability);
                 }
             }
         }

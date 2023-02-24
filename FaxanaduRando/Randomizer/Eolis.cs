@@ -5,8 +5,11 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Eolis : Level
     {
+        public const byte EolisExit = 8;
+
         public Eolis(WorldNumber number, byte[] content) : base(number, content)
         {
+            Screens[EolisExit].Doors.Add(DoorId.EolisExit);
         }
 
         public override bool IsEolis()
@@ -26,7 +29,7 @@ namespace FaxanaduRando.Randomizer
 
         public override bool ShouldRandomizeScreens()
         {
-            return GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged;
+            return Util.AllEndWorldScreensRandomized();
         }
 
         public override bool CreateSublevels(List<Screen> startScreens, List<Screen> endScreens, List<Screen> candidates, List<Screen> specialScreens, Random random, uint attempts)
@@ -53,19 +56,19 @@ namespace FaxanaduRando.Randomizer
         public override void SetupScreens()
         {
             Screens[7].Directions.Add(Direction.Right);
-            Screens[8].Directions.Add(Direction.Left);
+            Screens[EolisExit].Directions.Add(Direction.Left);
 
-            for (byte i = 0; i < 11; i++)
+            for (byte i = 9; i < 11; i++)
             {
                 Screens[7].OpenTilesRight.Add(i);
-                Screens[8].OpenTilesLeft.Add(i);
+                Screens[EolisExit].OpenTilesLeft.Add(i);
             }
 
             for (byte j = 1; j < 7; j++)
             {
                 Screens[j].Directions.Add(Direction.Left);
                 Screens[j].Directions.Add(Direction.Right);
-                for (byte i = 0; i < 11; i++)
+                for (byte i = 9; i < 11; i++)
                 {
                     Screens[j].OpenTilesLeft.Add(i);
                     Screens[j].OpenTilesRight.Add(i);

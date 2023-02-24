@@ -299,13 +299,19 @@ namespace FaxanaduRando.Randomizer
         }
 
         public void RandomizeEnemiesWithProbabilities(Random random,
-                                                      bool eolis,
                                                       int evilOneProbability,
                                                       int grieveProbability,
                                                       int bossProbability,
                                                       int hardProbability)
         {
             bool skipBosses = ShouldSkipBosses();
+
+            if (Doors.Count > 0 &&
+                Sprites.Count > 1)
+            {
+                grieveProbability = 0;
+            }
+
             foreach (var sprite in Sprites)
             {
                 if (sourceIds.Contains(sprite.Id))
@@ -382,7 +388,7 @@ namespace FaxanaduRando.Randomizer
             PreventGraphicalGlitches();
         }
 
-        public void RandomizeEnemiesNonMixed(Random random, bool eolis)
+        public void RandomizeEnemiesNonMixed(Random random)
         {
             foreach (var sprite in Sprites)
             {

@@ -9,7 +9,7 @@ namespace FaxanaduRando.Randomizer
         public const byte ApoluneLeftScreen = 7;
         public const byte ApoluneRightScreen = 8;
         public const byte TowerOfTrunkScreen = 11;
-        public const byte TowerOfTrunkEntanceScreen = 13;
+        public const byte TowerOfTrunkEntranceScreen = 13;
         public const byte MattockScreen = 12;
         public const byte LateTrunkStartScreen = 22;
         public const byte ForePawLeftScreen = 26;
@@ -24,10 +24,15 @@ namespace FaxanaduRando.Randomizer
 
         public Trunk(WorldNumber number, byte[] content) : base(number, content)
         {
+            Screens[EarlyTrunkStartScreen].Doors.Add(DoorId.TrunkEntrance);
             Screens[6].Doors.Add(DoorId.TrunkSecretShop);
             Screens[TowerOfTrunkScreen].Doors.Add(DoorId.TowerOfTrunk);
+            Screens[TowerOfTrunkEntranceScreen].Doors.Add(DoorId.TowerOfTrunkReturn);
             Screens[JokerHouseScreen].Doors.Add(DoorId.JokerHouse);
+            Screens[JokerHouseEntranceScreen].Doors.Add(DoorId.JokerHouseReturn);
             Screens[TowerOfFortressScreen].Doors.Add(DoorId.TowerOfFortress);
+            Screens[TowerOfFortressScreen].Doors.Add(DoorId.TrunkExit);
+            Screens[TowerOfFortressEntranceScreen].Doors.Add(DoorId.TowerOfFortressReturn);
             Screens[45].Doors.Add(DoorId.FortressGuru);
             Screens[JokerSpringScreen].Gifts.Add(GiftItem.Id.JokerSpring);
 
@@ -136,7 +141,7 @@ namespace FaxanaduRando.Randomizer
             startScreens.Add(Screens[lateEnds[1]]);
             startScreens.Add(Screens[eastEnds[1]]);
             startScreens.Add(Screens[TowerOfFortressEntranceScreen]);
-            startScreens.Add(Screens[TowerOfTrunkEntanceScreen]);
+            startScreens.Add(Screens[TowerOfTrunkEntranceScreen]);
             startScreens.Add(Screens[JokerHouseEntranceScreen]);
 
             endScreens = new List<Screen>();
@@ -237,12 +242,9 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds)
+            if (Screens[ForePawRightScreen].ScrollData.Down == 255)
             {
-                if (Screens[ForePawRightScreen].ScrollData.Down == 255)
-                {
-                    Screens[ForePawRightScreen].ScrollData.Down = JokerSpringScreen;
-                }
+                Screens[ForePawRightScreen].ScrollData.Down = JokerSpringScreen;
             }
 
             return result;
@@ -340,7 +342,7 @@ namespace FaxanaduRando.Randomizer
 
         public override void SetupScreens()
         {
-            startToSpecial[TowerOfTrunkEntanceScreen] = TowerOfTrunkScreen;
+            startToSpecial[TowerOfTrunkEntranceScreen] = TowerOfTrunkScreen;
             startToSpecial[JokerHouseEntranceScreen] = JokerHouseScreen;
 
             Screens[43].FriendEnds[Direction.Right] = Screens[44];

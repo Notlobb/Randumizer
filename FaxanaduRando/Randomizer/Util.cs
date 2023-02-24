@@ -33,9 +33,16 @@ namespace FaxanaduRando.Randomizer
                 GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus;
         }
 
-        public static bool AllWorldScreensRandomized()
+        public static bool AllCoreWorldScreensRandomized()
         {
-            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds;
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
+                   GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorldExceptEolisAndZenis;
+        }
+
+        public static bool AllEndWorldScreensRandomized()
+        {
+            return GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.AllWorlds ||
+                   GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.EolisAndZenisOnly;
         }
 
         public static Dictionary<T1, T2> Reverse<T1, T2>(Dictionary<T2, T1> dictionary)
@@ -62,6 +69,16 @@ namespace FaxanaduRando.Randomizer
             b2 = content[bankOffset + pointer + levelOffset + 1];
             bytes = new byte[] { b1, b2 };
             pointer = BitConverter.ToUInt16(bytes, 0);
+
+            return pointer;
+        }
+
+        public static int GetPointer(byte[] content, int offset)
+        {
+            byte b1 = content[offset];
+            byte b2 = content[offset + 1];
+            var bytes = new byte[] { b1, b2 };
+            var pointer = BitConverter.ToUInt16(bytes, 0);
 
             return pointer;
         }

@@ -27,6 +27,7 @@ namespace FaxanaduRando.Randomizer
             {Sprite.SpriteId.Dragonslayer, "Dragonslayer" },
             {Sprite.SpriteId.KeyAce, "AceKey" },
             {Sprite.SpriteId.Pendant, "Pendant" },
+            {Sprite.SpriteId.RockSnakeOrJokerKey, "JokerKey" },
             {Sprite.SpriteId.RingDemon, "DemonRing" },
             {Sprite.SpriteId.RingDworf, "DworfRing" },
             {Sprite.SpriteId.Rod, "Rod" },
@@ -39,7 +40,7 @@ namespace FaxanaduRando.Randomizer
             {Sprite.SpriteId.Poison2, "Poison" },
             {Sprite.SpriteId.MattockBossLocked, "Mattock" },
             {Sprite.SpriteId.MattockOrRingRuby, "Mattock2" },
-            {Sprite.SpriteId.Glove2OrKeyJoker, "Glove2" },
+            {Sprite.SpriteId.Glove2, "Glove2" },
         };
 
         public TextRandomizer(byte[] content, Random random)
@@ -126,6 +127,13 @@ namespace FaxanaduRando.Randomizer
                     "Trying is the first step towards failure",
                     "The fortress of what? Oh, Zenis. I thought you said something else...",
                     "Are you in a race? If so, good luck!",
+                    "I'm here to kick ass and drink red potions. And I'm all out of red potions",
+                    "Ran ran ruuuuu!",
+                    "Shop smart. Shop Eolis mart!",
+                    "This is the second biggest World Tree I've ever seen!",
+                    "You stepped into the wrong World Tree, fool!",
+                    "...And you call them 'Black Potions' despite the fact that they're obviously green?",
+                    "Klaatu barada nikto",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -339,6 +347,7 @@ namespace FaxanaduRando.Randomizer
                 var kingTexts = new List<string>()
                 {
                     "Shut up and take my money!",
+                    "Keep the change you filthy animal!",
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
@@ -634,17 +643,42 @@ namespace FaxanaduRando.Randomizer
                 "Weird",
                 "Shady",
                 "Tricky",
+                "Altruistic",
                 "Adamant",
+                "Blank",
                 "Bold",
+                "Boring",
                 "Crazy",
                 "Deadly",
                 "Exotic",
                 "Frantic",
+                "Filthy",
                 "Giant",
                 "Heroic",
                 "Imperial",
+                "Joking",
+                "Killer",
+                "Lame",
+                "Lonely",
+                "Moist",
+                "Noisy",
+                "Oozing",
+                "Perfect",
+                "Quaint",
+                "Rusty",
+                "Shiný",
+                "Shoddy",
                 "Solid",
+                "Tacky",
+                "Trustworthy",
                 "Unexpected",
+                "Vain",
+                "Wacky",
+                "Wealthy",
+                "Wide",
+                "Xenophobic",
+                "Yearning",
+                "Zealous",
             };
 
             var middleStrings = new List<string>()
@@ -726,6 +760,8 @@ namespace FaxanaduRando.Randomizer
                 "Magic",
                 "Monster",
                 "Snake",
+                "Animal",
+                "Beast",
             };
 
             var endingStrings = new List<string>()
@@ -806,6 +842,8 @@ namespace FaxanaduRando.Randomizer
                 "Swallow",
                 "Magic",
                 "Party",
+                "Animal",
+                "Beast",
             };
 
             foreach (var id in Enum.GetValues(typeof(ShopRandomizer.Id)))
@@ -1060,6 +1098,10 @@ namespace FaxanaduRando.Randomizer
                 "RobotSanta",
                 "Elf",
                 "Grinch",
+                "Animal",
+                "FilthyAnimal",
+                "Beast",
+                "Alien",
             };
         }
 
@@ -1239,7 +1281,7 @@ namespace FaxanaduRando.Randomizer
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.LateMist], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.EarlyBranch], giftRandomizer, spoilerLog));
             hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.MiddleBranch], giftRandomizer, spoilerLog));
-            if (!Util.AllWorldScreensRandomized())
+            if (!Util.AllCoreWorldScreensRandomized())
             {
                 hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.DropDownWing], giftRandomizer, spoilerLog));
                 hints.AddRange(GetSublevelHints(SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch], giftRandomizer, spoilerLog));
@@ -1274,13 +1316,13 @@ namespace FaxanaduRando.Randomizer
                 hints.Add(GetLevelKeyHint(doorRandomizer.TowerDoors[DoorId.EvilOnesLair], doorRandomizer));
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.DropdownWing], doorRandomizer));
                 hints.Add(GetLevelKeyHint(doorRandomizer.Doors[DoorId.EastBranchLeft], doorRandomizer));
             }
 
-            if (GeneralOptions.WorldDoorSetting == GeneralOptions.WorldDoors.ShuffleMoveKeys)
+            if (GeneralOptions.DoorTypeSetting == GeneralOptions.DoorTypeShuffle.ShuffleMoveKeys)
             {
                 hints.Add(GetLevelKeyHint(doorRandomizer.Buildings[DoorId.TrunkSecretShop], doorRandomizer));
                 hints.Add(GetLevelKeyHint(doorRandomizer.Buildings[DoorId.FortressGuru], doorRandomizer));
@@ -1402,7 +1444,7 @@ namespace FaxanaduRando.Randomizer
         {
             var hints = new List<string>();
             string locationHint;
-            if (Util.AllWorldScreensRandomized() &&
+            if (Util.AllCoreWorldScreensRandomized() &&
                 door.ParentSublevel != null)
             {
                 locationHint = $" in {door.ParentSublevel.SubLevelId}";
@@ -1448,7 +1490,7 @@ namespace FaxanaduRando.Randomizer
                     foreach (var gift in screen.Gifts)
                     {
                         var hint = $"{gift} has {giftRandomizer.ItemDict[gift].Item} in {door.Sublevel.SubLevelId}";
-                        if(GeneralOptions.WorldDoorSetting != GeneralOptions.WorldDoors.Unchanged ||
+                        if(GeneralOptions.DoorTypeSetting != GeneralOptions.DoorTypeShuffle.Unchanged ||
                            GeneralOptions.ShuffleTowers)
                         {
                             hint += $" at {oldDoor}";
@@ -1464,7 +1506,7 @@ namespace FaxanaduRando.Randomizer
                     springHints.Add(hint);
                 }
 
-                if (Util.AllWorldScreensRandomized())
+                if (Util.AllCoreWorldScreensRandomized())
                 {
                     if (SubLevel.FortressSpringSublevel == door.Sublevel.SubLevelId)
                     {
@@ -1526,14 +1568,7 @@ namespace FaxanaduRando.Randomizer
 
                     if (itemText == "Glove2")
                     {
-                        if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
-                        {
-                            itemText = "JokerKey";
-                        }
-                        else
-                        {
-                            itemText = "Glove";
-                        }
+                        itemText = "Glove";
                     }
 
                     if (itemText == "Mattock2")
@@ -1622,7 +1657,7 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (Util.AllWorldScreensRandomized())
+            if (Util.AllCoreWorldScreensRandomized())
             {
                 if (SubLevel.FortressSpringSublevel == sublevel.SubLevelId)
                 {
