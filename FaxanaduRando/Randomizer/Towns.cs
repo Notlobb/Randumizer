@@ -16,7 +16,7 @@ namespace FaxanaduRando.Randomizer
 
         public override int GetEndOffset()
         {
-            return 0x2CCED;
+            return 0x2CCEF;
         }
 
         public override bool ShouldRandomizeScreens()

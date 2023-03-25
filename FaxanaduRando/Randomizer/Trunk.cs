@@ -22,6 +22,11 @@ namespace FaxanaduRando.Randomizer
         public const byte JokerHouseEntranceScreen = 62;
         public const byte JokerSpringScreen = 63;
 
+        public static Screen End1 = null;
+        public static Screen Middle1 = null;
+        public static Screen Middle2 = null;
+        public static Screen End2 = null;
+
         public Trunk(WorldNumber number, byte[] content) : base(number, content)
         {
             Screens[EarlyTrunkStartScreen].Doors.Add(DoorId.TrunkEntrance);
@@ -35,32 +40,7 @@ namespace FaxanaduRando.Randomizer
             Screens[TowerOfFortressEntranceScreen].Doors.Add(DoorId.TowerOfFortressReturn);
             Screens[45].Doors.Add(DoorId.FortressGuru);
             Screens[JokerSpringScreen].Gifts.Add(GiftItem.Id.JokerSpring);
-
-            void AddApoluneDoors(byte screenNumber)
-            {
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneBar);
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneGuru);
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneHospital);
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneHouse);
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneItemShop);
-                Screens[screenNumber].Doors.Add(DoorId.ApoluneKeyShop);
-            }
-
-            AddApoluneDoors(ApoluneLeftScreen);
-            AddApoluneDoors(ApoluneRightScreen);
-
-            void AddForepawDoors(byte screenNumber)
-            {
-                Screens[screenNumber].Doors.Add(DoorId.ForepawGuru);
-                Screens[screenNumber].Doors.Add(DoorId.ForepawHospital);
-                Screens[screenNumber].Doors.Add(DoorId.ForepawHouse);
-                Screens[screenNumber].Doors.Add(DoorId.ForepawItemShop);
-                Screens[screenNumber].Doors.Add(DoorId.ForepawKeyShop);
-                Screens[screenNumber].Doors.Add(DoorId.ForepawMeatShop);
-            }
-
-            AddForepawDoors(ForePawLeftScreen);
-            AddForepawDoors(ForePawRightScreen);
+            Screens[MattockScreen].ConnectedScreen = Screens[LateTrunkStartScreen];
         }
 
         public override int GetStartOffset()
@@ -336,6 +316,20 @@ namespace FaxanaduRando.Randomizer
             skyScreens[0].FriendEnds[Direction.Up] = skyScreens[1];
             skyScreens[1].FriendEnds[Direction.Up] = skyScreens[2];
             skyScreens[2].FriendEnds[Direction.Up] = Screens[SkySpringScreen];
+
+            End1 = endScreens[0];
+            Middle1 = startScreens[1];
+            if (startScreens[3].Number == MattockScreen ||
+                startScreens[3].Number == LateTrunkStartScreen)
+            {
+                Middle2 = endScreens[1];
+                End2 = startScreens[2];
+            }
+            else
+            {
+                Middle2 = endScreens[2];
+                End2 = startScreens[3];
+            }
 
             return result;
         }

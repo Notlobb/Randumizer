@@ -37,6 +37,13 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        public enum SegmentShuffle
+        {
+            AllSegments,
+            TownsOnly,
+            Unchanged,
+        };
+
         public static bool FastText { get; set; } = true;
         public static bool FastStart { get; set; } = true;
         public static bool DragonSlayerRequired { get; set; } = false;
@@ -59,6 +66,7 @@ namespace FaxanaduRando.Randomizer
         public static MiscDoors MiscDoorSetting { get; set; } = MiscDoors.Unchanged;
         public static DoorTypeShuffle DoorTypeSetting { get; set; } = DoorTypeShuffle.Unchanged;
         public static ScreenRandomization RandomizeScreens { get; set; } = ScreenRandomization.Unchanged;
+        public static SegmentShuffle ShuffleSegments { get; set; } = SegmentShuffle.Unchanged;
     }
 
     public class FlagPresets : ObservableCollection<string>
@@ -120,6 +128,16 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class SegmentShuffleSettings : ObservableCollection<string>
+    {
+        public SegmentShuffleSettings()
+        {
+            Add("Shuffle all segments");
+            Add("Shuffle towns only");
+            Add("Unchanged");
+        }
+    }
+
     public class HintConverter : EnumConverter<GeneralOptions.Hints>
     {
     }
@@ -133,6 +151,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class ScreenRandomizationConverter : EnumConverter<GeneralOptions.ScreenRandomization>
+    {
+    }
+
+    public class SegmentShuffleConverter : EnumConverter<GeneralOptions.SegmentShuffle>
     {
     }
 }

@@ -34,8 +34,7 @@ namespace FaxanaduRando.Randomizer
             int offset = GetStartOffset();
             bool text = false;
             byte number = 0;
-            Screen screen = new Screen(number);
-
+            Screen screen = new Screen(number, Number);
             while (offset <= GetEndOffset() && offset < content.Length)
             {
                 if (content[offset] == 0xFF)
@@ -44,7 +43,7 @@ namespace FaxanaduRando.Randomizer
                     {
                         Screens.Add(screen);
                         number++;
-                        screen = new Screen(number);
+                        screen = new Screen(number, Number);
                     }
 
                     text = !text;
@@ -57,7 +56,7 @@ namespace FaxanaduRando.Randomizer
                     // special case needed as ROM is inconsistent
                     Screens.Add(screen);
                     number++;
-                    screen = new Screen(number);
+                    screen = new Screen(number, Number);
                     text = false;
                 }
 
@@ -156,7 +155,7 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void AddSubLevel(SubLevel.Id id, int start, int end, byte palette)
+        public void AddSubLevel(SubLevel.Id id, int start, int end, byte palette, Transition left = null, Transition right = null)
         {
             var screens = new List<Screen>();
             for (int i = start; i <= end; i++)

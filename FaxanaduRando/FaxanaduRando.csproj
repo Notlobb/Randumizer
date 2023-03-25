@@ -78,6 +78,7 @@
     <Compile Include="Randomizer\Screen.cs" />
     <Compile Include="Randomizer\ScrollingData.cs" />
     <Compile Include="Randomizer\Section.cs" />
+    <Compile Include="Randomizer\SegmentRandomizer.cs" />
     <Compile Include="Randomizer\Shop.cs" />
     <Compile Include="Randomizer\ShopEntry.cs" />
     <Compile Include="Randomizer\SoundRandomizer.cs" />
@@ -96,6 +97,7 @@
     <Compile Include="Randomizer\TextOptions.cs" />
     <Compile Include="Randomizer\TextRandomizer.cs" />
     <Compile Include="Randomizer\Towns.cs" />
+    <Compile Include="Randomizer\Transition.cs" />
     <Compile Include="Randomizer\Trunk.cs" />
     <Compile Include="Randomizer\Util.cs" />
     <Compile Include="Randomizer\Zenis.cs" />

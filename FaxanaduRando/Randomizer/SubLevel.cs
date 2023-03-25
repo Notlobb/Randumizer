@@ -28,6 +28,7 @@ namespace FaxanaduRando.Randomizer
             DropDownWing,
             EastBranch,
             BackFromEastBranch,
+            LateBranch,
             Dartmoor,
             CastleFraternal,
             KingGrieve,
@@ -35,6 +36,13 @@ namespace FaxanaduRando.Randomizer
             DartmoorHouse,
             FraternalHouse,
             EvilOnesLair,
+            Apolune,
+            Forepaw,
+            Mascon,
+            Victim,
+            Conflate,
+            Daybreak,
+            DartmoorCity,
             Other,
         }
 
@@ -43,6 +51,7 @@ namespace FaxanaduRando.Randomizer
         public Id SubLevelId { get; set; }
         public List<Screen> Screens { get; set; } = new List<Screen>();
         public bool RequiresMattock { get; set; } = false;
+        public bool RequiresWingboots { get; set; } = false;
         public byte Palette { get; set; } = UndefinedPalette;
 
         public static Dictionary<Id, SubLevel> SubLevelDict { get; set; } = new Dictionary<Id, SubLevel>();

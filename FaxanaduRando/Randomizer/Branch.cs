@@ -32,26 +32,6 @@ namespace FaxanaduRando.Randomizer
             Screens[DropdownWing].Doors.Add(DoorId.DropdownWing);
             Screens[DropdownWingEntrance].Doors.Add(DoorId.DropdownWingReturn);
             Screens[BranchExit].Doors.Add(DoorId.BranchExit);
-
-            void AddDaybreakDoors(byte screenNumber)
-            {
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakBar);
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakGuru);
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakHouse);
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakItemShop);
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakKeyShop);
-                Screens[screenNumber].Doors.Add(DoorId.DaybreakMeatShop);
-            }
-
-            AddDaybreakDoors(DaybreakLeftScreen);
-            AddDaybreakDoors(DaybreakRightScreen);
-
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateBar);
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateGuru);
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateHospital);
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateHouse);
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateItemShop);
-            Screens[ConflateLeftScreen].Doors.Add(DoorId.ConflateMeatShop);
         }
 
         public override int GetStartOffset()

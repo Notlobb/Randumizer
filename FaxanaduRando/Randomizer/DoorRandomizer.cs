@@ -26,7 +26,8 @@ namespace FaxanaduRando.Randomizer
         Buildings,
         Branch,
         Dartmoor,
-        EvilOnesLair
+        EvilOnesLair,
+        Unknown,
     }
 
     public class DoorRandomizer
@@ -53,7 +54,10 @@ namespace FaxanaduRando.Randomizer
 
             var roomTable = new Table(Section.GetOffset(15, 0xDDC5, 0xC000), 8, 1, content);
             var rooms = new List<byte> { 0, 29 };
-            roomTable.Entries[0][0] = rooms[random.Next(rooms.Count)];
+            if (Util.GurusShuffled())
+            {
+                roomTable.Entries[0][0] = rooms[random.Next(rooms.Count)];
+            }
 
             guruRandomizer = new GuruRandomizer(new Table(Section.GetOffset(15, 0xDDAD, 0xC000), 8, 1, content),
                                                 new Table(Section.GetOffset(15, 0xDDB5, 0xC000), 8, 1, content),
@@ -393,7 +397,9 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            if (Util.KeyShopsShuffled() ||
+                ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged ||
+                GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.Unchanged)
             {
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
             }
@@ -847,10 +853,7 @@ namespace FaxanaduRando.Randomizer
                 world.AddToContent(content);
             }
 
-            if (Util.GurusShuffled())
-            {
-                guruRandomizer.AddToContent(content);
-            }
+            guruRandomizer.AddToContent(content);
         }
 
         public class Requirement

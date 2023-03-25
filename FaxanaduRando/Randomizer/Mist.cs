@@ -31,6 +31,11 @@ namespace FaxanaduRando.Randomizer
         private SubLevel.Id secondTowerId;
         private SubLevel.Id thirdTowerId;
 
+        public static Screen End1 = null;
+        public static Screen Middle1 = null;
+        public static Screen Middle2 = null;
+        public static Screen End2 = null;
+
         public Mist(WorldNumber number, byte[] content) : base(number, content)
         {
             Screens[MistEntranceScreen].Doors.Add(DoorId.MistEntrance);
@@ -50,33 +55,6 @@ namespace FaxanaduRando.Randomizer
             Screens[VictimTowerScreen].Doors.Add(DoorId.VictimTower);
             Screens[VictimTowerEntranceScreen].Doors.Add(DoorId.VictimTowerReturn);
             Screens[FireMageScreen].Doors.Add(DoorId.FireMage);
-
-            void AddMasconDoors(byte screenNumber)
-            {
-                Screens[screenNumber].Doors.Add(DoorId.MasconBar);
-                Screens[screenNumber].Doors.Add(DoorId.MasconHospital);
-                Screens[screenNumber].Doors.Add(DoorId.MasconHouse);
-                Screens[screenNumber].Doors.Add(DoorId.MasconItemShop);
-                Screens[screenNumber].Doors.Add(DoorId.MasconKeyShop);
-                Screens[screenNumber].Doors.Add(DoorId.MasconMeatShop);
-            }
-
-            AddMasconDoors(MasconLeftScreen);
-            AddMasconDoors(MasconRightScreen);
-
-            void AddVictimDoors(byte screenNumber)
-            {
-                Screens[screenNumber].Doors.Add(DoorId.VictimBar);
-                Screens[screenNumber].Doors.Add(DoorId.VictimGuru);
-                Screens[screenNumber].Doors.Add(DoorId.VictimHospital);
-                Screens[screenNumber].Doors.Add(DoorId.VictimHouse);
-                Screens[screenNumber].Doors.Add(DoorId.VictimItemShop);
-                Screens[screenNumber].Doors.Add(DoorId.VictimKeyShop);
-                Screens[screenNumber].Doors.Add(DoorId.VictimMeatShop);
-            }
-
-            AddVictimDoors(VictimLeftScreen);
-            AddVictimDoors(VictimRightScreen);
         }
 
         public override int GetStartOffset()
@@ -249,16 +227,33 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
-            result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, random, SubLevel.Id.MiddleMist, attempts);
-            if (!result)
+            if (GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.AllSegments)
             {
-                return result;
+                result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, random, SubLevel.Id.MiddleMist, attempts);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
             result = CreateSublevel(startScreens[2], endScreens[2], candidates, specialScreens, random, SubLevel.Id.LateMist, attempts);
             if (!result)
             {
                 return result;
+            }
+
+            if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
+            {
+                if (specialScreens.Contains(Screens[MistExitScreen]))
+                {
+                    return false;
+                }
+
+                result = CreateSublevel(startScreens[1], endScreens[1], candidates, specialScreens, random, SubLevel.Id.MiddleMist, attempts);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
             result = CreateSublevel(Screens[3], Screens[MasconTowerScreen], candidates, specialScreens, random, Screens[MasconLeftScreen].ParentSublevel, attempts, false);
@@ -313,6 +308,12 @@ namespace FaxanaduRando.Randomizer
             }
 
             Screens[MasconTowerScreen].ScrollData.Down = MasconLeftScreen;
+
+            End1 = endScreens[0];
+            Middle1 = startScreens[1];
+            Middle2 = endScreens[1];
+            End2 = startScreens[2];
+
             return result;
         }
 

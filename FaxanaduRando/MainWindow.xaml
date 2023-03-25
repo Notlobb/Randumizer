@@ -34,6 +34,8 @@
         <randomizer:DoorTypeConverter x:Key="doorTypeConverter" />
         <randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
         <randomizer:ScreenRandomizationConverter x:Key="screenRandomizationConverter" />
+        <randomizer:SegmentShuffleSettings x:Key="segmentShuffleSettings" />
+        <randomizer:SegmentShuffleConverter x:Key="segmentShuffleConverter" />
         <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
         <randomizer:ShuffleItemsConverter x:Key="itemShuffleSettingsConverter" />
         <randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
@@ -154,6 +156,7 @@
                             <Binding ElementName="randomizeScreensComboBox" Path="SelectedIndex" />
                             <Binding ElementName="multipleGiftsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="aiComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="shuffleSegmentsComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -294,6 +297,17 @@
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:GeneralOptions.RandomizeScreens), Mode=TwoWay, Converter={StaticResource screenRandomizationConverter}}"
                         ToolTip="Randomizes how screens are connected to each other"
+                        />
+                </StackPanel>
+                <TextBlock Grid.Column="1" Grid.Row="17" Text="World segments:"/>
+                <StackPanel  Grid.Column="3"
+                             Grid.Row="17">
+                    <ComboBox Name="shuffleSegmentsComboBox"
+                        ItemsSource="{StaticResource segmentShuffleSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:GeneralOptions.ShuffleSegments), Mode=TwoWay, Converter={StaticResource segmentShuffleConverter}}"
+                        ToolTip="Shuffle segments such as towns"
                         />
                 </StackPanel>
             </Grid>
