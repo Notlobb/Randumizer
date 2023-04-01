@@ -13,11 +13,11 @@ namespace FaxanaduRando.Randomizer
             {
                 if (ShopId == DoorId.FireMage)
                 {
-                    Price = 2000;
+                    Price = 1000;
                 }
                 else if (Expensive)
                 {
-                    Price = 400;
+                    Price = 500;
                 }
                 else
                 {

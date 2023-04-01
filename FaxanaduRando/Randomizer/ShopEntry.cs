@@ -8,6 +8,7 @@ namespace FaxanaduRando.Randomizer
         public ushort MaxPriceOverride { get; set; } = 0;
 
         public bool ShouldBeRandomized { get; set; } = true;
+        public int Multiplier { get; set; } = 1;
 
         public int offset;
         private int priceOffset;

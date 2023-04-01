@@ -43,11 +43,15 @@ namespace FaxanaduRando.Randomizer
 
             var levels = GetLevels(content, random);
             uint screenAttempts = 0;
+            var attemptDictionary = new Dictionary<WorldNumber, uint>();
             if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged)
             {
                 foreach (var level in levels)
                 {
+                    uint localAttempts = screenAttempts;
                     bool screenResult = level.RandomizeScreens(random, ref screenAttempts);
+                    localAttempts = screenAttempts - localAttempts;
+                    attemptDictionary[level.Number] = localAttempts;
                     if (!screenResult)
                     {
                         message = "Screen randomization failed";
@@ -290,7 +294,7 @@ namespace FaxanaduRando.Randomizer
                 textRandomizer.RandomizeTitles(content, customTextFile);
             }
 
-            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content, customTextFile);
+            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFile);
             if (result != Result.Success)
             {
                 if (result == Result.TextTooLong)
@@ -348,8 +352,12 @@ namespace FaxanaduRando.Randomizer
 #if DEBUG
                 spoilers.Add($"Randomization attempts: {attempts}");
                 spoilers.Add($"Screen randomization attempts: {screenAttempts}");
+                foreach (var key in attemptDictionary.Keys)
+                {
+                    spoilers.Add($"{key}: {attemptDictionary[key]}");
+                }
 #endif
-                var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, true);
+                var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, true);
                 foreach (var hint in hints)
                 {
                     string spoiler = hint.Replace(Text.spaceChar, ' ');
@@ -364,6 +372,20 @@ namespace FaxanaduRando.Randomizer
                 foreach (var data in textRandomizer.GetTitleData())
                 {
                     spoilers.Add(data);
+                }
+
+                foreach (var shop in shopRandomizer.Shops)
+                {
+                    spoilers.Add($"{shop.ShopId}");
+                    foreach (var item in shop.Items)
+                    {
+                        spoilers.Add($"{item.Id} {item.Price}");
+                    }
+                }
+
+                foreach (var staticPrice in shopRandomizer.StaticPrices)
+                {
+                    spoilers.Add($"{staticPrice.ShopId} {staticPrice.Price}");
                 }
 
                 var enemyData = new Dictionary<Sprite.SpriteId, SpriteType>();

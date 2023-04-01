@@ -261,62 +261,135 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        public void UpdateGurus(DoorRandomizer doorRandomizer)
+        public void UpdateDoors(DoorRandomizer doorRandomizer, ShopRandomizer shopRandomizer)
         {
-            if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.TownsOnly)
+            var worlds = doorRandomizer.GetWorlds();
+            var multipliers = new Dictionary<OtherWorldNumber, int>();
+            for (int i = 0; i < worlds.Count; i++)
             {
-                UpdateGurus(screens[1], doorRandomizer, OtherWorldNumber.Trunk);
-                UpdateGurus(screens[5], doorRandomizer, OtherWorldNumber.Trunk);
-                UpdateGurus(screens[9], doorRandomizer, OtherWorldNumber.Mist);
-                UpdateGurus(screens[13], doorRandomizer, OtherWorldNumber.Mist);
-                UpdateGurus(screens[17], doorRandomizer, OtherWorldNumber.Branch);
-                UpdateGurus(deadendTransitionScreens[0][0], doorRandomizer, OtherWorldNumber.Branch);
-                UpdateGurus(deadendTransitionScreens[1][0], doorRandomizer, OtherWorldNumber.Dartmoor);
+                var world = Door.OtherWorldDict[worlds[i].number];
+                multipliers[world] = i + 1;
+            }
+
+            if (GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.AllSegments)
+            {
+                UpdateDoors(screens[1], doorRandomizer, shopRandomizer, OtherWorldNumber.Trunk, multipliers);
+                UpdateDoors(screens[2], doorRandomizer, shopRandomizer, OtherWorldNumber.Trunk, multipliers);
+                UpdateDoors(screens[5], doorRandomizer, shopRandomizer, OtherWorldNumber.Trunk, multipliers);
+                UpdateDoors(screens[6], doorRandomizer, shopRandomizer, OtherWorldNumber.Trunk, multipliers);
+                UpdateDoors(screens[9], doorRandomizer, shopRandomizer, OtherWorldNumber.Mist, multipliers);
+                UpdateDoors(screens[10], doorRandomizer, shopRandomizer, OtherWorldNumber.Mist, multipliers);
+                UpdateDoors(screens[13], doorRandomizer, shopRandomizer, OtherWorldNumber.Mist, multipliers);
+                UpdateDoors(screens[14], doorRandomizer, shopRandomizer, OtherWorldNumber.Mist, multipliers);
+                UpdateDoors(screens[17], doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
+                UpdateDoors(screens[18], doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
+                UpdateDoors(deadendTransitionScreens[0][0], doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
+                UpdateDoors(deadendTransitionScreens[0][1], doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
+                UpdateDoors(deadendTransitionScreens[1][0], doorRandomizer, shopRandomizer, OtherWorldNumber.Dartmoor, multipliers);
+                UpdateDoors(deadendTransitionScreens[1][1], doorRandomizer, shopRandomizer, OtherWorldNumber.Dartmoor, multipliers);
             }
             else
             {
                 foreach (var screen in trunkScreens)
                 {
-                    UpdateGurus(screen, doorRandomizer, OtherWorldNumber.Trunk);
+                    UpdateDoors(screen, doorRandomizer, shopRandomizer, OtherWorldNumber.Trunk, multipliers);
                 }
                 foreach (var screen in mistScreens)
                 {
-                    UpdateGurus(screen, doorRandomizer, OtherWorldNumber.Mist);
+                    UpdateDoors(screen, doorRandomizer, shopRandomizer, OtherWorldNumber.Mist, multipliers);
                 }
                 foreach (var screen in branchScreens1)
                 {
-                    UpdateGurus(screen, doorRandomizer, OtherWorldNumber.Branch);
+                    UpdateDoors(screen, doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
                 }
                 foreach (var screen in branchScreens2)
                 {
-                    UpdateGurus(screen, doorRandomizer, OtherWorldNumber.Branch);
+                    UpdateDoors(screen, doorRandomizer, shopRandomizer, OtherWorldNumber.Branch, multipliers);
                 }
                 foreach (var screen in dartMoorScreens)
                 {
-                    UpdateGurus(screen, doorRandomizer, OtherWorldNumber.Dartmoor);
+                    UpdateDoors(screen, doorRandomizer, shopRandomizer, OtherWorldNumber.Dartmoor, multipliers);
                 }
             }
         }
 
-        private void UpdateGurus(Screen target, DoorRandomizer doorRandomizer, OtherWorldNumber worldNumber)
+        public List<string> GetHints()
+        {
+            List<string> hints = new List<string>();
+
+            if (GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.AllSegments)
+            {
+                hints.Add($"{screens[1].ParentSublevel} is at Apolune");
+                hints.Add($"{screens[5].ParentSublevel} is at Forepaw");
+                hints.Add($"{screens[9].ParentSublevel} is at Mascon");
+                hints.Add($"{screens[13].ParentSublevel} is at Victim");
+                hints.Add($"{screens[17].ParentSublevel} is at Daybreak");
+                hints.Add($"{deadendTransitionScreens[0][0].ParentSublevel} is at Conflate");
+                hints.Add($"{deadendTransitionScreens[1][0].ParentSublevel} is at Dartmoor City");
+            }
+            else
+            {
+                var sublevels = new HashSet<SubLevel.Id>();
+                AddHints(hints, trunkScreens, sublevels, "in Trunk");
+                AddHints(hints, mistScreens, sublevels, "in Mist");
+                AddHints(hints, branchScreens1, sublevels, "in Branch");
+                AddHints(hints, branchScreens2, sublevels, $"at Conflate in {branchScreens2[0].ParentSublevel}");
+                AddHints(hints, dartMoorScreens, sublevels, $"at Dartmoor City in {dartMoorScreens[0].ParentSublevel}");
+            }
+
+            return hints;
+        }
+
+        private void AddHints(List<string> hints, List<Screen> screens, HashSet<SubLevel.Id> sublevels, string location)
+        {
+            for (int i = 1; i < screens.Count - 1; i++)
+            {
+                if (!sublevels.Contains(screens[i].ParentSublevel))
+                {
+                    sublevels.Add(screens[i].ParentSublevel);
+                    hints.Add($"{screens[i].ParentSublevel} is {location}");
+                }
+            }
+        }
+
+        private void UpdateDoors(Screen target, DoorRandomizer doorRandomizer, ShopRandomizer shopRandomizer,
+                                 OtherWorldNumber worldNumber, Dictionary<OtherWorldNumber, int> multipliers)
         {
             var sublevel = SubLevel.SubLevelDict[target.ParentSublevel];
+            var sublevels = new HashSet<SubLevel.Id>();
+            var worlds = doorRandomizer.GetWorlds();
+            int multiplier = multipliers[worldNumber];
+
             void UpdateSublevel(SubLevel subLevel)
             {
+                sublevels.Add(subLevel.SubLevelId);
                 foreach (var screen in subLevel.Screens)
                 {
                     foreach (var door in screen.Doors)
                     {
                         if (doorRandomizer.Doors.ContainsKey(door))
                         {
-                            var guru = doorRandomizer.Doors[door].Guru;
-                            if (guru != null)
+                            var shop = doorRandomizer.Doors[door].BuildingShop;
+                            if (shop != null)
                             {
-                                guru.OverrideWorldSpawn = (byte)Door.worldDict[worldNumber];
+                                shop.Multiplier = multiplier;
+                            }
+                            if (shopRandomizer.StaticPriceDict.TryGetValue(door, out StaticPrice staticPrice))
+                            {
+                                staticPrice.Multiplier = multiplier;
+                            }
+
+                            if (GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.Unchanged)
+                            {
+                                var guru = doorRandomizer.Doors[door].Guru;
+                                if (guru != null)
+                                {
+                                    guru.OverrideWorldSpawn = (byte)Door.worldDict[worldNumber];
+                                }
                             }
 
                             var child = doorRandomizer.Doors[door].Sublevel;
-                            if (child != null)
+                            if (child != null && !sublevels.Contains(child.SubLevelId))
                             {
                                 UpdateSublevel(child);
                             }

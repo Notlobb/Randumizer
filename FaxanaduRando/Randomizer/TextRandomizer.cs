@@ -51,7 +51,7 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, byte[] content, string customTextFile)
+        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string customTextFile)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
@@ -72,7 +72,7 @@ namespace FaxanaduRando.Randomizer
                 var hints = new List<string>();
                 if (GeneralOptions.HintSetting != GeneralOptions.Hints.Community)
                 {
-                    hints = GetHints(shopRandomizer, giftRandomizer, doorRandomizer);
+                    hints = GetHints(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer);
                 }
 
                 // notes; 38 & 39 first NPC pre- and post- King talk
@@ -431,7 +431,7 @@ namespace FaxanaduRando.Randomizer
             SetTitleData(titleRewards, content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public List<string> GetHints(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, bool spoilerLog = false)
+        public List<string> GetHints(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, bool spoilerLog = false)
         {
             var hints = new List<string>();
 
@@ -451,6 +451,11 @@ namespace FaxanaduRando.Randomizer
             {
                 var worldHints = GetWorldHints(doorRandomizer);
                 hints.AddRange(worldHints);
+            }
+
+            if (GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.Unchanged)
+            {
+                hints.AddRange(segmentRandomizer.GetHints());
             }
 
             if (GeneralOptions.HintSetting == GeneralOptions.Hints.Strong &&

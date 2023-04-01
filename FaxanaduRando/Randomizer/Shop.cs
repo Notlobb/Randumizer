@@ -31,6 +31,7 @@ namespace FaxanaduRando.Randomizer
         public Id ShopId { get; set; }
         public int MaxPrice { get; set; } = 2000;
         public bool IsKeyShop { get; set; } = false;
+        public int Multiplier { get; set; } = 1;
 
         public Shop(Id id, bool keyShop = false)
         {
