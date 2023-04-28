@@ -65,6 +65,7 @@ namespace FaxanaduRando.Randomizer
             var shopRandomizer = new ShopRandomizer(content, doorRandomizer);
             var giftRandomizer = new GiftRandomizer(content);
             doorRandomizer.UpdateBuildings(giftRandomizer, shopRandomizer);
+            doorRandomizer.LimitKeys(random);
 
             var spriteBehaviourTable = new Table(Section.GetOffset(14, 0xAD2D, 0x8000), 100, 2, content);
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
@@ -610,20 +611,7 @@ namespace FaxanaduRando.Randomizer
             {
                 var topItem = Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2];
                 topItem.ShouldBeShuffled = false;
-                var possibleItems = new List<Sprite.SpriteId>
-                {
-                    Sprite.SpriteId.Hourglass,
-                    Sprite.SpriteId.Poison,
-                    Sprite.SpriteId.Poison2,
-                    Sprite.SpriteId.RedPotion,
-                    Sprite.SpriteId.RedPotion2,
-                    Sprite.SpriteId.Glove,
-                    Sprite.SpriteId.Ointment,
-                    Sprite.SpriteId.Ointment2,
-                    Sprite.SpriteId.Wingboots,
-                    Sprite.SpriteId.WingbootsBossLocked,
-                };
-                topItem.Id = possibleItems[random.Next(0, possibleItems.Count)];
+                topItem.Id = ItemRandomizer.GetRandomItem(random);
             }
 
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].RequiresMattock = true;

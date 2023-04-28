@@ -53,6 +53,25 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
+        public static Sprite.SpriteId GetRandomItem(Random random)
+        {
+            var possibleItems = new List<Sprite.SpriteId>
+            {
+                Sprite.SpriteId.Hourglass,
+                Sprite.SpriteId.Poison,
+                Sprite.SpriteId.Poison2,
+                Sprite.SpriteId.RedPotion,
+                Sprite.SpriteId.RedPotion2,
+                Sprite.SpriteId.Glove,
+                Sprite.SpriteId.Ointment,
+                Sprite.SpriteId.Ointment2,
+                Sprite.SpriteId.Wingboots,
+                Sprite.SpriteId.WingbootsBossLocked,
+            };
+
+            return possibleItems.ElementAt(random.Next(possibleItems.Count));
+        }
+
         public bool ShuffleItems(List<Level> levels,
                                  ShopRandomizer shopRandomizer,
                                  GiftRandomizer giftRandomizer,
@@ -109,9 +128,18 @@ namespace FaxanaduRando.Randomizer
 
                 if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
                 {
-                    extraItems.Add(Sprite.SpriteId.RockSnakeOrJokerKey);
+                    if (ItemOptions.BigKeyLimit != ItemOptions.KeyLimit.Zero)
+                    {
+                        extraItems.Add(Sprite.SpriteId.RockSnakeOrJokerKey);
+                        extraItems.Add(Sprite.SpriteId.KeyAce);
+                    }
+                    else
+                    {
+                        extraItems.Add(GetRandomItem(Rand));
+                        extraItems.Add(GetRandomItem(Rand));
+                    }
+
                     extraItems.Add(Sprite.SpriteId.MattockOrRingRuby);
-                    extraItems.Add(Sprite.SpriteId.KeyAce);
                     extraItems.Add(Sprite.SpriteId.RingDworf);
                     extraItems.Add(Sprite.SpriteId.RingDemon);
                     extraItems.Add(Sprite.SpriteId.RedPotion);
@@ -139,15 +167,30 @@ namespace FaxanaduRando.Randomizer
             var shopIds = shopRandomizer.GetBaseIds(Rand);
             if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
-                shopIds.Add(ShopRandomizer.Id.JackKey);
-                shopIds.Add(ShopRandomizer.Id.JackKey);
-                shopIds.Add(ShopRandomizer.Id.JackKey);
-                shopIds.Add(ShopRandomizer.Id.QueenKey);
-                shopIds.Add(ShopRandomizer.Id.QueenKey);
-                shopIds.Add(ShopRandomizer.Id.QueenKey);
-                shopIds.Add(ShopRandomizer.Id.KingKey);
-                shopIds.Add(ShopRandomizer.Id.KingKey);
-                shopIds.Add(ShopRandomizer.Id.KingKey);
+                if (ItemOptions.SmallKeyLimit != ItemOptions.KeyLimit.Zero)
+                {
+                    shopIds.Add(ShopRandomizer.Id.JackKey);
+                    shopIds.Add(ShopRandomizer.Id.JackKey);
+                    shopIds.Add(ShopRandomizer.Id.JackKey);
+                    shopIds.Add(ShopRandomizer.Id.QueenKey);
+                    shopIds.Add(ShopRandomizer.Id.QueenKey);
+                    shopIds.Add(ShopRandomizer.Id.QueenKey);
+                    shopIds.Add(ShopRandomizer.Id.KingKey);
+                    shopIds.Add(ShopRandomizer.Id.KingKey);
+                    shopIds.Add(ShopRandomizer.Id.KingKey);
+                }
+                else
+                {
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                    shopIds.Add(ShopRandomizer.GetMiscItem(Rand));
+                }
 
                 if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Shuffled &&
                     !ItemOptions.IncludeSomeEolisDoors)
@@ -234,9 +277,18 @@ namespace FaxanaduRando.Randomizer
                 }
 
                 var giftItems = new List<ShopRandomizer.Id>();
-                giftItems.Add(ShopRandomizer.Id.JokerKey);
+                if (ItemOptions.BigKeyLimit != ItemOptions.KeyLimit.Zero)
+                {
+                    giftItems.Add(ShopRandomizer.Id.JokerKey);
+                    giftItems.Add(ShopRandomizer.Id.AceKey);
+                }
+                else
+                {
+                    giftItems.Add(ShopRandomizer.GetMiscItem(Rand));
+                    giftItems.Add(ShopRandomizer.GetMiscItem(Rand));
+                }
+
                 giftItems.Add(ShopRandomizer.Id.RubyRing);
-                giftItems.Add(ShopRandomizer.Id.AceKey);
                 giftItems.Add(ShopRandomizer.Id.DworfRing);
                 giftItems.Add(ShopRandomizer.Id.DemonRing);
                 shopIds.AddRange(giftItems);

@@ -420,7 +420,9 @@ namespace FaxanaduRando.Randomizer
             ids.Add(GetMiscItem(random));
 
             if (GeneralOptions.ShuffleWorlds &&
-                ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
+                ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged &&
+                !Util.AllCoreWorldScreensRandomized() &&
+                ItemOptions.SmallKeyLimit != ItemOptions.KeyLimit.Zero)
             {
                 ids.Add(Id.KingKey);
             }

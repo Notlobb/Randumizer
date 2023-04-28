@@ -42,6 +42,8 @@
         <randomizer:RandomizeKeysConverter x:Key="randomizeKeysConverter" />
         <randomizer:MultipleGiftSettings x:Key="multipleGiftSettings" />
         <randomizer:MultipleGiftsConverter x:Key="multipleGiftsConverter" />
+        <randomizer:KeyLimitSettings x:Key="keyLimitSettings" />
+        <randomizer:KeyLimitConverter x:Key="keyLimitConverter" />
         <randomizer:MusicSettings x:Key="musicSettings" />
         <randomizer:MusicConverter x:Key="musicConverter" />
     </Window.Resources>
@@ -157,6 +159,8 @@
                             <Binding ElementName="multipleGiftsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="aiComboBox" Path="SelectedIndex" />
                             <Binding ElementName="shuffleSegmentsComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="smallKeyLimitComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="bigKeyLimitComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -424,10 +428,14 @@
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
@@ -567,6 +575,30 @@
                         IsReadOnly="true"
                         SelectedIndex="{Binding Path=(randomizer:ItemOptions.MultipleGifts), Mode=TwoWay, Converter={StaticResource multipleGiftsConverter}}"
                         ToolTip="Allow multple gifts from these locations. Otherwise you can only get the gift if you don't have the item. You can always get multiple keys from locations other than the Conflate guru"
+                        />
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Grid.Row="16" Text="Small key limit:"/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="16">
+                    <ComboBox Name="smallKeyLimitComboBox"
+                        ItemsSource="{StaticResource keyLimitSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.SmallKeyLimit), Mode=TwoWay, Converter={StaticResource keyLimitConverter}}"
+                        ToolTip="Limit the maximum number of doors for each type of small key. Small key refers to the jack, queen or king key"
+                        />
+                </StackPanel>
+
+                <TextBlock Grid.Column="1" Grid.Row="17" Text="Big key limit:"/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="17">
+                    <ComboBox Name="bigKeyLimitComboBox"
+                        ItemsSource="{StaticResource keyLimitSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:ItemOptions.BigKeyLimit), Mode=TwoWay, Converter={StaticResource keyLimitConverter}}"
+                        ToolTip="Limit the maximum number of doors for each type of big key. Big key refers to the ace, or joker key"
                         />
                 </StackPanel>
 
