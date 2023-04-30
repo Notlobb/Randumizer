@@ -1330,6 +1330,37 @@ namespace FaxanaduRando.Randomizer
                 convertPoisonSection.Bytes.Add(OpCode.NOP);
                 convertPoisonSection.AddToContent(content, Section.GetOffset(15, 0xC845, 0xC000));
             }
+
+            if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
+            {
+                var newSection = new Section();
+                newSection.Bytes.Add(OpCode.JSR);
+                newSection.Bytes.Add(0x50);
+                newSection.Bytes.Add(0xFD);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xEA82, 0xC000));
+
+                newSection = new Section();
+                newSection.Bytes.Add(OpCode.TAX);
+                newSection.Bytes.Add(OpCode.LDAAbsoluteX);
+                newSection.Bytes.Add(0x68);
+                newSection.Bytes.Add(0xFD);
+                newSection.Bytes.Add(OpCode.STAAbsolute);
+                newSection.Bytes.Add(0x35);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.INY);
+                newSection.Bytes.Add(OpCode.LDAIndirectY);
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.RTS);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xFD50, 0xC000));
+                content[Section.GetOffset(15, 0xFD68, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Eolis];
+                content[Section.GetOffset(15, 0xFD69, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Trunk];
+                content[Section.GetOffset(15, 0xFD6A, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Mist];
+                content[Section.GetOffset(15, 0xFD6B, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Towns];
+                content[Section.GetOffset(15, 0xFD6C, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Buildings];
+                content[Section.GetOffset(15, 0xFD6D, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Branch];
+                content[Section.GetOffset(15, 0xFD6E, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Dartmoor];
+                content[Section.GetOffset(15, 0xFD6F, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.EvilOnesLair];
+            }
         }
 
         private void RandomizeExtras(byte[] content, Random random, DoorRandomizer doorRandomizer, PaletteRandomizer paletteRandomizer, out bool addSection)
