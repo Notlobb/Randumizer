@@ -43,6 +43,7 @@ namespace FaxanaduRando.Randomizer
         public const int INY = 0xC8;
         public const int CMPImmediate = 0xC9;
         public const int CMPAbsolute = 0xCD;
+        public const int DECAbsolute = 0xCE;
         public const int CMPAbsoluteX = 0xDD;
         public const int INX = 0xE8;
         public const int NOP = 0xEA;
