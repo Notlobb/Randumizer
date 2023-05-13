@@ -24,9 +24,10 @@ namespace FaxanaduRando.Randomizer
         private static List<Sprite.SpriteId> hardIdList = new List<Sprite.SpriteId>();
         private static HashSet<Sprite.SpriteId> sourceIds = new HashSet<Sprite.SpriteId>();
 
-        public Screen(byte number)
+        public Screen(byte number, WorldNumber parentWorld)
         {
             Number = number;
+            ParentWorld = parentWorld;
         }
 
         public static void SetupEnemyIds()
@@ -138,6 +139,8 @@ namespace FaxanaduRando.Randomizer
         public HashSet<Direction> Directions { get; set; } = new HashSet<Direction>();
         public HashSet<Direction> AvailableDirections { get; set; } = new HashSet<Direction>();
         public byte Number { get; set; }
+        public Transition Transition { get; set; } = null;
+        public Screen ConnectedScreen { get; set; } = null;
         public HashSet<byte> OpenTilesLeft { get; set; } = new HashSet<byte>();
         public HashSet<byte> OpenTilesRight { get; set; } = new HashSet<byte>();
         public HashSet<byte> OpenTilesUp { get; set; } = new HashSet<byte>();
@@ -490,6 +493,10 @@ namespace FaxanaduRando.Randomizer
             foreach (var text in Text)
             {
                 text.AddToContent(content);
+            }
+            if (Transition != null)
+            {
+                Transition.AddToContent(content);
             }
         }
     }

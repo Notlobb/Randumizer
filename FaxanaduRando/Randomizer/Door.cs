@@ -222,7 +222,14 @@ namespace FaxanaduRando.Randomizer
                 Guru.X = (byte)(Position.X * 16);
                 Guru.Y = (byte)(Position.Y * 16);
                 Guru.Screen = Position.screen;
-                Guru.WorldSpawn = worldSpawns[OriginalId];
+                if (Guru.OverrideWorldSpawn != 0xFF)
+                {
+                    Guru.WorldSpawn = Guru.OverrideWorldSpawn;
+                }
+                else
+                {
+                    Guru.WorldSpawn = worldSpawns[OriginalId];
+                }
             }
         }
 

@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.IO; 
 
 namespace FaxanaduRando.Randomizer
 {
@@ -43,11 +43,15 @@ namespace FaxanaduRando.Randomizer
 
             var levels = GetLevels(content, random);
             uint screenAttempts = 0;
+            var attemptDictionary = new Dictionary<WorldNumber, uint>();
             if (GeneralOptions.RandomizeScreens != GeneralOptions.ScreenRandomization.Unchanged)
             {
                 foreach (var level in levels)
                 {
+                    uint localAttempts = screenAttempts;
                     bool screenResult = level.RandomizeScreens(random, ref screenAttempts);
+                    localAttempts = screenAttempts - localAttempts;
+                    attemptDictionary[level.Number] = localAttempts;
                     if (!screenResult)
                     {
                         message = "Screen randomization failed";
@@ -56,10 +60,12 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            var segmentRandomizer = new SegmentRandomizer(content);
             var doorRandomizer = new DoorRandomizer(content, random);
             var shopRandomizer = new ShopRandomizer(content, doorRandomizer);
             var giftRandomizer = new GiftRandomizer(content);
             doorRandomizer.UpdateBuildings(giftRandomizer, shopRandomizer);
+            doorRandomizer.LimitKeys(random);
 
             var spriteBehaviourTable = new Table(Section.GetOffset(14, 0xAD2D, 0x8000), 100, 2, content);
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
@@ -68,7 +74,7 @@ namespace FaxanaduRando.Randomizer
             }
 
             var itemRandomizer = new ItemRandomizer(random);
-            if (!itemRandomizer.ShuffleItems(levels, shopRandomizer, giftRandomizer, doorRandomizer, content, out uint attempts))
+            if (!itemRandomizer.ShuffleItems(levels, shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, out uint attempts))
             {
                 message = "Item randomization failed";
                 return false;
@@ -289,7 +295,7 @@ namespace FaxanaduRando.Randomizer
                 textRandomizer.RandomizeTitles(content, customTextFile);
             }
 
-            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, content, customTextFile);
+            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFile);
             if (result != Result.Success)
             {
                 if (result == Result.TextTooLong)
@@ -304,7 +310,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V26", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V27", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -341,14 +347,18 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.26");
+                spoilers.Add("Randumizer v0.27");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
                 spoilers.Add($"Randomization attempts: {attempts}");
                 spoilers.Add($"Screen randomization attempts: {screenAttempts}");
+                foreach (var key in attemptDictionary.Keys)
+                {
+                    spoilers.Add($"{key}: {attemptDictionary[key]}");
+                }
 #endif
-                var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, true);
+                var hints = textRandomizer.GetHints(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, true);
                 foreach (var hint in hints)
                 {
                     string spoiler = hint.Replace(Text.spaceChar, ' ');
@@ -363,6 +373,20 @@ namespace FaxanaduRando.Randomizer
                 foreach (var data in textRandomizer.GetTitleData())
                 {
                     spoilers.Add(data);
+                }
+
+                foreach (var shop in shopRandomizer.Shops)
+                {
+                    spoilers.Add($"{shop.ShopId}");
+                    foreach (var item in shop.Items)
+                    {
+                        spoilers.Add($"{item.Id} {item.Price}");
+                    }
+                }
+
+                foreach (var staticPrice in shopRandomizer.StaticPrices)
+                {
+                    spoilers.Add($"{staticPrice.ShopId} {staticPrice.Price}");
                 }
 
                 var enemyData = new Dictionary<Sprite.SpriteId, SpriteType>();
@@ -575,7 +599,7 @@ namespace FaxanaduRando.Randomizer
                 Level.LevelDict[level.Number] = level;
             }
 
-            AddSublevels(levels);
+            AddSublevels(levels, content);
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].Screens[4].Sprites[0].RequiresMattock = true;
             if (ItemOptions.GuaranteeMattock)
             {
@@ -587,26 +611,14 @@ namespace FaxanaduRando.Randomizer
             {
                 var topItem = Level.LevelDict[WorldNumber.Branch].Screens[30].Sprites[2];
                 topItem.ShouldBeShuffled = false;
-                var possibleItems = new List<Sprite.SpriteId>
-                {
-                    Sprite.SpriteId.Hourglass,
-                    Sprite.SpriteId.Poison,
-                    Sprite.SpriteId.Poison2,
-                    Sprite.SpriteId.RedPotion,
-                    Sprite.SpriteId.RedPotion2,
-                    Sprite.SpriteId.Glove,
-                    Sprite.SpriteId.Ointment,
-                    Sprite.SpriteId.Ointment2,
-                    Sprite.SpriteId.Wingboots,
-                    Sprite.SpriteId.WingbootsBossLocked,
-                };
-                topItem.Id = possibleItems[random.Next(0, possibleItems.Count)];
+                topItem.Id = ItemRandomizer.GetRandomItem(random);
             }
 
             SubLevel.SubLevelDict[SubLevel.Id.MiddleTrunk].RequiresMattock = true;
-            SubLevel.SubLevelDict[SubLevel.Id.EastTrunk].Screens[6].Sprites[0].RequiresWingBoots = true;
+            SubLevel.SubLevelDict[SubLevel.Id.EastTrunk].Screens[5].Sprites[0].RequiresWingBoots = true;
             var branchHiddenItem = SubLevel.SubLevelDict[SubLevel.Id.EastBranch].Screens[8].Sprites[0];
             branchHiddenItem.RequiresWingBoots = true;
+            SubLevel.SubLevelDict[SubLevel.Id.MiddleMist].RequiresWingboots = true;
             SubLevel.SubLevelDict[SubLevel.Id.MasconTower].Screens[0].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.Dartmoor].Screens[11].SkipBosses = true;
             SubLevel.SubLevelDict[SubLevel.Id.CastleFraternal].Screens[3].SkipBosses = true;
@@ -635,7 +647,7 @@ namespace FaxanaduRando.Randomizer
             return levels;
         }
 
-        private void AddSublevels(List<Level> levels)
+        private void AddSublevels(List<Level> levels, byte[] content)
         {
             foreach (var level in levels)
             {
@@ -651,7 +663,7 @@ namespace FaxanaduRando.Randomizer
                     level.AddSubLevel(SubLevel.Id.MiddleTrunk, 8, 12, 6);
                     level.AddSubLevel(SubLevel.Id.LateTrunk, 22, 26, 6);
                     level.AddSubLevel(SubLevel.Id.TowerOfTrunk, 13, 21, 7);
-                    level.AddSubLevel(SubLevel.Id.EastTrunk, 28, 40, 6);
+                    level.AddSubLevel(SubLevel.Id.EastTrunk, 29, 40, 6);
                     level.AddSubLevel(SubLevel.Id.TowerOfFortress, 41, level.Screens.Count - 3, 7);
                     level.AddSubLevel(SubLevel.Id.JokerHouse, level.Screens.Count - 2, level.Screens.Count - 1, 7);
 
@@ -669,6 +681,7 @@ namespace FaxanaduRando.Randomizer
                     level.SubLevels[1].AddScreen(level.Screens[6]);
                     level.SubLevels[1].AddScreen(level.Screens[13]);
                     level.SubLevels[1].AddScreen(level.Screens[22]);
+                    level.SubLevels[1].AddScreen(level.Screens[Mist.VictimLeftScreen]);
                     level.AddSubLevel(SubLevel.Id.LateMist, 23, 32, 10);
                     level.SubLevels[2].AddScreen(level.Screens[Mist.VictimRightScreen]);
                     level.SubLevels[2].AddScreen(level.Screens[Mist.FireMageScreen]);
@@ -682,10 +695,11 @@ namespace FaxanaduRando.Randomizer
                     level.AddSubLevel(SubLevel.Id.EarlyBranch, 3, 6, 8);
                     level.AddSubLevelScreens(level.SubLevels[0], 10, 14);
                     level.AddSubLevel(SubLevel.Id.BattleHelmetWing, 7, 9, 9);
-                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 18, 8);
+                    level.AddSubLevel(SubLevel.Id.MiddleBranch, 15, 18, 9);
                     level.AddSubLevel(SubLevel.Id.DropDownWing, 22, 24, 9);
-                    level.AddSubLevel(SubLevel.Id.EastBranch, 25, 35, 9);
+                    level.AddSubLevel(SubLevel.Id.EastBranch, 25, 35, 8);
                     level.AddSubLevel(SubLevel.Id.BackFromEastBranch, 19, 19, 9);
+                    level.AddSubLevel(SubLevel.Id.LateBranch, Branch.DaybreakRightScreen, level.Screens.Count - 1, 8);
                 }
                 else if (level.Number == WorldNumber.Dartmoor)
                 {
@@ -693,7 +707,6 @@ namespace FaxanaduRando.Randomizer
                     level.AddSubLevel(SubLevel.Id.CastleFraternal, 16, 20, 13);
                     level.AddSubLevelScreens(level.SubLevels[1], 22, level.Screens.Count - 1);
                     level.AddSubLevel(SubLevel.Id.KingGrieve, 21, 21, 13);
-
                 }
                 else if (level.Number == WorldNumber.EvilOnesLair)
                 {
@@ -718,6 +731,66 @@ namespace FaxanaduRando.Randomizer
                     sublevel = new SubLevel(SubLevel.Id.FraternalHouse, screens);
                     level.SubLevels.Add(sublevel);
                     SubLevel.SubLevelDict[sublevel.SubLevelId] = sublevel;
+                }
+                else if (level.Number == WorldNumber.Towns)
+                {
+                    level.AddSubLevel(SubLevel.Id.Apolune, 0, 1, 27);
+                    level.AddSubLevel(SubLevel.Id.Forepaw, 2, 3, 27);
+                    level.AddSubLevel(SubLevel.Id.Mascon, 4, 5, 27);
+                    level.AddSubLevel(SubLevel.Id.Victim, 6, 7, 27);
+                    level.AddSubLevel(SubLevel.Id.Conflate, 8, 9, 27);
+                    level.AddSubLevel(SubLevel.Id.Daybreak, 10, 11, 27);
+                    level.AddSubLevel(SubLevel.Id.DartmoorCity, 12, 13, 27);
+
+                    level.Screens[0].Doors.Add(DoorId.ApoluneItemShop);
+                    level.Screens[0].Doors.Add(DoorId.ApoluneKeyShop);
+                    level.Screens[0].Doors.Add(DoorId.ApoluneBar);
+                    level.Screens[1].Doors.Add(DoorId.ApoluneGuru);
+                    level.Screens[1].Doors.Add(DoorId.ApoluneHospital);
+                    level.Screens[1].Doors.Add(DoorId.ApoluneHouse);
+
+                    level.Screens[2].Doors.Add(DoorId.ForepawMeatShop);
+                    level.Screens[2].Doors.Add(DoorId.ForepawItemShop);
+                    level.Screens[3].Doors.Add(DoorId.ForepawGuru);
+                    level.Screens[3].Doors.Add(DoorId.ForepawHospital);
+                    level.Screens[3].Doors.Add(DoorId.ForepawHouse);
+                    level.Screens[3].Doors.Add(DoorId.ForepawKeyShop);
+
+                    level.Screens[4].Doors.Add(DoorId.MasconBar);
+                    level.Screens[4].Doors.Add(DoorId.MasconMeatShop);
+                    level.Screens[4].Doors.Add(DoorId.MasconItemShop);
+                    level.Screens[5].Doors.Add(DoorId.MasconKeyShop);
+                    level.Screens[5].Doors.Add(DoorId.MasconHouse);
+                    level.Screens[5].Doors.Add(DoorId.MasconHospital);
+
+                    level.Screens[6].Doors.Add(DoorId.VictimGuru);
+                    level.Screens[6].Doors.Add(DoorId.VictimHospital);
+                    level.Screens[6].Doors.Add(DoorId.VictimHouse);
+                    level.Screens[7].Doors.Add(DoorId.VictimMeatShop);
+                    level.Screens[7].Doors.Add(DoorId.VictimKeyShop);
+                    level.Screens[7].Doors.Add(DoorId.VictimItemShop);
+                    level.Screens[7].Doors.Add(DoorId.VictimBar);
+
+                    level.Screens[8].Doors.Add(DoorId.ConflateHouse);
+                    level.Screens[8].Doors.Add(DoorId.ConflateMeatShop);
+                    level.Screens[8].Doors.Add(DoorId.ConflateGuru);
+                    level.Screens[8].Doors.Add(DoorId.ConflateHospital);
+                    level.Screens[9].Doors.Add(DoorId.ConflateItemShop);
+                    level.Screens[9].Doors.Add(DoorId.ConflateBar);
+
+                    level.Screens[10].Doors.Add(DoorId.DaybreakKeyShop);
+                    level.Screens[10].Doors.Add(DoorId.DaybreakItemShop);
+                    level.Screens[10].Doors.Add(DoorId.DaybreakMeatShop);
+                    level.Screens[10].Doors.Add(DoorId.DaybreakBar);
+                    level.Screens[11].Doors.Add(DoorId.DaybreakGuru);
+                    level.Screens[11].Doors.Add(DoorId.DaybreakHouse);
+
+                    level.Screens[12].Doors.Add(DoorId.DartmoorGuru);
+                    level.Screens[12].Doors.Add(DoorId.DartmoorBar);
+                    level.Screens[12].Doors.Add(DoorId.DartmoorMeatShop);
+                    level.Screens[13].Doors.Add(DoorId.DartmoorHospital);
+                    level.Screens[13].Doors.Add(DoorId.DartmoorKeyShop);
+                    level.Screens[13].Doors.Add(DoorId.DartmoorItemShop);
                 }
             }
         }
@@ -1256,6 +1329,37 @@ namespace FaxanaduRando.Randomizer
                 convertPoisonSection.Bytes.Add(OpCode.NOP);
                 convertPoisonSection.Bytes.Add(OpCode.NOP);
                 convertPoisonSection.AddToContent(content, Section.GetOffset(15, 0xC845, 0xC000));
+            }
+
+            if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
+            {
+                var newSection = new Section();
+                newSection.Bytes.Add(OpCode.JSR);
+                newSection.Bytes.Add(0x50);
+                newSection.Bytes.Add(0xFD);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xEA82, 0xC000));
+
+                newSection = new Section();
+                newSection.Bytes.Add(OpCode.TAX);
+                newSection.Bytes.Add(OpCode.LDAAbsoluteX);
+                newSection.Bytes.Add(0x68);
+                newSection.Bytes.Add(0xFD);
+                newSection.Bytes.Add(OpCode.STAAbsolute);
+                newSection.Bytes.Add(0x35);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.INY);
+                newSection.Bytes.Add(OpCode.LDAIndirectY);
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.RTS);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xFD50, 0xC000));
+                content[Section.GetOffset(15, 0xFD68, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Eolis];
+                content[Section.GetOffset(15, 0xFD69, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Trunk];
+                content[Section.GetOffset(15, 0xFD6A, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Mist];
+                content[Section.GetOffset(15, 0xFD6B, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Towns];
+                content[Section.GetOffset(15, 0xFD6C, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Buildings];
+                content[Section.GetOffset(15, 0xFD6D, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Branch];
+                content[Section.GetOffset(15, 0xFD6E, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Dartmoor];
+                content[Section.GetOffset(15, 0xFD6F, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.EvilOnesLair];
             }
         }
 

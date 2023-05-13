@@ -26,7 +26,8 @@ namespace FaxanaduRando.Randomizer
         Buildings,
         Branch,
         Dartmoor,
-        EvilOnesLair
+        EvilOnesLair,
+        Unknown,
     }
 
     public class DoorRandomizer
@@ -53,7 +54,10 @@ namespace FaxanaduRando.Randomizer
 
             var roomTable = new Table(Section.GetOffset(15, 0xDDC5, 0xC000), 8, 1, content);
             var rooms = new List<byte> { 0, 29 };
-            roomTable.Entries[0][0] = rooms[random.Next(rooms.Count)];
+            if (Util.GurusShuffled())
+            {
+                roomTable.Entries[0][0] = rooms[random.Next(rooms.Count)];
+            }
 
             guruRandomizer = new GuruRandomizer(new Table(Section.GetOffset(15, 0xDDAD, 0xC000), 8, 1, content),
                                                 new Table(Section.GetOffset(15, 0xDDB5, 0xC000), 8, 1, content),
@@ -393,17 +397,15 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (Util.KeyShopsShuffled() || ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
+            if (Util.KeyShopsShuffled() ||
+                ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged ||
+                GeneralOptions.ShuffleSegments != GeneralOptions.SegmentShuffle.Unchanged)
             {
                 Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
             }
 
             if (Util.AllCoreWorldScreensRandomized())
             {
-                Doors[DoorId.EastBranchLeft].key = DoorRequirement.Nothing;
-                Doors[DoorId.DropdownWing].key = DoorRequirement.Nothing;
-                Doors[DoorId.EastBranch].key = DoorRequirement.Nothing;
-                Doors[DoorId.BattleHelmetWing].key = DoorRequirement.Nothing;
                 TowerDoors[DoorId.EastBranch] = LevelDoors[DoorId.EastBranch];
                 TowerDoors[DoorId.EastBranchLeft] = LevelDoors[DoorId.EastBranchLeft];
                 TowerDoors[DoorId.DropdownWing] = LevelDoors[DoorId.DropdownWing];
@@ -511,6 +513,43 @@ namespace FaxanaduRando.Randomizer
             TownDoors[DoorId.DartmoorItemShop].BuildingShop = shopRandomizer.ShopDict[Shop.Id.DartmoorItemShop];
             TownDoors[DoorId.DartmoorKeyShop].BuildingShop = shopRandomizer.ShopDict[Shop.Id.DartmoorKeyShop];
             TownDoors[DoorId.DartmoorGuru].Guru = guruRandomizer.Gurus[Guru.GuruId.Dartmoor];
+        }
+
+        public void LimitKeys(Random random)
+        {
+            if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.NoLimit &&
+                ItemOptions.BigKeyLimit == ItemOptions.KeyLimit.NoLimit)
+            {
+                return;
+            }
+
+            var counts = new Dictionary<DoorRequirement, int>();
+            bool worldDoorsFirst = false;
+            if (random.Next(0, 2) == 0)
+            {
+                worldDoorsFirst = true;
+            }
+
+            if (worldDoorsFirst)
+            {
+                LimitWorldDoors(counts, random);
+            }
+
+            var doors = new List<Door>(Doors.Values);
+            Util.ShuffleList(doors, 0, doors.Count - 1, random);
+            foreach (var door in doors)
+            {
+                int limit = GetKeyLimit(door.key);
+                if(LimitKey(door.key, limit, counts))
+                {
+                    door.key = DoorRequirement.Nothing;
+                }
+            }
+
+            if (!worldDoorsFirst)
+            {
+                LimitWorldDoors(counts, random);
+            }
         }
 
         public void ShuffleTowers(Random random)
@@ -632,6 +671,13 @@ namespace FaxanaduRando.Randomizer
         public void RandomizeKeys(byte[] content, Random random)
         {
             var requirements = new List<DoorRequirement>();
+            var counts = new Dictionary<DoorRequirement, int>();
+            var possibleKeys = new List<DoorRequirement>();
+            for (int i = 0; i < (int)DoorRequirement.DemonRing; i++)
+            {
+                possibleKeys.Add((DoorRequirement)i);
+            }
+
             var doorTableindices = new List<ExitDoor>()
             {
                 ExitDoor.TrunkExit,
@@ -691,7 +737,22 @@ namespace FaxanaduRando.Randomizer
             {
                 for(int i = 0; i < requirements.Count; i++)
                 {
-                    requirements[i] = (DoorRequirement)random.Next(0, 8);
+                    DoorRequirement requirement = DoorRequirement.Nothing;
+                    bool finished = false;
+                    while(!finished)
+                    {
+                        requirement = possibleKeys[random.Next(0, possibleKeys.Count)];
+                        int limit = GetKeyLimit(requirement);
+                        if (LimitKey(requirement, limit, counts))
+                        {
+                            possibleKeys.Remove(requirement);
+                            continue;
+                        }
+
+                        finished = true;
+                    }
+
+                    requirements[i] = requirement;
                 }
             }
 
@@ -847,10 +908,7 @@ namespace FaxanaduRando.Randomizer
                 world.AddToContent(content);
             }
 
-            if (Util.GurusShuffled())
-            {
-                guruRandomizer.AddToContent(content);
-            }
+            guruRandomizer.AddToContent(content);
         }
 
         public class Requirement
@@ -1256,6 +1314,68 @@ namespace FaxanaduRando.Randomizer
                 destination.Position = source.Position;
                 destination.Requirement = source.Requirement;
             }
+        }
+
+        private void LimitWorldDoors(Dictionary<DoorRequirement, int> counts, Random random)
+        {
+            var entries = new List<byte[]>(doorRequirementTable.Entries);
+            Util.ShuffleList(entries, 0, entries.Count - 1, random);
+
+            foreach (var entry in entries)
+            {
+                var key = (DoorRequirement)entry[0];
+                int limit = GetKeyLimit(key);
+                if (LimitKey(key, limit, counts))
+                {
+                    entry[0] = (byte)DoorRequirement.Nothing;
+                }
+            }
+        }
+
+        private bool LimitKey(DoorRequirement key, int limit, Dictionary<DoorRequirement, int> counts)
+        {
+            if (counts.ContainsKey(key))
+            {
+                counts[key]++;
+            }
+            else
+            {
+                counts.Add(key, 1);
+            }
+
+            if (counts[key] > limit)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private int GetKeyLimit(DoorRequirement key)
+        {
+            if (key == DoorRequirement.JackKey ||
+                key == DoorRequirement.QueenKey ||
+                key == DoorRequirement.KingKey)
+            {
+                if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.NoLimit)
+                {
+                    return int.MaxValue;
+                }
+
+                return (int)ItemOptions.SmallKeyLimit;
+            }
+            else if (key == DoorRequirement.AceKey ||
+                     key == DoorRequirement.JokerKey)
+            {
+                if (ItemOptions.BigKeyLimit == ItemOptions.KeyLimit.NoLimit)
+                {
+                    return int.MaxValue;
+                }
+
+                return (int)ItemOptions.BigKeyLimit;
+            }
+
+            return int.MaxValue;
         }
     }
 }

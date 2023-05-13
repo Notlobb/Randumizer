@@ -67,6 +67,15 @@ namespace FaxanaduRando.Randomizer
             None,
         };
 
+        public enum KeyLimit
+        {
+            Zero,
+            One,
+            Two,
+            Three,
+            NoLimit
+        };
+
         public static bool GuaranteeElixirNearFortress { get; set; } = true;
         public static bool FixPendantBug { get; set; } = true;
         public static bool BuffGloves { get; set; } = true;
@@ -85,6 +94,8 @@ namespace FaxanaduRando.Randomizer
         public static ItemShuffle ShuffleItems { get; set; } = ItemShuffle.MixOnlyShopsAndGifts;
         public static KeyRandomization RandomizeKeys { get; set; } = KeyRandomization.Unchanged;
         public static MultipleGiftOptions MultipleGifts { get; set; } = MultipleGiftOptions.AllGurusExceptConflateAndEolis;
+        public static KeyLimit SmallKeyLimit { get; set; } = KeyLimit.NoLimit;
+        public static KeyLimit BigKeyLimit { get; set; } = KeyLimit.NoLimit;
     }
 
     public class WingBootSettings : ObservableCollection<string>
@@ -178,6 +189,18 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class KeyLimitSettings : ObservableCollection<string>
+    {
+        public KeyLimitSettings()
+        {
+            Add("Max 0");
+            Add("Max 1");
+            Add("Max 2");
+            Add("Max 3");
+            Add("No limit");
+        }
+    }
+
     public class StartingWeaponConverter : EnumConverter<ItemOptions.StartingWeaponOptions>
     {
     }
@@ -203,6 +226,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class MultipleGiftsConverter : EnumConverter<ItemOptions.MultipleGiftOptions>
+    {
+    }
+
+    public class KeyLimitConverter : EnumConverter<ItemOptions.KeyLimit>
     {
     }
 

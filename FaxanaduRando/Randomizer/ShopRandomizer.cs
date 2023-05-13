@@ -420,7 +420,9 @@ namespace FaxanaduRando.Randomizer
             ids.Add(GetMiscItem(random));
 
             if (GeneralOptions.ShuffleWorlds &&
-                ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
+                ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged &&
+                !Util.AllCoreWorldScreensRandomized() &&
+                ItemOptions.SmallKeyLimit != ItemOptions.KeyLimit.Zero)
             {
                 ids.Add(Id.KingKey);
             }
@@ -465,98 +467,73 @@ namespace FaxanaduRando.Randomizer
             return miscList[random.Next(miscList.Count)];
         }
 
-        private void SetShopPrice(Door building, int price)
-        {
-            if (StaticPriceDict.TryGetValue(building.Id, out StaticPrice staticPrice))
-            {
-                int divisor = staticPrice.Expensive ? 10 : 20;
-                staticPrice.Price = AdjustForMultiplier((ushort)price, divisor);
-            }
-
-            if (building.BuildingShop != null)
-            {
-                building.BuildingShop.MaxPrice = price;
-            }
-        }
-
         public void RandomizePrices(Random random, DoorRandomizer doorRandomizer)
         {
-            var worlds = doorRandomizer.GetWorlds();
-            var multipliers = new Dictionary<WorldNumber, int>();
-            for (int i = 0; i < worlds.Count; i++)
-            {
-                multipliers[worlds[i].number] = 5 + 5 * i;
-            }
-
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisItemShop], 800);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisKeyShop], 400);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisGuru], 1000);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisHouse], 1000);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisMeatShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisMeatShop], 400);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.EolisMagicShop], 1000);
             SetShopPrice(doorRandomizer.TownDoors[DoorId.MartialArtsShop], 1000);
 
-            int multiplier = multipliers[WorldNumber.Trunk];
-            SetShopPrice(doorRandomizer.Buildings[DoorId.TrunkSecretShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneItemShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneKeyShop], 100 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneBar], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneGuru], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneHospital], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneHouse], 200 * multiplier);
+            SetShopPrice(doorRandomizer.Buildings[DoorId.TrunkSecretShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneKeyShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneBar], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneGuru], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneHospital], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ApoluneHouse], 1000);
 
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawItemShop], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawKeyShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawGuru], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawHospital], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawHouse], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawMeatShop], 300 * multiplier);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawItemShop], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawKeyShop], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawGuru], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawHospital], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawHouse], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ForepawMeatShop], 1500);
 
-            multiplier = multipliers[WorldNumber.Mist];
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconItemShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconKeyShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconBar], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconHospital], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconHouse], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconMeatShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.Buildings[DoorId.MistSecretShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconKeyShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconBar], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconHospital], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconHouse], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.MasconMeatShop], 1000);
+            SetShopPrice(doorRandomizer.Buildings[DoorId.MistSecretShop], 500);
 
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimItemShop], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimKeyShop], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimBar], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimGuru], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimHospital], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimHouse], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimMeatShop], 300 * multiplier);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimItemShop], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimKeyShop], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimBar], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimGuru], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimHospital], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimHouse], 1500);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.VictimMeatShop], 1500);
 
-            multiplier = multipliers[WorldNumber.Branch];
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateItemShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateGuru], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateHospital], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateHouse], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateItemShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateMeatShop], 200 * multiplier);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateGuru], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateHospital], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateHouse], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.ConflateMeatShop], 1000);
 
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakItemShop], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakKeyShop], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakBar], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakGuru], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakHouse], 300 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakMeatShop], 300 * multiplier);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakKeyShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakBar], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakGuru], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakHouse], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DaybreakMeatShop], 1000);
 
-            multiplier = multipliers[WorldNumber.Dartmoor];
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorItemShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorKeyShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorMeatShop], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorBar], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorGuru], 200 * multiplier);
-            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorHospital], 200 * multiplier);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorItemShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorKeyShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorMeatShop], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorBar], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorGuru], 1000);
+            SetShopPrice(doorRandomizer.TownDoors[DoorId.DartmoorHospital], 1000);
 
             foreach (var shop in Shops)
             {
                 foreach (var item in shop.Items)
                 {
-                    int maxPrice = item.MaxPriceOverride > 0 ? item.MaxPriceOverride : shop.MaxPrice;
+                    int maxPrice = item.MaxPriceOverride > 0 ? item.MaxPriceOverride : (shop.MaxPrice * shop.Multiplier);
                     bool cheap = CheapIds.Contains(item.Id);
                     int price = RandomizePrice(maxPrice, cheap, random);
                     item.Price = (ushort)price;
@@ -565,10 +542,25 @@ namespace FaxanaduRando.Randomizer
 
             foreach (var staticPrice in StaticPrices)
             {
-                int min = (int)(staticPrice.Price * 0.2);
-                int max = staticPrice.Price * 2;
-                int price = (random.Next(min, max + 1) / 10) * 10;
+                int price = staticPrice.Price * staticPrice.Multiplier;
+                int min = (int)(price * 0.2);
+                int max = price;
+                price = (random.Next(min, max + 1) / 10) * 10;
                 staticPrice.Price = (ushort)price;
+            }
+        }
+
+        private void SetShopPrice(Door building, int price)
+        {
+            if (StaticPriceDict.TryGetValue(building.Id, out StaticPrice staticPrice))
+            {
+                int divisor = staticPrice.Expensive ? 4 : 8;
+                staticPrice.Price = AdjustForMultiplier((ushort)price, divisor);
+            }
+
+            if (building.BuildingShop != null)
+            {
+                building.BuildingShop.MaxPrice = price;
             }
         }
 

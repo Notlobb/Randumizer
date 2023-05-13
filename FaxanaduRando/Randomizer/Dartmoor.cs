@@ -28,13 +28,6 @@ namespace FaxanaduRando.Randomizer
             Screens[2].Doors.Add(DoorId.DartmoorHouse3);
             Screens[2].Doors.Add(DoorId.DartmoorHouse4);
 
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.LeftOfDartmoor);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorBar);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorGuru);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorHospital);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorItemShop);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorKeyShop);
-            Screens[DartmoorCityLeftScreen].Doors.Add(DoorId.DartmoorMeatShop);
             Screens[8].Doors.Add(DoorId.FarLeftDartmoor);
             Screens[FraternalScreen].Doors.Add(DoorId.CastleFraternal);
             Screens[FraternalEntranceScreen].Doors.Add(DoorId.CastleFraternalReturn);

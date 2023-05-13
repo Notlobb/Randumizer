@@ -21,6 +21,7 @@ namespace FaxanaduRando.Randomizer
         public byte Y { get; set; }
         public byte Screen { get; set; }
         public byte WorldSpawn { get; set; }
+        public byte OverrideWorldSpawn { get; set; }
 
         public Guru(GuruId id, OtherWorldNumber world, byte x, byte y, byte worldSpawn, byte screen)
         {
@@ -30,6 +31,7 @@ namespace FaxanaduRando.Randomizer
             Y = y;
             WorldSpawn = worldSpawn;
             Screen = screen;
+            OverrideWorldSpawn = 0xFF;
         }
     }
 }
