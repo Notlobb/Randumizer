@@ -134,6 +134,8 @@ namespace FaxanaduRando.Randomizer
                     "You stepped into the wrong World Tree, fool!",
                     "...And you call them 'Black Potions' despite the fact that they're obviously green?",
                     "Klaatu barada nikto",
+                    "Your mother was a hamster and your father smelt of elderberries!",
+                    "Always look on the bright side of life!",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
