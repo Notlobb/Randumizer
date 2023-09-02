@@ -8,6 +8,7 @@ namespace FaxanaduRando.Randomizer
         public enum Id
         {
             Eolis,
+            OutsideEolis,
             EarlyTrunk,
             MiddleTrunk,
             LateTrunk,

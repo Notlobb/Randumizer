@@ -262,7 +262,7 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviours(spriteBehaviourTable, random, enemyBehaviourDict);
             }
 
-            doorRandomizer.AddToContent(content, random);
+            doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
             {
@@ -580,6 +580,10 @@ namespace FaxanaduRando.Randomizer
             newSection.Bytes.Add(0xDC);
             newSection.Bytes.Add(0xDA);
             newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
+
+            //Set starting screen to Eolis shop screen,
+            //since the original starting screen is now a tower
+            content[Section.GetOffset(15, 0xDECB, 0xC000)] = Eolis.ShopScreen;
         }
 
         private List<Level> GetLevels(byte[] content, Random random)
@@ -656,6 +660,10 @@ namespace FaxanaduRando.Randomizer
                     var sublevel = new SubLevel(SubLevel.Id.Eolis, level.Screens.GetRange(1, level.Screens.Count - 1));
                     SubLevel.SubLevelDict[SubLevel.Id.Eolis] = sublevel;
                     level.SubLevels.Add(sublevel);
+                    if (GeneralOptions.ShuffleTowers)
+                    {
+                        level.AddSubLevel(SubLevel.Id.OutsideEolis, 0, 0, 0);
+                    }
                 }
                 else if (level.Number == WorldNumber.Trunk)
                 {

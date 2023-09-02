@@ -100,9 +100,11 @@ namespace FaxanaduRando.Randomizer
             }
 
             var eolisPositions = GetPositions(0, content);
+            var eolisOffset = eolisPositions[0].offset;
+            var trunkPositions = GetPositions(OtherWorldNumber.Trunk, content);
+            trunkPositions = UpdateTrunkPositions(trunkPositions, content, eolisOffset);
+            eolisPositions = UpdateEolisPositions(eolisPositions, content);
             var eolisReqs = GetRequirements(0, content);
-
-            LevelDoors[DoorId.FirstDoor] = new Door(DoorId.FirstDoor, OtherWorldNumber.Eolis, eolisPositions[0], eolisReqs);
 
             bool includeTownBuildings = GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.ShuffleExcludeTowns &&
                                         GeneralOptions.MiscDoorSetting != GeneralOptions.MiscDoors.Unchanged;
@@ -120,13 +122,22 @@ namespace FaxanaduRando.Randomizer
             TownDoors[DoorId.EolisGuru] = new Door(DoorId.EolisGuru, OtherWorldNumber.Eolis, eolisPositions[3], eolisReqs, shouldShuffle: includeEolisGuru);
             TownDoors[DoorId.EolisKeyShop] = new Door(DoorId.EolisKeyShop, OtherWorldNumber.Eolis, eolisPositions[4], eolisReqs, shouldShuffle: includeKeyShops);
             TownDoors[DoorId.EolisItemShop] = new Door(DoorId.EolisItemShop, OtherWorldNumber.Eolis, eolisPositions[5], eolisReqs);
-            TownDoors[DoorId.EolisMagicShop] = new Door(DoorId.EolisMagicShop, OtherWorldNumber.Eolis, eolisPositions[6], eolisReqs, shouldShuffle: includeTownBuildings);
             TownDoors[DoorId.MartialArtsShop] = new Door(DoorId.MartialArtsShop, OtherWorldNumber.Eolis, eolisPositions[7], eolisReqs, shouldShuffle: includeTownBuildings);
+            TownDoors[DoorId.EolisMagicShop] = new Door(DoorId.EolisMagicShop, OtherWorldNumber.Eolis, eolisPositions[6], eolisReqs, shouldShuffle: includeTownBuildings);
             TownDoors[DoorId.EolisKing] = new Door(DoorId.EolisKing, OtherWorldNumber.Eolis, eolisPositions[8], eolisReqs);
+
+            if (GeneralOptions.ShuffleTowers)
+            {
+                TowerDoors[DoorId.FirstDoor] = new Door(DoorId.FirstDoor, OtherWorldNumber.Eolis, eolisPositions[10], eolisReqs, eolisPositions[0], shouldShuffle: shuffleTowers);
+            }
+            else
+            {
+                LevelDoors[DoorId.FirstDoor] = new Door(DoorId.FirstDoor, OtherWorldNumber.Eolis, eolisPositions[0], eolisReqs);
+                LevelDoors[DoorId.FirstDoorReturn] = new Door(DoorId.FirstDoor, OtherWorldNumber.Eolis, eolisPositions[10], eolisReqs);
+            }
 
             worlds[0].forwardPosition = eolisPositions[9];
 
-            var trunkPositions = GetPositions(OtherWorldNumber.Trunk, content);
             var trunkReqs = GetRequirements(OtherWorldNumber.Trunk, content);
 
             worlds[1].backwardPosition = trunkPositions[8];
@@ -472,9 +483,13 @@ namespace FaxanaduRando.Randomizer
             Doors[DoorId.EastBranchLeft].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.BackFromEastBranch];
             Doors[DoorId.DropdownWing].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.DropDownWing];
 
-            if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
+            if (GeneralOptions.ShuffleTowers)
             {
-                TowerDoors[DoorId.EvilOnesLair].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair];
+                TowerDoors[DoorId.FirstDoor].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.OutsideEolis];
+                if (GeneralOptions.IncludeEvilOnesFortress)
+                {
+                    TowerDoors[DoorId.EvilOnesLair].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair];
+                }
             }
 
             Buildings[DoorId.DartmoorHouse3].Sublevel = SubLevel.SubLevelDict[SubLevel.Id.DartmoorHouse];
@@ -862,37 +877,54 @@ namespace FaxanaduRando.Randomizer
                 positions.Add(data);
             }
 
-            if (world == OtherWorldNumber.Trunk)
-            {
-                int newOffset = Section.GetOffset(3, 0xBF00, 0x8000);
-                byte b1 = 0x00;
-                byte b2 = 0x3F;
-                content[bankOffset + pointer + 6] = b1;
-                content[bankOffset + pointer + 7] = b2;
-
-                var newPositions = new List<PositionData>();
-
-                int i = 0;
-                for (; i < positions.Count - 1; i++)
-                {
-                    positions[i + 1].offset = newOffset + i * 4;
-                    newPositions.Add(positions[i + 1]);
-                }
-
-                i++;
-                newPositions.Add(new PositionData(newOffset + i * 4, 0, 254, 0, 10, 6, 8));
-                i++;
-                positions[0].offset = newOffset + i * 4;
-                newPositions.Add(positions[0]);
-                i++;
-                newPositions.Add(new PositionData(newOffset + i * 4, 255, 0, 0, 0, 0, 0));
-                positions = newPositions;
-            }
-
             return positions;
         }
 
-        public void AddToContent(byte[] content, Random random)
+        public List<PositionData> UpdateEolisPositions(List<PositionData> positions, byte[] content)
+        {
+            int newOffset = Section.GetOffset(3, 0xBF00, 0x8000);
+            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
+            int pointer = Util.GetPointer((byte)OtherWorldNumber.Eolis, content, 3);
+            byte b1 = 0x00;
+            byte b2 = 0x3F;
+            content[bankOffset + pointer + 6] = b1;
+            content[bankOffset + pointer + 7] = b2;
+
+            var newPositions = new List<PositionData>();
+            for (int i = 0; i < positions.Count; i++)
+            {
+                positions[i].offset = newOffset;
+                newOffset += 4;
+                newPositions.Add(positions[i]);
+            }
+            newPositions.Add(new PositionData(newOffset, 1, 1, 9, 9, 12, 9));
+            newPositions.Add(new PositionData(newOffset + 4, 255, 0, 0, 0, 0, 0));
+            return newPositions;
+        }
+
+        public List<PositionData> UpdateTrunkPositions(List<PositionData> positions, byte[] content, int newOffset)
+        {
+            int bankOffset = Section.GetOffset(3, 0x8000, 0x8000);
+            int eolisPointer = Util.GetPointer((byte)OtherWorldNumber.Eolis, content, 3);
+            int trunkPointer = Util.GetPointer((byte)OtherWorldNumber.Trunk, content, 3);
+            content[bankOffset + trunkPointer + 6] = content[bankOffset + eolisPointer + 6];
+            content[bankOffset + trunkPointer + 7] = content[bankOffset + eolisPointer + 7];
+
+            var newPositions = new List<PositionData>();
+            int i = 0;
+            for (; i < positions.Count - 1; i++)
+            {
+                positions[i + 1].offset = newOffset + i * 4;
+                newPositions.Add(positions[i + 1]);
+            }
+            newPositions.Add(new PositionData(newOffset + i * 4, 0, 254, 0, 10, 6, 8));
+            i++;
+            positions[0].offset = newOffset + i * 4;
+            newPositions.Add(positions[0]);
+            return newPositions;
+        }
+
+        public void AddToContent(byte[] content)
         {
             doorRequirementTable.AddToContent(content);
             levelTable.AddToContent(content);
