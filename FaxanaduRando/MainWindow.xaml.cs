@@ -134,11 +134,11 @@ namespace FaxanaduRando
                 }
                 else if (box.SelectedIndex == 1)
                 {
-                    flagsTextBox.Text = "78CFFF35za02GalcmF";
+                    flagsTextBox.Text = "78CFFF35za0cGalcmF";
                 }
                 else if (box.SelectedIndex == 2)
                 {
-                    flagsTextBox.Text = "7ECFFF35zc02FakcmF";
+                    flagsTextBox.Text = "7ECFFF35zc0cFakcmF";
                 }
                 else if (box.SelectedIndex == 3)
                 {
@@ -146,11 +146,11 @@ namespace FaxanaduRando
                 }
                 else if (box.SelectedIndex == 4)
                 {
-                    flagsTextBox.Text = "7ECC2735ze01PakmoF";
+                    flagsTextBox.Text = "7ECC2735ze0bPakmoF";
                 }
                 else if (box.SelectedIndex == 5)
                 {
-                    flagsTextBox.Text = "7ECFFF77ucb00a012a";
+                    flagsTextBox.Text = "7ECFFF77ucba0a012a";
                 }
                 else if (box.SelectedIndex == 6)
                 {
