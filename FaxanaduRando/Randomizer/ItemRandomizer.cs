@@ -1315,22 +1315,13 @@ namespace FaxanaduRando.Randomizer
                     Sprite.SpriteId.Ointment,
                     Sprite.SpriteId.Elixir,
                     Sprite.SpriteId.WingbootsBossLocked,
+                    Sprite.SpriteId.Glove,
+                    Sprite.SpriteId.Poison,
+                    Sprite.SpriteId.MattockBossLocked,
                 };
-
-                if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.Unchanged ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Normal ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Scaling ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Unchanged)
+                if (ItemOptions.AlwaysSpawnSmallItems)
                 {
-                    possibleItems.Add(Sprite.SpriteId.Glove);
-                    possibleItems.Add(Sprite.SpriteId.Poison);
-                    possibleItems.Add(Sprite.SpriteId.MattockBossLocked);
-                    if (ItemOptions.AlwaysSpawnSmallItems)
-                    {
-                        possibleItems.Add(Sprite.SpriteId.Hourglass);
-                    }
+                    possibleItems.Add(Sprite.SpriteId.Hourglass);
                 }
 
                 item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
@@ -1345,7 +1336,8 @@ namespace FaxanaduRando.Randomizer
                     item.Id != Sprite.SpriteId.RedPotion &&
                     item.Id != Sprite.SpriteId.Glove &&
                     item.Id != Sprite.SpriteId.Ointment &&
-                    item.Id != Sprite.SpriteId.Elixir)
+                    item.Id != Sprite.SpriteId.Elixir &&
+                    item.Id != Sprite.SpriteId.Intro)
                 {
                     //These items don't fall down
                     item.SetY(10);
