@@ -394,6 +394,7 @@ namespace FaxanaduRando.Randomizer
             if (ItemOptions.RandomizeKeys != ItemOptions.KeyRandomization.Unchanged)
             {
                 Doors[DoorId.EolisKing].key = DoorRequirement.Nothing;
+                Doors[DoorId.DartmoorLateDoor2].key = DoorRequirement.Nothing;
                 if (!ItemOptions.IncludeSomeEolisDoors)
                 {
                     Doors[DoorId.MartialArtsShop].key = DoorRequirement.Nothing;
