@@ -77,6 +77,7 @@ namespace FaxanaduRando.Randomizer
                 ShopRandomizer.Id.ElfRing,
                 ShopRandomizer.Id.DworfRing,
                 ShopRandomizer.Id.DemonRing,
+                ShopRandomizer.Id.Book,
             };
 
             worlds = new List<World>();
@@ -303,21 +304,14 @@ namespace FaxanaduRando.Randomizer
             }
             worlds[worlds.Count - 1].entryPos = worlds[worlds.Count - 2].forwardPosition.pos;
 
-            if (GeneralOptions.MoveFinalRequirements)
+            if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
             {
-                LevelDoors[DoorId.DartmoorLateDoor].Requirement.key = DoorRequirement.Nothing;
-                LevelDoors[DoorId.DartmoorLateDoor2].Requirement.key = DoorRequirement.Nothing;
-                doorRequirementTable.Entries[(int)ExitDoor.DartmoorExit][0] = 0;
-
-                if (GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress)
-                {
-                    doorRequirementTable.Entries[(int)ExitDoor.EvilLairExit2][0] = (byte)DoorRequirement.DemonRing;
-                    LevelDoors[DoorId.FinalDoor].Requirement.key = DoorRequirement.Nothing;
-                }
-                else
-                {
-                    LevelDoors[DoorId.FinalDoor].Requirement.key = DoorRequirement.DemonRing;
-                }
+                doorRequirementTable.Entries[(int)ExitDoor.EvilLairExit2][0] = (byte)DoorRequirement.FinalRequirements;
+                LevelDoors[DoorId.FinalDoor].Requirement.key = DoorRequirement.Nothing;
+            }
+            else
+            {
+                LevelDoors[DoorId.FinalDoor].Requirement.key = DoorRequirement.FinalRequirements;
             }
 
             var townPositions = GetPositions(OtherWorldNumber.Towns, content);
@@ -688,7 +682,7 @@ namespace FaxanaduRando.Randomizer
             var requirements = new List<DoorRequirement>();
             var counts = new Dictionary<DoorRequirement, int>();
             var possibleKeys = new List<DoorRequirement>();
-            for (int i = 0; i < (int)DoorRequirement.DemonRing; i++)
+            for (int i = 0; i < (int)DoorRequirement.FinalRequirements; i++)
             {
                 possibleKeys.Add((DoorRequirement)i);
             }
@@ -700,11 +694,7 @@ namespace FaxanaduRando.Randomizer
                 ExitDoor.BranchExit,
             };
 
-            if (GeneralOptions.MoveFinalRequirements)
-            {
-                doorTableindices.Add(ExitDoor.DartmoorExit);
-            }
-
+            doorTableindices.Add(ExitDoor.DartmoorExit);
             if (ItemOptions.IncludeSomeEolisDoors)
             {
                 doorTableindices.Add(ExitDoor.EolisExit);
@@ -814,6 +804,7 @@ namespace FaxanaduRando.Randomizer
             ElfRing = 6,
             DworfRing = 7,
             DemonRing = 8,
+            FinalRequirements = 9,
         }
 
         public enum ExitDoor

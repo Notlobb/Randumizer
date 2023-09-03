@@ -1147,8 +1147,20 @@ namespace FaxanaduRando.Randomizer
                 newSection.Bytes.Add(OpCode.JMPAbsolute);
                 newSection.Bytes.Add(0x80);
                 newSection.Bytes.Add(0xFE);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xEBC1, 0xC000));
+                newSection.AddToContent(content, Section.GetOffset(15, 0xEB32, 0xC000));
                 newSection = new Section();
+                newSection.Bytes.Add(OpCode.BNE);
+                newSection.Bytes.Add(0x01);
+                newSection.Bytes.Add(OpCode.RTS);
+                newSection.Bytes.Add(OpCode.CMPImmediate);
+                newSection.Bytes.Add(0x09);
+                newSection.Bytes.Add(OpCode.BEQ);
+                newSection.Bytes.Add(0x04);
+                newSection.Bytes.Add(OpCode.ASLA);
+                newSection.Bytes.Add(OpCode.JMPAbsolute);
+                newSection.Bytes.Add(0x35);
+                newSection.Bytes.Add(0xEB);
+
                 if (GeneralOptions.DragonSlayerRequired)
                 {
                     newSection.Bytes.Add(OpCode.LDAAbsolute);
@@ -1168,13 +1180,12 @@ namespace FaxanaduRando.Randomizer
                         newSection.Bytes.Add(0x0c);
                         newSection.Bytes.Add(0x41);
                         newSection.Bytes.Add(0x82);
-                        newSection.Bytes.Add(OpCode.RTS);
                     }
                     else
                     {
                         newSection.Bytes.Add(0x01);
-                        newSection.Bytes.Add(OpCode.RTS);
                     }
+                    newSection.Bytes.Add(OpCode.RTS);
                 }
 
                 if (GeneralOptions.PendantRodRubyRequired)
@@ -1219,11 +1230,8 @@ namespace FaxanaduRando.Randomizer
                     newSection.Bytes.Add(OpCode.RTS);
                 }
 
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x2C);
-                newSection.Bytes.Add(0x04);
                 newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0xC4);
+                newSection.Bytes.Add(0xE1);
                 newSection.Bytes.Add(0xEB);
                 newSection.AddToContent(content, Section.GetOffset(15, 0xFE80, 0xC000));
             }

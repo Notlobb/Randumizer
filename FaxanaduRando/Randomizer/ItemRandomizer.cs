@@ -491,14 +491,6 @@ namespace FaxanaduRando.Randomizer
                 CheckValid(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus, doors);
             }
 
-            if (GeneralOptions.QuickSeed)
-            {
-                if (!FinalRequirementsMet(ids, traversedSublevels))
-                {
-                    return false;
-                }
-            }
-
             if (!Util.EarlyFinishPossible())
             {
                 result = GetCheck(worlds[3].number)(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus, transitionOffsets, doors);
@@ -514,8 +506,7 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (!(GeneralOptions.IncludeEvilOnesFortress && GeneralOptions.ShuffleTowers) &&
-                GeneralOptions.MoveFinalRequirements)
+            if (!(GeneralOptions.IncludeEvilOnesFortress && GeneralOptions.ShuffleTowers))
             {
                 TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
             }
@@ -550,7 +541,7 @@ namespace FaxanaduRando.Randomizer
                     return false;
                 }
 
-                if (GeneralOptions.MoveFinalRequirements && !FinalRequirementsMet(ids, traversedSublevels))
+                if (!FinalRequirementsMet(ids, traversedSublevels))
                 {
                     return false;
                 }
@@ -761,14 +752,6 @@ namespace FaxanaduRando.Randomizer
             if (!HasLairEntranceAccess(doorRandomizer, ids))
             {
                 return false;
-            }
-
-            if (!GeneralOptions.MoveFinalRequirements)
-            {
-                if (!FinalRequirementsMet(ids, traversedSublevels))
-                {
-                    return false;
-                }
             }
 
             if (!doors.Contains(DoorId.DartmoorExit))
@@ -1010,11 +993,6 @@ namespace FaxanaduRando.Randomizer
 
         private bool FinalRequirementsMet(HashSet<ShopRandomizer.Id> ids, HashSet<SubLevel.Id> traversedSublevels)
         {
-            if (!ids.Contains(ShopRandomizer.Id.DemonRing))
-            {
-                return false;
-            }
-
             if (GeneralOptions.DragonSlayerRequired)
             {
                 if (!(ids.Contains(ShopRandomizer.Id.Dragonslayer) &&
@@ -1030,14 +1008,6 @@ namespace FaxanaduRando.Randomizer
                 if (!(ids.Contains(ShopRandomizer.Id.Pendant) &&
                     ids.Contains(ShopRandomizer.Id.Rod) &&
                     ids.Contains(ShopRandomizer.Id.RubyRing)))
-                {
-                    return false;
-                }
-            }
-
-            if (!GeneralOptions.MoveFinalRequirements && GeneralOptions.ShuffleWorlds)
-            {
-                if (!traversedSublevels.Contains(SubLevel.Id.Dartmoor))
                 {
                     return false;
                 }

@@ -114,7 +114,6 @@
                             <Binding ElementName="dragonSlayerRequiredCheckBox" Path="IsChecked" />
                             <Binding ElementName="pendantRodRubyRequiredCheckBox" Path="IsChecked" />
                             <Binding ElementName="moveSpringQuestRequirementCheckBox" Path="IsChecked" />
-                            <Binding ElementName="moveFinalRequirementsCheckBox" Path="IsChecked" />
                             <Binding ElementName="shuffleTowersCheckBox" Path="IsChecked" />
                             <Binding ElementName="shuffleWorldsCheckBox" Path="IsChecked" />
                             <Binding ElementName="updateMiscTextCheckBox" Path="IsChecked" />
@@ -209,33 +208,29 @@
                           ToolTip="Spring quest must be completed to beat the game, but is not needed to enter Mist. You still need to push the rock to enter Mist, but only need the ruby ring to do so"/>
                 <TextBlock Grid.Column="3" Grid.Row="5" Text="Move spring quest requirement to final requirement"/>
 
-                <CheckBox Name="moveFinalRequirementsCheckBox" Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=(randomizer:GeneralOptions.MoveFinalRequirements), Mode=TwoWay}"
-                          ToolTip="Check for required items at the Evil Ones room instead of at the end of Dartmoor."/>
-                <TextBlock Grid.Column="3" Grid.Row="6" Text="Move final requirements to final door"/>
-
-                <CheckBox Name="shuffleTowersCheckBox" Grid.Column="2" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleTowers), Mode=TwoWay}"
+                <CheckBox Name="shuffleTowersCheckBox" Grid.Column="2" Grid.Row="6" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleTowers), Mode=TwoWay}"
                           ToolTip="Tower locations are shuffled."/>
-                <TextBlock Grid.Column="3" Grid.Row="7" Text="Shuffle towers"/>
+                <TextBlock Grid.Column="3" Grid.Row="6" Text="Shuffle towers"/>
 
-                <CheckBox Name="shuffleWorldsCheckBox" Grid.Column="2" Grid.Row="8" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleWorlds), Mode=TwoWay}"
+                <CheckBox Name="shuffleWorldsCheckBox" Grid.Column="2" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.ShuffleWorlds), Mode=TwoWay}"
                           ToolTip="Shuffle the worlds after Eolis"/>
-                <TextBlock Grid.Column="3" Grid.Row="8" Text="Shuffle worlds"/>
+                <TextBlock Grid.Column="3" Grid.Row="7" Text="Shuffle worlds"/>
 
-                <CheckBox Name="updateMiscTextCheckBox" Grid.Column="2" Grid.Row="9" IsChecked="{Binding Path=(randomizer:GeneralOptions.UpdateMiscText), Mode=TwoWay}"
+                <CheckBox Name="updateMiscTextCheckBox" Grid.Column="2" Grid.Row="8" IsChecked="{Binding Path=(randomizer:GeneralOptions.UpdateMiscText), Mode=TwoWay}"
                           ToolTip="Update various text related to randomization. One example is that NPCs holding items will tell you what they have if you have not fulfilled their requirement yet."/>
-                <TextBlock Grid.Column="3" Grid.Row="9" Text="Update misc text"/>
+                <TextBlock Grid.Column="3" Grid.Row="8" Text="Update misc text"/>
 
-                <CheckBox Name="quickSeedCheckBox" Grid.Column="2" Grid.Row="10" IsChecked="{Binding Path=(randomizer:GeneralOptions.QuickSeed), Mode=TwoWay}"
+                <CheckBox Name="quickSeedCheckBox" Grid.Column="2" Grid.Row="9" IsChecked="{Binding Path=(randomizer:GeneralOptions.QuickSeed), Mode=TwoWay}"
                           ToolTip="The randomizer will attempt to make the seed beatable more quickly than the average seed"/>
-                <TextBlock Grid.Column="3" Grid.Row="10" Text="Quick seed"/>
+                <TextBlock Grid.Column="3" Grid.Row="9" Text="Quick seed"/>
 
-                <CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="2" Grid.Row="11" IsChecked="{Binding Path=(randomizer:GeneralOptions.AllowLoweringRespawn), Mode=TwoWay}"
+                <CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="2" Grid.Row="10" IsChecked="{Binding Path=(randomizer:GeneralOptions.AllowLoweringRespawn), Mode=TwoWay}"
                           ToolTip="Makes it so talking to an earlier guru will set your respawn point there even if you previously had it further ahead"/>
-                <TextBlock Grid.Column="3" Grid.Row="11" Text="Allow lowering of respawn value"/>
+                <TextBlock Grid.Column="3" Grid.Row="10" Text="Allow lowering of respawn value"/>
 
-                <CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="2" Grid.Row="12" IsChecked="{Binding Path=(randomizer:GeneralOptions.PreventKnockbackOnLadders), Mode=TwoWay}"
+                <CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="2" Grid.Row="11" IsChecked="{Binding Path=(randomizer:GeneralOptions.PreventKnockbackOnLadders), Mode=TwoWay}"
                           ToolTip="This will prevent the player from being knocked off ladders when taking damage"/>
-                <TextBlock Grid.Column="3" Grid.Row="12" Text="Prevent knockback while on ladders"/>
+                <TextBlock Grid.Column="3" Grid.Row="11" Text="Prevent knockback while on ladders"/>
 
                 <CheckBox Name="flexibleItemsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.FlexibleItems), Mode=TwoWay}"
                           ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air"/>
@@ -253,13 +248,13 @@
                           ToolTip="Pressing select while the game is paused and then unpausing will kill the player. It is recommended you turn this on when doing screen randomization"/>
                 <TextBlock Grid.Column="5" Grid.Row="3" Text="Add kill switch"/>
 
-                <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="7" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
+                <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="4" Grid.Row="6" IsChecked="{Binding Path=(randomizer:GeneralOptions.IncludeEvilOnesFortress), Mode=TwoWay}"
                           ToolTip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
-                <TextBlock Grid.Column="5" Grid.Row="7" Text="Include Zenis in the tower shuffle"/>
+                <TextBlock Grid.Column="5" Grid.Row="6" Text="Include Zenis in the tower shuffle"/>
 
-                <TextBlock Grid.Column="1" Grid.Row="13" Text="Hints:"/>
+                <TextBlock Grid.Column="1" Grid.Row="12" Text="Hints:"/>
                 <StackPanel  Grid.Column="3"
-                             Grid.Row="13">
+                             Grid.Row="12">
                     <ComboBox Name="hintsComboBox"
                         ItemsSource="{StaticResource hintSettings}"
                         IsEditable="true"
@@ -269,9 +264,9 @@
                         />
                 </StackPanel>
 
-                <TextBlock Grid.Column="1" Grid.Row="14" Text="Misc doors:"/>
+                <TextBlock Grid.Column="1" Grid.Row="13" Text="Misc doors:"/>
                 <StackPanel  Grid.Column="3"
-                             Grid.Row="14">
+                             Grid.Row="13">
                     <ComboBox Name="miscDoorsComboBox"
                         ItemsSource="{StaticResource miscDoorSettings}"
                         IsEditable="true"
@@ -281,9 +276,9 @@
                         />
                 </StackPanel>
 
-                <TextBlock Grid.Column="1" Grid.Row="15" Text="Door types:"/>
+                <TextBlock Grid.Column="1" Grid.Row="14" Text="Door types:"/>
                 <StackPanel  Grid.Column="3"
-                             Grid.Row="15">
+                             Grid.Row="14">
                     <ComboBox Name="doorTypeComboBox"
                         ItemsSource="{StaticResource doorTypeSettings}"
                         IsEditable="true"
@@ -292,9 +287,9 @@
                         ToolTip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."
                         />
                 </StackPanel>
-                <TextBlock Grid.Column="1" Grid.Row="16" Text="Screen connections:"/>
+                <TextBlock Grid.Column="1" Grid.Row="15" Text="Screen connections:"/>
                 <StackPanel  Grid.Column="3"
-                             Grid.Row="16">
+                             Grid.Row="15">
                     <ComboBox Name="randomizeScreensComboBox"
                         ItemsSource="{StaticResource screenRandomizationSettings}"
                         IsEditable="true"
@@ -303,9 +298,9 @@
                         ToolTip="Randomizes how screens are connected to each other"
                         />
                 </StackPanel>
-                <TextBlock Grid.Column="1" Grid.Row="17" Text="World segments:"/>
+                <TextBlock Grid.Column="1" Grid.Row="16" Text="World segments:"/>
                 <StackPanel  Grid.Column="3"
-                             Grid.Row="17">
+                             Grid.Row="16">
                     <ComboBox Name="shuffleSegmentsComboBox"
                         ItemsSource="{StaticResource segmentShuffleSettings}"
                         IsEditable="true"

@@ -1376,10 +1376,7 @@ namespace FaxanaduRando.Randomizer
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.TrunkExit, doorRandomizer));
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.MistExit, doorRandomizer));
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.BranchExit, doorRandomizer));
-            if (GeneralOptions.MoveFinalRequirements)
-            {
-                hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.DartmoorExit, doorRandomizer));
-            }
+            hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.DartmoorExit, doorRandomizer));
             return hints;
         }
 
