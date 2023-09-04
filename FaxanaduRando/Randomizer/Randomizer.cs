@@ -805,6 +805,10 @@ namespace FaxanaduRando.Randomizer
 
         private void AddMiscHacks(byte[] content, Random random)
         {
+            //Allow menu on first Eolis screen
+            content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
+            content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
+
             if (ItemOptions.FixPendantBug)
             {
                 content[Section.GetOffset(14, 0x8879, 0x8000)] = OpCode.BEQ;
