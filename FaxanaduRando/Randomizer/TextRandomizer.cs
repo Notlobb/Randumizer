@@ -141,7 +141,6 @@ namespace FaxanaduRando.Randomizer
                     "Shoutout to ShinerCCC",
                     "Shoutout to LoZCardsfan23",
                     "Shoutout to OdinSpack",
-                    "Shoutout to MeowthRocket",
                     "Shoutout to Songbirder",
                     "Shoutout to Bogledowdee",
                 };
@@ -1109,6 +1108,15 @@ namespace FaxanaduRando.Randomizer
                 "FilthyAnimal",
                 "Beast",
                 "Alien",
+                "Mage",
+                "BlackMage",
+                "RedMage",
+                "BlueMage",
+                "Warlock",
+                "Sorcerer",
+                "Fighter",
+                "Rogue",
+                "MindFlayer",
             };
         }
 
