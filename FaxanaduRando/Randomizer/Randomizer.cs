@@ -809,6 +809,14 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
             content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
 
+            if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
+            {
+                //Use the fact that the small key messages are not used to add new ring messages
+                content[Section.GetOffset(15, 0xEBA9, 0xC000)] = 0x02;
+                content[Section.GetOffset(15, 0xEBB9, 0xC000)] = 0x7B;
+                content[Section.GetOffset(15, 0xEBC9, 0xC000)] = 0x7C;
+            }
+
             if (ItemOptions.FixPendantBug)
             {
                 content[Section.GetOffset(14, 0x8879, 0x8000)] = OpCode.BEQ;

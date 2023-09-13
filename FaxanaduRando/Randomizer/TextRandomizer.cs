@@ -358,6 +358,14 @@ namespace FaxanaduRando.Randomizer
                 AddText(defaultHint, allText, 139); //Conflate guru
                 AddText(defaultHint, allText, 161); //Fraternal guru
 
+                if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
+                {
+                    //Add new ring messages
+                    AddText("Do you need an elf ring to open a door?", allText, 40); //Jack key
+                    AddText("Do you need a dworf ring to open a door?", allText, 164); //Queen key
+                    AddText("Do you need a demon ring to open a door?", allText, 165); //King key
+                }
+
                 foreach (string customText in customTexts)
                 {
                     string[] parts = customText.Split(':');
