@@ -154,7 +154,7 @@ namespace FaxanaduRando
                 }
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3EEFFF755l02v0nck0";
+                    flagsTextBox.Text = "3EEFFF75Al02v1nck0";
                 }
             }
         }
