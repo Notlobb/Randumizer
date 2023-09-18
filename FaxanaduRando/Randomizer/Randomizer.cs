@@ -808,7 +808,7 @@ namespace FaxanaduRando.Randomizer
             //Allow menu on first Eolis screen
             content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
             content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
-
+            
             if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
             {
                 //Use the fact that the small key messages are not used to add new ring messages
@@ -827,6 +827,44 @@ namespace FaxanaduRando.Randomizer
                 content[Section.GetOffset(12, 0x8B87, 0x8000)] = 0xFF;
                 content[Section.GetOffset(15, 0xC47C, 0xC000)] = OpCode.NOP;
                 content[Section.GetOffset(15, 0xC47D, 0xC000)] = OpCode.NOP;
+
+                //Always allow items to be sold
+                var sellSection = new Section();
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0xA0);
+                sellSection.Bytes.Add(0xAD);
+                sellSection.AddToContent(content, Section.GetOffset(12, 0x8691, 0x8000));
+
+                sellSection = new Section();
+                sellSection.Bytes.Add(OpCode.JSR);
+                sellSection.Bytes.Add(0x04);
+                sellSection.Bytes.Add(0x87);
+                sellSection.Bytes.Add(OpCode.CMPImmediate);
+                sellSection.Bytes.Add(0xFF);
+                sellSection.Bytes.Add(OpCode.BEQ);
+                sellSection.Bytes.Add(0x03);
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0x96);
+                sellSection.Bytes.Add(0x86);
+                sellSection.Bytes.Add(OpCode.TXA);
+                sellSection.Bytes.Add(OpCode.LDXAbsolute);
+                sellSection.Bytes.Add(0x1F);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
+                sellSection.Bytes.Add(0x20);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.LDAImmediate);
+                sellSection.Bytes.Add(100);
+                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
+                sellSection.Bytes.Add(0x28);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.LDAImmediate);
+                sellSection.Bytes.Add(0);
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0xA9);
+                sellSection.Bytes.Add(0x86);
+                sellSection.AddToContent(content, Section.GetOffset(12, 0xADA0, 0x8000));
+                content[Section.GetOffset(12, 0x8716, 0x8000)] = OpCode.NOP;
             }
 
             if (GeneralOptions.AddKillSwitch)
