@@ -18,6 +18,7 @@ namespace FaxanaduRando.Randomizer
         public const int TXA = 0x8A;
         public const int STYAbsolute = 0x8C;
         public const int STAAbsolute = 0x8D;
+        public const int STXAbsolute = 0x8E;
         public const int LSR = 0x4A;
         public const int JMPAbsolute = 0x4C;
         public const int BCC = 0x90;
