@@ -85,16 +85,6 @@ namespace FaxanaduRando
                 return;
             }
 
-            if (Randomizer.GeneralOptions.ShuffleTowers && Randomizer.GeneralOptions.IncludeEvilOnesFortress &&
-                !Randomizer.GeneralOptions.MoveFinalRequirements)
-            {
-                if (MessageBox.Show("You have selected to include the Evil One's fortress in the tower shuffle, but you have not selected to move the final requirements. This might result in extra requirements not actually being required. Continue?", "Warning", MessageBoxButton.YesNo) ==
-                    MessageBoxResult.No)
-                {
-                    return;
-                }
-            }
-
             if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
                 !Randomizer.GeneralOptions.AddKillSwitch)
             {
@@ -140,31 +130,31 @@ namespace FaxanaduRando
                 var box = (System.Windows.Controls.ComboBox)sender;
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "30BFFF7205k02v1ncoF";
+                    flagsTextBox.Text = "38DFFF315k02v1ncoF";
                 }
                 else if (box.SelectedIndex == 1)
                 {
-                    flagsTextBox.Text = "7E9FFF7A0za0cFakcmF";
+                    flagsTextBox.Text = "78CFFF35za0cGalcmF";
                 }
                 else if (box.SelectedIndex == 2)
                 {
-                    flagsTextBox.Text = "7E9FFF7AAzc0aPakcmF";
+                    flagsTextBox.Text = "7ECFFF35zc0cFakcmF";
                 }
                 else if (box.SelectedIndex == 3)
                 {
-                    flagsTextBox.Text = "50105E000Am00ZocnmoF";
+                    flagsTextBox.Text = "58086700Am00Zo1nmoF";
                 }
                 else if (box.SelectedIndex == 4)
                 {
-                    flagsTextBox.Text = "7E995E6AAxe0bPakmmF";
+                    flagsTextBox.Text = "7ECC2735ze0bPakmoF";
                 }
                 else if (box.SelectedIndex == 5)
                 {
-                    flagsTextBox.Text = "7E9FFFFA0ucba0a012a";
+                    flagsTextBox.Text = "7ECFFF77ucba0a012a";
                 }
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3EDFFFFA0Al02vbnck0";
+                    flagsTextBox.Text = "3EEFFF75Al02v1nck0";
                 }
             }
         }

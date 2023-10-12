@@ -5,6 +5,7 @@ namespace FaxanaduRando.Randomizer
 {
     internal class Eolis : Level
     {
+        public const byte ShopScreen = 3;
         public const byte EolisExit = 8;
 
         public Eolis(WorldNumber number, byte[] content) : base(number, content)

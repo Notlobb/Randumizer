@@ -413,6 +413,7 @@ namespace FaxanaduRando.Randomizer
 
             shopRandomizer.AddToContent(content);
             giftRandomizer.AddToContent(content);
+            AdjustIntroItem();
             return true;
         }
 
@@ -453,6 +454,7 @@ namespace FaxanaduRando.Randomizer
             var worlds = doorRandomizer.GetWorlds();
             var transitionOffsets = new HashSet<int>();
 
+            CheckDoor(DoorId.FirstDoor, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
             CheckDoor(DoorId.EolisItemShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
             CheckDoor(DoorId.EolisKeyShop, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
             CheckDoor(DoorId.EolisGuru, giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
@@ -489,14 +491,6 @@ namespace FaxanaduRando.Randomizer
                 CheckValid(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus, doors);
             }
 
-            if (GeneralOptions.QuickSeed)
-            {
-                if (!FinalRequirementsMet(ids, traversedSublevels))
-                {
-                    return false;
-                }
-            }
-
             if (!Util.EarlyFinishPossible())
             {
                 result = GetCheck(worlds[3].number)(shopRandomizer, giftRandomizer, doorRandomizer, levels, ids, traversedSublevels, gurus, transitionOffsets, doors);
@@ -512,8 +506,7 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (!(GeneralOptions.IncludeEvilOnesFortress && GeneralOptions.ShuffleTowers) &&
-                GeneralOptions.MoveFinalRequirements)
+            if (!(GeneralOptions.IncludeEvilOnesFortress && GeneralOptions.ShuffleTowers))
             {
                 TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EvilOnesLair], giftRandomizer, doorRandomizer, ids, traversedSublevels, gurus, transitionOffsets, doors);
             }
@@ -548,7 +541,7 @@ namespace FaxanaduRando.Randomizer
                     return false;
                 }
 
-                if (GeneralOptions.MoveFinalRequirements && !FinalRequirementsMet(ids, traversedSublevels))
+                if (!FinalRequirementsMet(ids, traversedSublevels))
                 {
                     return false;
                 }
@@ -761,14 +754,6 @@ namespace FaxanaduRando.Randomizer
                 return false;
             }
 
-            if (!GeneralOptions.MoveFinalRequirements)
-            {
-                if (!FinalRequirementsMet(ids, traversedSublevels))
-                {
-                    return false;
-                }
-            }
-
             if (!doors.Contains(DoorId.DartmoorExit))
             {
                 return false;
@@ -798,7 +783,6 @@ namespace FaxanaduRando.Randomizer
             CheckDoor(DoorId.EolisHouse, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, tempTransitions, tempDoors);
             CheckDoor(DoorId.MartialArtsShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, tempTransitions, tempDoors);
             CheckDoor(DoorId.EolisMagicShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, tempTransitions, tempDoors);
-            CheckDoor(DoorId.MartialArtsShop, giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, tempTransitions, tempDoors);
 
             foreach (var item in ShopRandomizer.spellIds)
             {
@@ -1009,11 +993,6 @@ namespace FaxanaduRando.Randomizer
 
         private bool FinalRequirementsMet(HashSet<ShopRandomizer.Id> ids, HashSet<SubLevel.Id> traversedSublevels)
         {
-            if (!ids.Contains(ShopRandomizer.Id.DemonRing))
-            {
-                return false;
-            }
-
             if (GeneralOptions.DragonSlayerRequired)
             {
                 if (!(ids.Contains(ShopRandomizer.Id.Dragonslayer) &&
@@ -1029,14 +1008,6 @@ namespace FaxanaduRando.Randomizer
                 if (!(ids.Contains(ShopRandomizer.Id.Pendant) &&
                     ids.Contains(ShopRandomizer.Id.Rod) &&
                     ids.Contains(ShopRandomizer.Id.RubyRing)))
-                {
-                    return false;
-                }
-            }
-
-            if (!GeneralOptions.MoveFinalRequirements && GeneralOptions.ShuffleWorlds)
-            {
-                if (!traversedSublevels.Contains(SubLevel.Id.Dartmoor))
                 {
                     return false;
                 }
@@ -1241,7 +1212,8 @@ namespace FaxanaduRando.Randomizer
                     }
 
                 }
-                else if (level.Number == WorldNumber.Buildings)
+                else if (level.Number == WorldNumber.Buildings ||
+                         level.Number == WorldNumber.Eolis)
                 {
                     CollectItems(level.Screens, items, itemIds);
                 }
@@ -1343,28 +1315,29 @@ namespace FaxanaduRando.Randomizer
                     Sprite.SpriteId.Ointment,
                     Sprite.SpriteId.Elixir,
                     Sprite.SpriteId.WingbootsBossLocked,
+                    Sprite.SpriteId.Glove,
+                    Sprite.SpriteId.Poison,
+                    Sprite.SpriteId.MattockBossLocked,
                 };
-
-                if (GeneralOptions.RandomizeScreens == GeneralOptions.ScreenRandomization.Unchanged ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Easy ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Normal ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.NonMixed ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Scaling ||
-                    EnemyOptions.EnemySet == EnemyOptions.EnemySetType.Unchanged)
+                if (ItemOptions.AlwaysSpawnSmallItems)
                 {
-                    possibleItems.Add(Sprite.SpriteId.Glove);
-                    possibleItems.Add(Sprite.SpriteId.Poison);
-                    possibleItems.Add(Sprite.SpriteId.MattockBossLocked);
-                    if (ItemOptions.AlwaysSpawnSmallItems)
-                    {
-                        possibleItems.Add(Sprite.SpriteId.Hourglass);
-                    }
+                    possibleItems.Add(Sprite.SpriteId.Hourglass);
                 }
 
                 item.Id = possibleItems.ElementAt(Rand.Next(possibleItems.Count));
-                if (item.Id == Sprite.SpriteId.WingbootsBossLocked ||
-                    item.Id == Sprite.SpriteId.Hourglass ||
-                    item.Id == Sprite.SpriteId.MattockBossLocked)
+            }
+        }
+
+        private void AdjustIntroItem()
+        {
+            foreach (var item in Level.LevelDict[WorldNumber.Eolis].Screens[0].Sprites)
+            {
+                if (item.Id != Sprite.SpriteId.Poison &&
+                    item.Id != Sprite.SpriteId.RedPotion &&
+                    item.Id != Sprite.SpriteId.Glove &&
+                    item.Id != Sprite.SpriteId.Ointment &&
+                    item.Id != Sprite.SpriteId.Elixir &&
+                    item.Id != Sprite.SpriteId.Intro)
                 {
                     //These items don't fall down
                     item.SetY(10);

@@ -5,6 +5,7 @@ namespace FaxanaduRando.Randomizer
     public enum DoorId
     {
         FirstDoor,
+        FirstDoorReturn,
         EolisExit,
         TrunkEntrance,
         TowerOfTrunk,
@@ -270,6 +271,7 @@ namespace FaxanaduRando.Randomizer
 
         private static Dictionary<DoorId, byte> doorPalettes = new Dictionary<DoorId, byte>()
         {
+            { DoorId.FirstDoor, 0},
             { DoorId.TowerOfTrunk, 6},
             { DoorId.TowerOfFortress, 6},
             { DoorId.JokerHouse, 6},

@@ -48,7 +48,6 @@ namespace FaxanaduRando.Randomizer
         public static bool FastStart { get; set; } = true;
         public static bool DragonSlayerRequired { get; set; } = false;
         public static bool PendantRodRubyRequired { get; set; } = false;
-        public static bool MoveFinalRequirements { get; set; } = false;
         public static bool MoveSpringQuestRequirement { get; set; } = false;
         public static bool ShuffleTowers { get; set; } = false;
         public static bool ShuffleWorlds { get; set; } = false;

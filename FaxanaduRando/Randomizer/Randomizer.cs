@@ -262,7 +262,7 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviours(spriteBehaviourTable, random, enemyBehaviourDict);
             }
 
-            doorRandomizer.AddToContent(content, random);
+            doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
             {
@@ -310,7 +310,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V27", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V28", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -347,7 +347,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.27");
+                spoilers.Add("Randumizer v0.28");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -580,6 +580,10 @@ namespace FaxanaduRando.Randomizer
             newSection.Bytes.Add(0xDC);
             newSection.Bytes.Add(0xDA);
             newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
+
+            //Set starting screen to Eolis shop screen,
+            //since the original starting screen is now a tower
+            content[Section.GetOffset(15, 0xDECB, 0xC000)] = Eolis.ShopScreen;
         }
 
         private List<Level> GetLevels(byte[] content, Random random)
@@ -656,6 +660,10 @@ namespace FaxanaduRando.Randomizer
                     var sublevel = new SubLevel(SubLevel.Id.Eolis, level.Screens.GetRange(1, level.Screens.Count - 1));
                     SubLevel.SubLevelDict[SubLevel.Id.Eolis] = sublevel;
                     level.SubLevels.Add(sublevel);
+                    if (GeneralOptions.ShuffleTowers)
+                    {
+                        level.AddSubLevel(SubLevel.Id.OutsideEolis, 0, 0, 0);
+                    }
                 }
                 else if (level.Number == WorldNumber.Trunk)
                 {
@@ -797,6 +805,18 @@ namespace FaxanaduRando.Randomizer
 
         private void AddMiscHacks(byte[] content, Random random)
         {
+            //Allow menu on first Eolis screen
+            content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
+            content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
+            
+            if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
+            {
+                //Use the fact that the small key messages are not used to add new ring messages
+                content[Section.GetOffset(15, 0xEBA9, 0xC000)] = 0x02;
+                content[Section.GetOffset(15, 0xEBB9, 0xC000)] = 0x7B;
+                content[Section.GetOffset(15, 0xEBC9, 0xC000)] = 0x7C;
+            }
+
             if (ItemOptions.FixPendantBug)
             {
                 content[Section.GetOffset(14, 0x8879, 0x8000)] = OpCode.BEQ;
@@ -807,6 +827,44 @@ namespace FaxanaduRando.Randomizer
                 content[Section.GetOffset(12, 0x8B87, 0x8000)] = 0xFF;
                 content[Section.GetOffset(15, 0xC47C, 0xC000)] = OpCode.NOP;
                 content[Section.GetOffset(15, 0xC47D, 0xC000)] = OpCode.NOP;
+
+                //Always allow items to be sold
+                var sellSection = new Section();
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0xA0);
+                sellSection.Bytes.Add(0xAD);
+                sellSection.AddToContent(content, Section.GetOffset(12, 0x8691, 0x8000));
+
+                sellSection = new Section();
+                sellSection.Bytes.Add(OpCode.JSR);
+                sellSection.Bytes.Add(0x04);
+                sellSection.Bytes.Add(0x87);
+                sellSection.Bytes.Add(OpCode.CMPImmediate);
+                sellSection.Bytes.Add(0xFF);
+                sellSection.Bytes.Add(OpCode.BEQ);
+                sellSection.Bytes.Add(0x03);
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0x96);
+                sellSection.Bytes.Add(0x86);
+                sellSection.Bytes.Add(OpCode.TXA);
+                sellSection.Bytes.Add(OpCode.LDXAbsolute);
+                sellSection.Bytes.Add(0x1F);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
+                sellSection.Bytes.Add(0x20);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.LDAImmediate);
+                sellSection.Bytes.Add(100);
+                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
+                sellSection.Bytes.Add(0x28);
+                sellSection.Bytes.Add(0x2);
+                sellSection.Bytes.Add(OpCode.LDAImmediate);
+                sellSection.Bytes.Add(0);
+                sellSection.Bytes.Add(OpCode.JMPAbsolute);
+                sellSection.Bytes.Add(0xA9);
+                sellSection.Bytes.Add(0x86);
+                sellSection.AddToContent(content, Section.GetOffset(12, 0xADA0, 0x8000));
+                content[Section.GetOffset(12, 0x8716, 0x8000)] = OpCode.NOP;
             }
 
             if (GeneralOptions.AddKillSwitch)
@@ -1131,94 +1189,97 @@ namespace FaxanaduRando.Randomizer
                 newSection.AddToContent(content, Section.GetOffset(14, 0xBDC0, 0x8000));
             }
 
-            if (GeneralOptions.DragonSlayerRequired ||
-                GeneralOptions.PendantRodRubyRequired ||
-                GeneralOptions.MoveSpringQuestRequirement)
+            var reqSection = new Section();
+            reqSection.Bytes.Add(OpCode.JMPAbsolute);
+            reqSection.Bytes.Add(0x80);
+            reqSection.Bytes.Add(0xFE);
+            reqSection.AddToContent(content, Section.GetOffset(15, 0xEB32, 0xC000));
+            reqSection = new Section();
+            reqSection.Bytes.Add(OpCode.BNE);
+            reqSection.Bytes.Add(0x01);
+            reqSection.Bytes.Add(OpCode.RTS);
+            reqSection.Bytes.Add(OpCode.CMPImmediate);
+            reqSection.Bytes.Add(0x09);
+            reqSection.Bytes.Add(OpCode.BEQ);
+            reqSection.Bytes.Add(0x04);
+            reqSection.Bytes.Add(OpCode.ASLA);
+            reqSection.Bytes.Add(OpCode.JMPAbsolute);
+            reqSection.Bytes.Add(0x35);
+            reqSection.Bytes.Add(0xEB);
+
+            if (GeneralOptions.DragonSlayerRequired)
             {
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x80);
-                newSection.Bytes.Add(0xFE);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xEBC1, 0xC000));
-                newSection = new Section();
-                if (GeneralOptions.DragonSlayerRequired)
+                reqSection.Bytes.Add(OpCode.LDAAbsolute);
+                reqSection.Bytes.Add(0xBD);
+                reqSection.Bytes.Add(0x03);
+                reqSection.Bytes.Add(OpCode.CMPImmediate);
+                reqSection.Bytes.Add(0x03);
+                reqSection.Bytes.Add(OpCode.BEQ);
+                if (GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
                 {
-                    newSection.Bytes.Add(OpCode.LDAAbsolute);
-                    newSection.Bytes.Add(0xBD);
-                    newSection.Bytes.Add(0x03);
-                    newSection.Bytes.Add(OpCode.CMPImmediate);
-                    newSection.Bytes.Add(0x03);
-                    newSection.Bytes.Add(OpCode.BEQ);
-                    if (GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
-                    {
-                        newSection.Bytes.Add(0x09);
-                        newSection.Bytes.Add(OpCode.LDAImmediate);
-                        newSection.Bytes.Add(0x0);
-                        newSection.Bytes.Add(OpCode.JSR);
-                        newSection.Bytes.Add(0x59);
-                        newSection.Bytes.Add(0xF8);
-                        newSection.Bytes.Add(0x0c);
-                        newSection.Bytes.Add(0x41);
-                        newSection.Bytes.Add(0x82);
-                        newSection.Bytes.Add(OpCode.RTS);
-                    }
-                    else
-                    {
-                        newSection.Bytes.Add(0x01);
-                        newSection.Bytes.Add(OpCode.RTS);
-                    }
+                    reqSection.Bytes.Add(0x09);
+                    reqSection.Bytes.Add(OpCode.LDAImmediate);
+                    reqSection.Bytes.Add(0x0);
+                    reqSection.Bytes.Add(OpCode.JSR);
+                    reqSection.Bytes.Add(0x59);
+                    reqSection.Bytes.Add(0xF8);
+                    reqSection.Bytes.Add(0x0c);
+                    reqSection.Bytes.Add(0x41);
+                    reqSection.Bytes.Add(0x82);
                 }
-
-                if (GeneralOptions.PendantRodRubyRequired)
+                else
                 {
-                    newSection.Bytes.Add(OpCode.LDAAbsolute);
-                    newSection.Bytes.Add(0x2C);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.ANDImmediate);
-                    newSection.Bytes.Add(0x02);
-                    newSection.Bytes.Add(OpCode.BNE);
-                    newSection.Bytes.Add(0x01);
-                    newSection.Bytes.Add(OpCode.RTS);
-                    newSection.Bytes.Add(OpCode.LDAAbsolute);
-                    newSection.Bytes.Add(0x2C);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.ANDImmediate);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.BNE);
-                    newSection.Bytes.Add(0x01);
-                    newSection.Bytes.Add(OpCode.RTS);
-                    newSection.Bytes.Add(OpCode.LDAAbsolute);
-                    newSection.Bytes.Add(0x2C);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.ANDImmediate);
-                    newSection.Bytes.Add(0x40);
-                    newSection.Bytes.Add(OpCode.BNE);
-                    newSection.Bytes.Add(0x01);
-                    newSection.Bytes.Add(OpCode.RTS);
+                    reqSection.Bytes.Add(0x01);
                 }
-
-                if (GeneralOptions.MoveSpringQuestRequirement)
-                {
-                    newSection.Bytes.Add(OpCode.LDAAbsolute);
-                    newSection.Bytes.Add(0x2D);
-                    newSection.Bytes.Add(0x04);
-                    newSection.Bytes.Add(OpCode.ANDImmediate);
-                    newSection.Bytes.Add(0x07);
-                    newSection.Bytes.Add(OpCode.CMPImmediate);
-                    newSection.Bytes.Add(0x07);
-                    newSection.Bytes.Add(OpCode.BEQ);
-                    newSection.Bytes.Add(0x01);
-                    newSection.Bytes.Add(OpCode.RTS);
-                }
-
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x2C);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0xC4);
-                newSection.Bytes.Add(0xEB);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFE80, 0xC000));
+                reqSection.Bytes.Add(OpCode.RTS);
             }
+
+            if (GeneralOptions.PendantRodRubyRequired)
+            {
+                reqSection.Bytes.Add(OpCode.LDAAbsolute);
+                reqSection.Bytes.Add(0x2C);
+                reqSection.Bytes.Add(0x04);
+                reqSection.Bytes.Add(OpCode.ANDImmediate);
+                reqSection.Bytes.Add(0x02);
+                reqSection.Bytes.Add(OpCode.BNE);
+                reqSection.Bytes.Add(0x01);
+                reqSection.Bytes.Add(OpCode.RTS);
+                reqSection.Bytes.Add(OpCode.LDAAbsolute);
+                reqSection.Bytes.Add(0x2C);
+                reqSection.Bytes.Add(0x04);
+                reqSection.Bytes.Add(OpCode.ANDImmediate);
+                reqSection.Bytes.Add(0x04);
+                reqSection.Bytes.Add(OpCode.BNE);
+                reqSection.Bytes.Add(0x01);
+                reqSection.Bytes.Add(OpCode.RTS);
+                reqSection.Bytes.Add(OpCode.LDAAbsolute);
+                reqSection.Bytes.Add(0x2C);
+                reqSection.Bytes.Add(0x04);
+                reqSection.Bytes.Add(OpCode.ANDImmediate);
+                reqSection.Bytes.Add(0x40);
+                reqSection.Bytes.Add(OpCode.BNE);
+                reqSection.Bytes.Add(0x01);
+                reqSection.Bytes.Add(OpCode.RTS);
+            }
+
+            if (GeneralOptions.MoveSpringQuestRequirement)
+            {
+                reqSection.Bytes.Add(OpCode.LDAAbsolute);
+                reqSection.Bytes.Add(0x2D);
+                reqSection.Bytes.Add(0x04);
+                reqSection.Bytes.Add(OpCode.ANDImmediate);
+                reqSection.Bytes.Add(0x07);
+                reqSection.Bytes.Add(OpCode.CMPImmediate);
+                reqSection.Bytes.Add(0x07);
+                reqSection.Bytes.Add(OpCode.BEQ);
+                reqSection.Bytes.Add(0x01);
+                reqSection.Bytes.Add(OpCode.RTS);
+            }
+
+            reqSection.Bytes.Add(OpCode.JMPAbsolute);
+            reqSection.Bytes.Add(0xE1);
+            reqSection.Bytes.Add(0xEB);
+            reqSection.AddToContent(content, Section.GetOffset(15, 0xFE80, 0xC000));
 
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreensAllowMattockLockedItems ||
                 ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)

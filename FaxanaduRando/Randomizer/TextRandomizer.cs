@@ -136,12 +136,12 @@ namespace FaxanaduRando.Randomizer
                     "Klaatu barada nikto",
                     "Your mother was a hamster and your father smelt of elderberries!",
                     "Always look on the bright side of life!",
+                    "Never pay more than 20 golds for a video game",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
                     "Shoutout to LoZCardsfan23",
                     "Shoutout to OdinSpack",
-                    "Shoutout to MeowthRocket",
                     "Shoutout to Songbirder",
                     "Shoutout to Bogledowdee",
                 };
@@ -289,6 +289,7 @@ namespace FaxanaduRando.Randomizer
                     "Looks like Team Rocket is Blasting Off Again!",
                     "With boots I could walk on air.",
                     "This stream sponsored by Red Bull!",
+                    "I have to go now. My planet needs me.",
                 };
 
                 var poisonText = new List<string>();
@@ -358,6 +359,14 @@ namespace FaxanaduRando.Randomizer
                 AddText(defaultHint, allText, 125); //Ace key guy
                 AddText(defaultHint, allText, 139); //Conflate guru
                 AddText(defaultHint, allText, 161); //Fraternal guru
+
+                if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
+                {
+                    //Add new ring messages
+                    AddText("Do you need an elf ring to open a door?", allText, 40); //Jack key
+                    AddText("Do you need a dworf ring to open a door?", allText, 164); //Queen key
+                    AddText("Do you need a demon ring to open a door?", allText, 165); //King key
+                }
 
                 foreach (string customText in customTexts)
                 {
@@ -1109,6 +1118,16 @@ namespace FaxanaduRando.Randomizer
                 "FilthyAnimal",
                 "Beast",
                 "Alien",
+                "Mage",
+                "BlackMage",
+                "RedMage",
+                "BlueMage",
+                "Warlock",
+                "Sorcerer",
+                "FighterMage",
+                "Rogue",
+                "Cleric",
+                "MindFlayer",
             };
         }
 
@@ -1376,10 +1395,7 @@ namespace FaxanaduRando.Randomizer
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.TrunkExit, doorRandomizer));
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.MistExit, doorRandomizer));
             hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.BranchExit, doorRandomizer));
-            if (GeneralOptions.MoveFinalRequirements)
-            {
-                hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.DartmoorExit, doorRandomizer));
-            }
+            hints.Add(GetExitKeyHint(DoorRandomizer.ExitDoor.DartmoorExit, doorRandomizer));
             return hints;
         }
 
