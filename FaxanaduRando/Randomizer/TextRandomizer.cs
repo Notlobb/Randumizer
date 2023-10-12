@@ -136,6 +136,7 @@ namespace FaxanaduRando.Randomizer
                     "Klaatu barada nikto",
                     "Your mother was a hamster and your father smelt of elderberries!",
                     "Always look on the bright side of life!",
+                    "Never pay more than 20 golds for a video game",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
                     "Shoutout to ShinerCCC",
@@ -288,6 +289,7 @@ namespace FaxanaduRando.Randomizer
                     "Looks like Team Rocket is Blasting Off Again!",
                     "With boots I could walk on air.",
                     "This stream sponsored by Red Bull!",
+                    "I have to go now. My planet needs me.",
                 };
 
                 var poisonText = new List<string>();
@@ -1122,8 +1124,9 @@ namespace FaxanaduRando.Randomizer
                 "BlueMage",
                 "Warlock",
                 "Sorcerer",
-                "Fighter",
+                "FighterMage",
                 "Rogue",
+                "Cleric",
                 "MindFlayer",
             };
         }

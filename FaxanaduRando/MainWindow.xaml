@@ -233,7 +233,7 @@
                 <TextBlock Grid.Column="3" Grid.Row="11" Text="Prevent knockback while on ladders"/>
 
                 <CheckBox Name="flexibleItemsCheckbox" Grid.Column="4" Grid.Row="0" IsChecked="{Binding Path=(randomizer:GeneralOptions.FlexibleItems), Mode=TwoWay}"
-                          ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air"/>
+                          ToolTip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air, and allows for items to always be able to be sold in shops."/>
                 <TextBlock Grid.Column="5" Grid.Row="0" Text="Flexible items"/>
 
                 <CheckBox Name="darknessCheckBox" Grid.Column="4" Grid.Row="1" IsChecked="{Binding Path=(randomizer:GeneralOptions.DarkTowers), Mode=TwoWay}"
