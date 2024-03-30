@@ -302,7 +302,7 @@ namespace FaxanaduRando.Randomizer
             bool valid = false;
             attempts = 0;
             bool shuffleWorlds = GeneralOptions.ShuffleWorlds;
-            while (!valid && attempts < 1000000)
+            while (!valid && attempts < 200000)
             {
                 attempts++;
 #if !DEBUG
@@ -315,7 +315,7 @@ namespace FaxanaduRando.Randomizer
                 }
 #endif
 
-                if (GeneralOptions.ShuffleWorlds && attempts > 100000)
+                if (GeneralOptions.ShuffleWorlds && attempts > 20000)
                 {
                     shuffleWorlds = true;
                 }
@@ -879,7 +879,9 @@ namespace FaxanaduRando.Randomizer
             tempGurus = new HashSet<Guru.GuruId>();
             tempIds.Add(ShopRandomizer.Id.Book);
 
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, new HashSet<int>(), tempDoors, true);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, new HashSet<int>(), tempDoors, true);
+            TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, new HashSet<int>(), tempDoors, true);
             TraverseSubLevel(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], giftRandomizer, doorRandomizer, tempIds, tempSublevels, tempGurus, new HashSet<int>(), tempDoors, true);
 
             if (tempSublevels.Contains(SubLevel.FortressSpringSublevel))
@@ -889,6 +891,7 @@ namespace FaxanaduRando.Randomizer
                     return true;
                 }
 
+                CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.LateTrunk], items, itemIds, doorRandomizer);
                 CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.Id.EastTrunk], items, itemIds, doorRandomizer);
                 CollectSublevelItems(SubLevel.SubLevelDict[SubLevel.FortressSpringSublevel], items, itemIds, doorRandomizer);
                 Util.ShuffleList(items, 0, items.Count - 1, Rand);

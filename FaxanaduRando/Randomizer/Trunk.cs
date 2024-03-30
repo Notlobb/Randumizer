@@ -29,6 +29,7 @@ namespace FaxanaduRando.Randomizer
 
         private List<byte> extraUpCandidates = new List<byte>()
         {
+            48,
             50,
             53,
         };
@@ -67,7 +68,7 @@ namespace FaxanaduRando.Randomizer
 
         public override void CorrectScreenSprites()
         {
-            var temp = Screens[38].Sprites;
+            var temp = Screens[39].Sprites;
             Screens[38].Sprites = Screens[34].Sprites;
 
             for (int i = 34; i > 27; i--)
@@ -145,7 +146,8 @@ namespace FaxanaduRando.Randomizer
             endScreens.Add(Screens[33]);
             endScreens.Add(Screens[60]);
             endScreens.Add(Screens[JokerSpringScreen]);
-            endScreens.Add(Screens[FortressSpringScreen]);
+            //endScreens.Add(Screens[FortressSpringScreen]);
+            endScreens.Add(Screens[52]);
             endScreens.Add(Screens[21]);
 
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Unchanged)
@@ -174,7 +176,6 @@ namespace FaxanaduRando.Randomizer
             candidates.AddRange(Screens.GetRange(38, 2));
             candidates.Add(Screens[42]);
             candidates.Add(Screens[46]);
-            candidates.Add(Screens[48]);
             candidates.Add(Screens[49]);
             candidates.Add(Screens[59]);
 
@@ -193,6 +194,7 @@ namespace FaxanaduRando.Randomizer
             specialScreens.Add(Screens[43]);
             specialScreens.Add(Screens[45]);
             specialScreens.Add(Screens[58]);
+            specialScreens.Add(Screens[FortressSpringScreen]);
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
             return specialScreens;
@@ -239,6 +241,8 @@ namespace FaxanaduRando.Randomizer
                 Screens[ForePawRightScreen].ScrollData.Down = JokerSpringScreen;
             }
 
+            Screens[FortressSpringScreen].Sprites[0].SetY(9);
+
             return result;
         }
 
@@ -252,6 +256,8 @@ namespace FaxanaduRando.Randomizer
             Screens[24].FriendConnections[Direction.Down] = Screens[extraUpCandidates[0]];
             Screens[58].FriendConnections = new Dictionary<Direction, Screen>();
             Screens[58].FriendConnections[Direction.Down] = Screens[extraUpCandidates[1]];
+            Screens[56].FriendConnections = new Dictionary<Direction, Screen>();
+            Screens[56].FriendConnections[Direction.Down] = Screens[extraUpCandidates[2]];
 
             bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, random, SubLevel.Id.EarlyTrunk, attempts);
             if (!result)
@@ -368,6 +374,9 @@ namespace FaxanaduRando.Randomizer
             Screens[LateTrunkStartScreen].FriendEnds[Direction.Right] = Screens[right1];
             Screens[43].FriendEnds[Direction.Right] = Screens[right2];
 
+            Screens[52].Sprites[1].Id = ItemRandomizer.GetRandomItem(random);
+            Screens[52].Sprites[1].SetY((byte)(Screens[52].Sprites[1].GetY() + 1));
+
             return result;
         }
 
@@ -378,6 +387,7 @@ namespace FaxanaduRando.Randomizer
 
             Screens[43].FriendConnections[Direction.Up] = Screens[47];
             Screens[60].FriendEnds[Direction.Down] = Screens[55];
+            Screens[FortressSpringScreen].FriendConnections[Direction.Down] = Screens[56];
 
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Left);
             Screens[EarlyTrunkStartScreen].Directions.Add(Direction.Right);
@@ -723,21 +733,25 @@ namespace FaxanaduRando.Randomizer
             Screens[47].OpenTilesLeft.Add(2);
             Screens[47].OpenTilesLeft.Add(3);
             Screens[47].OpenTilesLeft.Add(4);
+            Screens[47].OpenTilesRight.Add(5);
+            Screens[47].OpenTilesRight.Add(6);
             Screens[47].OpenTilesRight.Add(7);
             Screens[47].OpenTilesRight.Add(8);
             Screens[47].OpenTilesRight.Add(9);
             Screens[47].OpenTilesRight.Add(10);
-            Screens[47].OpenTilesDown.Add(6);
-            Screens[48].Directions.Add(Direction.Left);
+            //Screens[47].OpenTilesDown.Add(6);
+            //Screens[48].Directions.Add(Direction.Left);
             Screens[48].Directions.Add(Direction.Right);
-            Screens[48].OpenTilesLeft.Add(7);
-            Screens[48].OpenTilesLeft.Add(8);
-            Screens[48].OpenTilesLeft.Add(9);
-            Screens[48].OpenTilesLeft.Add(10);
-            Screens[48].OpenTilesRight.Add(7);
-            Screens[48].OpenTilesRight.Add(8);
-            Screens[48].OpenTilesRight.Add(9);
-            Screens[48].OpenTilesRight.Add(10);
+            Screens[48].Directions.Add(Direction.Up);
+            //Screens[48].OpenTilesLeft.Add(7);
+            //Screens[48].OpenTilesLeft.Add(8);
+            //Screens[48].OpenTilesLeft.Add(9);
+            //Screens[48].OpenTilesLeft.Add(10);
+            Screens[48].OpenTilesRight.Add(2);
+            Screens[48].OpenTilesRight.Add(3);
+            Screens[48].OpenTilesRight.Add(4);
+            Screens[48].OpenTilesRight.Add(5);
+            Screens[48].OpenTilesUp.Add(1);
             Screens[49].Directions.Add(Direction.Left);
             Screens[49].Directions.Add(Direction.Right);
             Screens[49].OpenTilesLeft.Add(2);
@@ -763,6 +777,10 @@ namespace FaxanaduRando.Randomizer
             Screens[51].OpenTilesRight.Add(9);
             Screens[51].OpenTilesRight.Add(10);
             Screens[51].OpenTilesDown.Add(1);
+            Screens[52].Directions.Add(Direction.Left);
+            Screens[52].OpenTilesLeft.Add(8);
+            Screens[52].OpenTilesLeft.Add(9);
+            Screens[52].OpenTilesLeft.Add(10);
             Screens[53].Directions.Add(Direction.Right);
             Screens[53].OpenTilesRight.Add(2);
             Screens[53].OpenTilesRight.Add(3);
@@ -779,6 +797,11 @@ namespace FaxanaduRando.Randomizer
             Screens[56].Directions.Add(Direction.Down);
             Screens[56].OpenTilesUp.Add(14);
             Screens[56].OpenTilesDown.Add(1);
+            Screens[56].Directions.Add(Direction.Right);
+            Screens[57].OpenTilesRight.Add(7);
+            Screens[57].OpenTilesRight.Add(8);
+            Screens[57].OpenTilesRight.Add(9);
+            Screens[57].OpenTilesRight.Add(10);
             Screens[58].Directions.Add(Direction.Left);
             Screens[58].Directions.Add(Direction.Right);
             Screens[58].OpenTilesLeft.Add(7);
@@ -807,9 +830,12 @@ namespace FaxanaduRando.Randomizer
             Screens[60].OpenTilesRight.Add(9);
             Screens[60].OpenTilesRight.Add(10);
             Screens[FortressSpringScreen].Directions.Add(Direction.Left);
-            Screens[FortressSpringScreen].OpenTilesLeft.Add(1);
-            Screens[FortressSpringScreen].OpenTilesLeft.Add(2);
-            Screens[FortressSpringScreen].OpenTilesLeft.Add(3);
+            Screens[FortressSpringScreen].Directions.Add(Direction.Down);
+            Screens[FortressSpringScreen].OpenTilesLeft.Add(7);
+            Screens[FortressSpringScreen].OpenTilesLeft.Add(8);
+            Screens[FortressSpringScreen].OpenTilesLeft.Add(9);
+            Screens[FortressSpringScreen].OpenTilesLeft.Add(10);
+            //Screens[FortressSpringScreen].OpenTilesDown.Add(14);
             Screens[JokerHouseEntranceScreen].Directions.Add(Direction.Right);
             Screens[JokerHouseEntranceScreen].OpenTilesRight.Add(7);
             Screens[JokerHouseEntranceScreen].OpenTilesRight.Add(8);

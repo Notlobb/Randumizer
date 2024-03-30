@@ -11,6 +11,7 @@ namespace FaxanaduRando.Randomizer
         public const byte DartmoorCityLeftScreen = 3;
         public const byte DartmoorExitScreen = 14;
         public const byte GrieveScreen = 20;
+        public const byte SecondGrieveScreen = 22;
 
         public Dartmoor(WorldNumber number, byte[] content) : base(number, content)
         {
@@ -41,6 +42,25 @@ namespace FaxanaduRando.Randomizer
                 Screens[FraternalScreen].Sprites[1].ShouldBeShuffled = false;
                 Screens[FraternalScreen].Sprites[1].Id = Sprite.SpriteId.WingbootsBossLocked;
                 Screens[FraternalScreen].Sprites[1].SetY(11);
+
+                int pointerOffset = Section.GetOffset(11, 0x88CE, 0x8000);
+                content[pointerOffset] = 0xF0;
+                content[pointerOffset + 1] = 0xBC;
+                int newOffset = Section.GetOffset(11, 0xBCF0, 0x8000);
+                var item = new Sprite(content, newOffset);
+                item.Id = Sprite.SpriteId.Wingboots;
+                item.SetX(14);
+                item.SetY(3);
+                var item2 = new Sprite(content, newOffset + 2);
+                item2.Id = Sprite.SpriteId.WingbootsBossLocked;
+                item2.SetX(13);
+                item2.SetY(4);
+                item2.ShouldBeShuffled = false;
+                var boss = new Sprite(content, newOffset + 4);
+                boss.Id = Sprite.SpriteId.KingGrieve;
+                boss.SetX(7);
+                boss.SetY(7);
+                Screens[SecondGrieveScreen].Sprites = new List<Sprite> { item, item2, boss };
             }
         }
 
@@ -122,10 +142,18 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
+            result = CreateSublevel(Screens[24], endScreens[5], candidates, specialScreens, random, Screens[24].ParentSublevel, attempts, false, true);
+            if (!result)
+            {
+                return result;
+            }
+
             if (candidates.Count > 10)
             {
                 return false;
             }
+
+            Screens[SecondGrieveScreen].Sprites[0].Id = ItemRandomizer.GetRandomItem(random);
 
             return true;
         }
@@ -161,8 +189,9 @@ namespace FaxanaduRando.Randomizer
             endScreens.Add(Screens[2]);
             endScreens.Add(Screens[8]);
             endScreens.Add(Screens[18]);
-            endScreens.Add(Screens[31]);
             endScreens.Add(Screens[19]);
+            endScreens.Add(Screens[SecondGrieveScreen]);
+            endScreens.Add(Screens[31]);
 
             Util.ShuffleList(endScreens, 0, endScreens.Count - 1, random);
         }
@@ -349,6 +378,17 @@ namespace FaxanaduRando.Randomizer
             Screens[GrieveScreen].OpenTilesLeft.Add(2);
             Screens[GrieveScreen].OpenTilesLeft.Add(3);
             Screens[GrieveScreen].OpenTilesDown.Add(6);
+            Screens[SecondGrieveScreen].Directions.Add(Direction.Left);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(1);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(2);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(3);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(4);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(5);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(6);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(7);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(8);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(9);
+            Screens[SecondGrieveScreen].OpenTilesLeft.Add(10);
             Screens[23].Directions.Add(Direction.Right);
             Screens[23].Directions.Add(Direction.Up);
             Screens[23].OpenTilesRight.Add(8);
