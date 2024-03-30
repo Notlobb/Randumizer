@@ -135,7 +135,6 @@ namespace FaxanaduRando.Randomizer
                     "...And you call them 'Black Potions' despite the fact that they're obviously green?",
                     "Klaatu barada nikto",
                     "Your mother was a hamster and your father smelt of elderberries!",
-                    "Always look on the bright side of life!",
                     "Never pay more than 20 golds for a video game",
                     "Shoutout to Tundra83",
                     "Shoutout to Cha0sFinale",
@@ -331,6 +330,18 @@ namespace FaxanaduRando.Randomizer
                 AddText(gloveText[random.Next(gloveText.Count)], allText, 187);
                 AddText(endingText[random.Next(endingText.Count)], allText, 163);
 
+                if (random.Next(0, 2) == 0)
+                {
+                    var deathText = new List<string>()
+                    {
+                        "Always look on the bright side of life!",
+                        "Never skip not having no positive thoughts.",
+                        "Don't worry. Be happy!"
+                    };
+
+                    AddText(deathText[random.Next(deathText.Count)], allText, 35);
+                }
+
                 if (GeneralOptions.DragonSlayerRequired && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
                 {
                     var doorText = new List<string>()
@@ -357,6 +368,7 @@ namespace FaxanaduRando.Randomizer
                 AddText(defaultHint, allText, 43); //Eolis guru
                 AddText(defaultHint, allText, 86); //Sky fountain
                 AddText(defaultHint, allText, 125); //Ace key guy
+                AddText(defaultHint, allText, 138); //Conflate guru duplicated message
                 AddText(defaultHint, allText, 139); //Conflate guru
                 AddText(defaultHint, allText, 161); //Fraternal guru
 
@@ -1122,12 +1134,50 @@ namespace FaxanaduRando.Randomizer
                 "BlackMage",
                 "RedMage",
                 "BlueMage",
+                "WhiteMage",
+                "GreenMage",
                 "Warlock",
                 "Sorcerer",
                 "FighterMage",
                 "Rogue",
                 "Cleric",
                 "MindFlayer",
+                "Hunter",
+                "MonsterHunter",
+                "MonsterLord",
+                "DemonLord",
+                "Demon",
+                "Balrog",
+                "Shaman",
+                "FireMage",
+                "IceMage",
+                "Elementalist",
+                "Viking",
+                "Berserker",
+                "DeathKnight",
+                "DemonHunter",
+                "Bard",
+                "Minstrel",
+                "Doctor",
+                "Surgeon",
+                "Nurse",
+                "Anchorman",
+                "Huntsman",
+                "Vegetarian",
+                "Imp",
+                "OverLord",
+                "Hydralisk",
+                "Zergling",
+                "OgreMage",
+                "Marine",
+                "Boxer",
+                "Judge",
+                "Swashbuckler",
+                "Privateer",
+                "Cat",
+                "SeaDog",
+                "Sailor",
+                "Zealot",
             };
         }
 
