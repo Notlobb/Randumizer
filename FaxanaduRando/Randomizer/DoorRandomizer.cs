@@ -1225,7 +1225,7 @@ namespace FaxanaduRando.Randomizer
                     screenTable.Entries[(int)ExitDoor.EvilLairExit2][0] = 0;
                     worlds[5].backwardPosition.SetPos(14, 6);
                     levelTable.Entries[(byte)worlds[4].number * 2 + 1][0] = 0;
-                    screenTable.Entries[(byte)worlds[4].number * 2 + 1][0] = 0;
+                    screenTable.Entries[(byte)worlds[4].number * 2 + 1][0] = Eolis.ShopScreen;
                     worlds[4].forward = worlds[0];
                     worlds[4].forwardPosition.SetPos(2, 8);
                 }
