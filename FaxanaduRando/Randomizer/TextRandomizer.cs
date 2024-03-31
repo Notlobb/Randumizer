@@ -323,24 +323,22 @@ namespace FaxanaduRando.Randomizer
                     "Worry not my children, for the light that will radiate from me and my flower crown will touch the hearts of all of you as well. My beauty is a beauty to be shared, thank you!!!!!!!"
                 };
 
+                var deathText = new List<string>()
+                {
+                    "Always look on the bright side of life!",
+                    "Never skip not having no positive thoughts.",
+                    "Don't worry. Be happy!",
+                    "You and your friends are dead.",
+                    "Game over. Return of Ganon"
+                };
+
                 AddText(mattockText[random.Next(mattockText.Count)], allText, 170);
                 AddText(hourglassText[random.Next(hourglassText.Count)], allText, 171);
                 AddText(wingbootText[random.Next(wingbootText.Count)], allText, 172);
                 AddText(poisonText[random.Next(poisonText.Count)], allText, 186);
                 AddText(gloveText[random.Next(gloveText.Count)], allText, 187);
                 AddText(endingText[random.Next(endingText.Count)], allText, 163);
-
-                if (random.Next(0, 2) == 0)
-                {
-                    var deathText = new List<string>()
-                    {
-                        "Always look on the bright side of life!",
-                        "Never skip not having no positive thoughts.",
-                        "Don't worry. Be happy!"
-                    };
-
-                    AddText(deathText[random.Next(deathText.Count)], allText, 35);
-                }
+                AddText(deathText[random.Next(deathText.Count)], allText, 35);
 
                 if (GeneralOptions.DragonSlayerRequired && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
                 {
