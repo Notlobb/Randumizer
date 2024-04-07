@@ -9,12 +9,16 @@ namespace FaxanaduRando.Randomizer
         {
             //TODO complete
             Undefined = -1,
+            Meat = 1,
+            Coin = 2,
+            Rock = 3,
             Luigi = 4,
             NecronAides = 5,
             Zombie = 6,
             Hornet = 7,
             Metroid = 8,
             SpawnedGhost = 9,
+            Fireball = 10,
             Ghost = 11,
             Snowman = 12,
             Nash = 13,
@@ -51,9 +55,14 @@ namespace FaxanaduRando.Randomizer
             RockLobster = 49,
             KingGrieve = 50,
             EvilOne = 51,
+            Citizen1 = 52,
             RingDemon = 53,
             RingDworf = 54,
             KeyAce = 56,
+            Citizen2 = 65,
+            Guard = 66,
+            Nurse = 68,
+            Citizen3 = 69,
             Eye = 70,
             Spiky = 71,
             Glove = 72,
@@ -65,6 +74,9 @@ namespace FaxanaduRando.Randomizer
             Ointment = 78,
             Intro = 79,
             MattockOrRingRuby = 80,
+            StarProjectile = 81, //Projectile for Nash, BlueMage, ExecutionHood, Slug
+            EvilOneProjectile = 83,
+            DelugeProjectile = 84,
             Wingboots = 85,
             Hourglass = 86,
             Rod = 87,
@@ -220,6 +232,7 @@ namespace FaxanaduRando.Randomizer
         };
 
         public static readonly HashSet<SpriteId> enemies = GetEnemies();
+        public static readonly HashSet<SpriteId> Projectiles = GetProjectiles();
 
         public static HashSet<SpriteId> GetEnemies()
         {
@@ -230,6 +243,19 @@ namespace FaxanaduRando.Randomizer
             enemies.UnionWith(bossIds);
             enemies.UnionWith(superBossIds);
             return enemies;
+        }
+
+        public static HashSet<SpriteId> GetProjectiles()
+        {
+            var projectiles = new HashSet<SpriteId>()
+            {
+                SpriteId.Fireball,
+                SpriteId.StarProjectile,
+                SpriteId.EvilOneProjectile,
+                SpriteId.DelugeProjectile,
+            };
+
+            return projectiles;
         }
 
         public Sprite(byte[] content, int offset)

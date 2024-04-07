@@ -262,6 +262,11 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviours(spriteBehaviourTable, random, enemyBehaviourDict);
             }
 
+            if (EnemyOptions.RandomizeBehaviourProperties)
+            {
+                enemyRandomizer.RandomizeBehaviourProperties(content, random);
+            }
+
             doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
@@ -392,7 +397,9 @@ namespace FaxanaduRando.Randomizer
                 var enemyData = new Dictionary<Sprite.SpriteId, SpriteType>();
                 for (int i = 0; i < 100; i++)
                 {
-                    if (Sprite.enemies.Contains((Sprite.SpriteId)i))
+                    if (Sprite.enemies.Contains((Sprite.SpriteId)i) ||
+                        Sprite.Projectiles.Contains((Sprite.SpriteId)i) ||
+                        (Sprite.SpriteId)i == Sprite.SpriteId.Rock)
                     {
                         var id = (Sprite.SpriteId)i;
                         var hp = enemyHPTable.Entries[i][0];

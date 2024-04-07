@@ -125,6 +125,7 @@
                             <Binding ElementName="randomizeRewardsCheckBox" Path="IsChecked" />
                             <Binding ElementName="randomizeMagicImmunitiesCheckBox" Path="IsChecked" />
                             <Binding ElementName="tryToMoveBossesCheckBox" Path="IsChecked" />
+                            <Binding ElementName="randomizeAIPropertiesCheckbox" Path="IsChecked" />
                             <Binding ElementName="guaranteeElixirNearFortressCheckbox" Path="IsChecked" />
                             <Binding ElementName="fixPendantBugCheckBox" Path="IsChecked" />
                             <Binding ElementName="buffGlovesCheckBox" Path="IsChecked" />
@@ -332,6 +333,7 @@
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
 
@@ -402,6 +404,10 @@
                         ToolTip="Shuffle the AI used by the enemies. Partial will exclude superbosses like King Grieve and the Evil One from the shuffle but will still randomize their AI"
                         />
                 </StackPanel>
+
+                <CheckBox Name="randomizeAIPropertiesCheckbox" Grid.Column="0" Grid.Row="8" IsChecked="{Binding Path=(randomizer:EnemyOptions.RandomizeBehaviourProperties), Mode=TwoWay}"
+                          ToolTip="Randomize properties of enemy AI. Includes things like movement speed and jump arcs."/>
+                <TextBlock Grid.Column="1" Grid.Row="8" Text="Randomize enemy AI properties"/>
 
             </Grid>
         </TabItem>

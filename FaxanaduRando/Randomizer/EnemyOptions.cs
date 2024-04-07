@@ -57,6 +57,7 @@ namespace FaxanaduRando.Randomizer
         public static bool RandomizeRewards { get; set; } = true;
         public static bool RandomizeMagicImmunities { get; set; } = true;
         public static bool TryToMoveBosses { get; set; } = true;
+        public static bool RandomizeBehaviourProperties { get; set; } = false;
     }
 
     public class EnemySetSettings : ObservableCollection<string>
