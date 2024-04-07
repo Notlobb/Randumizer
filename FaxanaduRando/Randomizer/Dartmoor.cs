@@ -102,6 +102,26 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
+            bool addedThirdFork = !specialScreens.Contains(Screens[24]);
+            if (addedThirdFork)
+            {
+                result = CreateSublevel(Screens[24], endScreens[5], candidates, specialScreens, random, Screens[24].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
+            }
+
+            bool addedFourthFork = !specialScreens.Contains(Screens[6]);
+            if (addedFourthFork)
+            {
+                result = CreateSublevel(Screens[6], endScreens[4], candidates, specialScreens, random, Screens[6].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
+            }
+
             if (specialScreens.Contains(Screens[DartmoorExitScreen]))
             {
                 return false;
@@ -136,16 +156,22 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            result = CreateSublevel(Screens[6], endScreens[4], candidates, specialScreens, random, Screens[6].ParentSublevel, attempts, false, true);
-            if (!result)
+            if (!addedThirdFork)
             {
-                return result;
+                result = CreateSublevel(Screens[24], endScreens[5], candidates, specialScreens, random, Screens[24].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
-            result = CreateSublevel(Screens[24], endScreens[5], candidates, specialScreens, random, Screens[24].ParentSublevel, attempts, false, true);
-            if (!result)
+            if (!addedFourthFork)
             {
-                return result;
+                result = CreateSublevel(Screens[6], endScreens[4], candidates, specialScreens, random, Screens[6].ParentSublevel, attempts, false, true);
+                if (!result)
+                {
+                    return result;
+                }
             }
 
             if (candidates.Count > 10)
@@ -169,7 +195,6 @@ namespace FaxanaduRando.Randomizer
             //candidates.Add(Screens[15]); //unused screen?
             candidates.Add(Screens[17]);
             candidates.Add(Screens[23]);
-            candidates.Add(Screens[24]);
             //candidates.Add(Screens[26]);
             candidates.Add(Screens[27]);
             candidates.Add(Screens[29]);
@@ -199,12 +224,13 @@ namespace FaxanaduRando.Randomizer
         public override List<Screen> GetSpecialScreens(Random random)
         {
             var specialScreens = new List<Screen>();
+            specialScreens.Add(Screens[4]);
+            specialScreens.Add(Screens[6]);
             specialScreens.Add(Screens[FraternalScreen]);
             specialScreens.Add(Screens[DartmoorExitScreen]);
-            specialScreens.Add(Screens[4]);
             specialScreens.Add(Screens[GrieveScreen]);
+            specialScreens.Add(Screens[24]);
             specialScreens.Add(Screens[25]);
-            specialScreens.Add(Screens[6]);
 
             Util.ShuffleList(specialScreens, 0, specialScreens.Count - 1, random);
             return specialScreens;

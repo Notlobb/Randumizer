@@ -314,6 +314,24 @@ namespace FaxanaduRando.Randomizer
                 Screens[67].OpenTilesRight.Add(3);
             }
 
+            if (random.Next(0, 2) == 0)
+            {
+                Screens[MasconTowerEntranceScreen].FriendConnections[Direction.Left] = Screens[78];
+            }
+            else
+            {
+                Screens[MasconTowerEntranceScreen].FriendConnections = new Dictionary<Direction, Screen>();
+            }
+
+            if (random.Next(0, 2) == 0)
+            {
+                Screens[3].FriendConnections[Direction.Left] = Screens[2];
+            }
+            else
+            {
+                Screens[3].FriendConnections = new Dictionary<Direction, Screen>();
+            }
+
             bool result = CreateSublevel(startScreens[0], endScreens[0], candidates, specialScreens, random, SubLevel.Id.EarlyMist, attempts);
             if (!result)
             {
@@ -411,7 +429,7 @@ namespace FaxanaduRando.Randomizer
                 return result;
             }
 
-            if (candidates.Count > 10)
+            if (candidates.Count > 15)
             {
                 return false;
             }
@@ -436,15 +454,12 @@ namespace FaxanaduRando.Randomizer
             startToSpecial[TowerOfSufferEntranceScreen] = 5;
             startToSpecial[VictimTowerEntranceScreen] = 39;
 
-            Screens[3].FriendConnections[Direction.Left] = Screens[2];
-
             Screens[MasconLeftScreen].FriendEnds[Direction.Up] = Screens[3];
             Screens[5].FriendEnds[Direction.Up] = Screens[TowerOfSufferScreen];
 
             Screens[20].FriendEnds[Direction.Up] = Screens[MistSecretShopScreen];
             Screens[39].FriendEnds[Direction.Up] = Screens[VictimTowerScreen];
             Screens[33].FriendConnections[Direction.Down] = Screens[40];
-            Screens[MasconTowerEntranceScreen].FriendConnections[Direction.Left] = Screens[78];
 
             Screens[MasconTowerScreen].Directions.Add(Direction.Right);
             Screens[MasconTowerScreen].OpenTilesRight.Add(2);
@@ -460,13 +475,13 @@ namespace FaxanaduRando.Randomizer
             Screens[2].OpenTilesLeft.Add(7);
             Screens[2].OpenTilesLeft.Add(8);
             Screens[2].OpenTilesLeft.Add(9);
-            //Screens[3].Directions.Add(Direction.Left);
-            //Screens[3].Directions.Add(Direction.Down);
-            //Screens[3].OpenTilesLeft.Add(5);
-            //Screens[3].OpenTilesLeft.Add(6);
-            //Screens[3].OpenTilesLeft.Add(7);
-            //Screens[3].OpenTilesLeft.Add(8);
-            //Screens[3].OpenTilesDown.Add(12);
+            Screens[3].Directions.Add(Direction.Left);
+            Screens[3].Directions.Add(Direction.Down);
+            Screens[3].OpenTilesLeft.Add(5);
+            Screens[3].OpenTilesLeft.Add(6);
+            Screens[3].OpenTilesLeft.Add(7);
+            Screens[3].OpenTilesLeft.Add(8);
+            Screens[3].OpenTilesDown.Add(12);
             Screens[5].Directions.Add(Direction.Left);
             Screens[5].Directions.Add(Direction.Right);
             Screens[5].Directions.Add(Direction.Down);
@@ -1017,13 +1032,13 @@ namespace FaxanaduRando.Randomizer
             Screens[78].OpenTilesLeft.Add(3);
             Screens[78].OpenTilesLeft.Add(10);
             Screens[78].OpenTilesLeft.Add(11);
-            //Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Left);
-            //Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Right);
-            //Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(9);
-            //Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(10);
-            //Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(11);
-            //Screens[MasconTowerEntranceScreen].OpenTilesRight.Add(10);
-            //Screens[MasconTowerEntranceScreen].OpenTilesRight.Add(11);
+            Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Left);
+            Screens[MasconTowerEntranceScreen].Directions.Add(Direction.Right);
+            Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(9);
+            Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(10);
+            Screens[MasconTowerEntranceScreen].OpenTilesLeft.Add(11);
+            Screens[MasconTowerEntranceScreen].OpenTilesRight.Add(10);
+            Screens[MasconTowerEntranceScreen].OpenTilesRight.Add(11);
             Screens[VictimTowerEntranceScreen].Directions.Add(Direction.Right);
             Screens[VictimTowerEntranceScreen].OpenTilesRight.Add(8);
             Screens[VictimTowerEntranceScreen].OpenTilesRight.Add(9);
