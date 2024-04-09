@@ -434,20 +434,23 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0xAF94, 0x8000)] = (byte)random.Next(0, 3);
 
             // Behaviour for 0x18 (Psychic)
-            content[Section.GetOffset(14, 0xAF9C, 0x8000)] = GetRandomDuration(4, 60, random);
-            content[Section.GetOffset(14, 0xAFA1, 0x8000)] = GetRandomDuration(4, 60, random);
-            content[Section.GetOffset(14, 0xAFA4, 0x8000)] = GetRandomDuration(4, 60, random);
-            content[Section.GetOffset(14, 0xAFA9, 0x8000)] = GetRandomDuration(4, 60, random);
-            content[Section.GetOffset(14, 0xAFAC, 0x8000)] = GetRandomDuration(4, 60, random);
+            if (EnemyOptions.AIPropertySetting == EnemyOptions.AIProperrtyRandomization.Full)
+            {
+                content[Section.GetOffset(14, 0xAF9C, 0x8000)] = GetRandomDuration(4, 60, random);
+                content[Section.GetOffset(14, 0xAFA1, 0x8000)] = GetRandomDuration(4, 60, random);
+                content[Section.GetOffset(14, 0xAFA4, 0x8000)] = GetRandomDuration(4, 60, random);
+                content[Section.GetOffset(14, 0xAFA9, 0x8000)] = GetRandomDuration(4, 60, random);
+                content[Section.GetOffset(14, 0xAFAC, 0x8000)] = GetRandomDuration(4, 60, random);
 
-            content[Section.GetOffset(14, 0xAF9D, 0x8000)] = (byte)random.Next(0, 200);
-            content[Section.GetOffset(14, 0xAF9E, 0x8000)] = (byte)random.Next(0, 3);
+                content[Section.GetOffset(14, 0xAF9D, 0x8000)] = (byte)random.Next(0, 200);
+                content[Section.GetOffset(14, 0xAF9E, 0x8000)] = (byte)random.Next(0, 3);
 
-            content[Section.GetOffset(14, 0xAFA5, 0x8000)] = (byte)random.Next(0, 200);
-            content[Section.GetOffset(14, 0xAFA6, 0x8000)] = (byte)random.Next(0, 3);
+                content[Section.GetOffset(14, 0xAFA5, 0x8000)] = (byte)random.Next(0, 200);
+                content[Section.GetOffset(14, 0xAFA6, 0x8000)] = (byte)random.Next(0, 3);
 
-            content[Section.GetOffset(14, 0xAFAD, 0x8000)] = (byte)random.Next(0, 200);
-            content[Section.GetOffset(14, 0xAFAE, 0x8000)] = (byte)random.Next(0, 3);
+                content[Section.GetOffset(14, 0xAFAD, 0x8000)] = (byte)random.Next(0, 200);
+                content[Section.GetOffset(14, 0xAFAE, 0x8000)] = (byte)random.Next(0, 3);
+            }
 
             // Behaviour for 0x19 (Mario)
             content[Section.GetOffset(14, 0xAFB9, 0x8000)] = GetRandomDuration(2, 30, random);
@@ -560,8 +563,6 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0xAEAB, 0x8000)] = (byte)random.Next(0, 200);
             content[Section.GetOffset(14, 0xAEAC, 0x8000)] = (byte)random.Next(0, 3);
             content[Section.GetOffset(14, 0xAEAD, 0x8000)] = (byte)random.Next(0, 5);
-
-            
 
             // Behaviour for 0x27 (Slug)
             content[Section.GetOffset(14, 0x9752, 0x8000)] = (byte)random.Next(0, 200);
@@ -780,6 +781,11 @@ namespace FaxanaduRando.Randomizer
         {
             var candidates = new List<Sprite.SpriteId>(Sprite.Projectiles);
             candidates.Remove(Sprite.SpriteId.Fireball);
+            if (EnemyOptions.AIPropertySetting == EnemyOptions.AIProperrtyRandomization.Partial)
+            {
+                candidates.Remove(Sprite.SpriteId.EvilOneProjectile);
+            }
+
             return candidates[random.Next(candidates.Count)];
         }
 

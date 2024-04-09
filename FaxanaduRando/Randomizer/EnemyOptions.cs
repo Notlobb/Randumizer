@@ -49,15 +49,22 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        public enum AIProperrtyRandomization
+        {
+            Full,
+            Partial,
+            Unchanged,
+        };
+
         public static EnemySetType EnemySet { get; set; } = EnemySetType.NonMixed;
         public static EnemyHP EnemyHPSetting { get; set; } = EnemyHP.Unchanged;
         public static EnemyDamage EnemyDamageSetting { get; set; } = EnemyDamage.Unchanged;
         public static AIShuffle AISetting { get; set; } = AIShuffle.Unchanged;
+        public static AIProperrtyRandomization AIPropertySetting { get; set; } = AIProperrtyRandomization.Unchanged;
         public static bool RandomizeExperience { get; set; } = true;
         public static bool RandomizeRewards { get; set; } = true;
         public static bool RandomizeMagicImmunities { get; set; } = true;
         public static bool TryToMoveBosses { get; set; } = true;
-        public static bool RandomizeBehaviourProperties { get; set; } = false;
     }
 
     public class EnemySetSettings : ObservableCollection<string>
@@ -117,6 +124,16 @@ namespace FaxanaduRando.Randomizer
         }
     }
 
+    public class AIPropertySettings : ObservableCollection<string>
+    {
+        public AIPropertySettings()
+        {
+            Add("Full randomization");
+            Add("Partial randomization");
+            Add("Unchanged");
+        }
+    }
+
     public class EnemyHPConverter : EnumConverter<EnemyOptions.EnemyHP>
     {
     }
@@ -130,6 +147,10 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class AIConverter : EnumConverter<EnemyOptions.AIShuffle>
+    {
+    }
+
+    public class AIPropertyConverter : EnumConverter<EnemyOptions.AIProperrtyRandomization>
     {
     }
 }

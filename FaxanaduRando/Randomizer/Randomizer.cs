@@ -262,7 +262,7 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviours(spriteBehaviourTable, random, enemyBehaviourDict);
             }
 
-            if (EnemyOptions.RandomizeBehaviourProperties)
+            if (EnemyOptions.AIPropertySetting != EnemyOptions.AIProperrtyRandomization.Unchanged)
             {
                 enemyRandomizer.RandomizeBehaviourProperties(content, random);
             }

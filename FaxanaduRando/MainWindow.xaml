@@ -20,7 +20,9 @@
         <randomizer:EnemySetSettings x:Key="enemySetSettings" />
         <randomizer:EnemySetConverter x:Key="enemySetConverter" />
         <randomizer:AISettings x:Key="aiSettings" />
+        <randomizer:AIPropertySettings x:Key="aiPropertySettings" />
         <randomizer:AIConverter x:Key="aiConverter" />
+        <randomizer:AIPropertyConverter x:Key="aiPropertyConverter" />
         <randomizer:StartingWeaponSettings x:Key="startingWeapon" />
         <randomizer:StartingWeaponConverter x:Key="startingWeaponConverter" />
         <randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
@@ -125,7 +127,6 @@
                             <Binding ElementName="randomizeRewardsCheckBox" Path="IsChecked" />
                             <Binding ElementName="randomizeMagicImmunitiesCheckBox" Path="IsChecked" />
                             <Binding ElementName="tryToMoveBossesCheckBox" Path="IsChecked" />
-                            <Binding ElementName="randomizeAIPropertiesCheckbox" Path="IsChecked" />
                             <Binding ElementName="guaranteeElixirNearFortressCheckbox" Path="IsChecked" />
                             <Binding ElementName="fixPendantBugCheckBox" Path="IsChecked" />
                             <Binding ElementName="buffGlovesCheckBox" Path="IsChecked" />
@@ -161,6 +162,7 @@
                             <Binding ElementName="shuffleSegmentsComboBox" Path="SelectedIndex" />
                             <Binding ElementName="smallKeyLimitComboBox" Path="SelectedIndex" />
                             <Binding ElementName="bigKeyLimitComboBox" Path="SelectedIndex" />
+                            <Binding ElementName="aiPropertyComboBox" Path="SelectedIndex" />
                         </MultiBinding>
                     </TextBox.Text>
                 </TextBox>
@@ -405,10 +407,17 @@
                         />
                 </StackPanel>
 
-                <CheckBox Name="randomizeAIPropertiesCheckbox" Grid.Column="0" Grid.Row="8" IsChecked="{Binding Path=(randomizer:EnemyOptions.RandomizeBehaviourProperties), Mode=TwoWay}"
-                          ToolTip="Randomize properties of enemy AI. Includes things like movement speed and jump arcs."/>
-                <TextBlock Grid.Column="1" Grid.Row="8" Text="Randomize enemy AI properties"/>
-
+                <TextBlock Grid.Column="1" Grid.Row="8" Text="Enemy AI Properties: "/>
+                <StackPanel  Grid.Column="2"
+                             Grid.Row="8">
+                    <ComboBox Name="aiPropertyComboBox"
+                        ItemsSource="{StaticResource aiPropertySettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:EnemyOptions.AIPropertySetting), Mode=TwoWay, Converter={StaticResource aiPropertyConverter}}"
+                        ToolTip="Randomize some properties of the enemy AI. This includes things like movement speed and jumps. Partial will exclude things that can make the seed much harder, such as allowing regular enemies to get the projectiles that the Evil One uses."
+                        />
+                </StackPanel>
             </Grid>
         </TabItem>
         <TabItem Header="Items">
