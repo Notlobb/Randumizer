@@ -254,19 +254,23 @@ namespace FaxanaduRando.Randomizer
         public void RandomizeBehaviourProperties(byte[] content, Random random)
         {
             // Behaviour for 0x2 (Coin)
-            if (random.Next(0, 2) == 0)
+            if (EnemyOptions.AIPropertySetting == EnemyOptions.AIProperrtyRandomization.Full)
             {
-                //Coin vertical dropping height
-                content[Section.GetOffset(14, 0x8D1B, 0x8000)] = 0;
+                if (random.Next(0, 2) == 0)
+                {
+                    //Coin vertical dropping height
+                    content[Section.GetOffset(14, 0x8D1B, 0x8000)] = 0;
+                }
+
+                if (random.Next(0, 2) == 0)
+                {
+                    //Invert coin floating
+                    content[Section.GetOffset(14, 0x8D3F, 0x8000)] = 0;
+                }
             }
 
             //Coin vertical bouncing height
             content[Section.GetOffset(14, 0x8D55, 0x8000)] = (byte)random.Next(2, 8);
-            if (random.Next(0, 2) == 0)
-            {
-                //Invert coin floating
-                content[Section.GetOffset(14, 0x8D3F, 0x8000)] = 0;
-            }
 
             // Behaviour for 0x3 (Rock)
             content[Section.GetOffset(14, 0x9E97, 0x8000)] = (byte)random.Next(1, 7);
@@ -290,7 +294,7 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0xAE27, 0x8000)] = (byte)random.Next(0, 3);
 
             // Behaviour for 0x5 (NecronAides)
-            if (random.Next(0, 2) == 0)
+            if (random.Next(0, 4) != 0)
             {
                 //Change climbing tile type to 0 (air)
                 content[Section.GetOffset(14, 0x8DD9, 0x8000)] = 0;
@@ -539,9 +543,9 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0x9587, 0x8000)] = (byte)random.Next(0, 200);
 
             // Behaviour for 0x23 (TeleCreature)
-            content[Section.GetOffset(14, 0x95C6, 0x8000)] = (byte)random.Next(0, 120);
-            content[Section.GetOffset(14, 0x95D0, 0x8000)] = (byte)random.Next(0, 120);
-            content[Section.GetOffset(14, 0x95E9, 0x8000)] = (byte)random.Next(0, 120);
+            content[Section.GetOffset(14, 0x95C6, 0x8000)] = (byte)random.Next(5, 150);
+            content[Section.GetOffset(14, 0x95D0, 0x8000)] = (byte)random.Next(5, 150);
+            content[Section.GetOffset(14, 0x95E9, 0x8000)] = (byte)random.Next(5, 150);
 
             // Behaviour for 0x24 (Jouster)
             content[Section.GetOffset(14, 0x9677, 0x8000)] = (byte)random.Next(0, 3);
@@ -600,10 +604,10 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0x9840, 0x8000)] = (byte)random.Next(0, 3);
 
             // Behaviour for 0x2C (BurrowingCyclops)
-            content[Section.GetOffset(14, 0x988B, 0x8000)] = GetRandomDuration(2, 40, random);
-            content[Section.GetOffset(14, 0x9893, 0x8000)] = GetRandomDuration(2, 40, random);
-            content[Section.GetOffset(14, 0x989B, 0x8000)] = GetRandomDuration(2, 40, random);
-            content[Section.GetOffset(14, 0x98A3, 0x8000)] = GetRandomDuration(2, 40, random);
+            content[Section.GetOffset(14, 0x988B, 0x8000)] = GetRandomDuration(2, 30, random);
+            content[Section.GetOffset(14, 0x9893, 0x8000)] = GetRandomDuration(2, 30, random);
+            content[Section.GetOffset(14, 0x989B, 0x8000)] = GetRandomDuration(2, 30, random);
+            content[Section.GetOffset(14, 0x98A3, 0x8000)] = GetRandomDuration(2, 30, random);
 
             // Behaviour for 0x2D (Wyvern)
             // Don't update projectile due to graphical glitches
@@ -612,7 +616,7 @@ namespace FaxanaduRando.Randomizer
             content[Section.GetOffset(14, 0x9BE4, 0x8000)] = (byte)random.Next(2, 7);
             content[Section.GetOffset(14, 0x9C1D, 0x8000)] = (byte)random.Next(2, 6);
             content[Section.GetOffset(14, 0x9C44, 0x8000)] = (byte)random.Next(2, 6);
-            content[Section.GetOffset(14, 0x9C4B, 0x8000)] = (byte)random.Next(0, 200);
+            content[Section.GetOffset(14, 0x9C49, 0x8000)] = (byte)random.Next(0, 200);
 
             // Behaviour for 0x2E (DogBoss)
             content[Section.GetOffset(14, 0xB0E3, 0x8000)] = (byte)random.Next(0, 200);
@@ -624,8 +628,8 @@ namespace FaxanaduRando.Randomizer
 
             // Behaviour for 0x2F (BigSnake)
             content[Section.GetOffset(14, 0x9CAB, 0x8000)] = GetRandomDuration(2, 40, random);
-            content[Section.GetOffset(14, 0x9CB9, 0x8000)] = (byte)random.Next(0, 4);
-            content[Section.GetOffset(14, 0x9CBE, 0x8000)] = (byte)random.Next(0, 4);
+            content[Section.GetOffset(14, 0x9CB9, 0x8000)] = (byte)random.Next(1, 4);
+            content[Section.GetOffset(14, 0x9CBE, 0x8000)] = (byte)random.Next(1, 4);
 
             // Behaviour for 0x30 (Nest)
             value = (byte)GetRandomEnemy(random);
@@ -795,6 +799,21 @@ namespace FaxanaduRando.Randomizer
             candidates.Remove(Sprite.SpriteId.Jason);
             candidates.AddRange(Sprite.shortIds);
             candidates.AddRange(Sprite.flyingIds);
+            var filter = new List<Sprite.SpriteId>();
+            foreach (var c in candidates)
+            {
+                if ((byte)c > (byte)Sprite.SpriteId.Bat)
+                {
+                    filter.Add(c);
+                }
+            }
+
+            filter.Add(Sprite.SpriteId.Jason);
+            foreach (var c in filter)
+            {
+                candidates.Remove(c);
+            }
+
             return candidates[random.Next(candidates.Count)];
         }
 
