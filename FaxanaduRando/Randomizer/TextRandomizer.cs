@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace FaxanaduRando.Randomizer
 {
     class TextRandomizer
     {
+
         public const int numberOfTitles = 16;
         public const int titleLength = 16;
 
@@ -143,11 +145,14 @@ namespace FaxanaduRando.Randomizer
                     "Shoutout to OdinSpack",
                     "Shoutout to Songbirder",
                     "Shoutout to Bogledowdee",
+                    "Shoutout to HungryGoriya",
+                    "So anyway, I started blastin,...",
+                    "What a great day to have a curse.",
                 };
 
                 if (TextOptions.UseCustomText)
                 {
-                    string[] customTextLines = File.ReadAllLines(customTextFile); 
+                    string[] customTextLines = File.ReadAllLines(customTextFile);
 
                     communityHints = new List<string>() {};
                     foreach (string customText in customTextLines)
@@ -160,7 +165,7 @@ namespace FaxanaduRando.Randomizer
                         {
                             defaultHint = customText.Split(':')[1];
                         }
-                        else if (customText.Trim().StartsWith("title:"))
+                        else if (customText.Contains(":") && !char.IsDigit(customText[0]))
                         {
                             // do nothing
                         }
@@ -169,8 +174,8 @@ namespace FaxanaduRando.Randomizer
                             customTexts.Add(customText);
                         }
                     }
-                } 
-            
+                }
+
                 Util.ShuffleList(communityHints, 0, communityHints.Count - 1, random);
 
                 if (GeneralOptions.HintSetting == GeneralOptions.Hints.Community)
@@ -213,104 +218,6 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.UpdateMiscText)
             {
-                GiftItem giftItem;
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FireMage, out giftItem))
-                {
-                    var cost = shopRandomizer.StaticPriceDict[DoorId.FireMage].Price;
-                    var text = $"{giftItem.Item} for {cost}?";
-                    AddText(text, allText, 22);
-                }
-
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FortressGuru, out giftItem))
-                {
-                    var text = $"Have you activated the sky spring? Come back for {giftItem.Item}";
-                    AddText(text, allText, 83);
-                }
-
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.VictimBar, out giftItem))
-                {
-                    string rank = titles[giftRandomizer.BarRank];
-                    ushort experience = titleExperiences[giftRandomizer.BarRank - 1];
-                    var text = $"Have you achieved the title '{rank}'? Come back for {giftItem.Item}. You will need {experience} experience";
-                    AddText(text, allText, 115);
-                }
-
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.AceKeyHouse, out giftItem))
-                {
-                    var text = $"Come back for {giftItem.Item}";
-                    AddText(text, allText, 124);
-                }
-
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.ConflateGuru, out giftItem))
-                {
-                    var text = $"This guru has {giftItem.Item}";
-                    if (Util.GurusShuffled())
-                    {
-                        string location = "Unknown";
-                        foreach (var door in doorRandomizer.Doors.Values)
-                        {
-                            if (door.Id == DoorId.ConflateGuru)
-                            {
-                                location = door.OriginalId.ToString();
-                                break;
-                            }
-                        }
-
-                        text = $"This guru has {giftItem.Item} and is at {location}";
-                    }
-
-                    AddText(text, allText, 131);
-                    AddText(text, allText, 132);
-                    AddText(text, allText, 133);
-                }
-
-                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FraternalGuru, out giftItem))
-                {
-                    var text = $"Do you have the Dragon Slayer? Come back for {giftItem.Item}";
-                    AddText(text, allText, 160);
-                }
-
-                var mattockText = new List<string>()
-                {
-                    "MAAAAAAAATTTTTTTTTOOOOOOOOCK!",
-                    "I now declare this the Mattock Expressway",
-                };
-
-                var hourglassText = new List<string>()
-                {
-                    "Za Warudo!",
-                    "Stop the clock!",
-                    "Stop! Hammer Time!",
-                };
-
-                var wingbootText = new List<string>()
-                {
-                    "Looks like Team Rocket is Blasting Off Again!",
-                    "With boots I could walk on air.",
-                    "This stream sponsored by Red Bull!",
-                    "I have to go now. My planet needs me.",
-                };
-
-                var poisonText = new List<string>();
-                if (ItemOptions.ReplacePoison)
-                {
-                    poisonText.Add("I'm holding Black Potion");
-                    poisonText.Add("I now prossess Black Potion");
-                }
-                else
-                {
-                    poisonText.Add("SOAP POISONING");
-                    poisonText.Add("I've touched posion");
-                }
-
-                var gloveText = new List<string>()
-                {
-                    "I love the power glove. It's so bad",
-                    "If it doesn't fit, you must acquit.",
-                    "Hey! You forgot the Power Glove!",
-                    "No glove, no love",
-                };
-
                 var endingText = new List<string>()
                 {
                     "You're winner!",
@@ -332,11 +239,6 @@ namespace FaxanaduRando.Randomizer
                     "Game over. Return of Ganon"
                 };
 
-                AddText(mattockText[random.Next(mattockText.Count)], allText, 170);
-                AddText(hourglassText[random.Next(hourglassText.Count)], allText, 171);
-                AddText(wingbootText[random.Next(wingbootText.Count)], allText, 172);
-                AddText(poisonText[random.Next(poisonText.Count)], allText, 186);
-                AddText(gloveText[random.Next(gloveText.Count)], allText, 187);
                 AddText(endingText[random.Next(endingText.Count)], allText, 163);
                 AddText(deathText[random.Next(deathText.Count)], allText, 35);
 
@@ -363,12 +265,22 @@ namespace FaxanaduRando.Randomizer
                 };
 
                 AddText(kingTexts[random.Next(kingTexts.Count)], allText, 52);
-                AddText(defaultHint, allText, 43); //Eolis guru
-                AddText(defaultHint, allText, 86); //Sky fountain
-                AddText(defaultHint, allText, 125); //Ace key guy
-                AddText(defaultHint, allText, 138); //Conflate guru duplicated message
-                AddText(defaultHint, allText, 139); //Conflate guru
-                AddText(defaultHint, allText, 161); //Fraternal guru
+
+                var skyFountainTexts = new List<string>()
+                {
+                    "Has the King finally paid the water bill?|This is enough golds.",
+                    "If you can wait a few minutes|I can make this water holy.",
+                    "Okay, I'll turn the water back on.|But don't come to me when you're drowning in gremlins.",
+                    "Ah, the ancient magic of 'off' and 'on'.|'I'm a true wizard.",
+                    "Engaging the hydrodynamic thaumaturgy protocols...|and done!",
+                    "I’ve been turning on this sky spring for 35 years,|and it’s still broken!",
+                    "You probably expected a reward, huh?| Nope.|Just water.",
+                    "The spring flows...|but, at what cost?",
+                    "The flow of the spring aligns with the cosmic balance...|or something like that.",
+                    "Say Nello to Moto for me!",
+                };
+
+                AddText(skyFountainTexts[random.Next(skyFountainTexts.Count)], allText, 86); //Sky fountain
 
                 if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
                 {
@@ -383,6 +295,107 @@ namespace FaxanaduRando.Randomizer
                     string[] parts = customText.Split(':');
                     var textIndex = int.Parse(parts[0]);
                     AddText(parts[1], allText, textIndex);
+                }
+
+                Dictionary<Item, string> itemDictionary =
+                    ItemNameRandomizer.GenerateItemNameDictionary(
+                        ItemOptions.RandomizeItemNames,
+                        customTextFile
+                    );
+
+                // to prep for writing to the ROM we convert to int and remove non-inventory items
+                Dictionary<int, string> intBasedDictionary = itemDictionary.ToDictionary(
+                    kvp => (int)kvp.Key, // Convert the enum key to an int
+                    kvp => kvp.Value     // Keep the value unchanged
+                );
+
+                var keyValueList = intBasedDictionary.ToList();
+                if (keyValueList.Count >= 3)
+                {
+                    keyValueList.RemoveRange(keyValueList.Count - 3, 3);
+                }
+
+                intBasedDictionary = keyValueList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                Text.SetAllItemNames(content, intBasedDictionary);
+
+                var itemDialogs = ItemDialog.GetDialog(itemDictionary, customTextFile);
+
+                foreach (var dialog in itemDialogs)
+                {
+                    AddText(dialog.Value, allText, dialog.Key);
+                }
+
+                GiftItem giftItem;
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FireMage, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    var cost = shopRandomizer.StaticPriceDict[DoorId.FireMage].Price;
+                    AddText(GetFireMageText(itemName, cost, GetCustomText(customTexts, 22)), allText, 22);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FortressGuru, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    AddText(GetTowerOfFortressGuruText(itemName, GetCustomText(customTexts, 83)), allText, 83);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.VictimBar, out giftItem))
+                {
+                    string rank = titles[giftRandomizer.BarRank];
+                    ushort experience = titleExperiences[giftRandomizer.BarRank - 1];
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    AddText(GetVictimBarkeepText(itemName, rank, experience, GetCustomText(customTexts, 115)), allText, 115);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.AceKeyHouse, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    itemDictionary.TryGetValue(Item.BlackOnix, out string blackOnyxName);
+                    AddText(GetAceKeyHermitTextBefore(itemName, blackOnyxName, GetCustomText(customTexts, 124)), allText, 124);
+                    AddText(GetAceKeyHermitTextAfter(itemName, blackOnyxName, GetCustomText(customTexts, 125)), allText, 125);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.ConflateGuru, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    var text = $"This guru has {itemName}";
+                    if (Util.GurusShuffled())
+                    {
+                        string location = "Unknown";
+                        foreach (var door in doorRandomizer.Doors.Values)
+                        {
+                            if (door.Id == DoorId.ConflateGuru)
+                            {
+                                location = door.OriginalId.ToString();
+                                break;
+                            }
+                        }
+
+                        text = $"This guru has {itemName} and is at {location}";
+                    }
+
+                    AddText(text, allText, 131);
+                    AddText(text, allText, 132);
+                    AddText(text, allText, 133);
+
+                    itemDictionary.TryGetValue(Item.BattleSuit, out string battleSuitName);
+                    AddText(GetConflateGuruTextBefore(itemName, battleSuitName, GetCustomText(customTexts, 138)), allText, 138);
+                    AddText(GetConflateGuruTextAfter(itemName, battleSuitName, GetCustomText(customTexts, 139)), allText, 139);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FraternalGuru, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    itemDictionary.TryGetValue(Item.DragonSlayer, out string dragonSlayerName);
+                    AddText(GetFraternalGuruTextBefore(itemName, dragonSlayerName, GetCustomText(customTexts, 160)), allText, 160);
+                    AddText(GetFraternalGuruTextAfter(itemName, dragonSlayerName, GetCustomText(customTexts, 161)), allText, 161);
+                }
+
+                if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.EolisGuru, out giftItem))
+                {
+                    string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
+                    AddText(GetEolisGuruText(itemName, GetCustomText(customTexts, 43)), allText, 43);
                 }
 
                 var price = shopRandomizer.StaticPriceDict[DoorId.MartialArtsShop].Price;
@@ -692,7 +705,7 @@ namespace FaxanaduRando.Randomizer
                 "Perfect",
                 "Quaint",
                 "Rusty",
-                "Shin�",
+                "Shiny",
                 "Shoddy",
                 "Solid",
                 "Tacky",
@@ -934,7 +947,7 @@ namespace FaxanaduRando.Randomizer
 
         private List<string> GetCustomTitles(string customTextFile)
         {
-            string[] customTextFileLines = File.ReadAllLines(customTextFile); 
+            string[] customTextFileLines = File.ReadAllLines(customTextFile);
 
             var customTitles = new List<string>() {};
             foreach (string line in customTextFileLines)
@@ -1196,6 +1209,57 @@ namespace FaxanaduRando.Randomizer
             return customText;
         }
 
+        private string GetFireMageText(string giftItem, ushort cost, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, giftItem, cost) : $"{giftItem} for {cost}?";
+        }
+
+        private string GetTowerOfFortressGuruText(string giftItem, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, giftItem) : $"Have you activated the sky spring? Come back for {giftItem}";
+        }
+
+        private string GetVictimBarkeepText(string giftItem, string rank, ushort experience, string customText)
+        {
+            var text = $"Have you achieved the title '{rank}'?|Come back for {giftItem}. You will need {experience} experience.";
+            return customText.Length > 0 ? string.Format(customText, rank, giftItem, experience) : text;
+        }
+
+        private string GetAceKeyHermitTextBefore(string giftItem, string blackOnyxName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, blackOnyxName, giftItem) : $"Bring me the {blackOnyxName} for {giftItem}.";
+        }
+
+        private string GetAceKeyHermitTextAfter(string giftItem, string blackOnyxName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, blackOnyxName, giftItem) : $"The {blackOnyxName}!|Take the {giftItem}.|Fight for the elves.";
+        }
+
+        private string GetConflateGuruTextBefore(string giftItem, string battleSuitName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, battleSuitName, giftItem) : $"Bring me the {battleSuitName} and I will grant you {giftItem}.";
+        }
+
+        private string GetConflateGuruTextAfter(string giftItem, string battleSuitName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, battleSuitName, giftItem) : $"Take this, and tell the Evil One he now owes me a new {giftItem}.";
+        }
+
+        private string GetFraternalGuruTextBefore(string giftItem, string dragonSlayerName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, dragonSlayerName, giftItem) : $"Do you have the {dragonSlayerName}? Come back for {giftItem}";
+        }
+
+        private string GetFraternalGuruTextAfter(string giftItem, string dragonSlayerName, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, dragonSlayerName, giftItem) : $"The {dragonSlayerName} is great, but this {giftItem} is going to get the job done.";
+        }
+
+        private string GetEolisGuruText(string giftItem, string customText)
+        {
+            return customText.Length > 0 ? string.Format(customText, giftItem) : $"This {giftItem} might be slightly used but I'm sure it's fine.";
+        }
+
         private string GetHospitalText(ushort price, string customText)
         {
             return customText.Length > 0 ? string.Format(customText, price) : $"{price}?";;
@@ -1235,7 +1299,6 @@ namespace FaxanaduRando.Randomizer
         private string AddLine(string text, List<string> lines, int index, int previousIndex)
         {
             var length = index - previousIndex;
-            
             var line = text.Substring(previousIndex, length);
             var paddingMax = length > 14 ? 16 - length : 2;
             var padding = "".PadRight(paddingMax < 0 ? 0 : paddingMax, ' ');

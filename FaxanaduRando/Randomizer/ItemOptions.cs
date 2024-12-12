@@ -89,6 +89,7 @@ namespace FaxanaduRando.Randomizer
         public static bool ReplacePoison { get; set; } = true;
         public static MattockUsages MattockUsage { get; set; } = MattockUsages.AnywhereExceptBannedScreens;
         public static bool AlwaysSpawnSmallItems { get; set; } = true;
+        public static bool RandomizeItemNames { get; set; } = false;
         public static bool IncludeSomeEolisDoors { get; set; } = false;
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
         public static ItemShuffle ShuffleItems { get; set; } = ItemShuffle.MixOnlyShopsAndGifts;
