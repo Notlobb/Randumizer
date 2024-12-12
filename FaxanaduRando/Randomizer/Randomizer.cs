@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO; 
+using System.IO;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -315,7 +315,7 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V29B2", titleText);
+            Text.AddTitleText(0, "RANDUMIZER V30A1", titleText);
             var hash = ((uint)flags.GetHashCode()).ToString();
             if (hash.Length > 8)
             {
@@ -352,7 +352,7 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.29 beta 2");
+                spoilers.Add("Randumizer v0.30 alpha 1");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -815,7 +815,7 @@ namespace FaxanaduRando.Randomizer
             //Allow menu on first Eolis screen
             content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
             content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
-            
+
             if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
             {
                 //Use the fact that the small key messages are not used to add new ring messages

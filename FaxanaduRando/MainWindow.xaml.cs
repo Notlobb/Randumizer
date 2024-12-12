@@ -117,9 +117,11 @@ namespace FaxanaduRando
                 }
                 MessageBox.Show(message, "Success");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Failed to create rom", "Error");
+                string errorMessage = $"An error occurred:\n\nMessage: {ex.Message}\n\nStack Trace:\n{ex.StackTrace}";
+                Console.WriteLine(errorMessage); // Output to console
+                System.IO.File.AppendAllText("error_log.txt", $"{DateTime.Now}: {errorMessage}\n\n");
             }
         }
 
@@ -128,33 +130,40 @@ namespace FaxanaduRando
             if (sender.GetType() == typeof(System.Windows.Controls.ComboBox))
             {
                 var box = (System.Windows.Controls.ComboBox)sender;
+                // Beginner
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "38DFFF315k02v1ncoH";
+                    flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
                 }
+                // Standard
                 else if (box.SelectedIndex == 1)
                 {
-                    flagsTextBox.Text = "78CFFF35za0cGalcmH";
+                    flagsTextBox.Text = "38CFFF7A0za0cGalcmH";
                 }
+                // Race (typical)
                 else if (box.SelectedIndex == 2)
                 {
-                    flagsTextBox.Text = "7ECFFF35zc0cFakcmH";
+                    flagsTextBox.Text = "7ECFFF7A0za0cFakcmH";
                 }
+                // Race (classic)
                 else if (box.SelectedIndex == 3)
                 {
-                    flagsTextBox.Text = "58086700Am00a1nmoH";
+                    flagsTextBox.Text = "580867000Am00a1nmoH";
                 }
+                // Challenge mode
                 else if (box.SelectedIndex == 4)
                 {
-                    flagsTextBox.Text = "FECC3735ze0bPakmoH";
+                    flagsTextBox.Text = "FECC377A0ze0bPakmoH";
                 }
+                // Chaos mode
                 else if (box.SelectedIndex == 5)
                 {
-                    flagsTextBox.Text = "7ECFFF37ucba0a012b";
+                    flagsTextBox.Text = "7ECFFF7E0ucba0a012b";
                 }
+                // Extra fast
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3ECFFF75Al02v1n2k2";
+                    flagsTextBox.Text = "3ECFFFFA0Al02v1n2k2";
                 }
             }
         }

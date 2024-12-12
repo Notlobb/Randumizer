@@ -69,8 +69,10 @@
     <Compile Include="Randomizer\GiftRandomizer.cs" />
     <Compile Include="Randomizer\Guru.cs" />
     <Compile Include="Randomizer\GuruRandomizer.cs" />
+    <Compile Include="Randomizer\ItemDialog.cs" />
     <Compile Include="Randomizer\ItemOptions.cs" />
     <Compile Include="Randomizer\ItemRandomizer.cs" />
+    <Compile Include="Randomizer\ItemNameRandomizer.cs" />
     <Compile Include="Randomizer\DoorRandomizer.cs" />
     <Compile Include="Randomizer\Mist.cs" />
     <Compile Include="Randomizer\OpCode.cs" />

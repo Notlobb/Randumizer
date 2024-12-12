@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FaxanaduRando.Randomizer
@@ -14,6 +15,8 @@ namespace FaxanaduRando.Randomizer
 
         private const int textOffset = 0x34310;
         private const int textOffsetEnd = 0x373C9;
+        private const int itemNameOffset = 0x31B4E;
+        private const int itemNameOffsetEnd = 0x31DBD;
 
         private static readonly Dictionary<byte, char> charDict = new Dictionary<byte, char>
         {
@@ -120,6 +123,33 @@ namespace FaxanaduRando.Randomizer
         };
 
         private static Dictionary<char, byte> reverseCharDict = Util.Reverse(charDict);
+        public static void SetAllItemNames(byte[] content, Dictionary<int, string> itemDictionary)
+        {
+            int offset = itemNameOffset;
+            byte terminator = 0x0D;
+            byte endMarker = 0x0F;
+            int nameLength = 15; // Names are 15 characters long, with the 16th byte as the terminator
+            // however: only 13 characters can fit in the shop and inventory windows
+
+            foreach (var kvp in itemDictionary.OrderBy(k => k.Key))
+            {
+                string name = kvp.Value;
+
+                // Convert the name to uppercase and ensure it's exactly 15 characters
+                string formattedName = name.ToUpper().PadRight(nameLength).Substring(0, nameLength);
+
+                foreach (char c in formattedName)
+                {
+                    byte byteToWrite = c == ' ' ? (byte)0x20 : (byte)c;
+                    content[offset++] = byteToWrite;
+                }
+
+                // Write the terminator byte
+                content[offset++] = terminator;
+            }
+
+            content[offset] = endMarker;
+        }
 
         public static List<string> GetAllText(byte[] content)
         {

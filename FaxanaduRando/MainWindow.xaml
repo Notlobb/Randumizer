@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         mc:Ignorable="d"
-        Title="Randumizer v0.29 beta 2" Height="450" Width="900">
+        Title="Randumizer v0.30 alpha 1" Height="450" Width="900">
     <Window.Resources>
         <randomizer:FlagConverter x:Key="MultiValueConverter" />
         <randomizer:FlagPresets x:Key="flagPresets" />
@@ -136,6 +136,7 @@
                             <Binding ElementName="guaranteeMattock" Path="IsChecked" />
                             <Binding ElementName="replacePoisonCheckBox" Path="IsChecked" />
                             <Binding ElementName="alwaysSpawnSmallItemsCheckBox" Path="IsChecked" />
+                            <Binding ElementName="randomizeItemNamesCheckBox" Path="IsChecked" />
                             <Binding ElementName="flexibleItemsCheckbox" Path="IsChecked" />
                             <Binding ElementName="includeEvilOnesFortressCheckBox" Path="IsChecked" />
                             <Binding ElementName="darknessCheckBox" Path="IsChecked" />
@@ -515,7 +516,7 @@
                         ToolTip="Can set if there is a guaranteed weapon in Eolis. Random means there will be either a dagger or longsword guaranteed"
                         />
                 </StackPanel>
-                
+
                 <TextBlock Grid.Column="1" Grid.Row="10" Text="Wing boot duration:"/>
                 <StackPanel  Grid.Column="2"
                              Grid.Row="10">
@@ -619,6 +620,10 @@
                 <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="3" Grid.Row="2" IsChecked="{Binding Path=(randomizer:ItemOptions.AlwaysSpawnSmallItems), Mode=TwoWay}"
                           ToolTip="Small items will always spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
                 <TextBlock Grid.Column="4" Grid.Row="2" Text="Always spawn small items"/>
+
+                <CheckBox Name="randomizeItemNamesCheckBox" Grid.Column="3" Grid.Row="3" IsChecked="{Binding Path=(randomizer:ItemOptions.RandomizeItemNames), Mode=TwoWay}"
+                          ToolTip="Items will have their names randomized"/>
+                <TextBlock Grid.Column="4" Grid.Row="3" Text="Randomize item names"/>
 
                 <CheckBox Name="includeSomeEolisDoorsCheckBox" Grid.Column="3" Grid.Row="14" IsChecked="{Binding Path=(randomizer:ItemOptions.IncludeSomeEolisDoors), Mode=TwoWay}"
                           ToolTip="Include the Eolis magic shop, martial arts shop and exit door in the key randomization"/>
