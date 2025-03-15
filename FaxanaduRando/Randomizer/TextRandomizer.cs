@@ -273,7 +273,7 @@ namespace FaxanaduRando.Randomizer
                     "Okay, I'll turn the water back on.|But don't come to me when you're drowning in gremlins.",
                     "Ah, the ancient magic of 'off' and 'on'.|'I'm a true wizard.",
                     "Engaging the hydrodynamic thaumaturgy protocols...|and done!",
-                    "I’ve been turning on this sky spring for 35 years,|and it’s still broken!",
+                    "I've been turning on this sky spring for 35 years,|and it's still broken!",
                     "You probably expected a reward, huh?| Nope.|Just water.",
                     "The spring flows...|but, at what cost?",
                     "The flow of the spring aligns with the cosmic balance...|or something like that.",
