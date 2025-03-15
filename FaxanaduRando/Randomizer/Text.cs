@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -182,7 +183,17 @@ namespace FaxanaduRando.Randomizer
             {
                 foreach (var c in text)
                 {
-                    content[offset] = reverseCharDict[c];
+                    // this will catch if we have a character we're trying to use that isn't in the dictionary
+                    if (!reverseCharDict.ContainsKey(c))
+                    {
+                        Console.WriteLine($"Character not found in reverseCharDict: [{c}] (char code {(int)c})");
+                        // replace with ' ' for now
+                        content[offset] = reverseCharDict[' '];
+                    } else
+                    {
+                        content[offset] = reverseCharDict[c];
+                    }
+
                     offset++;
                 }
             }
