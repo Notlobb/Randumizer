@@ -8,11 +8,11 @@ namespace FaxanaduRando.Randomizer
     class Text
     {
         //These are just unused characters used to represent special characters
-        public const char lineBreakChar = 'ä';
-        public const char lineBreakWithPauseChar = 'Ä';
-        public const char endOfTextChar = 'ö';
-        public const char spaceChar = 'å';
-        public const char secondSpaceChar = 'Å';
+        public const char lineBreakChar = 'Ã¤';
+        public const char lineBreakWithPauseChar = 'Ã„';
+        public const char endOfTextChar = 'Ã¶';
+        public const char spaceChar = 'Ã¥';
+        public const char secondSpaceChar = 'Ã…';
 
         private const int textOffset = 0x34310;
         private const int textOffsetEnd = 0x373C9;
@@ -243,7 +243,7 @@ namespace FaxanaduRando.Randomizer
             if (text.Length < length && index < allText.Count)
             {
                 text = text.PadRight(length - 1, ' ');
-                text = text.Insert(text.Length, "ö");
+                text = text.Insert(text.Length, $"{endOfTextChar}");
                 allText[index] = text;
             }
         }
@@ -302,7 +302,7 @@ namespace FaxanaduRando.Randomizer
 
         private static readonly Dictionary<byte, char> titleCharDict = new Dictionary<byte, char>
         {
-            { 0x00, 'ö' },
+            { 0x00, endOfTextChar },
             { 0x20, ' ' },
             { 0xD6, '0' },
             { 0xD7, '1' },

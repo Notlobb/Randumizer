@@ -44,8 +44,10 @@ namespace FaxanaduRando.Randomizer
             // Black Potion
             { Id.PoisonTouched, new List<string> {
                 "I'm holding {0}.",
+                "I now prossess {0}",
                 "I've touched poison.|Just kidding, it's a {0}.",
-            }},
+            }
+},
         };
 
         private static readonly Dictionary<Id, List<string>> DialogTemplates = new Dictionary<Id, List<string>>
@@ -112,9 +114,11 @@ namespace FaxanaduRando.Randomizer
             { Id.RodAcquired, new List<string> {
                 "I've got the {0}.",
                 "In {0} we trust.",
+                "But whereÅLs Todd?",
             } },
             { Id.PoisonTouched, new List<string> {
                 "I've touched poison",
+                "I've touched posion",
                 "SOAP POISONING",
             }},
             { Id.GloveAcquired, new List<string> {
