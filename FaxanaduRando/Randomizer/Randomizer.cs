@@ -338,6 +338,10 @@ namespace FaxanaduRando.Randomizer
             var paletteRandomizer = new PaletteRandomizer(random);
             RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
 
+            // Randomize tiles if enabled
+            var tileRandomizer = new TileRandomizer(random);
+            tileRandomizer.RandomizeTiles(levels, content);
+
             if (GeneralOptions.ShuffleTowers)
             {
                 AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);

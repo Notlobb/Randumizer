@@ -46,6 +46,8 @@
         <randomizer:KeyLimitConverter x:Key="keyLimitConverter" />
         <randomizer:MusicSettings x:Key="musicSettings" />
         <randomizer:MusicConverter x:Key="musicConverter" />
+        <randomizer:TileRandomizationSettings x:Key="tileRandomizationSettings" />
+        <randomizer:TileRandomizationModeConverter x:Key="tileRandomizationConverter" />
     </Window.Resources>
     <TabControl>
         <TabItem Header="General">
@@ -675,6 +677,26 @@
                         ToolTip="Change how to handle music"
                         />
                 </StackPanel>
+
+                <TextBlock Grid.Column="1" Grid.Row="4" Text="Tile Randomization:"/>
+                <StackPanel Grid.Column="2" Grid.Row="4">
+                    <ComboBox Name="tileRandomizationComboBox"
+                        ItemsSource="{StaticResource tileRandomizationSettings}"
+                        IsEditable="true"
+                        IsReadOnly="true"
+                        SelectedIndex="{Binding Path=(randomizer:TileOptions.RandomizationMode), Mode=TwoWay, Converter={StaticResource tileRandomizationConverter}}"
+                        ToolTip="Randomize tiles within screens. Note: Requires ROM analysis to identify tile data offsets before this feature is fully functional."
+                        />
+                </StackPanel>
+
+                <CheckBox Name="preserveCollisionCheckbox" Grid.Column="0" Grid.Row="5" IsChecked="{Binding Path=(randomizer:TileOptions.PreserveCollision), Mode=TwoWay}"
+                          ToolTip="Preserve collision tiles (platforms, walls) to maintain playability"/>
+                <TextBlock Grid.Column="1" Grid.Row="5" Text="Preserve collision tiles"/>
+
+                <CheckBox Name="randomizeTileColorsCheckbox" Grid.Column="0" Grid.Row="6" IsChecked="{Binding Path=(randomizer:TileOptions.RandomizeColors), Mode=TwoWay}"
+                          ToolTip="Also randomize tile color attributes"/>
+                <TextBlock Grid.Column="1" Grid.Row="6" Text="Randomize tile colors"/>
+
             </Grid>
         </TabItem>
         <TabItem Header="Custom Text">
