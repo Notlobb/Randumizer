@@ -1,6 +1,9 @@
-<Application xmlns="https://github.com/avaloniaui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="FaxanaduRando.App">
+<Application
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FaxanaduRando.App"
+    Name="Randumizer"
+>
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
