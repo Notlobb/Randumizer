@@ -116,23 +116,23 @@
 
                     <!-- Combobox settings -->
                     <TextBlock Grid.Column="3" Grid.Row="12" Text="Hints:" VerticalAlignment="Center" Margin="0,4,8,1"/>
-                    <ComboBox Name="hintsComboBox" Grid.Column="4" Grid.Row="12" ItemsSource="{StaticResource hintSettings}" Margin="0,4,0,1"
+                    <ComboBox Name="hintsComboBox" Grid.Column="4" Grid.Row="12" Grid.ColumnSpan="4" ItemsSource="{StaticResource hintSettings}" Margin="0,4,0,1"
                               ToolTip.Tip="Changes NPC dialog to add hints for things like item and dungeon locations"/>
 
                     <TextBlock Grid.Column="3" Grid.Row="13" Text="Misc doors:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="miscDoorsComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource miscDoorSettings}" Margin="0,1"
+                    <ComboBox Name="miscDoorsComboBox" Grid.Column="4" Grid.Row="13" Grid.ColumnSpan="4" ItemsSource="{StaticResource miscDoorSettings}" Margin="0,1"
                               ToolTip.Tip="Setting for miscellaneous doors, which may include different kinds of town doors as well as some of the doors outside towns"/>
 
                     <TextBlock Grid.Column="3" Grid.Row="14" Text="Door types:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="doorTypeComboBox" Grid.Column="4" Grid.Row="14" ItemsSource="{StaticResource doorTypeSettings}" Margin="0,1"
+                    <ComboBox Name="doorTypeComboBox" Grid.Column="4" Grid.Row="14" Grid.ColumnSpan="4" ItemsSource="{StaticResource doorTypeSettings}" Margin="0,1"
                               ToolTip.Tip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."/>
 
                     <TextBlock Grid.Column="3" Grid.Row="15" Text="Screen connections:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="randomizeScreensComboBox" Grid.Column="4" Grid.Row="15" ItemsSource="{StaticResource screenRandomizationSettings}" Margin="0,1"
+                    <ComboBox Name="randomizeScreensComboBox" Grid.Column="4" Grid.Row="15" Grid.ColumnSpan="4" ItemsSource="{StaticResource screenRandomizationSettings}" Margin="0,1"
                               ToolTip.Tip="Randomizes how screens are connected to each other"/>
 
                     <TextBlock Grid.Column="3" Grid.Row="16" Text="World segments:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="shuffleSegmentsComboBox" Grid.Column="4" Grid.Row="16" ItemsSource="{StaticResource segmentShuffleSettings}" Margin="0,1"
+                    <ComboBox Name="shuffleSegmentsComboBox" Grid.Column="4" Grid.Row="16" Grid.ColumnSpan="4" ItemsSource="{StaticResource segmentShuffleSettings}" Margin="0,1"
                               ToolTip.Tip="Shuffle segments such as towns"/>
                 </Grid>
             </ScrollViewer>
