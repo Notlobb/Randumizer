@@ -1272,6 +1272,8 @@ namespace FaxanaduRando.Randomizer
 
         private void CheckDarkReturn(DoorId id)
         {
+            if (!Doors.ContainsKey(id))
+                return;
             var subDoor = Doors[id];
             if (subDoor.ReturnRequirement != null)
             {

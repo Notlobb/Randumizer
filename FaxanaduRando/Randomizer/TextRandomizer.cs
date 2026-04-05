@@ -293,8 +293,10 @@ namespace FaxanaduRando.Randomizer
                 foreach (string customText in customTexts)
                 {
                     string[] parts = customText.Split(':');
-                    var textIndex = int.Parse(parts[0]);
-                    AddText(parts[1], allText, textIndex);
+                    if (int.TryParse(parts[0], out int textIndex))
+                    {
+                        AddText(parts[1], allText, textIndex);
+                    }
                 }
 
                 Dictionary<Item, string> itemDictionary =
@@ -1199,7 +1201,7 @@ namespace FaxanaduRando.Randomizer
             {
                 string[] parts = text.Split(':');
 
-                if (int.Parse(parts[0]) == idNumber)
+                if (int.TryParse(parts[0], out int parsedIndex) && parsedIndex == idNumber)
                 {
                     customText = parts[1];
                     break;

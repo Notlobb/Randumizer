@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
-using System.Windows.Data;
+using Avalonia.Data.Converters;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -10,7 +10,9 @@ namespace FaxanaduRando.Randomizer
     {
         private const int boolCount = 33;
 
-        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+#nullable enable
+        public object Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+#nullable restore
         {
             var bytes = new List<byte>();
             for (int i = 0; i < boolCount; i += 4)
@@ -39,19 +41,19 @@ namespace FaxanaduRando.Randomizer
                 bytes.Add((byte)encodedValue);
             }
 
-            StringBuilder sb = new StringBuilder(values.Length);
+            StringBuilder sb = new StringBuilder(values.Count);
             foreach (var value in bytes)
             {
                 sb.Append(value.ToString("X1"));
             }
 
-            for (int i = boolCount; i < values.Length - 1; i += 2)
+            for (int i = boolCount; i < values.Count - 1; i += 2)
             {
                 var test = values[i].ToString();
                 test += values[i + 1].ToString();
                 sb.Append(encodingDict[test.ToString()]);
 
-                if (i >= values.Length - 3 && (values.Length - i > 2))
+                if (i >= values.Count - 3 && (values.Count - i > 2))
                 {
                     test = values[i + 2].ToString();
                     test += "0";
@@ -62,12 +64,11 @@ namespace FaxanaduRando.Randomizer
             return sb.ToString();
         }
 
-        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        public static object[] ParseFlags(string text)
         {
             object[] values = new object[0];
             try
             {
-                string text = (string)value;
                 if (text.Length < boolCount / 4)
                 {
                     return values;
