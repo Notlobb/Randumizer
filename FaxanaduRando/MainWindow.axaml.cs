@@ -80,6 +80,7 @@ namespace FaxanaduRando
             Randomizer.GeneralOptions.AllowLoweringRespawn = allowLoweringRespawnCheckBox.IsChecked == true;
             Randomizer.GeneralOptions.PreventKnockbackOnLadders = preventKnockbackOnLaddersCheckBox.IsChecked == true;
             Randomizer.GeneralOptions.FlexibleItems = flexibleItemsCheckbox.IsChecked == true;
+            Randomizer.GeneralOptions.UseWeaponIndoors = useWeaponIndoorsCheckBox.IsChecked == true;
             Randomizer.GeneralOptions.DarkTowers = darknessCheckBox.IsChecked == true;
             Randomizer.GeneralOptions.RandomizeTitles = randomizeTitlesCheckBox.IsChecked == true;
             Randomizer.GeneralOptions.AddKillSwitch = addKillSwitchCheckBox.IsChecked == true;
@@ -288,9 +289,10 @@ namespace FaxanaduRando
                     includeSomeEolisDoorsCheckBox,
                     addKillSwitchCheckBox,
                     useCustomTextCheckBox,
+                    useWeaponIndoorsCheckBox,
                 };
 
-                int boolCount = 33;
+                int boolCount = 34;
                 for (int i = 0; i < boolCount && i < values.Length && i < checkBoxes.Length; i++)
                 {
                     checkBoxes[i].IsChecked = (bool)values[i];

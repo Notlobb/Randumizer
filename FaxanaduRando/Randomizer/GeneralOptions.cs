@@ -57,6 +57,7 @@ namespace FaxanaduRando.Randomizer
         public static bool AllowLoweringRespawn { get; set; } = true;
         public static bool PreventKnockbackOnLadders { get; set; } = true;
         public static bool FlexibleItems { get; set; } = true;
+        public static bool UseWeaponIndoors { get; set; } = false;
         public static bool IncludeEvilOnesFortress { get; set; } = false;
         public static bool DarkTowers { get; set; } = false;
         public static bool RandomizeTitles { get; set; } = true;

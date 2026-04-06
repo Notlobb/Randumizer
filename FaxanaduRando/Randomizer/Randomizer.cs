@@ -874,6 +874,14 @@ namespace FaxanaduRando.Randomizer
                 content[Section.GetOffset(12, 0x8716, 0x8000)] = OpCode.NOP;
             }
 
+            if (GeneralOptions.UseWeaponIndoors)
+            {
+                // Allow items indoors: change STA to LDA so weapon stays equipped when entering buildings
+                content[Section.GetOffset(15, 0xDE08, 0xC000)] = 0xAD;
+                // Draw weapon indoors: allow weapon sprite to be shown indoors
+                content[Section.GetOffset(15, 0xEDF0, 0xC000)] = 0xFF;
+            }
+
             if (GeneralOptions.AddKillSwitch)
             {
                 var switchSection = new Section();
@@ -1110,44 +1118,33 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.FastText)
             {
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(0xFF);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xF4A2, 0xC000));
+                // Change AND mask from #$03 to #$00 (display char every frame)
+                content[Section.GetOffset(15, 0xF49F, 0xC000)] = 0x00;
 
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x1C);
+                // New subroutine: preserve original 4-frame sound cadence
+                var newSection = new Section();
+                newSection.Bytes.Add(OpCode.LDAAbsolute);   // LDA $021D (TextBox_Timer)
+                newSection.Bytes.Add(0x1D);
                 newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x57);
-                newSection.Bytes.Add(0xF5);
+                newSection.Bytes.Add(OpCode.ANDImmediate);   // AND #$02
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.LSRA);           // LSR A
+                newSection.Bytes.Add(0x49);                  // EOR #$01
+                newSection.Bytes.Add(0x01);
+                newSection.Bytes.Add(OpCode.STAAbsolute);    // STA $0212 (TextBox_PlayTextSound)
+                newSection.Bytes.Add(0x12);
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.RTS);
                 newSection.AddToContent(content, Section.GetOffset(15, 0xFF00, 0xC000));
 
+                // Hook: replace "LDA #$01 / STA TextBox_PlayTextSound" with JSR + NOPs
                 newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x13);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.BEQ);
-                newSection.Bytes.Add(0x06);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x1C);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0xA5);
-                newSection.Bytes.Add(0xF4);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFF90, 0xC000));
+                newSection.Bytes.Add(OpCode.JSR);            // JSR $FF00
+                newSection.Bytes.Add(0x00);
+                newSection.Bytes.Add(0xFF);
+                newSection.Bytes.Add(OpCode.NOP);
+                newSection.Bytes.Add(OpCode.NOP);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xF472, 0xC000));
             }
 
             if (GeneralOptions.FastStart)
