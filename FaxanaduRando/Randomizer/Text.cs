@@ -124,6 +124,12 @@ namespace FaxanaduRando.Randomizer
         };
 
         private static Dictionary<char, byte> reverseCharDict = Util.Reverse(charDict);
+
+        private static readonly Dictionary<byte, byte> itemNameByteRemaps = new Dictionary<byte, byte>
+        {
+            { 0x2D, 0x3B }, // '-' → tile $3B (avoids bracket corner at $2D)
+        };
+
         public static void SetAllItemNames(byte[] content, Dictionary<int, string> itemDictionary)
         {
             int offset = itemNameOffset;
@@ -142,6 +148,11 @@ namespace FaxanaduRando.Randomizer
                 foreach (char c in formattedName)
                 {
                     byte byteToWrite = c == ' ' ? (byte)0x20 : (byte)c;
+
+                    // Remap bytes whose tile index collides with HUD elements
+                    if (itemNameByteRemaps.TryGetValue(byteToWrite, out byte remapped))
+                        byteToWrite = remapped;
+
                     content[offset++] = byteToWrite;
                 }
 
@@ -150,6 +161,53 @@ namespace FaxanaduRando.Randomizer
             }
 
             content[offset] = endMarker;
+        }
+
+        /// <summary>
+        /// Write '+' and '-' glyph bitmaps into the Bank 10 CHR font table
+        /// so they display correctly in shop item names, so we can support
+        /// having +/- stat items.
+        ///
+        /// Also writes the '+' glyph to the Bank 13 dialog font table
+        /// (the '-' glyph already exists there in the original ROM).
+        ///
+        /// Must be called after SetAllItemNames (or any time before the
+        /// ROM is saved — the writes go to the in-memory byte array).
+        /// </summary>
+        public static void WriteItemNameGlyphs(byte[] content)
+        {
+            // '+' glyph — Bank 10 tile $2B (was blank), Bank 13 entry $0B
+            byte[] plus = { 0x00, 0x18, 0x18, 0x7E, 0x18, 0x18, 0x00, 0x00 };
+            WriteChrTile(content, 10, 0x2B, plus);
+            Write1bppGlyph(content, 13, 0x0B, plus);
+
+            // '-' glyph — Bank 10 tile $3B (unused, last tile in font range)
+            byte[] dash = { 0x00, 0x00, 0x00, 0x7E, 0x00, 0x00, 0x00, 0x00 };
+            WriteChrTile(content, 10, 0x3B, dash);
+        }
+
+        /// <summary>
+        /// Write a 2bpp (16-byte) CHR tile to the Bank 10 font table.
+        /// Takes an 8-byte glyph bitmap and writes it to both bit-planes
+        /// (bytes 0–7 = plane 0, bytes 8–15 = plane 1). Setting both
+        /// planes to the same data makes every lit pixel color 3 (white).
+        /// </summary>
+        private static void WriteChrTile(byte[] content, int bank, int tileIndex, byte[] glyph)
+        {
+            int offset = Section.GetOffset(bank, 0x8140 + tileIndex * 16, 0x8000);
+            for (int i = 0; i < 8; i++) content[offset + i] = glyph[i];       // plane 0
+            for (int i = 0; i < 8; i++) content[offset + 8 + i] = glyph[i];   // plane 1
+        }
+
+        /// <summary>
+        /// Write a 1bpp (8-byte) glyph to the Bank 13 dialog font table.
+        /// Only plane 0 is stored; the game's TextBox_WriteChar copies it
+        /// to both CHR-RAM planes at runtime.
+        /// </summary>
+        private static void Write1bppGlyph(byte[] content, int bank, int entryIndex, byte[] glyph)
+        {
+            int offset = Section.GetOffset(bank, 0x8000 + entryIndex * 8, 0x8000);
+            for (int i = 0; i < 8; i++) content[offset + i] = glyph[i];
         }
 
         public static List<string> GetAllText(byte[] content)
@@ -218,7 +276,7 @@ namespace FaxanaduRando.Randomizer
                     allText.Add(text);
                     text = "";
                 }
-                
+
                 offset++;
             }
 

@@ -320,6 +320,7 @@ namespace FaxanaduRando.Randomizer
                 intBasedDictionary = keyValueList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
                 Text.SetAllItemNames(content, intBasedDictionary);
+                Text.WriteItemNameGlyphs(content);
 
                 var itemDialogs = ItemDialog.GetDialog(itemDictionary, customTextFile);
 
@@ -1298,114 +1299,67 @@ namespace FaxanaduRando.Randomizer
             texts[index] = text + Text.endOfTextChar;
         }
 
-        private string AddLine(string text, List<string> lines, int index, int previousIndex)
-        {
-            var length = index - previousIndex;
-            var line = text.Substring(previousIndex, length);
-            var paddingMax = length > 14 ? 16 - length : 2;
-            var padding = "".PadRight(paddingMax < 0 ? 0 : paddingMax, ' ');
-
-            // bug: sometimes an extra line appears...
-            // probably not that big of a deal though.
-
-            if ((index >= 0) && (index < text.Length) && text[index] == '|')
-                line = line + Text.lineBreakWithPauseChar + padding;
-
-            return line;
-        }
-
         private string InsertLineBreaks(string text)
         {
-            var indices = new List<int>();
-            if (TextOptions.UseCustomText)
+            var lines = new List<string>();
+            int lineStart = 0;
+
+            while (lineStart < text.Length)
             {
-                for (int i = 16; i < text.Length; i += 16)
+                int maxEnd = Math.Min(lineStart + 15, text.Length);
+
+                // 1. Scan for pipes in [lineStart, maxEnd)
+                int pipeAt = -1;
+                for (int j = lineStart; j < maxEnd; j++)
                 {
-                    bool indexed = false;
-                    int j = i - 15;
-                    int k = i;
-                    int highest_j = 0;
+                    if (text[j] == '|')
+                        pipeAt = j;  // take the last pipe in range
+                }
 
-                    while (j < k)
+                if (pipeAt >= 0)
+                {
+                    int length = pipeAt - lineStart;
+                    var line = text.Substring(lineStart, length);
+                    var padding = new string(' ', Math.Max(0, 15 - length));
+                    lines.Add(line + Text.lineBreakWithPauseChar + padding + Text.lineBreakChar);
+                    lineStart = pipeAt + 1;
+                    continue;
+                }
+
+                // 2. If remaining text fits on one line, take it
+                if (text.Length - lineStart <= 15)
+                {
+                    lines.Add(text.Substring(lineStart));
+                    break;
+                }
+
+                // 3. Scan backwards from maxEnd for a space
+                int spaceAt = -1;
+                for (int j = maxEnd; j > lineStart; j--)
+                {
+                    if (text[j] == ' ')
                     {
-                        if (text[j] == '|')
-                        {
-                            indices.Add(j);
-                            indexed = true;
-                            highest_j = j;
-                            // don't break as there could be more than one.
-                        }
-
-                        j++;
-                    }
-
-                    if (indexed == true)
-                    {
-                        i = highest_j;
-                        continue;
-                    }
-
-                    j = i;
-                    k = j - 16;
-
-                    while (j > k)
-                    {
-                        if (text[j] == ' ')
-                        {
-                            indices.Add(j);
-                            i = j;
-                            break;
-                        }
-
-                        j--;
+                        spaceAt = j;
+                        break;
                     }
                 }
 
-                var lines = new List<string>();
-                int previousIndex = 0;
-
-                foreach (var index in indices)
+                if (spaceAt >= 0)
                 {
-                    var line = AddLine(text, lines, index, previousIndex);
-                    lines.Add(line + Text.lineBreakChar.ToString());
-                    previousIndex = index + 1; // add one to skip the space or pausebreak
+                    var line = text.Substring(lineStart, spaceAt - lineStart);
+                    lines.Add(line + Text.lineBreakChar);
+                    lineStart = spaceAt + 1;
                 }
-
-                var lastLine = AddLine(text, lines, text.Length, previousIndex);
-                lines.Add(lastLine);
-
-                var newText = string.Join("", lines);
-
-                return newText;
+                else
+                {
+                    // No space found - force break at maxEnd
+                    var line = text.Substring(lineStart, maxEnd - lineStart);
+                    lines.Add(line + Text.lineBreakChar);
+                    lineStart = maxEnd;
+                }
             }
-            else
-            {
 
-                for (int i = 16; i < text.Length; i += 16)
-                {
-                    int j = i;
-                    int k = j - 16;
-                    while (j > k)
-                    {
-                        if (text[j] == ' ')
-                        {
-                            indices.Add(j);
-                            i = j;
-                            break;
-                        }
-
-                        j--;
-                    }
-                }
-
-                var newText = text;
-                foreach (var index in indices)
-                {
-                    newText = newText.Substring(0, index) + Text.lineBreakChar + text.Substring(index + 1);
-                }
-
-                return newText;
-            }
+            return string.Join("", lines);
         }
 
         private List<string> GetAllSublevelHints(GiftRandomizer giftRandomizer, bool spoilerLog)
