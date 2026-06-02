@@ -67,7 +67,13 @@ namespace FaxanaduRando.Randomizer
 #nullable enable
         public static string GenerateFlags(IList<object?> values)
         {
-            return (string)new FlagConverter().Convert(values, typeof(string), null, CultureInfo.InvariantCulture);
+            string flags = (string)new FlagConverter().Convert(values, typeof(string), null, CultureInfo.InvariantCulture);
+            // Trim trailing "0" chars from the combo section only (each "0" encodes the pair 0,0).
+            // ParseFlags treats missing trailing combo entries as 0 (Unchanged), so this is safe
+            // and keeps flag strings compact when new options are at their defaults.
+            int boolChars = (boolCount + 3) / 4;  // = 9 for boolCount=34
+            if (flags.Length <= boolChars) return flags;
+            return flags.Substring(0, boolChars) + flags.Substring(boolChars).TrimEnd('0');
         }
 #nullable restore
 

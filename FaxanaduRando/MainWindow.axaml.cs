@@ -18,7 +18,7 @@ namespace FaxanaduRando
             InitializeComponent();
             AttachControlChangedHandlers();
             // Apply the first preset now that all controls are initialized
-            flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
+            flagsTextBox.Text = "38DFFF5A25k02v1ncoH";
         }
 
         private CheckBox[] GetAllCheckBoxes() => new CheckBox[]
@@ -308,17 +308,17 @@ namespace FaxanaduRando
                 // Beginner
                 if (box.SelectedIndex == 0)
                 {
-                    flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
+                    flagsTextBox.Text = "38DFFF5A25k02v1ncoH";
                 }
                 // Standard
                 else if (box.SelectedIndex == 1)
                 {
-                    flagsTextBox.Text = "38CFFF7A0za0cGalcmH";
+                    flagsTextBox.Text = "38CFFF7A2za0cGalcmH";
                 }
                 // Race (typical)
                 else if (box.SelectedIndex == 2)
                 {
-                    flagsTextBox.Text = "7ECFFF7A0za0cFakcmH";
+                    flagsTextBox.Text = "7ECFFF7A2za0cFakcmH";
                 }
                 // Race (classic)
                 else if (box.SelectedIndex == 3)
@@ -328,17 +328,17 @@ namespace FaxanaduRando
                 // Challenge mode
                 else if (box.SelectedIndex == 4)
                 {
-                    flagsTextBox.Text = "FECC377A0ze0bPakmoH";
+                    flagsTextBox.Text = "FECC377A2ze0bPakmoH";
                 }
                 // Chaos mode
                 else if (box.SelectedIndex == 5)
                 {
-                    flagsTextBox.Text = "7ECFFF7E0ucba0a012b";
+                    flagsTextBox.Text = "7ECFFF7E2ucba0a012bJk";
                 }
                 // Extra fast
                 else if (box.SelectedIndex == 6)
                 {
-                    flagsTextBox.Text = "3ECFFFFA0Al02v1n2k2";
+                    flagsTextBox.Text = "3ECFFFFA2Al02v1n2k2";
                 }
             }
         }
