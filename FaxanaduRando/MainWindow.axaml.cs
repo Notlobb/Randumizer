@@ -4,6 +4,7 @@ using Avalonia.Platform.Storage;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace FaxanaduRando
@@ -15,8 +16,109 @@ namespace FaxanaduRando
         public MainWindow()
         {
             InitializeComponent();
+            AttachControlChangedHandlers();
             // Apply the first preset now that all controls are initialized
             flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
+        }
+
+        private CheckBox[] GetAllCheckBoxes() => new CheckBox[]
+        {
+            fastTextCheckBox,
+            fullHealthCheckBox,
+            dragonSlayerRequiredCheckBox,
+            pendantRodRubyRequiredCheckBox,
+            moveSpringQuestRequirementCheckBox,
+            shuffleTowersCheckBox,
+            shuffleWorldsCheckBox,
+            updateMiscTextCheckBox,
+            generateSpoilerLogCheckBox,
+            quickSeedCheckBox,
+            allowLoweringRespawnCheckBox,
+            preventKnockbackOnLaddersCheckBox,
+            randomizeEnemyExperiencesCheckBox,
+            randomizeRewardsCheckBox,
+            randomizeMagicImmunitiesCheckBox,
+            tryToMoveBossesCheckBox,
+            guaranteeElixirNearFortressCheckbox,
+            fixPendantBugCheckBox,
+            buffGlovesCheckBox,
+            buffHourglassCheckBox,
+            randomizeBarRank,
+            guaranteeStartingSpell,
+            guaranteeMattock,
+            replacePoisonCheckBox,
+            alwaysSpawnSmallItemsCheckBox,
+            randomizeItemNamesCheckBox,
+            flexibleItemsCheckbox,
+            includeEvilOnesFortressCheckBox,
+            darknessCheckBox,
+            randomizeTitlesCheckBox,
+            includeSomeEolisDoorsCheckBox,
+            addKillSwitchCheckBox,
+            useCustomTextCheckBox,
+            useWeaponIndoorsCheckBox,
+        };
+
+        private ComboBox[] GetAllComboBoxes() => new ComboBox[]
+        {
+            hintsComboBox,
+            miscDoorsComboBox,
+            doorTypeComboBox,
+            enemySetComboBox,
+            enemyHPComboBox,
+            enemyDamageComboBox,
+            mattockUsageComboBox,
+            startingWeaponComboBox,
+            wingBootDurationComboBox,
+            shieldSettingsComboBox,
+            bigItemSpawnsComboBox,
+            itemShuffleComboBox,
+            keyRandomizationComboBox,
+            randomizeScreensComboBox,
+            multipleGiftsComboBox,
+            aiComboBox,
+            shuffleSegmentsComboBox,
+            smallKeyLimitComboBox,
+            bigKeyLimitComboBox,
+            aiPropertyComboBox,
+            weaponStatComboBox,
+            magicStatComboBox,
+            armorStatComboBox,
+        };
+
+        private void AttachControlChangedHandlers()
+        {
+            foreach (var cb in GetAllCheckBoxes())
+                cb.IsCheckedChanged += (_, _) => AnyControl_Changed();
+            foreach (var combo in GetAllComboBoxes())
+                combo.SelectionChanged += (_, _) => AnyControl_Changed();
+        }
+
+        private void AnyControl_Changed()
+        {
+            if (_updatingFlags) return;
+            UpdateFlagsText();
+        }
+
+        private void UpdateFlagsText()
+        {
+#nullable enable
+            var values = new List<object?>();
+            foreach (var cb in GetAllCheckBoxes())
+                values.Add(cb.IsChecked == true);
+            foreach (var combo in GetAllComboBoxes())
+                values.Add((object?)combo.SelectedIndex);
+#nullable restore
+
+            _updatingFlags = true;
+            try
+            {
+                flagsTextBox.Text = Randomizer.FlagConverter.GenerateFlags(values);
+            }
+            finally
+            {
+                _updatingFlags = false;
+            }
         }
 
         private async void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -124,6 +226,9 @@ namespace FaxanaduRando
             Randomizer.ItemOptions.MultipleGifts = (Randomizer.ItemOptions.MultipleGiftOptions)multipleGiftsComboBox.SelectedIndex;
             Randomizer.ItemOptions.SmallKeyLimit = (Randomizer.ItemOptions.KeyLimit)smallKeyLimitComboBox.SelectedIndex;
             Randomizer.ItemOptions.BigKeyLimit = (Randomizer.ItemOptions.KeyLimit)bigKeyLimitComboBox.SelectedIndex;
+            Randomizer.ItemOptions.WeaponStatSetting = (Randomizer.ItemOptions.WeaponStatRandomization)weaponStatComboBox.SelectedIndex;
+            Randomizer.ItemOptions.MagicStatSetting = (Randomizer.ItemOptions.MagicStatRandomization)magicStatComboBox.SelectedIndex;
+            Randomizer.ItemOptions.ArmorStatSetting = (Randomizer.ItemOptions.ArmorStatRandomization)armorStatComboBox.SelectedIndex;
 
             // Extra options
             Randomizer.ExtraOptions.RandomizePalettes = randomizePalettesCheckbox.IsChecked == true;
@@ -254,74 +359,14 @@ namespace FaxanaduRando
             _updatingFlags = true;
             try
             {
-                var checkBoxes = new CheckBox[]
-                {
-                    fastTextCheckBox,
-                    fullHealthCheckBox,
-                    dragonSlayerRequiredCheckBox,
-                    pendantRodRubyRequiredCheckBox,
-                    moveSpringQuestRequirementCheckBox,
-                    shuffleTowersCheckBox,
-                    shuffleWorldsCheckBox,
-                    updateMiscTextCheckBox,
-                    generateSpoilerLogCheckBox,
-                    quickSeedCheckBox,
-                    allowLoweringRespawnCheckBox,
-                    preventKnockbackOnLaddersCheckBox,
-                    randomizeEnemyExperiencesCheckBox,
-                    randomizeRewardsCheckBox,
-                    randomizeMagicImmunitiesCheckBox,
-                    tryToMoveBossesCheckBox,
-                    guaranteeElixirNearFortressCheckbox,
-                    fixPendantBugCheckBox,
-                    buffGlovesCheckBox,
-                    buffHourglassCheckBox,
-                    randomizeBarRank,
-                    guaranteeStartingSpell,
-                    guaranteeMattock,
-                    replacePoisonCheckBox,
-                    alwaysSpawnSmallItemsCheckBox,
-                    randomizeItemNamesCheckBox,
-                    flexibleItemsCheckbox,
-                    includeEvilOnesFortressCheckBox,
-                    darknessCheckBox,
-                    randomizeTitlesCheckBox,
-                    includeSomeEolisDoorsCheckBox,
-                    addKillSwitchCheckBox,
-                    useCustomTextCheckBox,
-                    useWeaponIndoorsCheckBox,
-                };
-
+                var checkBoxes = GetAllCheckBoxes();
                 int boolCount = 34;
                 for (int i = 0; i < boolCount && i < values.Length && i < checkBoxes.Length; i++)
                 {
                     checkBoxes[i].IsChecked = (bool)values[i];
                 }
 
-                var comboBoxes = new ComboBox[]
-                {
-                    hintsComboBox,
-                    miscDoorsComboBox,
-                    doorTypeComboBox,
-                    enemySetComboBox,
-                    enemyHPComboBox,
-                    enemyDamageComboBox,
-                    mattockUsageComboBox,
-                    startingWeaponComboBox,
-                    wingBootDurationComboBox,
-                    shieldSettingsComboBox,
-                    bigItemSpawnsComboBox,
-                    itemShuffleComboBox,
-                    keyRandomizationComboBox,
-                    randomizeScreensComboBox,
-                    multipleGiftsComboBox,
-                    aiComboBox,
-                    shuffleSegmentsComboBox,
-                    smallKeyLimitComboBox,
-                    bigKeyLimitComboBox,
-                    aiPropertyComboBox,
-                };
-
+                var comboBoxes = GetAllComboBoxes();
                 for (int i = 0; i < comboBoxes.Length && (boolCount + i) < values.Length; i++)
                 {
                     comboBoxes[i].SelectedIndex = (int)values[boolCount + i];

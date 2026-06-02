@@ -13,6 +13,8 @@ namespace FaxanaduRando.Randomizer
 
     public class Randomizer
     {
+        private static readonly double[] EquipmentScaleFactors = { 0.125, 0.25, 0.375, 0.50, 0.625 };
+
         public bool Randomize(string inputFile, string customTextFile, string flags, int seed, out string message)
         {
             if (TextOptions.UseCustomText &&
@@ -267,6 +269,43 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviourProperties(content, random);
             }
 
+            var weaponStrengthTable = new Table(Section.GetOffset(14, 0xB7A5, 0x8000), 4, 1, content);
+            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, 0x88C7, 0x8000), 4, 1, content);
+            var magicDamageTable = new Table(Section.GetOffset(14, 0xB7A0, 0x8000), 5, 1, content);
+            var armorDefenseTable = new Table(Section.GetOffset(14, 0x8AD8, 0x8000), 4, 1, content);
+
+            var equipmentModifiers = new EquipmentModifiers();
+
+            if (ItemOptions.WeaponStatSetting == ItemOptions.WeaponStatRandomization.Swap)
+            {
+                equipmentModifiers.WeaponModifiers = EquipmentRandomizer.SwapWeapons(weaponStrengthTable, weaponGloveStrengthTable, random);
+            }
+            else if (ItemOptions.WeaponStatSetting != ItemOptions.WeaponStatRandomization.Unchanged)
+            {
+                double scaleFactor = EquipmentScaleFactors[(int)ItemOptions.WeaponStatSetting - 2];
+                equipmentModifiers.WeaponModifiers = EquipmentRandomizer.RandomizeWeapons(weaponStrengthTable, weaponGloveStrengthTable, scaleFactor, random);
+            }
+
+            if (ItemOptions.MagicStatSetting == ItemOptions.MagicStatRandomization.Swap)
+            {
+                equipmentModifiers.MagicModifiers = EquipmentRandomizer.SwapMagic(magicDamageTable, random);
+            }
+            else if (ItemOptions.MagicStatSetting != ItemOptions.MagicStatRandomization.Unchanged)
+            {
+                double scaleFactor = EquipmentScaleFactors[(int)ItemOptions.MagicStatSetting - 2];
+                equipmentModifiers.MagicModifiers = EquipmentRandomizer.RandomizeMagic(magicDamageTable, scaleFactor, random);
+            }
+
+            if (ItemOptions.ArmorStatSetting == ItemOptions.ArmorStatRandomization.Swap)
+            {
+                equipmentModifiers.ArmorModifiers = EquipmentRandomizer.SwapArmor(armorDefenseTable, random);
+            }
+            else if (ItemOptions.ArmorStatSetting != ItemOptions.ArmorStatRandomization.Unchanged)
+            {
+                int range = (int)ItemOptions.ArmorStatSetting - 1;
+                equipmentModifiers.ArmorModifiers = EquipmentRandomizer.RandomizeArmor(armorDefenseTable, range, random);
+            }
+
             doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
@@ -293,6 +332,10 @@ namespace FaxanaduRando.Randomizer
             enemyRewardTypeTable.AddToContent(content);
             enemyRewardQuantityTable.AddToContent(content);
             magicResistanceTable.AddToContent(content);
+            weaponStrengthTable.AddToContent(content);
+            weaponGloveStrengthTable.AddToContent(content);
+            magicDamageTable.AddToContent(content);
+            armorDefenseTable.AddToContent(content);
 
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
@@ -300,7 +343,7 @@ namespace FaxanaduRando.Randomizer
                 textRandomizer.RandomizeTitles(content, customTextFile);
             }
 
-            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFile);
+            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFile, equipmentModifiers);
             if (result != Result.Success)
             {
                 if (result == Result.TextTooLong)

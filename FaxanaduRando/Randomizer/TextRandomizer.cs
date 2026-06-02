@@ -53,7 +53,7 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string customTextFile)
+        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string customTextFile, EquipmentModifiers equipmentModifiers = null)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
@@ -318,6 +318,11 @@ namespace FaxanaduRando.Randomizer
                 }
 
                 intBasedDictionary = keyValueList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+                if (equipmentModifiers != null)
+                {
+                    ApplyEquipmentModifiersToNames(intBasedDictionary, equipmentModifiers);
+                }
 
                 Text.SetAllItemNames(content, intBasedDictionary);
                 Text.WriteItemNameGlyphs(content);
@@ -1761,6 +1766,38 @@ namespace FaxanaduRando.Randomizer
             }
 
             return hints;
+        }
+
+        private static void ApplyEquipmentModifiersToNames(Dictionary<int, string> names, EquipmentModifiers modifiers)
+        {
+            // Weapons: modifier indices 0-3 -> Item IDs 0-3
+            ApplyModifiersToNames(names, modifiers.WeaponModifiers, new[] { 0, 1, 2, 3 });
+            // Armor: modifier indices 0-3 -> Item IDs 4-7
+            ApplyModifiersToNames(names, modifiers.ArmorModifiers, new[] { 4, 5, 6, 7 });
+            // Magic: modifier indices 0-4 -> Item IDs 12-16
+            ApplyModifiersToNames(names, modifiers.MagicModifiers, new[] { 12, 13, 14, 15, 16 });
+        }
+
+        private static void ApplyModifiersToNames(Dictionary<int, string> names, Dictionary<int, int> modifiers, int[] itemIds)
+        {
+            if (modifiers == null) return;
+
+            for (int i = 0; i < itemIds.Length && i < modifiers.Count; i++)
+            {
+                int itemId = itemIds[i];
+                int mod = modifiers[i];
+                if (mod == 0) continue;
+                if (!names.ContainsKey(itemId)) continue;
+
+                string name = names[itemId];
+                string suffix = mod > 0 ? $"+{mod}" : $"{mod}";
+                int maxNameLen = 13 - suffix.Length;
+                if (name.Length > maxNameLen)
+                {
+                    name = name.Substring(0, maxNameLen);
+                }
+                names[itemId] = name + suffix;
+            }
         }
     }
 }

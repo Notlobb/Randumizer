@@ -64,6 +64,13 @@ namespace FaxanaduRando.Randomizer
             return sb.ToString();
         }
 
+#nullable enable
+        public static string GenerateFlags(IList<object?> values)
+        {
+            return (string)new FlagConverter().Convert(values, typeof(string), null, CultureInfo.InvariantCulture);
+        }
+#nullable restore
+
         public static object[] ParseFlags(string text)
         {
             object[] values = new object[0];

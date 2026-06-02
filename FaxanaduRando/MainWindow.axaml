@@ -25,6 +25,9 @@
         <randomizer:MultipleGiftSettings x:Key="multipleGiftSettings" />
         <randomizer:KeyLimitSettings x:Key="keyLimitSettings" />
         <randomizer:MusicSettings x:Key="musicSettings" />
+        <randomizer:WeaponStatSettings x:Key="weaponStatSettings" />
+        <randomizer:MagicStatSettings x:Key="magicStatSettings" />
+        <randomizer:ArmorStatSettings x:Key="armorStatSettings" />
     </Window.Resources>
     <Window.Styles>
         <Style Selector="CheckBox">
@@ -249,6 +252,18 @@
                               ToolTip.Tip="Limit the maximum number of doors for each type of big key. Big key refers to the ace, or joker key"/>
 
                     <!-- Row 10 has includeSomeEolisDoorsCheckBox on the left -->
+
+                    <TextBlock Grid.Column="2" Grid.Row="11" Text="Weapon stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+                    <ComboBox Name="weaponStatComboBox" Grid.Column="4" Grid.Row="11" ItemsSource="{StaticResource weaponStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize weapon damage values. Swap randomly reassigns each weapon's damage to another weapon. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each weapon's base power, so weaker weapons vary less than stronger ones. Item names reflect the change. Dagger is never weakened. Damage never goes below 2"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="12" Text="Magic stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+                    <ComboBox Name="magicStatComboBox" Grid.Column="4" Grid.Row="12" ItemsSource="{StaticResource magicStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize magic damage values. Swap randomly reassigns each spell's damage to another spell. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each spell's base power, so weaker spells vary less than stronger ones. Item names reflect the change. Damage never goes below 2"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="13" Text="Armor stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+                    <ComboBox Name="armorStatComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource armorStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize armor defense values. Swap randomly reassigns each armor's defense multiplier to another armor. The +/- options adjust values by a flat amount. Item names reflect the change. Studded Mail is never weakened. Values never go below 0"/>
                 </Grid>
             </ScrollViewer>
         </TabItem>
