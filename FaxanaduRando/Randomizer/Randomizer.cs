@@ -883,7 +883,7 @@ namespace FaxanaduRando.Randomizer
                 const byte RAM_ZP_Joy1_ChangedButtonMask = 0x19;
                 const ushort RAM_PlayerIsDead = 0x438;
                 // new routine addresses
-                ushort hack_killswitch_addr = 0xfee4;
+                const ushort hack_killswitch_addr = 0xfee4;
 
                 // add new routine to be placed in free space
                 var switchSection = new Section();
