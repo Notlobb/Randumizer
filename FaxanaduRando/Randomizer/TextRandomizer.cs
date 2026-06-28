@@ -400,36 +400,6 @@ namespace FaxanaduRando.Randomizer
                     AddText(GetEolisGuruText(itemName, GetCustomText(customTexts, 43)), allText, 43);
                 }
 
-                Dictionary<Item, string> itemDictionary =
-                    ItemNameRandomizer.GenerateItemNameDictionary(
-                        ItemOptions.RandomizeItemNames,
-                        customTextFile
-                    );
-
-                // to prep for writing to the ROM we convert to int and remove non-inventory items
-                Dictionary<int, string> intBasedDictionary = itemDictionary.ToDictionary(
-                    kvp => (int)kvp.Key, // Convert the enum key to an int
-                    kvp => kvp.Value     // Keep the value unchanged
-                );
-
-                var keyValueList = intBasedDictionary.ToList();
-                if (keyValueList.Count >= 3)
-                {
-                    keyValueList.RemoveRange(keyValueList.Count - 3, 3);
-                }
-
-                intBasedDictionary = keyValueList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-                Text.SetAllItemNames(content, intBasedDictionary);
-
-                var itemDialogs = ItemDialog.GetDialog(itemDictionary, customTextFile);
-
-                foreach (var dialog in itemDialogs)
-                {
-                    AddText(dialog.Value, allText, dialog.Key);
-                }
-
-                GiftItem giftItem;
                 if (giftRandomizer.ItemDict.TryGetValue(GiftItem.Id.FireMage, out giftItem))
                 {
                     string itemName = ItemNameRandomizer.GetItemName(giftItem.Item, itemDictionary);
