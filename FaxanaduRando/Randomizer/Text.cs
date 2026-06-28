@@ -218,7 +218,7 @@ namespace FaxanaduRando.Randomizer
                     allText.Add(text);
                     text = "";
                 }
-                
+
                 offset++;
             }
 

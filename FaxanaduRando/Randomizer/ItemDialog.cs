@@ -44,7 +44,7 @@ namespace FaxanaduRando.Randomizer
             // Black Potion
             { Id.PoisonTouched, new List<string> {
                 "I'm holding {0}.",
-                "I've touched poison.|Just kidding, it's a {0}.",
+                "I now prossess {0}.",
             }},
         };
 
