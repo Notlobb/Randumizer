@@ -3,7 +3,7 @@ set -e
 
 APP_NAME="Randumizer"
 BUNDLE_ID="com.faxanadu.randumizer"
-VERSION="0.30"
+VERSION="0.29"
 DOTNET="/usr/local/share/dotnet/dotnet"
 
 # Detect architecture
