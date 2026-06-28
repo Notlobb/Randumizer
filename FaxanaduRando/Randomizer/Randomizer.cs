@@ -876,29 +876,34 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.AddKillSwitch)
             {
-                var switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xE4);
-                switchSection.Bytes.Add(0xFE);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xE039, 0xC000));
+                // existing game addresses
+                const ushort GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges = 0xe039;
+                const ushort Sprites_FlipRanges = 0xcba8;
+                // RAM
+                const byte RAM_ZP_Joy1_ChangedButtonMask = 0x19;
+                const ushort RAM_PlayerIsDead = 0x438;
+                // new routine addresses
+                ushort hack_killswitch_addr = 0xfee4;
 
-                switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xA8);
-                switchSection.Bytes.Add(0xCB);
-                switchSection.Bytes.Add(OpCode.LDAZeroPage);
-                switchSection.Bytes.Add(0x19);
-                switchSection.Bytes.Add(OpCode.ANDImmediate);
-                switchSection.Bytes.Add(0x20);
-                switchSection.Bytes.Add(OpCode.BEQ);
-                switchSection.Bytes.Add(0x05);
-                switchSection.Bytes.Add(OpCode.LDAImmediate);
-                switchSection.Bytes.Add(0x01);
-                switchSection.Bytes.Add(OpCode.STAAbsolute);
-                switchSection.Bytes.Add(0x38);
-                switchSection.Bytes.Add(0x04);
-                switchSection.Bytes.Add(OpCode.RTS);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xFEE4, 0xC000));
+                // add new routine to be placed in free space
+                var switchSection = new Section();
+                // call the routine vanilla would have called at the call site to this function
+                switchSection.JSR(Sprites_FlipRanges);
+                switchSection.LDA_zp(RAM_ZP_Joy1_ChangedButtonMask);
+                // test bit 5: down button
+                switchSection.AND_imm(0b00100000);
+                switchSection.BEQ("@down_not_pressed");
+                switchSection.LDA_imm(0x01);
+                switchSection.STA_abs(RAM_PlayerIsDead);
+
+                switchSection.Label("@down_not_pressed");
+                switchSection.RTS();
+                // patch rom with this new routine
+                switchSection.FlushToContent(content, Section.GetOffset(15, hack_killswitch_addr, 0xC000));
+
+                // install hook - reference the new routine
+                switchSection.JSR(hack_killswitch_addr);
+                switchSection.FlushToContent(content, Section.GetOffset(15, GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges, 0xC000));
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
