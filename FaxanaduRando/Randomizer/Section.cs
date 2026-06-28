@@ -20,6 +20,12 @@ namespace FaxanaduRando.Randomizer
             return (bank * 0x4000 + (address - start) + 16);
         }
 
+        // PRG bank 15 maps at $C000; all other banks map at $8000
+        public static int GetOffset(int bank, int address)
+        {
+            return GetOffset(bank, address, bank == 0x0f ? 0xC000 : 0x8000);
+        }
+
         // 6502 assembly-aware API
         public int Size()
         {

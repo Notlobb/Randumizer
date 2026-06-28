@@ -876,34 +876,28 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.AddKillSwitch)
             {
-                // existing game addresses
-                const ushort GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges = 0xe039;
-                const ushort Sprites_FlipRanges = 0xcba8;
-                // RAM
-                const byte RAM_ZP_Joy1_ChangedButtonMask = 0x19;
-                const ushort RAM_PlayerIsDead = 0x438;
                 // new routine addresses
                 const ushort hack_killswitch_addr = 0xfee4;
 
                 // add new routine to be placed in free space
                 var switchSection = new Section();
                 // call the routine vanilla would have called at the call site to this function
-                switchSection.JSR(Sprites_FlipRanges);
-                switchSection.LDA_zp(RAM_ZP_Joy1_ChangedButtonMask);
+                switchSection.JSR(ROM.Sprites_FlipRanges);
+                switchSection.LDA_zp(RAM.ZP_Joy1_ChangedButtonMask);
                 // test bit 5: down button
                 switchSection.AND_imm(0b00100000);
                 switchSection.BEQ("@down_not_pressed");
                 switchSection.LDA_imm(0x01);
-                switchSection.STA_abs(RAM_PlayerIsDead);
+                switchSection.STA_abs(RAM.PlayerIsDead);
 
                 switchSection.Label("@down_not_pressed");
                 switchSection.RTS();
                 // patch rom with this new routine
-                switchSection.FlushToContent(content, Section.GetOffset(15, hack_killswitch_addr, 0xC000));
+                switchSection.FlushToContent(content, Section.GetOffset(15, hack_killswitch_addr));
 
                 // install hook - reference the new routine
                 switchSection.JSR(hack_killswitch_addr);
-                switchSection.FlushToContent(content, Section.GetOffset(15, GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges, 0xC000));
+                switchSection.FlushToContent(content, Section.GetOffset(15, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges));
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
