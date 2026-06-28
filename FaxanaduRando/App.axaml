@@ -1,0 +1,15 @@
+<Application
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="FaxanaduRando.App"
+    Name="Randumizer"
+>
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+    <Application.Resources>
+        <x:Double x:Key="TextControlThemeMinHeight">24</x:Double>
+        <x:Double x:Key="TextControlThemeMinWidth">0</x:Double>
+        <x:Double x:Key="ComboBoxThemeMinHeight">26</x:Double>
+    </Application.Resources>
+</Application>
