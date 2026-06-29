@@ -6,7 +6,6 @@ namespace FaxanaduRando.Randomizer
 {
     public static class ItemDialog
     {
-        private static readonly Random RandomGenerator = new Random();
 
         public enum Id
         {
@@ -157,6 +156,7 @@ namespace FaxanaduRando.Randomizer
         };
 
         public static Dictionary<int, string> GetDialog(
+            Random RandomGenerator,
             Dictionary<Item, string> itemOptions,
             string customTextFile = null)
         {
@@ -197,7 +197,8 @@ namespace FaxanaduRando.Randomizer
                             ? AlternativeDialogTemplates[id][RandomGenerator.Next(AlternativeDialogTemplates[id].Count)]
                             : AlternativeDialogTemplates.ContainsKey(id) ? AlternativeDialogTemplates[id][0] : null;
                 }
-                else {
+                else
+                {
                     template = customTemplates.ContainsKey(id)
                         ? customTemplates[id]
                         : GeneralOptions.UpdateMiscText && DialogTemplates.ContainsKey(id)

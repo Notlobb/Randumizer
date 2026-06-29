@@ -301,6 +301,7 @@ namespace FaxanaduRando.Randomizer
 
                 Dictionary<Item, string> itemDictionary =
                     ItemNameRandomizer.GenerateItemNameDictionary(
+                        this.random,
                         ItemOptions.RandomizeItemNames,
                         customTextFile
                     );
@@ -321,7 +322,7 @@ namespace FaxanaduRando.Randomizer
 
                 Text.SetAllItemNames(content, intBasedDictionary);
 
-                var itemDialogs = ItemDialog.GetDialog(itemDictionary, customTextFile);
+                var itemDialogs = ItemDialog.GetDialog(this.random, itemDictionary, customTextFile);
 
                 foreach (var dialog in itemDialogs)
                 {

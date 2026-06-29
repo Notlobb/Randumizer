@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -81,6 +82,23 @@ namespace FaxanaduRando.Randomizer
             var pointer = BitConverter.ToUInt16(bytes, 0);
 
             return pointer;
+        }
+
+        // canonical 32-bit Fowler–Noll–Vo (FNV-1a) hash
+        public static uint Fnv1aHash(string text)
+        {
+            const uint offsetBasis = 2166136261;
+            const uint prime = 16777619;
+
+            uint hash = offsetBasis;
+
+            foreach (byte b in Encoding.UTF8.GetBytes(text))
+            {
+                hash ^= b;
+                hash *= prime;
+            }
+
+            return hash;
         }
     }
 }
