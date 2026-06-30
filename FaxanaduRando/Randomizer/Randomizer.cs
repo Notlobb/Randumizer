@@ -316,11 +316,7 @@ namespace FaxanaduRando.Randomizer
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
             Text.AddTitleText(0, "RANDUMIZER V29B4", titleText);
-            var hash = ((uint)flags.GetHashCode()).ToString();
-            if (hash.Length > 8)
-            {
-                hash = hash.Substring(0, 8);
-            }
+            var hash = Util.Fnv1aHash(flags).ToString("X8");
 
             Text.AddTitleText(1, $"FLAG HASH {hash}", titleText);
             Text.AddTitleText(2, $"SEED {seed}", titleText);
