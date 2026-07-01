@@ -1,6 +1,9 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
+using FaxanaduRando.Randomizer;
 using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
@@ -11,12 +14,129 @@ namespace FaxanaduRando
     public partial class MainWindow : Window
     {
         private bool _updatingFlags = false;
+        private object[] _settings;
+
+        private ComboBox[] _comboBoxes;
+        private CheckBox[] _checkBoxes;
+
+        private static readonly string[] Presets =
+            [
+                "38DFFF5A05k02v1ncoH", // Beginner
+                "38CFFF7A0za0cGalcmH", // Standard
+                "7ECFFF7A0za0cFakcmH", // Race (typical)
+                "580867000Am00a1nmoH", // Race (classic)
+                "FECC377A0ze0bPakmoH", // Challenge mode
+                "7ECFFF7E0ucba0a012b", // Chaos mode
+                "3ECFFFFA0Al02v1n2k2", // Extra fast
+            ];
 
         public MainWindow()
         {
             InitializeComponent();
+            InitializeGUIElements();
             // Apply the first preset now that all controls are initialized
-            flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
+            _settings = FlagsCodec.Deserialize(Presets[0]);
+            flagsTextBox.Text = FlagsCodec.Serialize(_settings);
+
+            PopulateGUIElementsFromSettings();
+        }
+
+        private void UpdateCheckBox(int index, bool value)
+        {
+            _checkBoxes[index].IsChecked = value;
+        }
+
+        private void UpdateComboBox(int index, int value)
+        {
+            _comboBoxes[index].SelectedIndex = value;
+        }
+
+        private void PopulateGUIElementsFromSettings()
+        {
+            for (int i = 0; i < _checkBoxes.Length; i++)
+                UpdateCheckBox(i, (bool)_settings[i]);
+            for (int i = 0; i < _comboBoxes.Length; ++i)
+                UpdateComboBox(i, (int)_settings[i + FlagsCodec.BoolCount]);
+        }
+
+        private void InitializeGUIElements()
+        {
+            // Must match the schema order in FlagsCodec exactly
+            // Only the element counts are validated automatically
+            _checkBoxes =
+            [
+                    fastTextCheckBox,
+                    fullHealthCheckBox,
+                    dragonSlayerRequiredCheckBox,
+                    pendantRodRubyRequiredCheckBox,
+                    moveSpringQuestRequirementCheckBox,
+                    shuffleTowersCheckBox,
+                    shuffleWorldsCheckBox,
+                    updateMiscTextCheckBox,
+                    generateSpoilerLogCheckBox,
+                    quickSeedCheckBox,
+                    allowLoweringRespawnCheckBox,
+                    preventKnockbackOnLaddersCheckBox,
+                    randomizeEnemyExperiencesCheckBox,
+                    randomizeRewardsCheckBox,
+                    randomizeMagicImmunitiesCheckBox,
+                    tryToMoveBossesCheckBox,
+                    guaranteeElixirNearFortressCheckbox,
+                    fixPendantBugCheckBox,
+                    buffGlovesCheckBox,
+                    buffHourglassCheckBox,
+                    randomizeBarRank,
+                    guaranteeStartingSpell,
+                    guaranteeMattock,
+                    replacePoisonCheckBox,
+                    alwaysSpawnSmallItemsCheckBox,
+                    randomizeItemNamesCheckBox,
+                    flexibleItemsCheckbox,
+                    includeEvilOnesFortressCheckBox,
+                    darknessCheckBox,
+                    randomizeTitlesCheckBox,
+                    includeSomeEolisDoorsCheckBox,
+                    addKillSwitchCheckBox,
+                    useCustomTextCheckBox,
+            ];
+
+            _comboBoxes = [
+                    hintsComboBox,
+                    miscDoorsComboBox,
+                    doorTypeComboBox,
+                    enemySetComboBox,
+                    enemyHPComboBox,
+                    enemyDamageComboBox,
+                    mattockUsageComboBox,
+                    startingWeaponComboBox,
+                    wingBootDurationComboBox,
+                    shieldSettingsComboBox,
+                    bigItemSpawnsComboBox,
+                    itemShuffleComboBox,
+                    keyRandomizationComboBox,
+                    randomizeScreensComboBox,
+                    multipleGiftsComboBox,
+                    aiComboBox,
+                    shuffleSegmentsComboBox,
+                    smallKeyLimitComboBox,
+                    bigKeyLimitComboBox,
+                    aiPropertyComboBox,
+             ];
+
+            if (_checkBoxes.Length != FlagsCodec.BoolCount)
+                throw new InvalidProgramException("CheckBox count does not match settings schema");
+            if (_comboBoxes.Length != FlagsCodec.Entries.Count - FlagsCodec.BoolCount)
+                throw new InvalidProgramException("ComboBox count does not match settings schema");
+
+            foreach (var cb in _checkBoxes)
+            {
+                cb.IsCheckedChanged += CheckBoxChanged;
+            }
+
+            foreach (var combo in _comboBoxes)
+            {
+                combo.SelectionChanged += ComboBoxChanged;
+            }
         }
 
         private async void BrowseButton_Click(object sender, RoutedEventArgs e)
@@ -64,76 +184,6 @@ namespace FaxanaduRando
             seedTextBox.Text = seed.ToString();
         }
 
-        private void SyncStaticPropertiesFromUI()
-        {
-            // General options
-            Randomizer.GeneralOptions.FastText = fastTextCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.FastStart = fullHealthCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.DragonSlayerRequired = dragonSlayerRequiredCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.PendantRodRubyRequired = pendantRodRubyRequiredCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.MoveSpringQuestRequirement = moveSpringQuestRequirementCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.ShuffleTowers = shuffleTowersCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.ShuffleWorlds = shuffleWorldsCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.UpdateMiscText = updateMiscTextCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.GenerateSpoilerLog = generateSpoilerLogCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.QuickSeed = quickSeedCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.AllowLoweringRespawn = allowLoweringRespawnCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.PreventKnockbackOnLadders = preventKnockbackOnLaddersCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.FlexibleItems = flexibleItemsCheckbox.IsChecked == true;
-            Randomizer.GeneralOptions.DarkTowers = darknessCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.RandomizeTitles = randomizeTitlesCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.AddKillSwitch = addKillSwitchCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.IncludeEvilOnesFortress = includeEvilOnesFortressCheckBox.IsChecked == true;
-            Randomizer.GeneralOptions.HintSetting = (Randomizer.GeneralOptions.Hints)hintsComboBox.SelectedIndex;
-            Randomizer.GeneralOptions.MiscDoorSetting = (Randomizer.GeneralOptions.MiscDoors)miscDoorsComboBox.SelectedIndex;
-            Randomizer.GeneralOptions.DoorTypeSetting = (Randomizer.GeneralOptions.DoorTypeShuffle)doorTypeComboBox.SelectedIndex;
-            Randomizer.GeneralOptions.RandomizeScreens = (Randomizer.GeneralOptions.ScreenRandomization)randomizeScreensComboBox.SelectedIndex;
-            Randomizer.GeneralOptions.ShuffleSegments = (Randomizer.GeneralOptions.SegmentShuffle)shuffleSegmentsComboBox.SelectedIndex;
-
-            // Enemy options
-            Randomizer.EnemyOptions.RandomizeExperience = randomizeEnemyExperiencesCheckBox.IsChecked == true;
-            Randomizer.EnemyOptions.RandomizeRewards = randomizeRewardsCheckBox.IsChecked == true;
-            Randomizer.EnemyOptions.RandomizeMagicImmunities = randomizeMagicImmunitiesCheckBox.IsChecked == true;
-            Randomizer.EnemyOptions.TryToMoveBosses = tryToMoveBossesCheckBox.IsChecked == true;
-            Randomizer.EnemyOptions.EnemySet = (Randomizer.EnemyOptions.EnemySetType)enemySetComboBox.SelectedIndex;
-            Randomizer.EnemyOptions.EnemyHPSetting = (Randomizer.EnemyOptions.EnemyHP)enemyHPComboBox.SelectedIndex;
-            Randomizer.EnemyOptions.EnemyDamageSetting = (Randomizer.EnemyOptions.EnemyDamage)enemyDamageComboBox.SelectedIndex;
-            Randomizer.EnemyOptions.AISetting = (Randomizer.EnemyOptions.AIShuffle)aiComboBox.SelectedIndex;
-            Randomizer.EnemyOptions.AIPropertySetting = (Randomizer.EnemyOptions.AIProperrtyRandomization)aiPropertyComboBox.SelectedIndex;
-
-            // Item options
-            Randomizer.ItemOptions.GuaranteeElixirNearFortress = guaranteeElixirNearFortressCheckbox.IsChecked == true;
-            Randomizer.ItemOptions.FixPendantBug = fixPendantBugCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.BuffGloves = buffGlovesCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.BuffHourglass = buffHourglassCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.RandomizeBarRank = randomizeBarRank.IsChecked == true;
-            Randomizer.ItemOptions.GuaranteeStartingSpell = guaranteeStartingSpell.IsChecked == true;
-            Randomizer.ItemOptions.GuaranteeMattock = guaranteeMattock.IsChecked == true;
-            Randomizer.ItemOptions.ReplacePoison = replacePoisonCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.AlwaysSpawnSmallItems = alwaysSpawnSmallItemsCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.RandomizeItemNames = randomizeItemNamesCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.IncludeSomeEolisDoors = includeSomeEolisDoorsCheckBox.IsChecked == true;
-            Randomizer.ItemOptions.MattockUsage = (Randomizer.ItemOptions.MattockUsages)mattockUsageComboBox.SelectedIndex;
-            Randomizer.ItemOptions.StartingWeapon = (Randomizer.ItemOptions.StartingWeaponOptions)startingWeaponComboBox.SelectedIndex;
-            Randomizer.ItemOptions.WingbootDurationSetting = (Randomizer.ItemOptions.WingBootDurations)wingBootDurationComboBox.SelectedIndex;
-            Randomizer.ItemOptions.ShieldSetting = shieldSettingsComboBox.SelectedIndex;
-            Randomizer.ItemOptions.BigItemSpawns = (Randomizer.ItemOptions.BigItemSpawning)bigItemSpawnsComboBox.SelectedIndex;
-            Randomizer.ItemOptions.ShuffleItems = (Randomizer.ItemOptions.ItemShuffle)itemShuffleComboBox.SelectedIndex;
-            Randomizer.ItemOptions.RandomizeKeys = (Randomizer.ItemOptions.KeyRandomization)keyRandomizationComboBox.SelectedIndex;
-            Randomizer.ItemOptions.MultipleGifts = (Randomizer.ItemOptions.MultipleGiftOptions)multipleGiftsComboBox.SelectedIndex;
-            Randomizer.ItemOptions.SmallKeyLimit = (Randomizer.ItemOptions.KeyLimit)smallKeyLimitComboBox.SelectedIndex;
-            Randomizer.ItemOptions.BigKeyLimit = (Randomizer.ItemOptions.KeyLimit)bigKeyLimitComboBox.SelectedIndex;
-
-            // Extra options
-            Randomizer.ExtraOptions.RandomizePalettes = randomizePalettesCheckbox.IsChecked == true;
-            Randomizer.ExtraOptions.RandomizeSounds = randomizeSoundEffectsCheckbox.IsChecked == true;
-            Randomizer.ExtraOptions.AppendSuffix = addSuffixCheckbox.IsChecked == true;
-            Randomizer.ExtraOptions.MusicSetting = (Randomizer.Music)musicComboBox.SelectedIndex;
-
-            // Text options
-            Randomizer.TextOptions.UseCustomText = useCustomTextCheckBox.IsChecked == true;
-        }
-
         private async void RandomizeButton_Click(object sender, RoutedEventArgs e)
         {
             if (pathTextBox.Text == null || pathTextBox.Text.Length == 0)
@@ -147,8 +197,6 @@ namespace FaxanaduRando
                 await MessageBoxManager.GetMessageBoxStandard("Error", "Incorrect seed format").ShowWindowDialogAsync(this);
                 return;
             }
-
-            SyncStaticPropertiesFromUI();
 
             if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
                 !Randomizer.GeneralOptions.AddKillSwitch)
@@ -176,6 +224,8 @@ namespace FaxanaduRando
 
             try
             {
+                // write current settings to live option class memebers
+                FlagsCodec.ApplySettings(_settings);
                 var randomizer = new Randomizer.Randomizer();
                 string message;
                 bool success = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, flagsTextBox.Text, seed, out message);
@@ -197,138 +247,95 @@ namespace FaxanaduRando
             if (flagsTextBox == null)
                 return;
 
-            if (sender is ComboBox box)
+            if (sender is ComboBox box &&
+                box.SelectedIndex >= 0 &&
+                box.SelectedIndex < Presets.Length)
             {
-                // Beginner
-                if (box.SelectedIndex == 0)
-                {
-                    flagsTextBox.Text = "38DFFF5A05k02v1ncoH";
-                }
-                // Standard
-                else if (box.SelectedIndex == 1)
-                {
-                    flagsTextBox.Text = "38CFFF7A0za0cGalcmH";
-                }
-                // Race (typical)
-                else if (box.SelectedIndex == 2)
-                {
-                    flagsTextBox.Text = "7ECFFF7A0za0cFakcmH";
-                }
-                // Race (classic)
-                else if (box.SelectedIndex == 3)
-                {
-                    flagsTextBox.Text = "580867000Am00a1nmoH";
-                }
-                // Challenge mode
-                else if (box.SelectedIndex == 4)
-                {
-                    flagsTextBox.Text = "FECC377A0ze0bPakmoH";
-                }
-                // Chaos mode
-                else if (box.SelectedIndex == 5)
-                {
-                    flagsTextBox.Text = "7ECFFF7E0ucba0a012b";
-                }
-                // Extra fast
-                else if (box.SelectedIndex == 6)
-                {
-                    flagsTextBox.Text = "3ECFFFFA0Al02v1n2k2";
-                }
+                flagsTextBox.Text = Presets[box.SelectedIndex];
+                ApplyFlagString();
             }
         }
 
         private void FlagsTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            ApplyFlagString();
+        }
+
+        private void ApplyFlagString()
+        {
             if (_updatingFlags)
                 return;
 
             var text = flagsTextBox.Text;
-            if (string.IsNullOrEmpty(text))
+            try
+            {
+                _settings = FlagsCodec.Deserialize(text);
+                flagsTextBox.ClearValue(TextBox.BorderBrushProperty);
+                flagsTextBox.ClearValue(TextBox.BorderThicknessProperty);
+                flagsTextBox.ClearValue(TextBox.BackgroundProperty);
+            }
+            catch
+            {
+                flagsTextBox.BorderBrush = Brushes.Red;
+                flagsTextBox.Background = Brushes.MistyRose;
+                flagsTextBox.BorderThickness = new Thickness(2);
                 return;
-
-            var values = Randomizer.FlagConverter.ParseFlags(text);
-            if (values.Length == 0)
-                return;
+            }
 
             _updatingFlags = true;
             try
             {
-                var checkBoxes = new CheckBox[]
-                {
-                    fastTextCheckBox,
-                    fullHealthCheckBox,
-                    dragonSlayerRequiredCheckBox,
-                    pendantRodRubyRequiredCheckBox,
-                    moveSpringQuestRequirementCheckBox,
-                    shuffleTowersCheckBox,
-                    shuffleWorldsCheckBox,
-                    updateMiscTextCheckBox,
-                    generateSpoilerLogCheckBox,
-                    quickSeedCheckBox,
-                    allowLoweringRespawnCheckBox,
-                    preventKnockbackOnLaddersCheckBox,
-                    randomizeEnemyExperiencesCheckBox,
-                    randomizeRewardsCheckBox,
-                    randomizeMagicImmunitiesCheckBox,
-                    tryToMoveBossesCheckBox,
-                    guaranteeElixirNearFortressCheckbox,
-                    fixPendantBugCheckBox,
-                    buffGlovesCheckBox,
-                    buffHourglassCheckBox,
-                    randomizeBarRank,
-                    guaranteeStartingSpell,
-                    guaranteeMattock,
-                    replacePoisonCheckBox,
-                    alwaysSpawnSmallItemsCheckBox,
-                    randomizeItemNamesCheckBox,
-                    flexibleItemsCheckbox,
-                    includeEvilOnesFortressCheckBox,
-                    darknessCheckBox,
-                    randomizeTitlesCheckBox,
-                    includeSomeEolisDoorsCheckBox,
-                    addKillSwitchCheckBox,
-                    useCustomTextCheckBox,
-                };
-
-                int boolCount = 33;
-                for (int i = 0; i < boolCount && i < values.Length && i < checkBoxes.Length; i++)
-                {
-                    checkBoxes[i].IsChecked = (bool)values[i];
-                }
-
-                var comboBoxes = new ComboBox[]
-                {
-                    hintsComboBox,
-                    miscDoorsComboBox,
-                    doorTypeComboBox,
-                    enemySetComboBox,
-                    enemyHPComboBox,
-                    enemyDamageComboBox,
-                    mattockUsageComboBox,
-                    startingWeaponComboBox,
-                    wingBootDurationComboBox,
-                    shieldSettingsComboBox,
-                    bigItemSpawnsComboBox,
-                    itemShuffleComboBox,
-                    keyRandomizationComboBox,
-                    randomizeScreensComboBox,
-                    multipleGiftsComboBox,
-                    aiComboBox,
-                    shuffleSegmentsComboBox,
-                    smallKeyLimitComboBox,
-                    bigKeyLimitComboBox,
-                    aiPropertyComboBox,
-                };
-
-                for (int i = 0; i < comboBoxes.Length && (boolCount + i) < values.Length; i++)
-                {
-                    comboBoxes[i].SelectedIndex = (int)values[boolCount + i];
-                }
+                PopulateGUIElementsFromSettings();
             }
             finally
             {
                 _updatingFlags = false;
             }
         }
+
+        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        {
+            if (_updatingFlags)
+                return;
+
+            var checkBox = (CheckBox)sender!;
+
+            UpdateSetting(checkBox);
+        }
+
+        private void ComboBoxChanged(object sender, RoutedEventArgs e)
+        {
+            if (_updatingFlags)
+                return;
+
+            var comboBox = (ComboBox)sender!;
+
+            UpdateSetting(comboBox);
+        }
+
+        private void UpdateSetting(Control control)
+        {
+            if (control is CheckBox checkBox)
+            {
+                int index = Array.IndexOf(_checkBoxes, checkBox);
+                _settings[index] = checkBox.IsChecked == true;
+            }
+            else if (control is ComboBox comboBox)
+            {
+                int comboIndex = Array.IndexOf(_comboBoxes, comboBox);
+                int settingIndex = FlagsCodec.BoolCount + comboIndex;
+
+                var type = FlagsCodec.Entries[settingIndex].Type;
+
+                _settings[settingIndex] = type.IsEnum
+                    ? Enum.ToObject(type, comboBox.SelectedIndex)
+                    : comboBox.SelectedIndex;
+            }
+
+            flagsTextBox.Text = FlagsCodec.Serialize(_settings);
+        }
+
     }
+
+
 }
