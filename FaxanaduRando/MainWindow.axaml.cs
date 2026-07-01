@@ -206,6 +206,9 @@ namespace FaxanaduRando
                 return;
             }
 
+            // write current settings to live option class memebers as they are needed from this point
+            FlagsCodec.ApplySettings(_settings);
+
             if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
                 !Randomizer.GeneralOptions.AddKillSwitch)
             {
@@ -232,8 +235,6 @@ namespace FaxanaduRando
 
             try
             {
-                // write current settings to live option class memebers
-                FlagsCodec.ApplySettings(_settings);
                 var randomizer = new Randomizer.Randomizer();
                 string message;
                 bool success = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, flagsTextBox.Text, seed, out message);
