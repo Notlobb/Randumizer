@@ -56,14 +56,31 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        [Flag(FlagsCodec.NonBoolFlagBase + 36)]
         public static EnemySetType EnemySet { get; set; } = EnemySetType.NonMixed;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 37)]
         public static EnemyHP EnemyHPSetting { get; set; } = EnemyHP.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 38)]
         public static EnemyDamage EnemyDamageSetting { get; set; } = EnemyDamage.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 48)]
         public static AIShuffle AISetting { get; set; } = AIShuffle.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 52)]
         public static AIProperrtyRandomization AIPropertySetting { get; set; } = AIProperrtyRandomization.Unchanged;
+
+        [Flag(12)]
         public static bool RandomizeExperience { get; set; } = true;
+
+        [Flag(13)]
         public static bool RandomizeRewards { get; set; } = true;
+
+        [Flag(14)]
         public static bool RandomizeMagicImmunities { get; set; } = true;
+
+        [Flag(15)]
         public static bool TryToMoveBosses { get; set; } = true;
     }
 

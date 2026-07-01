@@ -76,26 +76,68 @@ namespace FaxanaduRando.Randomizer
             NoLimit
         };
 
+        [Flag(16)]
         public static bool GuaranteeElixirNearFortress { get; set; } = true;
+
+        [Flag(17)]
         public static bool FixPendantBug { get; set; } = true;
+
+        [Flag(18)]
         public static bool BuffGloves { get; set; } = true;
+
+        [Flag(19)]
         public static bool BuffHourglass { get; set; } = true;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 41)]
         public static WingBootDurations WingbootDurationSetting { get; set; } = WingBootDurations.ScalesUpFrom40;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 42)]
+        [FlagMaxValue(2)]
         public static int ShieldSetting { get; set; } = 1;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 40)]
         public static StartingWeaponOptions StartingWeapon { get; set; } = StartingWeaponOptions.LongSword;
+
+        [Flag(20)]
         public static bool RandomizeBarRank { get; set; } = true;
+
+        [Flag(22)]
         public static bool GuaranteeMattock { get; set; } = true;
+
+        [Flag(21)]
         public static bool GuaranteeStartingSpell { get; set; } = true;
+
+        [Flag(23)]
         public static bool ReplacePoison { get; set; } = true;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 39)]
         public static MattockUsages MattockUsage { get; set; } = MattockUsages.AnywhereExceptBannedScreens;
+
+        [Flag(24)]
         public static bool AlwaysSpawnSmallItems { get; set; } = true;
+
+        [Flag(25)]
         public static bool RandomizeItemNames { get; set; } = false;
+
+        [Flag(30)]
         public static bool IncludeSomeEolisDoors { get; set; } = false;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 43)]
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 44)]
         public static ItemShuffle ShuffleItems { get; set; } = ItemShuffle.MixOnlyShopsAndGifts;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 45)]
         public static KeyRandomization RandomizeKeys { get; set; } = KeyRandomization.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 47)]
         public static MultipleGiftOptions MultipleGifts { get; set; } = MultipleGiftOptions.AllGurusExceptConflateAndEolis;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 50)]
         public static KeyLimit SmallKeyLimit { get; set; } = KeyLimit.NoLimit;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 51)]
         public static KeyLimit BigKeyLimit { get; set; } = KeyLimit.NoLimit;
     }
 
