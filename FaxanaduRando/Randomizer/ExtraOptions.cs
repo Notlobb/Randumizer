@@ -11,16 +11,16 @@ namespace FaxanaduRando.Randomizer
 
     public class ExtraOptions
     {
-        [FlagNone]
+        [Flag(33)]
         public static bool RandomizePalettes { get; set; } = false;
 
-        [FlagNone]
+        [Flag(34)]
         public static bool RandomizeSounds { get; set; } = false;
 
-        [FlagNone]
+        [Flag(35)]
         public static bool AppendSuffix { get; set; } = false;
 
-        [FlagNone]
+        [Flag(FlagsCodec.NonBoolFlagBase + 53)]
         public static Music MusicSetting { get; set; } = Music.Unchanged;
     }
 

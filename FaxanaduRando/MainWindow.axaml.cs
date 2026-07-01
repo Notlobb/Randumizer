@@ -21,24 +21,26 @@ namespace FaxanaduRando
 
         private static readonly string[] Presets =
             [
-                "38DFFF5A05k02v1ncoH", // Beginner
-                "38CFFF7A0za0cGalcmH", // Standard
-                "7ECFFF7A0za0cFakcmH", // Race (typical)
-                "580867000Am00a1nmoH", // Race (classic)
-                "FECC377A0ze0bPakmoH", // Challenge mode
-                "7ECFFF7E0ucba0a012b", // Chaos mode
-                "3ECFFFFA0Al02v1n2k2", // Extra fast
+                "38DFFF5A05k02v1ncoHk", // Beginner
+                "38CFFF7E0za02GalcmHk", // Standard
+                "7ECFFF7A0za02GakcmHk", // Race (typical)
+                "580867000Am00a1nmoHk", // Race (classic)
+                "FECC377A0ze01PakmoHk", // Challenge mode
+                "7ECFFF7E0ucb00a012bk", // Chaos mode
+                "3ECFFFFA0Al02v1n2k2k", // Extra fast
             ];
 
         public MainWindow()
         {
             InitializeComponent();
             InitializeGUIElements();
-            // Apply the first preset now that all controls are initialized
-            _settings = FlagsCodec.Deserialize(Presets[0]);
-            flagsTextBox.Text = FlagsCodec.Serialize(_settings);
 
-            PopulateGUIElementsFromSettings();
+            // read default constructor setting values
+            _settings = FlagsCodec.ReadSettings();
+            // read option defaults first so an invalid preset can't leave the GUI
+            // in an undefined state if the flag schema is evolving during development
+            flagsTextBox.Text = Presets[0];
+            ApplyFlagString();
         }
 
         private void UpdateCheckBox(int index, bool value)
@@ -98,6 +100,10 @@ namespace FaxanaduRando
                     includeSomeEolisDoorsCheckBox,
                     addKillSwitchCheckBox,
                     useCustomTextCheckBox,
+                    // extra settings
+                    randomizePalettesCheckbox,
+                    randomizeSoundEffectsCheckbox,
+                    addSuffixCheckbox,
             ];
 
             _comboBoxes = [
@@ -121,6 +127,8 @@ namespace FaxanaduRando
                     smallKeyLimitComboBox,
                     bigKeyLimitComboBox,
                     aiPropertyComboBox,
+                    // extra settings
+                    musicComboBox,
              ];
 
             if (_checkBoxes.Length != FlagsCodec.BoolCount)
