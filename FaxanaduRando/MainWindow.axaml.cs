@@ -22,11 +22,11 @@ namespace FaxanaduRando
         private static readonly string[] Presets =
             [
                 "38DFFF5A05k02v1ncoHk", // Beginner
-                "38CFFF7E0za02GalcmHk", // Standard
-                "7ECFFF7A0za02GakcmHk", // Race (typical)
+                "38CFFF7A0za0cGalcmHk", // Standard
+                "7ECFFF7A0za0cFakcmHk", // Race (typical)
                 "580867000Am00a1nmoHk", // Race (classic)
-                "FECC377A0ze01PakmoHk", // Challenge mode
-                "7ECFFF7E0ucb00a012bk", // Chaos mode
+                "FECC377A0ze0bPakmoHk", // Challenge mode
+                "7ECFFF7E0ucba0a012bk", // Chaos mode
                 "3ECFFFFA0Al02v1n2k2k", // Extra fast
             ];
 
