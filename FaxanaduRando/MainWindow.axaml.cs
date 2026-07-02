@@ -70,7 +70,7 @@ namespace FaxanaduRando
             randomizePalettesCheckbox.IsChecked = ExtraOptions.RandomizePalettes;
             randomizeSoundEffectsCheckbox.IsChecked = ExtraOptions.RandomizeSounds;
             addSuffixCheckbox.IsChecked = ExtraOptions.AppendSuffix;
-            musicComboBox.SelectedIndex = (int)ExtraOptions.MusicSetting; // use your actual enum/property
+            musicComboBox.SelectedIndex = (int)ExtraOptions.MusicSetting;
         }
 
         private void InitializeGUIElements()
