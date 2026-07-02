@@ -14,20 +14,25 @@ namespace FaxanaduRando
     public partial class MainWindow : Window
     {
         private bool _updatingFlags = false;
+        
+        // contains settings that are part of flag serialization
         private object[] _settings;
 
         private ComboBox[] _comboBoxes;
         private CheckBox[] _checkBoxes;
 
+        private CheckBox[] _extraCheckBoxes;
+        private ComboBox[] _extraComboBoxes;
+
         private static readonly string[] Presets =
             [
-                "38DFFF5A05k02v1ncoHk", // Beginner
-                "38CFFF7A0za0cGalcmHk", // Standard
-                "7ECFFF7A0za0cFakcmHk", // Race (typical)
-                "580867000Am00a1nmoHk", // Race (classic)
-                "FECC377A0ze0bPakmoHk", // Challenge mode
-                "7ECFFF7E0ucba0a012bk", // Chaos mode
-                "3ECFFFFA0Al02v1n2k2k", // Extra fast
+                "38DFFF5A05k02v1ncoH", // Beginner
+                "38CFFF7A0za0cGalcmH", // Standard
+                "7ECFFF7A0za0cFakcmH", // Race (typical)
+                "580867000Am00a1nmoH", // Race (classic)
+                "FECC377A0ze0bPakmoH", // Challenge mode
+                "7ECFFF7E0ucba0a012b", // Chaos mode
+                "3ECFFFFA0Al02v1n2k2", // Extra fast
             ];
 
         public MainWindow()
@@ -55,18 +60,24 @@ namespace FaxanaduRando
 
         private void PopulateGUIElementsFromSettings()
         {
+            // serialized settings
             for (int i = 0; i < _checkBoxes.Length; i++)
                 UpdateCheckBox(i, (bool)_settings[i]);
             for (int i = 0; i < _comboBoxes.Length; ++i)
                 UpdateComboBox(i, (int)_settings[i + FlagsCodec.BoolCount]);
+
+            // Cosmetic settings
+            randomizePalettesCheckbox.IsChecked = ExtraOptions.RandomizePalettes;
+            randomizeSoundEffectsCheckbox.IsChecked = ExtraOptions.RandomizeSounds;
+            addSuffixCheckbox.IsChecked = ExtraOptions.AppendSuffix;
+            musicComboBox.SelectedIndex = (int)ExtraOptions.MusicSetting; // use your actual enum/property
         }
 
         private void InitializeGUIElements()
         {
             // Must match the schema order in FlagsCodec exactly
             // Only the element counts are validated automatically
-            _checkBoxes =
-            [
+            _checkBoxes = [
                     fastTextCheckBox,
                     fullHealthCheckBox,
                     dragonSlayerRequiredCheckBox,
@@ -100,10 +111,6 @@ namespace FaxanaduRando
                     includeSomeEolisDoorsCheckBox,
                     addKillSwitchCheckBox,
                     useCustomTextCheckBox,
-                    // extra settings
-                    randomizePalettesCheckbox,
-                    randomizeSoundEffectsCheckbox,
-                    addSuffixCheckbox,
             ];
 
             _comboBoxes = [
@@ -127,10 +134,23 @@ namespace FaxanaduRando
                     smallKeyLimitComboBox,
                     bigKeyLimitComboBox,
                     aiPropertyComboBox,
-                    // extra settings
-                    musicComboBox,
              ];
 
+            // extra checkboxes - for boolean options not part of flag serialization
+            // order irrelevant as long as they update the corresponding option directly
+            _extraCheckBoxes = [
+                    randomizePalettesCheckbox,
+                    randomizeSoundEffectsCheckbox,
+                    addSuffixCheckbox,
+                ];
+
+            // extra comboboxes - for non-bool options not part of flag serialization
+            // order irrelevant as long as they update the corresponding option directly
+            _extraComboBoxes = [
+                musicComboBox,
+                ];
+
+            // validate counts for serialized options against schema
             if (_checkBoxes.Length != FlagsCodec.BoolCount)
                 throw new InvalidProgramException("CheckBox count does not match settings schema");
             if (_comboBoxes.Length != FlagsCodec.Entries.Count - FlagsCodec.BoolCount)
@@ -142,6 +162,17 @@ namespace FaxanaduRando
             }
 
             foreach (var combo in _comboBoxes)
+            {
+                combo.SelectionChanged += ComboBoxChanged;
+            }
+
+            // hook the extra settings up to the same controls
+            foreach (var cb in _extraCheckBoxes)
+            {
+                cb.IsCheckedChanged += CheckBoxChanged;
+            }
+
+            foreach (var combo in _extraComboBoxes)
             {
                 combo.SelectionChanged += ComboBoxChanged;
             }
@@ -309,7 +340,15 @@ namespace FaxanaduRando
 
             var checkBox = (CheckBox)sender!;
 
-            UpdateSetting(checkBox);
+            if (Array.IndexOf(_extraCheckBoxes, checkBox) >= 0)
+            {
+                // extra options not part of serialization
+                ExtraOptions.RandomizePalettes = randomizePalettesCheckbox.IsChecked == true;
+                ExtraOptions.RandomizeSounds = randomizeSoundEffectsCheckbox.IsChecked == true;
+                ExtraOptions.AppendSuffix = addSuffixCheckbox.IsChecked == true;
+            }
+            else
+                UpdateSetting(checkBox);
         }
 
         private void ComboBoxChanged(object sender, RoutedEventArgs e)
@@ -319,7 +358,13 @@ namespace FaxanaduRando
 
             var comboBox = (ComboBox)sender!;
 
-            UpdateSetting(comboBox);
+            if (Array.IndexOf(_extraComboBoxes, comboBox) >= 0)
+            {
+                // extra options not part of serialization
+                ExtraOptions.MusicSetting = (Music)musicComboBox.SelectedIndex;
+            }
+            else
+                UpdateSetting(comboBox);
         }
 
         private void UpdateSetting(Control control)

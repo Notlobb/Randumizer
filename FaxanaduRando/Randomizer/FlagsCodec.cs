@@ -115,14 +115,14 @@ namespace FaxanaduRando.Randomizer
 
             for (int i = 0; i < values.Count; i += 2)
             {
-                string test = values[i].ToString();
+                string valString = values[i].ToString();
 
                 if (i + 1 < values.Count)
-                    test += values[i + 1].ToString();
+                    valString += values[i + 1].ToString();
                 else
-                    test += "0";
+                    valString += "0";
 
-                sb.Append(encodingDict[test]);
+                sb.Append(encodingDict[valString]);
             }
 
             return sb.ToString();
@@ -296,7 +296,6 @@ namespace FaxanaduRando.Randomizer
                 typeof(EnemyOptions),
                 typeof(ItemOptions),
                 typeof(TextOptions),
-                typeof(ExtraOptions)
                 };
 
             // loop over all classes
@@ -359,13 +358,21 @@ namespace FaxanaduRando.Randomizer
 
                 if (entry.Type == typeof(int))
                 {
-                    if (entry.MaxValue == null)
+                    if (entry.MaxValue is null || entry.MaxValue > 9)
                     {
                         throw new InvalidOperationException(
-                            $"{entry.Property.DeclaringType!.Name}.{entry.Property.Name}: ints require [FlagMaxValue].");
+                            $"{entry.Property.DeclaringType!.Name}.{entry.Property.Name}: ints require [FlagMaxValue] in the range 0-9.");
                     }
                 }
-                else if (entry.Type != typeof(bool) && !entry.Type.IsEnum)
+                else if (entry.Type.IsEnum)
+                {
+                    if (Enum.GetValues(entry.Type).Length > 10)
+                    {
+                        throw new InvalidOperationException(
+                            $"{entry.Property.DeclaringType!.Name}.{entry.Property.Name}: enums with more than 10 values cannot be encoded.");
+                    }
+                }
+                else if (entry.Type != typeof(bool))
                 {
                     throw new InvalidOperationException(
                         $"{entry.Property.DeclaringType!.Name}.{entry.Property.Name}: unsupported property type '{entry.Type.Name}'.");
