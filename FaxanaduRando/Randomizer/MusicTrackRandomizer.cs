@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Reflection;
 
 namespace FaxanaduRando.Randomizer
 {
@@ -11,7 +12,7 @@ namespace FaxanaduRando.Randomizer
         // high level constants for music data
         private const int MUSIC_BANK = 5;
         private const ushort TRACK_POINTER_TABLE = 0x8efb;
-        private const ushort TRACK_COUNT = 16;
+        private const int TRACK_COUNT = 16;
         // music engine opcodes that ends instruction stream
         private static readonly HashSet<byte> OpcodesEnding = [0xf4, 0xf5, 0xfe, 0xff];
         // opcodes that take a byte parameter
@@ -19,11 +20,147 @@ namespace FaxanaduRando.Randomizer
         // JSR opcode
         private const byte OpcodeJSR = 0xf8;
 
-        public static void RandomizeMusicTracks(byte[] rom, bool includeOriginal, bool chaosMode)
+        // publically available info on which music was in fact assigned to each slot
+        public static IReadOnlyList<string> AssignedMusic { get; private set; } = Array.Empty<string>();
+
+        public static void RandomizeMusicTracks(Random random, byte[] rom, bool includeOriginal, bool chaosMode)
         {
-            // TODO: pull in embedded modules and add actual randomization logic
-            var mods = ExtractVanillaMusic(rom);
-            WriteModulesToRom(rom, mods);
+            var mods = LoadEmbeddedMusicModules();
+            if (includeOriginal)
+            {
+                mods.AddRange(ExtractVanillaMusic(rom));
+            }
+
+            if (chaosMode)
+            {
+                foreach (MusicModule module in mods)
+                {
+                    module.AllowedSlots.Clear();
+
+                    for (int i = 0; i < TRACK_COUNT; i++)
+                    {
+                        module.AllowedSlots.Add(i);
+                    }
+                }
+            }
+
+            // precompute sizes
+            List<int> moduleSizes = mods.Select(module => module.Size()).ToList();
+
+            // build up the total list of candidates per slot
+            List<List<int>> candidates = [];
+
+            for (int slot = 0; slot < TRACK_COUNT; slot++)
+            {
+                candidates.Add([]);
+
+                for (int mod = 0; mod < mods.Count; mod++)
+                {
+                    if (mods[mod].AllowedSlots.Contains(slot))
+                    {
+                        candidates[slot].Add(mod);
+                    }
+                }
+            }
+
+            // randomize the order of each candidate list - this is the only randomization we need
+            foreach (List<int> list in candidates)
+            {
+                for (int i = list.Count - 1; i > 0; i--)
+                {
+                    int j = random.Next(i + 1);
+                    (list[i], list[j]) = (list[j], list[i]);
+                }
+            }
+
+            int bankLimit = 0xc000 - (TRACK_POINTER_TABLE + TRACK_COUNT * 8);
+
+            // sanity check
+#if DEBUG
+            int optimisticMinimumSize = 0;
+
+            for (int slot = 0; slot < TRACK_COUNT; slot++)
+            {
+                if (candidates[slot].Count == 0)
+                    throw new InvalidOperationException($"No music modules can be placed in slot {slot}.");
+
+                optimisticMinimumSize += candidates[slot]
+                    .Select(mod => moduleSizes[mod])
+                    .Min();
+            }
+
+            if (optimisticMinimumSize > bankLimit)
+            {
+                throw new InvalidOperationException(
+                    $"Music library cannot possibly fit in bank 5. " +
+                    $"Optimistic minimum size is {optimisticMinimumSize} bytes, " +
+                    $"but only {bankLimit} bytes are available");
+            }
+#endif
+
+            // recurse on most to least contrained slot index for less backtracking
+            // TODO: Future optimization
+            // Recompute the "most constrained remaining slot" after each assignment
+            // in the recursion, instead of using a fixed slot order
+            var slotOrder = Enumerable.Range(0, TRACK_COUNT)
+                .OrderBy(slot => candidates[slot].Count)
+                .ToList();
+
+            // which modules have already been used
+            bool[] usedModules = new bool[mods.Count];
+            // which module a certain slot uses (-1 means unassigned)
+            int[] chosenModules = Enumerable.Repeat(-1, TRACK_COUNT).ToArray();
+
+            // local recursive function, captures all outside variables defined above
+            // "depth" here means index in slotOrder (most to least constrained)
+            bool Solve(int depth, int currentSize)
+            {
+                // every slot has been assigned - success!
+                if (depth == TRACK_COUNT)
+                    return true;
+
+                int slot = slotOrder[depth];
+
+                foreach (int module in candidates[slot])
+                {
+                    if (usedModules[module])
+                        continue;
+
+                    int newSize = currentSize + moduleSizes[module];
+                    if (newSize > bankLimit)
+                        continue;
+
+                    // TODO: Future optimization
+                    // Compute a lower bound on the minimum additional bytes required to
+                    // fill the remaining slots using the remaining unused modules
+                    // If newSize + lowerBound > bankLimit, prune this branch
+
+                    // assign
+                    usedModules[module] = true;
+                    chosenModules[slot] = module;
+
+                    if (Solve(depth + 1, newSize))
+                        return true;
+
+                    // unassign, this path was no good
+                    usedModules[module] = false;
+                    chosenModules[slot] = -1;
+                }
+
+                return false;
+            }
+
+            if (!Solve(0, 0))
+            {
+                throw new InvalidOperationException("Unable to build up music tracks within bank 5 free space");
+            }
+
+            // record which tracks were in fact chosen
+            AssignedMusic = chosenModules
+                .Select(index => mods[index].Description)
+                .ToArray();
+
+            WriteModulesToRom(rom, chosenModules.Select(i => mods[i]).ToList());
         }
 
         private static void WriteModulesToRom(byte[] rom, List<MusicModule> modules)
@@ -61,6 +198,7 @@ namespace FaxanaduRando.Randomizer
 
         // developer function for extracting all music from a rom (input file-path)
         // to json files, which will be written to an output-folder
+#if DEBUG
         public static void ExtractVanillaMusicToFiles(string romFileName, string outputDirectory)
         {
             byte[] rom = File.ReadAllBytes(romFileName);
@@ -85,7 +223,9 @@ namespace FaxanaduRando.Randomizer
                     JsonSerializer.Serialize(dto, options));
             }
         }
+#endif
 
+        // load all music already present in ROM as modules
         private static List<MusicModule> ExtractVanillaMusic(byte[] rom)
         {
             List<MusicModule> modules = [];
@@ -95,12 +235,32 @@ namespace FaxanaduRando.Randomizer
             for (int i = 0; i < TRACK_COUNT; i++)
             {
                 var mod = DisasmTrack(rom, ptr);
-                mod.Description = "Ripped from ROM";
-                mod.AllowedSlots.Add(i + 1);
+                mod.Description = $"Ripped from ROM (Track {i + 1})";
+                mod.AllowedSlots.Add(i);
                 modules.Add(mod);
                 ptr += 8; // four 16-bit channel pointers
             }
 
+            return modules;
+        }
+
+        // load all embedded music module files
+        private static List<MusicModule> LoadEmbeddedMusicModules()
+        {
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            string prefix = assembly.GetName().Name + ".Resources.MusicModules.";
+            List<MusicModule> modules = [];
+            foreach (string resource in assembly.GetManifestResourceNames()
+                .Where(r => r.StartsWith(prefix) && r.EndsWith(".json")))
+            {
+                using Stream stream = assembly.GetManifestResourceStream(resource)!;
+                using StreamReader reader = new(stream);
+
+                MusicModuleDto dto = JsonSerializer.Deserialize<MusicModuleDto>(
+                    reader.ReadToEnd())!;
+
+                modules.Add(dto.ToModule());
+            }
             return modules;
         }
 
@@ -191,6 +351,18 @@ namespace FaxanaduRando.Randomizer
                 new(), // tri
                 new(), // noise
             ];
+
+            public int Size()
+            {
+                int size = 0;
+
+                foreach (MusicChannel channel in Channels)
+                {
+                    size += channel.Code.Count;
+                }
+
+                return size;
+            }
         }
 
         private class Instruction
@@ -288,7 +460,7 @@ namespace FaxanaduRando.Randomizer
                 return new MusicModuleDto
                 {
                     Description = module.Description,
-                    AllowedSlots = [.. module.AllowedSlots],
+                    AllowedSlots = module.AllowedSlots.Select(slot => slot + 1).ToList(),
                     Channels = module.Channels
                         .Select(MusicChannelDto.FromChannel)
                         .ToArray()
@@ -300,7 +472,7 @@ namespace FaxanaduRando.Randomizer
                 MusicModule module = new()
                 {
                     Description = Description,
-                    AllowedSlots = [.. AllowedSlots]
+                    AllowedSlots = AllowedSlots.Select(slot => slot - 1).ToList()
                 };
 
                 for (int i = 0; i < 4; i++)

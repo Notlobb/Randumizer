@@ -8,6 +8,44 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\MusicModules\JessicaRobot\actraiser-birth-of-the-people.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\bomberman.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\castlevania-2-silence-of-daylight.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\crystalis-ending.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\deja-vu-main-title.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\dq2-lonely-hero.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\final-fantasy-theme.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\ghosts-n-goblins.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\mega-man-2-password.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\mother-humoresque-of-a-little-dog.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\ninja-gaiden-ryus-determination.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\pokemon-rb-pallet-town.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\saga-2-boss.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\ultima-3-wanderer.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\ys-first-step-towards-wars.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\zelda-2-temple.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\actraiser-birth-of-the-people.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\bomberman.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\castlevania-2-silence-of-daylight.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\crystalis-ending.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\deja-vu-main-title.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\dq2-lonely-hero.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\final-fantasy-theme.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ghosts-n-goblins.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\mega-man-2-password.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\mother-humoresque-of-a-little-dog.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ninja-gaiden-ryus-determination.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\pokemon-rb-pallet-town.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\saga-2-boss.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ultima-3-wanderer.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ys-first-step-towards-wars.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\zelda-2-temple.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.2.3" />
     <PackageReference Include="Avalonia.Desktop" Version="11.2.3" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.2.3" />

@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Actraiser - Birth of the People",
+  "AllowedSlots": [
+    14
+  ],
+  "Channels": [
+    {
+      "Code": "8pDwAP0C8QOJMwA6ODYANQCkNpIANok1ADEAmzOJM/sBNTMxAKQz/Ik1NpI1tjOSAPIQ8QWJMzIzAC4tLgAqKSoAJyakJ/KR8QOJtjaJNTOkNS62Nok1M8g1kvECyDaSADg6O8g1kgA2ODrIM5IANTY4pDK2OIk2NaQ28lDxA5IuK7YxiS8uLzEvLpIsJbYviS4sLiosLpIqJ7YuiSwqLCopJ5IpJrYsiSsppCv0",
+      "Relocations": []
+    },
+    {
+      "Code": "8pDwAP0C8QSJKgAzAJIAiSwApC6SAIkuACwAkgCkKvsBiSwAKQCkKvyJLAAlALYqpADzkADyEInxBSciJyouIioiLCImIiwiKSIqIiciLiIqIiwiJiIsIiki8pCJ8QYqACIApC6SAIksLi8uLCopACAApCySAIkqLC4sKiknAB4ApCqSAIkpKiwqKScmAB0ApCmSAIknJqQn8lCJ8QUrACcApC6SAJssiS4sKikAJQCkLJIApCqJJQAnACMApCqSAJspAIkmACIApCmSALYn9A==",
+      "Relocations": []
+    },
+    {
+      "Code": "/QKJGwCkAIkZAKQSkgCJEgAZmwCkF4kZmwD7AaQb/LYbpADzkAD9AqQPChEK/IkPAA8REhEPDaQLCIkNAA0PEQ8NC6QKBokLAAsNDw0LCqQIBYkKAAoMDgwKCKQGA4kTFBYUEw8RExQTFBYXFhQSERIUEhENDxESERIUFhQSEQ8REhEPCw0PEQ8REhQSEQ8ODxEPDgoMDsgP9A==",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}

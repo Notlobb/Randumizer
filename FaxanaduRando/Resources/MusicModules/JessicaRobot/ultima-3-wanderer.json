@@ -1,0 +1,55 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Ultima 3 - Wanderer",
+  "AllowedSlots": [
+    5
+  ],
+  "Channels": [
+    {
+      "Code": "8pDwAPEE83gA+doAjwCPLPhiAPhiAPh/APhiAI8zMTMxnjA5OLw0njSPNjQ2NJ4zOTi8NJ4zNDEvLbwsMPhiAPh/APiaAPhiAPhiAPiaAPh/APh/AI8xMzQ2ODk8OLw9AP6PMTM0MTM0NjOeNDiPNjQzNjQzMTSeMzAxLAAs9ZQxMzQzNDY0Njg2NDM0MzEzMTAxMzGoLJQs9Y8tLJ4qvCyPLiyeKiwtLjWPNzUzMrwznjUyjzMuKy68J48zLiouvCePMSwpLLwljzEsKCyeJST1",
+      "Relocations": [
+        17,
+        20,
+        23,
+        26,
+        62,
+        65,
+        68,
+        71,
+        74,
+        77,
+        80,
+        83
+      ]
+    },
+    {
+      "Code": "8pDwAPN4APnxBY/9DfN4APz4XQCPMC4wLp4sNjS8MZ4xjzMxMzGeLzY0vC+eLDEtJyq8KCf4XQD4XQD4fQD9BPN4APz4XQD4fQD4XQD4XQCPKCclKCclJCe8JQD+jygsMSgsMTMwnjE0jzMxMDOeMSwwKo8oLCglICEkKvWPKiieJygljyopnicoKLwp2i6eLbwujy4rJyu8Io8uKicqvCKPLCklKbwgjywoJSieICD1",
+      "Relocations": [
+        18,
+        54,
+        57,
+        60,
+        69,
+        72,
+        75,
+        78
+      ]
+    },
+    {
+      "Code": "+f0GvA0I/PhYAPhYAP0EvA0I/I+8DwiPDQ8QErwUEguPEBIUFZ4XGLwZEo8UEA8NDw0PCPhYAPhYAPhlAP0EvA0I/PhYAPhlAP0EvA0I/PhYAJ4ZDRQI/v0Eng0U+wMIFPy8CPWeBgsQEY8SFBYYnhkYvBqPGxoYFrwYnhogjx8bFhu8E48eGxYbvBKPHRkUGbwRjxwZFBmeEBL1",
+      "Relocations": [
+        8,
+        11,
+        53,
+        56,
+        59,
+        68,
+        71,
+        80
+      ]
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}
