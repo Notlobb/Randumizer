@@ -146,6 +146,7 @@ namespace FaxanaduRando.Randomizer
                     "Shoutout to Songbirder",
                     "Shoutout to Bogledowdee",
                     "Shoutout to HungryGoriya",
+                    "Shoutout to JessicaRobot",
                     "So anyway, I started blastin,...",
                     "What a great day to have a curse.",
                 };
