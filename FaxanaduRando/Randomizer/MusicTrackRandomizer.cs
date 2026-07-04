@@ -20,9 +20,9 @@ namespace FaxanaduRando.Randomizer
         // JSR opcode
         private const byte OpcodeJSR = 0xf8;
 
-        // publically available info on which music was in fact assigned to each slot
+        // publicly available info on which music was in fact assigned to each slot
         public static IReadOnlyList<string> AssignedMusic { get; private set; } = Array.Empty<string>();
-        // publically available info on how many times the recursion was called (debug only)
+        // publicly available info on how many times the recursion was called (debug only)
 #if DEBUG
         public static long solveCalls { get; private set; } = 0;
 #endif
@@ -47,7 +47,7 @@ namespace FaxanaduRando.Randomizer
         ];
 
         // TODO: Populate this and map all music tracks to a list of suitable slots
-        // this will be used for tracks extracted for ROM which does not have such metadata
+        // this will be used for tracks extracted for ROM which do not have such metadata
         // note: this map is 0-indexed unlike the json files and such
         private static readonly int[][] VanillaAllowedSlots = [
             [0],  // Intro

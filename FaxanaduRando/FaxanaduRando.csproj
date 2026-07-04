@@ -19,6 +19,7 @@
     <None Remove="Resources\MusicModules\JessicaRobot\mega-man-2-password.json" />
     <None Remove="Resources\MusicModules\JessicaRobot\mother-humoresque-of-a-little-dog.json" />
     <None Remove="Resources\MusicModules\JessicaRobot\ninja-gaiden-ryus-determination.json" />
+    <None Remove="Resources\MusicModules\JessicaRobot\original-01-overworld.json" />
     <None Remove="Resources\MusicModules\JessicaRobot\pokemon-rb-pallet-town.json" />
     <None Remove="Resources\MusicModules\JessicaRobot\saga-2-boss.json" />
     <None Remove="Resources\MusicModules\JessicaRobot\ultima-3-wanderer.json" />
@@ -38,6 +39,7 @@
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\mega-man-2-password.json" />
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\mother-humoresque-of-a-little-dog.json" />
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ninja-gaiden-ryus-determination.json" />
+    <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\original-01-overworld.json" />
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\pokemon-rb-pallet-town.json" />
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\saga-2-boss.json" />
     <EmbeddedResource Include="Resources\MusicModules\JessicaRobot\ultima-3-wanderer.json" />
