@@ -22,6 +22,29 @@ namespace FaxanaduRando.Randomizer
 
         // publically available info on which music was in fact assigned to each slot
         public static IReadOnlyList<string> AssignedMusic { get; private set; } = Array.Empty<string>();
+        // publically available info on how many times the recursion was called (debug only)
+#if DEBUG
+        public static long solveCalls { get; private set; } = 0;
+#endif
+
+        private static readonly string[] VanillaTrackNames = [
+            "Intro",
+            "Land of Dwarf (Dartmoor Castle)",
+            "Trunk",
+            "Branches",
+            "Mist",
+            "Towers",
+            "Eolis",
+            "Mantra/Death",
+            "Towns",
+            "Boss Music",
+            "Hour Glass",
+            "Outro",
+            "King",
+            "Guru",
+            "Shops/House",
+            "Zenis (Evil Lair)"
+        ];
 
         public static void RandomizeMusicTracks(Random random, byte[] rom, bool includeOriginal, bool chaosMode)
         {
@@ -111,10 +134,18 @@ namespace FaxanaduRando.Randomizer
             // which module a certain slot uses (-1 means unassigned)
             int[] chosenModules = Enumerable.Repeat(-1, TRACK_COUNT).ToArray();
 
+#if DEBUG
+            solveCalls = 0;
+#endif
+
             // local recursive function, captures all outside variables defined above
             // "depth" here means index in slotOrder (most to least constrained)
             bool Solve(int depth, int currentSize)
             {
+#if DEBUG
+                ++solveCalls;
+#endif
+
                 // every slot has been assigned - success!
                 if (depth == TRACK_COUNT)
                     return true;
@@ -232,10 +263,17 @@ namespace FaxanaduRando.Randomizer
 
             int ptr = Section.GetOffset(MUSIC_BANK, TRACK_POINTER_TABLE, 0x8000);
 
-            for (int i = 0; i < TRACK_COUNT; i++)
+            for (int i = 0; i < GetTrackCount(rom); i++)
             {
                 var mod = DisasmTrack(rom, ptr);
-                mod.Description = $"Ripped from ROM (Track {i + 1})";
+                if (i < VanillaTrackNames.Length)
+                {
+                    mod.Description = $"Ripped from ROM (Track {i + 1}, vanilla slot: {VanillaTrackNames[i]})";
+                }
+                else
+                {
+                    mod.Description = $"Ripped from ROM (Track {i + 1})";
+                }
                 mod.AllowedSlots.Add(i);
                 modules.Add(mod);
                 ptr += 8; // four 16-bit channel pointers
@@ -262,6 +300,31 @@ namespace FaxanaduRando.Randomizer
                 modules.Add(dto.ToModule());
             }
             return modules;
+        }
+
+        private static int GetTrackCount(byte[] rom)
+        {
+            int pointerTableOffset = Section.GetOffset(MUSIC_BANK, TRACK_POINTER_TABLE, 0x8000);
+
+            int result = 0;
+            int lowestTarget = 0x10000;
+
+            for (int i = 0; ; i += 2)
+            {
+                int nextPtrCpu = TRACK_POINTER_TABLE + i + 2;
+
+                // vanilla Faxanadu has one unused byte between the pointer table
+                // and the music data, custom roms may not - so handle both cases
+                if (nextPtrCpu > lowestTarget + 1)
+                    break;
+
+                result++;
+
+                ushort ptr = BitConverter.ToUInt16(rom, pointerTableOffset + i);
+                lowestTarget = Math.Min(lowestTarget, ptr);
+            }
+
+            return result / 4;
         }
 
         private static MusicModule DisasmTrack(byte[] rom, int pointerTableFileOffset)

@@ -7,6 +7,10 @@ namespace FaxanaduRando.Randomizer
         Random,
         None,
         Unchanged,
+        Community,
+        CommunityAndOriginal,
+        CommunityChaos,
+        CommunityAndOriginalChaos,
     }
 
     public class ExtraOptions
@@ -24,6 +28,10 @@ namespace FaxanaduRando.Randomizer
             Add("Random");
             Add("None");
             Add("Unchanged");
+            Add("Community");
+            Add("Community + Original");
+            Add("Community (Chaos)");
+            Add("Community + Original (Chaos)");
         }
     }
 

@@ -322,6 +322,14 @@ namespace FaxanaduRando.Randomizer
             Text.AddTitleText(2, $"SEED {seed}", titleText);
             Text.SetAllTitleText(content, titleText, Section.GetOffset(12, 0x9DCC, 0x8000));
 
+            var paletteRandomizer = new PaletteRandomizer(random);
+            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
+
+            if (GeneralOptions.ShuffleTowers)
+            {
+                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
+            }
+
             int dotIndex = inputFile.IndexOf(".nes");
             string outputFile;
             string suffix = "";
@@ -335,14 +343,6 @@ namespace FaxanaduRando.Randomizer
 #else
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
 #endif
-
-            var paletteRandomizer = new PaletteRandomizer(random);
-            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
-
-            if (GeneralOptions.ShuffleTowers)
-            {
-                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
-            }
 
             File.WriteAllBytes(outputFile, content);
             if (GeneralOptions.GenerateSpoilerLog)
@@ -1436,9 +1436,21 @@ namespace FaxanaduRando.Randomizer
                 doorRandomizer.RandomizeTowerPalettes(paletteRandomizer, content);
             }
 
-            if (ExtraOptions.MusicSetting != Music.Unchanged)
+            var musicSetting = ExtraOptions.MusicSetting;
+
+            if (musicSetting == Music.Random ||
+                musicSetting == Music.None)
             {
                 paletteRandomizer.RandomizeMusic(content, random);
+            }
+            // remaining music modes use the music module builder
+            else if (musicSetting != Music.Unchanged)
+            {
+                MusicTrackRandomizer.RandomizeMusicTracks(random, content,
+                    // include original; add tracks already in rom into the shuffle
+                    musicSetting == Music.CommunityAndOriginal || musicSetting == Music.CommunityAndOriginalChaos,
+                    // "chaos" mode; where any track can go into any slot
+                    musicSetting == Music.CommunityChaos || musicSetting == Music.CommunityAndOriginalChaos);
             }
 
             var section = new Section();
