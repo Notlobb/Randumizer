@@ -14,7 +14,7 @@ namespace FaxanaduRando
     public partial class MainWindow : Window
     {
         private bool _updatingFlags = false;
-        
+
         // contains settings that are part of flag serialization
         private object[] _settings;
 
@@ -268,7 +268,7 @@ namespace FaxanaduRando
             {
                 var randomizer = new Randomizer.Randomizer();
                 string message;
-                bool success = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, flagsTextBox.Text, seed, out message);
+                bool success = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, FlagsCodec.Serialize(), seed, out message);
                 if (!success)
                 {
                     await MessageBoxManager.GetMessageBoxStandard("Failed", message).ShowWindowDialogAsync(this);
