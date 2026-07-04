@@ -46,6 +46,28 @@ namespace FaxanaduRando.Randomizer
             "Zenis (Evil Lair)"
         ];
 
+        // TODO: Populate this and map all music tracks to a list of suitable slots
+        // this will be used for tracks extracted for ROM which does not have such metadata
+        // note: this map is 0-indexed unlike the json files and such
+        private static readonly int[][] VanillaAllowedSlots = [
+            [0],  // Intro
+            [1],  // Land of Dwarf (Dartmoor Castle)
+            [2],  // Trunk
+            [3],  // Branches
+            [4],  // Mist
+            [5],  // Towers
+            [6],  // Eolis
+            [7],  // Mantra/Death
+            [8],  // Towns
+            [9],  // Boss Music
+            [10], // Hour Glass
+            [11], // Outro
+            [12], // King
+            [13], // Guru
+            [14], // Shops/House
+            [15], // Zenis (Evil Lair)
+        ];
+
         public static void RandomizeMusicTracks(Random random, byte[] rom, bool includeOriginal, bool chaosMode)
         {
             var mods = LoadEmbeddedMusicModules();
@@ -269,12 +291,13 @@ namespace FaxanaduRando.Randomizer
                 if (i < VanillaTrackNames.Length)
                 {
                     mod.Description = $"Ripped from ROM (Track {i + 1}, vanilla slot: {VanillaTrackNames[i]})";
+                    mod.AllowedSlots.AddRange(VanillaAllowedSlots[i]);
                 }
                 else
                 {
                     mod.Description = $"Ripped from ROM (Track {i + 1})";
+                    mod.AllowedSlots.Add(i); // unknown track: keep it in its own slot for now
                 }
-                mod.AllowedSlots.Add(i);
                 modules.Add(mod);
                 ptr += 8; // four 16-bit channel pointers
             }
