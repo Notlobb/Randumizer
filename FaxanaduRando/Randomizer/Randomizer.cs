@@ -1479,7 +1479,10 @@ namespace FaxanaduRando.Randomizer
                 soundRandomizer.RandomizeSounds(content, random);
             }
 
-            if (ExtraOptions.SoundtrackSetting != Soundtrack.Original)
+            // only rebuild the soundtrack if music is enabled, and a non-original
+            // soundtrack has been selected
+            if (ExtraOptions.MusicSetting != Music.None &&
+                ExtraOptions.SoundtrackSetting != Soundtrack.Original)
             {
                 MusicTrackRandomizer.RandomizeMusicTracks(content, random,
                     ExtraOptions.SoundtrackSetting == Soundtrack.Mix);
