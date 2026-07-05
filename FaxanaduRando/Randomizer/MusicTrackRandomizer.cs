@@ -46,47 +46,35 @@ namespace FaxanaduRando.Randomizer
             "Zenis (Evil Lair)"
         ];
 
-        // TODO: Populate this and map all music tracks to a list of suitable slots
-        // this will be used for tracks extracted for ROM which do not have such metadata
-        // note: this map is 0-indexed unlike the json files and such
+        // Fallback metadata for the original Faxanadu soundtrack
+        // Tracks extracted directly from the ROM do not carry JSON metadata, so we
+        // conservatively allow each vanilla track to replace only its original slot
+        // This table can be expanded later as suitable replacements are identified
         private static readonly int[][] VanillaAllowedSlots = [
-            [0],  // Intro
-            [1],  // Land of Dwarf (Dartmoor Castle)
-            [2],  // Trunk
-            [3],  // Branches
-            [4],  // Mist
-            [5],  // Towers
-            [6],  // Eolis
-            [7],  // Mantra/Death
-            [8],  // Towns
-            [9],  // Boss Music
-            [10], // Hour Glass
-            [11], // Outro
-            [12], // King
-            [13], // Guru
-            [14], // Shops/House
-            [15], // Zenis (Evil Lair)
+            [1],  // Intro
+            [2],  // Land of Dwarf (Dartmoor Castle)
+            [3],  // Trunk
+            [4],  // Branches
+            [5],  // Mist
+            [6],  // Towers
+            [7],  // Eolis
+            [8],  // Mantra/Death
+            [9],  // Towns
+            [10],  // Boss Music
+            [11], // Hour Glass
+            [12], // Outro
+            [13], // King
+            [14], // Guru
+            [15], // Shops/House
+            [16], // Zenis (Evil Lair)
         ];
 
-        public static void RandomizeMusicTracks(Random random, byte[] rom, bool includeOriginal, bool chaosMode)
+        public static void RandomizeMusicTracks(byte[] rom, Random random, bool includeOriginal)
         {
             var mods = LoadEmbeddedMusicModules();
             if (includeOriginal)
             {
                 mods.AddRange(ExtractVanillaMusic(rom));
-            }
-
-            if (chaosMode)
-            {
-                foreach (MusicModule module in mods)
-                {
-                    module.AllowedSlots.Clear();
-
-                    for (int i = 0; i < TRACK_COUNT; i++)
-                    {
-                        module.AllowedSlots.Add(i);
-                    }
-                }
             }
 
             // precompute sizes
@@ -291,7 +279,7 @@ namespace FaxanaduRando.Randomizer
                 if (i < VanillaTrackNames.Length)
                 {
                     mod.Description = $"Ripped from ROM (Track {i + 1}, vanilla slot: {VanillaTrackNames[i]})";
-                    mod.AllowedSlots.AddRange(VanillaAllowedSlots[i]);
+                    mod.AllowedSlots.AddRange(VanillaAllowedSlots[i].Select(slot => slot - 1));
                 }
                 else
                 {

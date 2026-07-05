@@ -6,11 +6,14 @@ namespace FaxanaduRando.Randomizer
     {
         Random,
         None,
-        Unchanged,
+        Unchanged
+    }
+
+    public enum Soundtrack
+    {
+        Original,
         Community,
-        CommunityAndOriginal,
-        CommunityChaos,
-        CommunityAndOriginalChaos,
+        Mix
     }
 
     public class ExtraOptions
@@ -19,6 +22,7 @@ namespace FaxanaduRando.Randomizer
         public static bool RandomizeSounds { get; set; } = false;
         public static bool AppendSuffix { get; set; } = false;
         public static Music MusicSetting { get; set; } = Music.Unchanged;
+        public static Soundtrack SoundtrackSetting { get; set; } = Soundtrack.Original;
     }
 
     public class MusicSettings : ObservableCollection<string>
@@ -28,10 +32,16 @@ namespace FaxanaduRando.Randomizer
             Add("Random");
             Add("None");
             Add("Unchanged");
+        }
+    }
+
+    public class SoundtrackSettings : ObservableCollection<string>
+    {
+        public SoundtrackSettings()
+        {
+            Add("Original");
             Add("Community");
-            Add("Community + Original");
-            Add("Community (Chaos)");
-            Add("Community + Original (Chaos)");
+            Add("Mix");
         }
     }
 

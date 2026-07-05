@@ -1436,21 +1436,9 @@ namespace FaxanaduRando.Randomizer
                 doorRandomizer.RandomizeTowerPalettes(paletteRandomizer, content);
             }
 
-            var musicSetting = ExtraOptions.MusicSetting;
-
-            if (musicSetting == Music.Random ||
-                musicSetting == Music.None)
+            if (ExtraOptions.MusicSetting != Music.Unchanged)
             {
                 paletteRandomizer.RandomizeMusic(content, random);
-            }
-            // remaining music modes use the music module builder
-            else if (musicSetting != Music.Unchanged)
-            {
-                MusicTrackRandomizer.RandomizeMusicTracks(random, content,
-                    // include original; add tracks already in rom into the shuffle
-                    musicSetting == Music.CommunityAndOriginal || musicSetting == Music.CommunityAndOriginalChaos,
-                    // "chaos" mode; where any track can go into any slot
-                    musicSetting == Music.CommunityChaos || musicSetting == Music.CommunityAndOriginalChaos);
             }
 
             var section = new Section();
@@ -1489,6 +1477,12 @@ namespace FaxanaduRando.Randomizer
             {
                 var soundRandomizer = new SoundRandomizer();
                 soundRandomizer.RandomizeSounds(content, random);
+            }
+
+            if (ExtraOptions.SoundtrackSetting != Soundtrack.Original)
+            {
+                MusicTrackRandomizer.RandomizeMusicTracks(content, random,
+                    ExtraOptions.SoundtrackSetting == Soundtrack.Mix);
             }
         }
 
