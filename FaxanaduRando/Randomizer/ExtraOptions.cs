@@ -6,14 +6,14 @@ namespace FaxanaduRando.Randomizer
     {
         Random,
         None,
-        Unchanged
+        Unchanged,
     }
 
     public enum Soundtrack
     {
         Original,
         Community,
-        Mix
+        Mix,
     }
 
     public class ExtraOptions
