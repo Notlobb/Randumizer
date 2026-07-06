@@ -3,7 +3,7 @@ set -e
 
 # ── Single source of truth for the release ─────────────────────────────────
 APP_NAME="Randumizer"
-VERSION="0.29-beta.4"
+VERSION="0.29-beta.5"
 BUNDLE_ID="com.faxanadu.randumizer"
 DOTNET="/usr/local/share/dotnet/dotnet"
 CSPROJ="FaxanaduRando/FaxanaduRando.csproj"
