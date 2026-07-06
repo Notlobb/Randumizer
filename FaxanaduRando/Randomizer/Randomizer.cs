@@ -1,27 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 
 namespace FaxanaduRando.Randomizer
 {
-    public enum Result
+
+    public readonly record struct RandomizationResult(
+        byte[] Rom,
+        List<string> SpoilerLog,
+        string FileNameSuffix);
+
+    public class RandomizationException : Exception
     {
-        Success,
-        failure,
-        TextTooLong,
+        public RandomizationException(string message)
+            : base(message)
+        {
+        }
     }
 
     public class Randomizer
     {
-        public bool Randomize(string inputFile, string customTextFile, string flags, int seed, out string message)
+        public RandomizationResult Randomize(byte[] inputFileContents, string[] customTextFileContents, string flags, int seed)
         {
-            if (TextOptions.UseCustomText &&
-                string.IsNullOrEmpty(customTextFile))
-            {
-                message = "Please supply a path to a text file when using custom text. For a reference to the format of the file, check the Readme file";
-                return false;
-            }
-
             Random random = new Random(seed);
 
 #if !DEBUG
@@ -31,14 +30,13 @@ namespace FaxanaduRando.Randomizer
                 {
                     if (random.Next(0, 2) > 2)
                     {
-                        message = "Unexpected error";
-                        return false;
+                        throw new RandomizationException("Unexpected error");
                     }
                 }
             }
 #endif
 
-            byte[] content = File.ReadAllBytes(inputFile);
+            byte[] content = (byte[])inputFileContents.Clone();
             AddMiscHacks(content, random);
 
             var levels = GetLevels(content, random);
@@ -54,8 +52,7 @@ namespace FaxanaduRando.Randomizer
                     attemptDictionary[level.Number] = localAttempts;
                     if (!screenResult)
                     {
-                        message = "Screen randomization failed";
-                        return screenResult;
+                        throw new RandomizationException("Screen randomization failed");
                     }
                 }
             }
@@ -76,8 +73,7 @@ namespace FaxanaduRando.Randomizer
             var itemRandomizer = new ItemRandomizer(random);
             if (!itemRandomizer.ShuffleItems(levels, shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, out uint attempts))
             {
-                message = "Item randomization failed";
-                return false;
+                throw new RandomizationException("Item randomization failed");
             }
 
             doorRandomizer.FinalizeWorlds(levels, random, content);
@@ -297,21 +293,10 @@ namespace FaxanaduRando.Randomizer
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
             {
-                textRandomizer.RandomizeTitles(content, customTextFile);
+                textRandomizer.RandomizeTitles(content, customTextFileContents);
             }
 
-            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFile);
-            if (result != Result.Success)
-            {
-                if (result == Result.TextTooLong)
-                {
-                    message = "Text randomization failed, generated text was too long for this seed";
-                    return false;
-                }
-
-                message = "Text randomization failed";
-                return false;
-            }
+            textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents);
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
@@ -330,24 +315,16 @@ namespace FaxanaduRando.Randomizer
                 AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
 
-            int dotIndex = inputFile.IndexOf(".nes");
-            string outputFile;
             string suffix = "";
 
             if (ExtraOptions.AppendSuffix)
             {
                 suffix = TextRandomizer.GetSuffix(random);
             }
-#if DEBUG
-            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + suffix);
-#else
-            outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
-#endif
 
-            File.WriteAllBytes(outputFile, content);
+            var spoilers = new List<string>();
             if (GeneralOptions.GenerateSpoilerLog)
             {
-                var spoilers = new List<string>();
                 spoilers.Add("Randumizer v0.29 beta 5");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
@@ -438,12 +415,9 @@ namespace FaxanaduRando.Randomizer
                     spoilers.Add($"{spell.SpellId} {spell.ManaCost} {spell.Damage}");
                 }
 #endif
-
-                File.WriteAllLines(outputFile.Replace(".nes", ".txt"), spoilers);
             }
 
-            message = "Randomized ROM created at " + outputFile;
-            return true;
+            return new RandomizationResult(content, spoilers, suffix);
         }
 
         private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette, byte branchPalette)
@@ -1751,6 +1725,16 @@ namespace FaxanaduRando.Randomizer
             }
 
             section.AddToContent(content, Section.GetOffset(15, 0xC599, 0xC000));
+        }
+
+        public static string GetOutputFilename(string inputFileName, int seed, string flags, string suffix)
+        {
+            int dotIndex = inputFileName.IndexOf(".nes");
+#if DEBUG
+            return inputFileName.Insert(dotIndex, "_" + seed.ToString() + suffix);
+#else
+            return inputFileName.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
+#endif
         }
     }
 }
