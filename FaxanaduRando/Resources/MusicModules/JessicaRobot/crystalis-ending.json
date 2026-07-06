@@ -1,0 +1,27 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Crystalis - Ending",
+  "AllowedSlots": [
+    12
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAPECjJgvjACkLowvAPACsC6MAPAAjCUqLJgujC+YKignvC+kAIwsLCyQLC4vjC7ykPEGhjsAOgA7ADoA8lCM8QIlKiyYLowvmCooJ7wvpACMLCwsLJgzjDHwAbwu8ACMLpgsjCoAmCeMACoq8AHsLPAAmC4vjC6kLIYuLPAByCqMAPAAmConjAAqKsgsjCwsLJAsKiiMAC8vL5AvLqgsjACGLi/wAeAs8ACMLCwsLCwuL/AByDHwAIwuLzGkMYwvACwuvC+MACwusC+YLqQsLpgzpDWwNowALi4upC4sjACkKowspCyMKimwKowAKiwqvC6MACopsCqQKiwqvC6MACopsCqMACosKi6YKieMJykqyC+YLrwsjAAqKfAB4CqYAPAAJykqyC+YLvAB88As8ACwKimMKvKQ8QU7OgA7ADo7ADs6ADgAOpgAjDs6ADsAOjsAOzoAOAA6APJR8AHxAvPALrAA8pHwAPEJhjY68AHzkEH/",
+      "Relocations": []
+    },
+    {
+      "Code": "8lDwAPEDjJgnjACkJYwnAPACsCWMAPAA7gIlKiyYLowvmCooJ7wvpACMLCwskCwuL4wu8pDuAPEGhjgANgA4ADYA8lDuAvEDjCUqLJgujC+YKignvC+kAIwsLCwsmDOMMfABvC7wAIwumCzuAIwnAJgijAAnJykA8pDxBYYxADgAPQAxADgAPQAxAPJQ8QKMmCosjCqkKYYqKfAByCeMAPAAmCcjjAAnJ7wpjAApKSmQIyMjjAAjIyOQIyOoI4wAhiossCPykPEFhjQAOAA7AEAA8lDxAowpKSkpKSos8AHILvAAjCosLqQujCwAKSq8LIwAKSospCWYJaQmJ5gqpCqwLowAKioqpCcnjACYJ4wAKZgpjAAnJbAnjAAnKSfwAbwqjADwACclsCeQJyknvCWMACclsCeMACcpJyqYJ4wiAKQj8AHIJ/AAmCq8KYwAJyXwAeAimADwACMlJ/AByCfwAJgq8AHgKfKQ8ADxBYYzADEANgA1ADoAOAA7ADoA8lDxA4ywIiOMIvKQ8QUxMQAxADExADExADEAMZgAjDExADEAMTEAMTEAMQAxAPJR8AHxAvPAMbAA8pHwAPEJhjY28AHzkDb/",
+      "Relocations": []
+    },
+    {
+      "Code": "/QyMEh78/QSMFyP8/QSMDRn8/QiMEh78/QSMFyP8/QSMDRn8/QOMEh78jBEd/QSMDxv8/QSMDRn8/QSMEh78/QOMDxv8jA0Z/QSMFyP8/QSMDRn8kBwcHIwAjBwcHJAcHBywAP0EjBAc/IwRHREdEaQA/QSMEh78/QSMFyP8/QSMDRn8/QOMEh78jBEd/QiMDxv8/QSMFyP8/QSMDRn8/QeMDxv8DRn9BIwXI/z9BIwSHvz9BIwPG/z9CIwXI/z9BIwNGfz9BIwSHvz9CIwXI/z9DIwNGfz9GIwSHvwS/w==",
+      "Relocations": []
+    },
+    {
+      "Code": "/QOMUVEhUfxRISEh+EsA/QeMUVEhUfwRIZgh+EsA/QqMUVEhUfwhISEhmCEA/RCMUVEhUfz9BIwxMSExEVFRUfz9IIxRUSFR/CH//QeMUVEhUfxRISEh9Q==",
+      "Relocations": [
+        13,
+        28
+      ]
+    }
+  ]
+}

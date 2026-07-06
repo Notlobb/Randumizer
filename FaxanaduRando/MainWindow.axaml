@@ -2,305 +2,307 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:randomizer="clr-namespace:FaxanaduRando.Randomizer"
         x:Class="FaxanaduRando.MainWindow"
-        Title="Randumizer v0.30 beta 1" Height="800" Width="1100">
-    <Window.Resources>
-        <randomizer:FlagPresets x:Key="flagPresets" />
-        <randomizer:HintSettings x:Key="hintSettings" />
-        <randomizer:MiscDoorSettings x:Key="miscDoorSettings" />
-        <randomizer:EnemyHPSettings x:Key="enemyHPSettings" />
-        <randomizer:EnemyDamageSettings x:Key="enemyDamageSettings" />
-        <randomizer:EnemySetSettings x:Key="enemySetSettings" />
-        <randomizer:AISettings x:Key="aiSettings" />
-        <randomizer:AIPropertySettings x:Key="aiPropertySettings" />
-        <randomizer:StartingWeaponSettings x:Key="startingWeapon" />
-        <randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
-        <randomizer:WingBootSettings x:Key="wingBootSettings" />
-        <randomizer:ShieldSettings x:Key="shieldSettings" />
-        <randomizer:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
-        <randomizer:DoorTypeSettings x:Key="doorTypeSettings" />
-        <randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
-        <randomizer:SegmentShuffleSettings x:Key="segmentShuffleSettings" />
-        <randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
-        <randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
-        <randomizer:MultipleGiftSettings x:Key="multipleGiftSettings" />
-        <randomizer:KeyLimitSettings x:Key="keyLimitSettings" />
-        <randomizer:MusicSettings x:Key="musicSettings" />
-        <randomizer:WeaponStatSettings x:Key="weaponStatSettings" />
-        <randomizer:MagicStatSettings x:Key="magicStatSettings" />
-        <randomizer:ArmorStatSettings x:Key="armorStatSettings" />
-    </Window.Resources>
-    <Window.Styles>
-        <Style Selector="CheckBox">
-            <Setter Property="MinHeight" Value="24"/>
-            <Setter Property="Padding" Value="8,0,0,0"/>
-        </Style>
-        <Style Selector="ComboBox">
-            <Setter Property="MinHeight" Value="28"/>
-            <Setter Property="Padding" Value="8,2,4,2"/>
-        </Style>
-        <Style Selector="TextBox">
-            <Setter Property="Height" Value="28"/>
-            <Setter Property="Padding" Value="4,4"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
-        </Style>
-        <Style Selector="Button">
-            <Setter Property="Padding" Value="12,3"/>
-        </Style>
-    </Window.Styles>
-    <TabControl Margin="4">
-        <TabItem Header="General">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+        Title="Randumizer v0.29 beta 4" Height="800" Width="1100">
+	<Window.Resources>
+		<randomizer:FlagPresets x:Key="flagPresets" />
+		<randomizer:HintSettings x:Key="hintSettings" />
+		<randomizer:MiscDoorSettings x:Key="miscDoorSettings" />
+		<randomizer:EnemyHPSettings x:Key="enemyHPSettings" />
+		<randomizer:EnemyDamageSettings x:Key="enemyDamageSettings" />
+		<randomizer:EnemySetSettings x:Key="enemySetSettings" />
+		<randomizer:AISettings x:Key="aiSettings" />
+		<randomizer:AIPropertySettings x:Key="aiPropertySettings" />
+		<randomizer:StartingWeaponSettings x:Key="startingWeapon" />
+		<randomizer:MattockUsageSettings x:Key="mattockUsageSettings" />
+		<randomizer:WingBootSettings x:Key="wingBootSettings" />
+		<randomizer:ShieldSettings x:Key="shieldSettings" />
+		<randomizer:BigItemSpawnsSettings x:Key="bigItemSpawnsSettings" />
+		<randomizer:DoorTypeSettings x:Key="doorTypeSettings" />
+		<randomizer:ScreenRandomizationSettings x:Key="screenRandomizationSettings" />
+		<randomizer:SegmentShuffleSettings x:Key="segmentShuffleSettings" />
+		<randomizer:ShuffleItemsSettings x:Key="itemShuffleSettings" />
+		<randomizer:RandomizeKeysSettings x:Key="randomizeKeysSettings" />
+		<randomizer:MultipleGiftSettings x:Key="multipleGiftSettings" />
+		<randomizer:KeyLimitSettings x:Key="keyLimitSettings" />
+		<randomizer:MusicSettings x:Key="musicSettings" />
+		<randomizer:SoundtrackSettings x:Key="soundtrackSettings" />
+		<randomizer:WeaponStatSettings x:Key="weaponStatSettings" />
+		<randomizer:MagicStatSettings x:Key="magicStatSettings" />
+		<randomizer:ArmorStatSettings x:Key="armorStatSettings" />
+	</Window.Resources>
+	<Window.Styles>
+		<Style Selector="CheckBox">
+			<Setter Property="MinHeight" Value="24"/>
+			<Setter Property="Padding" Value="8,0,0,0"/>
+		</Style>
+		<Style Selector="ComboBox">
+			<Setter Property="MinHeight" Value="28"/>
+			<Setter Property="Padding" Value="8,2,4,2"/>
+		</Style>
+		<Style Selector="TextBox">
+			<Setter Property="Height" Value="28"/>
+			<Setter Property="Padding" Value="4,4"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+		</Style>
+		<Style Selector="Button">
+			<Setter Property="Padding" Value="12,3"/>
+		</Style>
+	</Window.Styles>
+	<TabControl Margin="4">
+		<TabItem Header="General">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                       ColumnDefinitions="200,Auto,30,Auto,Auto,10,Auto,Auto">
 
-                    <!-- Left column: ROM, Seed, Flags, Presets, Randomize -->
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="ROM Path" VerticalAlignment="Center" Margin="0,1"/>
-                    <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="200,Auto" HorizontalAlignment="Left">
-                        <TextBox Name="pathTextBox" Grid.Column="0" Margin="0,1"/>
-                        <Button Content="Browse" Grid.Column="1" Margin="4,2,0,2" Click="BrowseButton_Click"/>
-                    </Grid>
+					<!-- Left column: ROM, Seed, Flags, Presets, Randomize -->
+					<TextBlock Grid.Column="0" Grid.Row="0" Text="ROM Path" VerticalAlignment="Center" Margin="0,1"/>
+					<Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="200,Auto" HorizontalAlignment="Left">
+						<TextBox Name="pathTextBox" Grid.Column="0" Margin="0,1"/>
+						<Button Content="Browse" Grid.Column="1" Margin="4,2,0,2" Click="BrowseButton_Click"/>
+					</Grid>
 
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Seed" VerticalAlignment="Center" Margin="0,4,0,1"/>
-                    <TextBox Name="seedTextBox" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" MinWidth="100" Text="0" Margin="0,1"/>
-                    <Button Content="New seed" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" Margin="0,1" Click="NewSeedButton_Click"/>
+					<TextBlock Grid.Column="0" Grid.Row="2" Text="Seed" VerticalAlignment="Center" Margin="0,4,0,1"/>
+					<TextBox Name="seedTextBox" Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" MinWidth="100" Text="0" Margin="0,1"/>
+					<Button Content="New seed" Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" Margin="0,1" Click="NewSeedButton_Click"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="Flags" VerticalAlignment="Center" Margin="0,4,0,1"/>
-                    <TextBox Name="flagsTextBox" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Stretch" Margin="0,1" TextChanged="FlagsTextBox_TextChanged"/>
-
-                    <TextBlock Grid.Column="0" Grid.Row="7" Text="Flag presets" VerticalAlignment="Center" Margin="0,4,0,1"/>
-                    <ComboBox Name="flagPresetComboBox" Grid.Column="0" Grid.Row="8"
+					<TextBlock Grid.Column="0" Grid.Row="5" Text="Flags" VerticalAlignment="Center" Margin="0,4,0,1"/>
+					<TextBox Name="flagsTextBox" Grid.Column="0" Grid.Row="6" HorizontalAlignment="Stretch" Margin="0,1" TextChanged="FlagsTextBox_TextChanged"/>
+					<TextBlock Grid.Column="0" Grid.Row="7" Text="Flag presets" VerticalAlignment="Center" Margin="0,4,0,1"/>
+					<ComboBox Name="flagPresetComboBox" Grid.Column="0" Grid.Row="8"
                               ItemsSource="{StaticResource flagPresets}" SelectedIndex="0"
                               HorizontalAlignment="Stretch" Margin="0,1"
                               SelectionChanged="flagPresetComboBox_SelectionChanged">
-                        <ToolTip.Tip>
-                            <TextBlock Text="These are some predefined flagsets to use. 'beginner friendly' is good for beginners that are new to the randomizer. 'Standard' tries to randomize most things, but leaves out some of the harder flags. 'Race (typical)' is good for a typical race. Race (classic) keeps the changes to the fundamentals of the game fairly low. 'Challenge mode' tries to create a really hard seed. 'Chaos mode' tries to do maximum randomization. 'Extra fast' tries to create a seed that can be beaten really quickly." TextWrapping="Wrap" MaxWidth="400"/>
-                        </ToolTip.Tip>
-                    </ComboBox>
+						<ToolTip.Tip>
+							<TextBlock Text="These are some predefined flagsets to use. 'beginner friendly' is good for beginners that are new to the randomizer. 'Standard' tries to randomize most things, but leaves out some of the harder flags. 'Race (typical)' is good for a typical race. Race (classic) keeps the changes to the fundamentals of the game fairly low. 'Challenge mode' tries to create a really hard seed. 'Chaos mode' tries to do maximum randomization. 'Extra fast' tries to create a seed that can be beaten really quickly." TextWrapping="Wrap" MaxWidth="400"/>
+						</ToolTip.Tip>
+					</ComboBox>
 
-                    <Button Name="randomizeButton" Grid.Column="0" Grid.Row="9" HorizontalAlignment="Left" Content="Randomize" Margin="0,4,0,1" Click="RandomizeButton_Click"/>
+					<Button Name="randomizeButton" Grid.Column="0" Grid.Row="9" HorizontalAlignment="Left" Content="Randomize" Margin="0,4,0,1" Click="RandomizeButton_Click"/>
 
-                    <!-- Center-left column: checkboxes -->
-                    <CheckBox Name="generateSpoilerLogCheckBox" Grid.Column="3" Grid.Row="0" Content="Generate spoiler log" Margin="0,1"
+					<!-- Center-left column: checkboxes -->
+					<CheckBox Name="generateSpoilerLogCheckBox" Grid.Column="3" Grid.Row="0" Content="Generate spoiler log" Margin="0,1"
                               ToolTip.Tip="Generates a .txt file with all item locations, and additional information depending on flags such as dungeon locations and door requirements if those are randomized"/>
-                    <CheckBox Name="fastTextCheckBox" Grid.Column="3" Grid.Row="1" Content="Fast text" Margin="0,1"
+					<CheckBox Name="fastTextCheckBox" Grid.Column="3" Grid.Row="1" Content="Fast text" Margin="0,1"
                               ToolTip.Tip="Makes the text load faster"/>
-                    <CheckBox Name="fullHealthCheckBox" Grid.Column="3" Grid.Row="2" Content="Fast start" Margin="0,1"
+					<CheckBox Name="fullHealthCheckBox" Grid.Column="3" Grid.Row="2" Content="Fast start" Margin="0,1"
                               ToolTip.Tip="You start with Full HP and MP, 1500 golds, and if 'randomize keys' is off you also start with the Ring of Elf"/>
-                    <CheckBox Name="dragonSlayerRequiredCheckBox" Grid.Column="3" Grid.Row="3" Content="Make equipped dragon slayer required" Margin="0,1"
+					<CheckBox Name="dragonSlayerRequiredCheckBox" Grid.Column="3" Grid.Row="3" Content="Make equipped dragon slayer required" Margin="0,1"
                               ToolTip.Tip="Can't beat the game without the full Battle gear equipped"/>
-                    <CheckBox Name="pendantRodRubyRequiredCheckBox" Grid.Column="3" Grid.Row="4" Content="Make pendant, magical rod and ruby ring required" Margin="0,1"
+					<CheckBox Name="pendantRodRubyRequiredCheckBox" Grid.Column="3" Grid.Row="4" Content="Make pendant, magical rod and ruby ring required" Margin="0,1"
                               ToolTip.Tip="Can't beat the game without all of these items"/>
-                    <CheckBox Name="moveSpringQuestRequirementCheckBox" Grid.Column="3" Grid.Row="5" Content="Move spring quest requirement to final requirement" Margin="0,1"
+					<CheckBox Name="moveSpringQuestRequirementCheckBox" Grid.Column="3" Grid.Row="5" Content="Move spring quest requirement to final requirement" Margin="0,1"
                               ToolTip.Tip="Spring quest must be completed to beat the game, but is not needed to enter Mist. You still need to push the rock to enter Mist, but only need the ruby ring to do so"/>
-                    <CheckBox Name="shuffleTowersCheckBox" Grid.Column="3" Grid.Row="6" Content="Shuffle towers" Margin="0,1"
+					<CheckBox Name="shuffleTowersCheckBox" Grid.Column="3" Grid.Row="6" Content="Shuffle towers" Margin="0,1"
                               ToolTip.Tip="Tower locations are shuffled."/>
-                    <CheckBox Name="shuffleWorldsCheckBox" Grid.Column="3" Grid.Row="7" Content="Shuffle worlds" Margin="0,1"
+					<CheckBox Name="shuffleWorldsCheckBox" Grid.Column="3" Grid.Row="7" Content="Shuffle worlds" Margin="0,1"
                               ToolTip.Tip="Shuffle the worlds after Eolis"/>
-                    <CheckBox Name="updateMiscTextCheckBox" Grid.Column="3" Grid.Row="8" Content="Update misc text" Margin="0,1"
+					<CheckBox Name="updateMiscTextCheckBox" Grid.Column="3" Grid.Row="8" Content="Update misc text" Margin="0,1"
                               ToolTip.Tip="Update various text related to randomization. One example is that NPCs holding items will tell you what they have if you have not fulfilled their requirement yet."/>
-                    <CheckBox Name="quickSeedCheckBox" Grid.Column="3" Grid.Row="9" Content="Quick seed" Margin="0,1"
+					<CheckBox Name="quickSeedCheckBox" Grid.Column="3" Grid.Row="9" Content="Quick seed" Margin="0,1"
                               ToolTip.Tip="The randomizer will attempt to make the seed beatable more quickly than the average seed"/>
-                    <CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="3" Grid.Row="10" Content="Allow lowering of respawn value" Margin="0,1"
+					<CheckBox Name="allowLoweringRespawnCheckBox" Grid.Column="3" Grid.Row="10" Content="Allow lowering of respawn value" Margin="0,1"
                               ToolTip.Tip="Makes it so talking to an earlier guru will set your respawn point there even if you previously had it further ahead"/>
-                    <CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="3" Grid.Row="11" Content="Prevent knockback while on ladders" Margin="0,1"
+					<CheckBox Name="preventKnockbackOnLaddersCheckBox" Grid.Column="3" Grid.Row="11" Content="Prevent knockback while on ladders" Margin="0,1"
                               ToolTip.Tip="This will prevent the player from being knocked off ladders when taking damage"/>
 
-                    <!-- Right column: more checkboxes -->
-                    <CheckBox Name="flexibleItemsCheckbox" Grid.Column="6" Grid.Row="0" Content="Flexible items" Margin="0,1"
+					<!-- Right column: more checkboxes -->
+					<CheckBox Name="flexibleItemsCheckbox" Grid.Column="6" Grid.Row="0" Content="Flexible items" Margin="0,1"
                               ToolTip.Tip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air, and allows for items to always be able to be sold in shops."/>
-                    <CheckBox Name="useWeaponIndoorsCheckBox" Grid.Column="6" Grid.Row="1" Content="Use weapon indoors" Margin="0,1"
+					<CheckBox Name="useWeaponIndoorsCheckBox" Grid.Column="6" Grid.Row="1" Content="Use weapon indoors" Margin="0,1"
                               ToolTip.Tip="Allows using your main weapon while inside buildings"/>
-                    <CheckBox Name="darknessCheckBox" Grid.Column="6" Grid.Row="2" Content="Dark towers" Margin="0,1"
+					<CheckBox Name="darknessCheckBox" Grid.Column="6" Grid.Row="2" Content="Dark towers" Margin="0,1"
                               ToolTip.Tip="The inside of towers will be dark"/>
-                    <CheckBox Name="randomizeTitlesCheckBox" Grid.Column="6" Grid.Row="3" Content="Randomize titles" Margin="0,1"
+					<CheckBox Name="randomizeTitlesCheckBox" Grid.Column="6" Grid.Row="3" Content="Randomize titles" Margin="0,1"
                               ToolTip.Tip="The name, requirements and rewards for titles will be random"/>
-                    <CheckBox Name="addKillSwitchCheckBox" Grid.Column="6" Grid.Row="4" Content="Add kill switch" Margin="0,1"
+					<CheckBox Name="addKillSwitchCheckBox" Grid.Column="6" Grid.Row="4" Content="Add kill switch" Margin="0,1"
                               ToolTip.Tip="Pressing select while the game is paused and then unpausing will kill the player. It is recommended you turn this on when doing screen randomization"/>
-                    <CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="6" Grid.Row="5" Content="Include Zenis in the tower shuffle" Margin="0,1"
+					<CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="6" Grid.Row="5" Content="Include Zenis in the tower shuffle" Margin="0,1"
                               ToolTip.Tip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
 
-                    <!-- Combobox settings -->
-                    <TextBlock Grid.Column="3" Grid.Row="12" Text="Hints:" VerticalAlignment="Center" Margin="0,4,8,1"/>
-                    <ComboBox Name="hintsComboBox" Grid.Column="4" Grid.Row="12" Grid.ColumnSpan="4" ItemsSource="{StaticResource hintSettings}" Margin="0,4,0,1"
+					<!-- Combobox settings -->
+					<TextBlock Grid.Column="3" Grid.Row="12" Text="Hints:" VerticalAlignment="Center" Margin="0,4,8,1"/>
+					<ComboBox Name="hintsComboBox" Grid.Column="4" Grid.Row="12" Grid.ColumnSpan="4" ItemsSource="{StaticResource hintSettings}" Margin="0,4,0,1"
                               ToolTip.Tip="Changes NPC dialog to add hints for things like item and dungeon locations"/>
 
-                    <TextBlock Grid.Column="3" Grid.Row="13" Text="Misc doors:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="miscDoorsComboBox" Grid.Column="4" Grid.Row="13" Grid.ColumnSpan="4" ItemsSource="{StaticResource miscDoorSettings}" Margin="0,1"
+					<TextBlock Grid.Column="3" Grid.Row="13" Text="Misc doors:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="miscDoorsComboBox" Grid.Column="4" Grid.Row="13" Grid.ColumnSpan="4" ItemsSource="{StaticResource miscDoorSettings}" Margin="0,1"
                               ToolTip.Tip="Setting for miscellaneous doors, which may include different kinds of town doors as well as some of the doors outside towns"/>
 
-                    <TextBlock Grid.Column="3" Grid.Row="14" Text="Door types:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="doorTypeComboBox" Grid.Column="4" Grid.Row="14" Grid.ColumnSpan="4" ItemsSource="{StaticResource doorTypeSettings}" Margin="0,1"
+					<TextBlock Grid.Column="3" Grid.Row="14" Text="Door types:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="doorTypeComboBox" Grid.Column="4" Grid.Row="14" Grid.ColumnSpan="4" ItemsSource="{StaticResource doorTypeSettings}" Margin="0,1"
                               ToolTip.Tip="Setting for how to shuffle the different door types in a world. This will allow towers to be in locations they normally are not."/>
 
-                    <TextBlock Grid.Column="3" Grid.Row="15" Text="Screen connections:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="randomizeScreensComboBox" Grid.Column="4" Grid.Row="15" Grid.ColumnSpan="4" ItemsSource="{StaticResource screenRandomizationSettings}" Margin="0,1"
+					<TextBlock Grid.Column="3" Grid.Row="15" Text="Screen connections:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="randomizeScreensComboBox" Grid.Column="4" Grid.Row="15" Grid.ColumnSpan="4" ItemsSource="{StaticResource screenRandomizationSettings}" Margin="0,1"
                               ToolTip.Tip="Randomizes how screens are connected to each other"/>
 
-                    <TextBlock Grid.Column="3" Grid.Row="16" Text="World segments:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="shuffleSegmentsComboBox" Grid.Column="4" Grid.Row="16" Grid.ColumnSpan="4" ItemsSource="{StaticResource segmentShuffleSettings}" Margin="0,1"
+					<TextBlock Grid.Column="3" Grid.Row="16" Text="World segments:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="shuffleSegmentsComboBox" Grid.Column="4" Grid.Row="16" Grid.ColumnSpan="4" ItemsSource="{StaticResource segmentShuffleSettings}" Margin="0,1"
                               ToolTip.Tip="Shuffle segments such as towns"/>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-        <TabItem Header="Enemies">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Enemies">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                       ColumnDefinitions="Auto,10,Auto,Auto">
 
-                    <CheckBox Name="randomizeEnemyExperiencesCheckBox" Grid.Column="0" Grid.Row="0" Content="Randomize enemy experience" Margin="0,1"
+					<CheckBox Name="randomizeEnemyExperiencesCheckBox" Grid.Column="0" Grid.Row="0" Content="Randomize enemy experience" Margin="0,1"
                               ToolTip.Tip="Enemies give different experience values from vanilla"/>
-                    <CheckBox Name="randomizeRewardsCheckBox" Grid.Column="0" Grid.Row="1" Content="Randomize enemy drops" Margin="0,1"
+					<CheckBox Name="randomizeRewardsCheckBox" Grid.Column="0" Grid.Row="1" Content="Randomize enemy drops" Margin="0,1"
                               ToolTip.Tip="Enemies drop different things from vanilla (gold, food or nothing)"/>
-                    <CheckBox Name="randomizeMagicImmunitiesCheckBox" Grid.Column="0" Grid.Row="2" Content="Randomize enemy magic immunities" Margin="0,1"
+					<CheckBox Name="randomizeMagicImmunitiesCheckBox" Grid.Column="0" Grid.Row="2" Content="Randomize enemy magic immunities" Margin="0,1"
                               ToolTip.Tip="Each enemy will be immune to exactly one spell, and magic will pass through an immune enemy"/>
-                    <CheckBox Name="tryToMoveBossesCheckBox" Grid.Column="0" Grid.Row="3" Content="Try to move bosses" Margin="0,1"
+					<CheckBox Name="tryToMoveBossesCheckBox" Grid.Column="0" Grid.Row="3" Content="Try to move bosses" Margin="0,1"
                               ToolTip.Tip="The randomizer will attempt to adjust the position of bosses to try to prevent them from being stuck"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="4" Text="Enemy set:" VerticalAlignment="Center" Margin="0,4,8,1"/>
-                    <ComboBox Name="enemySetComboBox" Grid.Column="2" Grid.Row="4" ItemsSource="{StaticResource enemySetSettings}" Margin="0,4,0,1">
-                        <ToolTip.Tip>
-                            <TextBlock Text="Changes how enemies are randomized. No mixed enemy types means that bosses will only appear in vanilla boss locations. Scaling means that the enemies will become harder in the later worlds." TextWrapping="Wrap" MaxWidth="400"/>
-                        </ToolTip.Tip>
-                    </ComboBox>
+					<TextBlock Grid.Column="0" Grid.Row="4" Text="Enemy set:" VerticalAlignment="Center" Margin="0,4,8,1"/>
+					<ComboBox Name="enemySetComboBox" Grid.Column="2" Grid.Row="4" ItemsSource="{StaticResource enemySetSettings}" Margin="0,4,0,1">
+						<ToolTip.Tip>
+							<TextBlock Text="Changes how enemies are randomized. No mixed enemy types means that bosses will only appear in vanilla boss locations. Scaling means that the enemies will become harder in the later worlds." TextWrapping="Wrap" MaxWidth="400"/>
+						</ToolTip.Tip>
+					</ComboBox>
 
-                    <TextBlock Grid.Column="0" Grid.Row="5" Text="Enemy HP:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="enemyHPComboBox" Grid.Column="2" Grid.Row="5" ItemsSource="{StaticResource enemyHPSettings}" Margin="0,1"
+					<TextBlock Grid.Column="0" Grid.Row="5" Text="Enemy HP:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="enemyHPComboBox" Grid.Column="2" Grid.Row="5" ItemsSource="{StaticResource enemyHPSettings}" Margin="0,1"
                               ToolTip.Tip="Changes enemy HP values by a random numerical value or percentage value. Affects each enemy type seperately"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="6" Text="Enemy damage:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="enemyDamageComboBox" Grid.Column="2" Grid.Row="6" ItemsSource="{StaticResource enemyDamageSettings}" Margin="0,1"
+					<TextBlock Grid.Column="0" Grid.Row="6" Text="Enemy damage:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="enemyDamageComboBox" Grid.Column="2" Grid.Row="6" ItemsSource="{StaticResource enemyDamageSettings}" Margin="0,1"
                               ToolTip.Tip="Changes enemy Damage by a random numerical value or percantage value. Affects each enemy type seperately"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="7" Text="Enemy AI:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="aiComboBox" Grid.Column="2" Grid.Row="7" ItemsSource="{StaticResource aiSettings}" Margin="0,1"
+					<TextBlock Grid.Column="0" Grid.Row="7" Text="Enemy AI:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="aiComboBox" Grid.Column="2" Grid.Row="7" ItemsSource="{StaticResource aiSettings}" Margin="0,1"
                               ToolTip.Tip="Shuffle the AI used by the enemies. Partial will exclude superbosses like King Grieve and the Evil One from the shuffle but will still randomize their AI"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="8" Text="Enemy AI properties:" VerticalAlignment="Center" Margin="0,2,8,2"/>
-                    <ComboBox Name="aiPropertyComboBox" Grid.Column="2" Grid.Row="8" ItemsSource="{StaticResource aiPropertySettings}" Margin="0,1"
+					<TextBlock Grid.Column="0" Grid.Row="8" Text="Enemy AI properties:" VerticalAlignment="Center" Margin="0,2,8,2"/>
+					<ComboBox Name="aiPropertyComboBox" Grid.Column="2" Grid.Row="8" ItemsSource="{StaticResource aiPropertySettings}" Margin="0,1"
                               ToolTip.Tip="Randomize some properties of the enemy AI. This includes things like movement speed and jumps. Partial will exclude things that can make the seed much harder, such as allowing regular enemies to get the projectiles that the Evil One uses."/>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-        <TabItem Header="Items">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Items">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,*"
                       ColumnDefinitions="Auto,20,Auto,8,Auto">
 
-                    <!-- Left: checkboxes -->
-                    <CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="0" Content="Elixir near Tower of Fortress spring" Margin="0,1"
+					<!-- Left: checkboxes -->
+					<CheckBox Name="guaranteeElixirNearFortressCheckbox" Grid.Column="0" Grid.Row="0" Content="Elixir near Tower of Fortress spring" Margin="0,1"
                               ToolTip.Tip="The randomizer will try to ensure that there is an Elixir near the spring that requires it"/>
-                    <CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="1" Content="Fix pendant bug" Margin="0,1"
+					<CheckBox Name="fixPendantBugCheckBox" Grid.Column="0" Grid.Row="1" Content="Fix pendant bug" Margin="0,1"
                               ToolTip.Tip="Collecting the pendant makes you stronger instead of weaker, but you will also be weaker at the start"/>
-                    <CheckBox Name="buffGlovesCheckBox" Grid.Column="0" Grid.Row="2" Content="Buff gloves" Margin="0,1"
+					<CheckBox Name="buffGlovesCheckBox" Grid.Column="0" Grid.Row="2" Content="Buff gloves" Margin="0,1"
                               ToolTip.Tip="Increases the glove duration"/>
-                    <CheckBox Name="buffHourglassCheckBox" Grid.Column="0" Grid.Row="3" Content="Buff hourglass" Margin="0,1"
+					<CheckBox Name="buffHourglassCheckBox" Grid.Column="0" Grid.Row="3" Content="Buff hourglass" Margin="0,1"
                               ToolTip.Tip="The hourglass will no longer take half your HP when used"/>
-                    <CheckBox Name="randomizeBarRank" Grid.Column="0" Grid.Row="4" Content="Randomize Victim bar rank requirement" Margin="0,1"
+					<CheckBox Name="randomizeBarRank" Grid.Column="0" Grid.Row="4" Content="Randomize Victim bar rank requirement" Margin="0,1"
                               ToolTip.Tip="Victim bar patron requires a random rank before giving you his item"/>
-                    <CheckBox Name="guaranteeStartingSpell" Grid.Column="0" Grid.Row="5" Content="Guarantee spell in Eolis" Margin="0,1"
+					<CheckBox Name="guaranteeStartingSpell" Grid.Column="0" Grid.Row="5" Content="Guarantee spell in Eolis" Margin="0,1"
                               ToolTip.Tip="Guarantees a spell in the first town"/>
-                    <CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="6" Content="Guarantee mattock near Forepaw" Margin="0,1"
+					<CheckBox Name="guaranteeMattock" Grid.Column="0" Grid.Row="6" Content="Guarantee mattock near Forepaw" Margin="0,1"
                               ToolTip.Tip="There will always be a mattock after the first breakable wall."/>
-                    <CheckBox Name="replacePoisonCheckBox" Grid.Column="0" Grid.Row="7" Content="Replace poison with mana potions" Margin="0,1"
+					<CheckBox Name="replacePoisonCheckBox" Grid.Column="0" Grid.Row="7" Content="Replace poison with mana potions" Margin="0,1"
                               ToolTip.Tip="Introduces a new item (Black Potion) that refills Mana, and removes all Poison from the game, replacing them with Black Potions"/>
-                    <CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="0" Grid.Row="8" Content="Always spawn small items" Margin="0,1"
+					<CheckBox Name="alwaysSpawnSmallItemsCheckBox" Grid.Column="0" Grid.Row="8" Content="Always spawn small items" Margin="0,1"
                               ToolTip.Tip="Small items will always spawn when there are no enemies on the screen, regardless of what the 'count' is"/>
-                    <CheckBox Name="randomizeItemNamesCheckBox" Grid.Column="0" Grid.Row="9" Content="Randomize item names" Margin="0,1"
+					<CheckBox Name="randomizeItemNamesCheckBox" Grid.Column="0" Grid.Row="9" Content="Randomize item names" Margin="0,1"
                               ToolTip.Tip="Items will have their names randomized"/>
-                    <CheckBox Name="includeSomeEolisDoorsCheckBox" Grid.Column="0" Grid.Row="10" Content="Include some Eolis doors" Margin="0,1"
+					<CheckBox Name="includeSomeEolisDoorsCheckBox" Grid.Column="0" Grid.Row="10" Content="Include some Eolis doors" Margin="0,1"
                               ToolTip.Tip="Include the Eolis magic shop, martial arts shop and exit door in the key randomization"/>
 
-                    <!-- Right: combobox settings alongside the checkboxes -->
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Mattock usage:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="mattockUsageComboBox" Grid.Column="4" Grid.Row="0" ItemsSource="{StaticResource mattockUsageSettings}" Margin="0,1"
+					<!-- Right: combobox settings alongside the checkboxes -->
+					<TextBlock Grid.Column="2" Grid.Row="0" Text="Mattock usage:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="mattockUsageComboBox" Grid.Column="4" Grid.Row="0" ItemsSource="{StaticResource mattockUsageSettings}" Margin="0,1"
                               ToolTip.Tip="Setting for allowing Mattock to be used in more places"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Eolis weapon:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="startingWeaponComboBox" Grid.Column="4" Grid.Row="1" ItemsSource="{StaticResource startingWeapon}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="1" Text="Eolis weapon:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="startingWeaponComboBox" Grid.Column="4" Grid.Row="1" ItemsSource="{StaticResource startingWeapon}" Margin="0,1"
                               ToolTip.Tip="Can set if there is a guaranteed weapon in Eolis. Random means there will be either a dagger or longsword guaranteed"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="2" Text="Wing boot duration:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="wingBootDurationComboBox" Grid.Column="4" Grid.Row="2" ItemsSource="{StaticResource wingBootSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="2" Text="Wing boot duration:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="wingBootDurationComboBox" Grid.Column="4" Grid.Row="2" ItemsSource="{StaticResource wingBootSettings}" Margin="0,1"
                               ToolTip.Tip="Changes how long Wing Boots are active, and how ranking up affects it"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="3" Text="Shields:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="shieldSettingsComboBox" Grid.Column="4" Grid.Row="3" ItemsSource="{StaticResource shieldSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="3" Text="Shields:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="shieldSettingsComboBox" Grid.Column="4" Grid.Row="3" ItemsSource="{StaticResource shieldSettings}" Margin="0,1"
                               ToolTip.Tip="Changes how shields work"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="4" Text="Big items:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="bigItemSpawnsComboBox" Grid.Column="4" Grid.Row="4" ItemsSource="{StaticResource bigItemSpawnsSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="4" Text="Big items:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="bigItemSpawnsComboBox" Grid.Column="4" Grid.Row="4" ItemsSource="{StaticResource bigItemSpawnsSettings}" Margin="0,1"
                               ToolTip.Tip="Change how 'big' items spawn, this includes the items that are normally locked behind a boss"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="5" Text="Item shuffle:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="itemShuffleComboBox" Grid.Column="4" Grid.Row="5" ItemsSource="{StaticResource itemShuffleSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="5" Text="Item shuffle:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="itemShuffleComboBox" Grid.Column="4" Grid.Row="5" ItemsSource="{StaticResource itemShuffleSettings}" Margin="0,1"
                               ToolTip.Tip="Change how to shuffle items. Mixing types fully will allow for some key items to appear in the overworld that normally would not."/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="6" Text="Key requirements:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="keyRandomizationComboBox" Grid.Column="4" Grid.Row="6" ItemsSource="{StaticResource randomizeKeysSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="6" Text="Key requirements:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="keyRandomizationComboBox" Grid.Column="4" Grid.Row="6" ItemsSource="{StaticResource randomizeKeysSettings}" Margin="0,1"
                               ToolTip.Tip="Change how to randomize key requirements"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="7" Text="Multiple gifts:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="multipleGiftsComboBox" Grid.Column="4" Grid.Row="7" ItemsSource="{StaticResource multipleGiftSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="7" Text="Multiple gifts:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="multipleGiftsComboBox" Grid.Column="4" Grid.Row="7" ItemsSource="{StaticResource multipleGiftSettings}" Margin="0,1"
                               ToolTip.Tip="Allow multple gifts from these locations. Otherwise you can only get the gift if you don't have the item. You can always get multiple keys from locations other than the Conflate guru"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="8" Text="Small key limit:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="smallKeyLimitComboBox" Grid.Column="4" Grid.Row="8" ItemsSource="{StaticResource keyLimitSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="8" Text="Small key limit:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="smallKeyLimitComboBox" Grid.Column="4" Grid.Row="8" ItemsSource="{StaticResource keyLimitSettings}" Margin="0,1"
                               ToolTip.Tip="Limit the maximum number of doors for each type of small key. Small key refers to the jack, queen or king key"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="9" Text="Big key limit:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="bigKeyLimitComboBox" Grid.Column="4" Grid.Row="9" ItemsSource="{StaticResource keyLimitSettings}" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="9" Text="Big key limit:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="bigKeyLimitComboBox" Grid.Column="4" Grid.Row="9" ItemsSource="{StaticResource keyLimitSettings}" Margin="0,1"
                               ToolTip.Tip="Limit the maximum number of doors for each type of big key. Big key refers to the ace, or joker key"/>
 
-                    <!-- Row 10 has includeSomeEolisDoorsCheckBox on the left -->
+					<!-- Row 10 has includeSomeEolisDoorsCheckBox on the left -->
 
-                    <TextBlock Grid.Column="2" Grid.Row="11" Text="Weapon stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="weaponStatComboBox" Grid.Column="4" Grid.Row="11" ItemsSource="{StaticResource weaponStatSettings}" SelectedIndex="0" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="11" Text="Weapon stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="weaponStatComboBox" Grid.Column="4" Grid.Row="11" ItemsSource="{StaticResource weaponStatSettings}" SelectedIndex="0" Margin="0,1"
                               ToolTip.Tip="Randomize weapon damage values. Swap randomly reassigns each weapon's damage to another weapon. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each weapon's base power, so weaker weapons vary less than stronger ones. Item names reflect the change. Dagger is never weakened. Damage never goes below 2"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="12" Text="Magic stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="magicStatComboBox" Grid.Column="4" Grid.Row="12" ItemsSource="{StaticResource magicStatSettings}" SelectedIndex="0" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="12" Text="Magic stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="magicStatComboBox" Grid.Column="4" Grid.Row="12" ItemsSource="{StaticResource magicStatSettings}" SelectedIndex="0" Margin="0,1"
                               ToolTip.Tip="Randomize magic damage values. Swap randomly reassigns each spell's damage to another spell. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each spell's base power, so weaker spells vary less than stronger ones. Item names reflect the change. Damage never goes below 2"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="13" Text="Armor stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
-                    <ComboBox Name="armorStatComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource armorStatSettings}" SelectedIndex="0" Margin="0,1"
+					<TextBlock Grid.Column="2" Grid.Row="13" Text="Armor stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="armorStatComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource armorStatSettings}" SelectedIndex="0" Margin="0,1"
                               ToolTip.Tip="Randomize armor defense values. Swap randomly reassigns each armor's defense multiplier to another armor. The +/- options adjust values by a flat amount. Item names reflect the change. Studded Mail is never weakened. Values never go below 0"/>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
 
-        <TabItem Header="Extra">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,*"
+		<TabItem Header="Extra">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Grid Margin="8" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*"
                       ColumnDefinitions="Auto,10,Auto">
 
-                    <CheckBox Name="randomizePalettesCheckbox" Grid.Column="0" Grid.Row="0" Content="Randomize palettes" Margin="0,1"
+					<CheckBox Name="randomizePalettesCheckbox" Grid.Column="0" Grid.Row="0" Content="Randomize palettes" Margin="0,1"
                               ToolTip.Tip="Randomizes which palettes are used."/>
-                    <CheckBox Name="randomizeSoundEffectsCheckbox" Grid.Column="0" Grid.Row="1" Content="Randomize sound effects" Margin="0,1"
+					<CheckBox Name="randomizeSoundEffectsCheckbox" Grid.Column="0" Grid.Row="1" Content="Randomize sound effects" Margin="0,1"
                               ToolTip.Tip="Randomizes the different sound effects."/>
-                    <CheckBox Name="addSuffixCheckbox" Grid.Column="0" Grid.Row="2" Content="Append suffix" Margin="0,1"
+					<CheckBox Name="addSuffixCheckbox" Grid.Column="0" Grid.Row="2" Content="Append suffix" Margin="0,1"
                               ToolTip.Tip="Append a random suffix to the filename"/>
 
-                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Music:" VerticalAlignment="Center" Margin="0,4,8,1"/>
-                    <ComboBox Name="musicComboBox" Grid.Column="2" Grid.Row="3" ItemsSource="{StaticResource musicSettings}" SelectedIndex="2" Margin="0,4,0,1"
+					<TextBlock Grid.Column="0" Grid.Row="3" Text="Music Mode:" VerticalAlignment="Center" Margin="0,4,8,1"/>
+					<ComboBox Name="musicComboBox" Grid.Column="2" Grid.Row="3" ItemsSource="{StaticResource musicSettings}" SelectedIndex="2" Margin="0,4,0,1"
                               ToolTip.Tip="Change how to handle music"/>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-        <TabItem Header="Custom Text">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Grid Margin="8" RowDefinitions="Auto,Auto,Auto,*"
+					<TextBlock Grid.Column="0" Grid.Row="4" Text="Soundtrack:" VerticalAlignment="Center" Margin="0,2,8,1"/>
+					<ComboBox Name="soundtrackComboBox" Grid.Column="2" Grid.Row="4" ItemsSource="{StaticResource soundtrackSettings}" SelectedIndex="0" Margin="0,2,0,1" ToolTip.Tip="Choose which soundtrack pool to use"/>
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
+		<TabItem Header="Custom Text">
+			<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+				<Grid Margin="8" RowDefinitions="Auto,Auto,Auto,*"
                       ColumnDefinitions="300,Auto,20,Auto,Auto">
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Custom Text File Path" Margin="0,1"/>
-                    <Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="*,Auto">
-                        <TextBox Name="customTextPathTextBox" Grid.Column="0" Margin="0,1"/>
-                        <Button Content="Browse" Grid.Column="1" Margin="4,2,0,2" Click="CustomTextBrowseButton_Click"/>
-                    </Grid>
+					<TextBlock Grid.Column="0" Grid.Row="0" Text="Custom Text File Path" Margin="0,1"/>
+					<Grid Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" ColumnDefinitions="*,Auto">
+						<TextBox Name="customTextPathTextBox" Grid.Column="0" Margin="0,1"/>
+						<Button Content="Browse" Grid.Column="1" Margin="4,2,0,2" Click="CustomTextBrowseButton_Click"/>
+					</Grid>
 
-                    <CheckBox Name="useCustomTextCheckBox" Grid.Column="3" Grid.Row="0" Content="Use custom text" Margin="0,1"
+					<CheckBox Name="useCustomTextCheckBox" Grid.Column="3" Grid.Row="0" Content="Use custom text" Margin="0,1"
                               ToolTip.Tip="Use custom text from a text file"/>
-                </Grid>
-            </ScrollViewer>
-        </TabItem>
-    </TabControl>
+				</Grid>
+			</ScrollViewer>
+		</TabItem>
+	</TabControl>
 </Window>

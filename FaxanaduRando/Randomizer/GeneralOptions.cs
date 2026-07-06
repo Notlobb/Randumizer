@@ -44,28 +44,73 @@ namespace FaxanaduRando.Randomizer
             Unchanged,
         };
 
+        [Flag(0)]
         public static bool FastText { get; set; } = true;
+
+        [Flag(1)]
         public static bool FastStart { get; set; } = true;
+
+        [Flag(2)]
         public static bool DragonSlayerRequired { get; set; } = false;
+
+        [Flag(3)]
         public static bool PendantRodRubyRequired { get; set; } = false;
+
+        [Flag(4)]
         public static bool MoveSpringQuestRequirement { get; set; } = false;
+
+        [Flag(5)]
         public static bool ShuffleTowers { get; set; } = false;
+
+        [Flag(6)]
         public static bool ShuffleWorlds { get; set; } = false;
+
+        [Flag(7)]
         public static bool UpdateMiscText { get; set; } = true;
+
+        [Flag(8)]
         public static bool GenerateSpoilerLog { get; set; } = true;
+
+        [Flag(9)]
         public static bool QuickSeed { get; set; } = false;
+
+        [Flag(10)]
         public static bool AllowLoweringRespawn { get; set; } = true;
+
+        [Flag(11)]
         public static bool PreventKnockbackOnLadders { get; set; } = true;
+
+        [Flag(26)]
         public static bool FlexibleItems { get; set; } = true;
+
+        [Flag(33)]
         public static bool UseWeaponIndoors { get; set; } = false;
+
+        [Flag(27)]
         public static bool IncludeEvilOnesFortress { get; set; } = false;
+
+        [Flag(28)]
         public static bool DarkTowers { get; set; } = false;
+
+        [Flag(29)]
         public static bool RandomizeTitles { get; set; } = true;
+
+        [Flag(31)]
         public static bool AddKillSwitch { get; set; } = false;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 33)]
         public static Hints HintSetting { get; set; } = Hints.Strong;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 34)]
         public static MiscDoors MiscDoorSetting { get; set; } = MiscDoors.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 35)]
         public static DoorTypeShuffle DoorTypeSetting { get; set; } = DoorTypeShuffle.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 46)]
         public static ScreenRandomization RandomizeScreens { get; set; } = ScreenRandomization.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 49)]
         public static SegmentShuffle ShuffleSegments { get; set; } = SegmentShuffle.Unchanged;
     }
 

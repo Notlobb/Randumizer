@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://jessica.systems/hacks) - Original Song 2 (Mist)",
+  "AllowedSlots": [
+    5
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAPf/8Qj9ApAuIqAAkCAiJCwu/Pn9BpAuIqAAkCAiJCwu/P0CkC8joACQISMlLS/8/QaQLiKgAJAgIiQsLvz9ApAvI6AAkCEjJS0v/P0GkC4ioACQICIkLC78/QKQLyOgAJAhIyUtL/z9BpAuIqAAkCAiJCwu/P0CkC8joACQISMlLS/8/QKQLiKgAJAgIiQsLvyQKh4lKikuLDEqLCAnLCoxMDg2LiIAJikuMDIuMDUuLCcgLCcgkCoeJSopLiwxKiwgJywqMTA4Ni4ioACQJikuMDIuIqAAkCkrLC4sMSWgAJAkJScoLCoeoACQKSosLjEvKqAAkCcpKi4vLSigAJAjJSgsLSkdoACQHyEjJCcpHaAAkB8gIiQi8Qb9ApAsLi8xiCoAKimQKjEzNTc1oDM3+wGQODagNZAAMzYzNTMyM6A1LvyQODqgO5AAiDo7kDo2NTY6NDU3OTU9N/EI/QaQIiWgAJAlIiUtKfz+",
+      "Relocations": []
+    },
+    {
+      "Code": "8hHwAO4C8QmEAP0CkC4ioACQICIkLC78+f0GkC4ioACQICIkLC78/QKQLyOgAJAhIyUtL/z9BpAuIqAAkCAiJCwu/P0CkC8joACQISMlLS/8/QaQLiKgAJAgIiQsLvz9ApAvI6AAkCEjJS0v/P0GkC4ioACQICIkLC78/QKQLyOgAJAhIyUtL/z9ApAuIqAAkCAiJCwu/JAqHiUqKS4sMSosICcsKjEwODYuIgAmKS4wMi4wNS4sJyAsJyCQKh4lKikuLDEqLCAnLCoxMDg2LiKgAJAmKS4wMi4ioACQKSssLiwxJaAAkCQlJygsKh6gAJApKiwuMS8qoACQJykqLi8tKKAAkCMlKCyMLZAkIaAAkCIkJykrLSSgAJAnKSssK/IV8ACEAPEH/QKQLC4vMYgqACopkCoxMzU3NaAzN/sBkDg2oDWQADM2MzUzMjOgNS78kDg6oDuQAIg6O5A6NjU2OjQ1Nzk1PTfyEfEJ/QaQIiWgAJAlIiUtKfz+",
+      "Relocations": []
+    },
+    {
+      "Code": "84AAAAAAwAD5/QKIKSfAKZAAIicpiCopsCqQACUnKYgsKsAsoACQLsApiCop0CeIKSf7ASUj4CWIISMlJiUj4CWgI/OAIgCgAPzgKqAlwDGQADEwL/OALgDAAP0CiCknwCmQACInKYgqKbAqkAAlJymILCrALKAAkC7AKYgqKdAniCkn+wElI+AliCEjJSYlI+AloCPzgCIAoAD84CqgJcAxkAAxMC/zgC7gAIgAFhgZGx0eICIkJSf9AsApkCQlJykqoCfQLqAs+wHzgCmwJqAkkCYkJ6Am/POALgCgAMAskCopKiwvsCfAJZAsKMAnkCIlJykqsCjAJZAniCYlwCSQGh0eISIkIaAAkCIlJykn/QKQIBQgFB4AHhIdER0RGwAbDyUZJRkjFyMXIhYiFicbJxv8kB8ikCkloACQLS6wKaAlwACQKS0uKSXAAJAAKS0uKaAAkCUpKy0uLiKgAJAgIicpLS4ioACQKSUiKS0uIvOAAAD+",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}

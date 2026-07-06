@@ -144,7 +144,7 @@ namespace FaxanaduRando.Randomizer
             { Item.Poison, new List<string> { "Poison", "Venom", "Toxin", "Bane Juice" } }
         };
 
-        public static Dictionary<Item, string> GenerateItemNameDictionary(bool randomize, string customTextFile = null)
+        public static Dictionary<Item, string> GenerateItemNameDictionary(Random random, bool randomize, string customTextFile = null)
         {
             var itemDictionary = new Dictionary<Item, string>();
 
@@ -152,7 +152,7 @@ namespace FaxanaduRando.Randomizer
             {
                 if (randomize)
                 {
-                    var randomValue = item.Value[new Random().Next(item.Value.Count)];
+                    var randomValue = item.Value[random.Next(item.Value.Count)];
                     itemDictionary[item.Key] = randomValue;
                 }
                 else

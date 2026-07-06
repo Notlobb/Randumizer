@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Deja Vu main title",
+  "AllowedSlots": [
+    1
+  ],
+  "Channels": [
+    {
+      "Code": "8pDwAIbxAowA+ZIA/QKGJ4wqhieMKoYxjADsMIYxAC4s5i78/QKGJ4wqhieMKoYujADaLIMuLIwq+wGGJ4wqKoYAyCeSAPyGJ4wq2ieG8QP+",
+      "Relocations": []
+    },
+    {
+      "Code": "8pDwAO4BhvELmwD5kgD9AoYnjCqGJ4wqhjGMAOwwhjEALizmLvz9AoYnjCqGJ4wqhi6MANosgy4sjCr7AYYnjCoqhgDIJ5IA/IYnjCraJ4bxC/4=",
+      "Relocations": []
+    },
+    {
+      "Code": "yACSAPmSFh0cGxYZGhsWDxESCg0ODxEKEQ8KDQ4PERIPCg4PCQgLD6QUkhEKDg8RChEPDA0PpAiSDwikCpIREA8MDQ4PtgCSD/4=",
+      "Relocations": []
+    },
+    {
+      "Code": "kjExjDGGMSP5/QeGMYwAhiEAUfyMMYY0/g==",
+      "Relocations": []
+    }
+  ]
+}

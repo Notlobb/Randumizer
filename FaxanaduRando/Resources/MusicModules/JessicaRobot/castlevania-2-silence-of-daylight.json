@@ -1,0 +1,28 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Castlevania 2 - Silence of Daylight",
+  "AllowedSlots": [
+    7
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAInxBJI4iSzjNok1Nps10TOJLy4vMTg4LNE2iS8xNTabNdEziS8uLzH5/QLykInxBDMyMeMsiSwumywrLjGSNDf88QWJLvEILvEKLvEFkieJKy4xL/EIL/EKL/ELL/EFJywvMzHxCTHxCzHxBZIqiS4xNjTxCTTxCjTxCzTxBTPxCTPxCjPxCzPxBTPxCTPxCjPxBpIsiTAzOPEFNvEJNvEKNvELNvEFNPEJNPEKNPELNPEGrTiJMjU4yDfyUII3ljiCNZY2idoziSUxPRMfK9oggiuWLIIpliqJ2ieJJSUlHx8fpCCJICwbHyIn/g==",
+      "Relocations": []
+    },
+    {
+      "Code": "8lDwAInxBpIviSPjMYkxM5sx0S+JHh0eIC8vI9ExiSwuMTObMdEviR4dHiD5/QKJki+JG5snJiWSI4kgIpIbGyeJGxsgIZIiiScnGyf8iR8fHx+kMYkgICAgIycsLxYWIhakMYkXFyMXFxseIps5rTOkMSytKYkpKSkrLjEoKy4lKIIyljOCMJYxiaQviSMiIx4eFyAsOBsnM6QniSAgLJsggiaWJ4IkliWJpCOJFxcjkheJFyAgIBsbG6QbiSAgGx8iG/4=",
+      "Relocations": []
+    },
+    {
+      "Code": "/QKJpAiSFJsIkguJCgsMkg+kCJIUCAuJFwsXFhcZ/Pn9AomkCIkLCggDpAiSFIkLCKQPkhsPiQ0Okg8biQ8b/IkHBxMHkgqJAwcICBQIkhQIiQoKFgqSFhILiReSCwqJCwwMGJsMiRgMDQ0ZDZIZCIkODhoOCgwOCpIPiQ0ODwgJBpAIiBSQkgqIFomkC4kXFheSEokLmw0PthSbCIIAkAiIFJCSCogWtguJF5sLgwCSDYkZkg+JG6QUiQgUAwcKD/4=",
+      "Relocations": []
+    },
+    {
+      "Code": "khGJUVGSEYlRUZIAiVFRkhEhAIlRUZIRiVFRiRERUVGSIYkhUZIRiVFRkhGJUVGSAIlRUZIRIQCJUVGSEYlRUSERIVEhACEh+f0E+I8A+wOSIYlRUfySIYkhIf0EiRERUVEhAFFR+wMREVFRIQAhIfyJESEhACFRISH4ngCJISERIQAh+J4AiREhISEAIf6SEYkRUZIhiVFREVERUfWQEYghkBGIIaQRkiEhiSEhEREhEREhpBH1",
+      "Relocations": [
+        76,
+        123,
+        133
+      ]
+    }
+  ]
+}

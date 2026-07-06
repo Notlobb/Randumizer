@@ -1,0 +1,39 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Zelda 2 - Temple",
+  "AllowedSlots": [
+    6
+  ],
+  "Channels": [
+    {
+      "Code": "8pDwAIzxAyyYLCykLC8umC35+J4A+LsA+J4A/QKMMS4vmDGML5gujC4rLJgujCyYK/sBjDYxM5g0jDOYMYwxLS+YMYwzmDT8jCeYJ7AojAAnmCcrLowx/QKMsDOMAJgxjC+QLi8xMzQ2jLA2jACYNIwzkDQzMTM0NoywOIwAmCyMLpAwMTM1NjiMsDaMAJg0jDOQNDMxMzQ2/Pi7AP79AoywLIwALi8zpDQvmDSkNS+YNTSMOJg2pDT89f0CjDOYMzOMM7AxyACMM5gzM4wz+wGwNMgA/LA2jACkNJgz9Q==",
+      "Relocations": [
+        19,
+        22,
+        25,
+        155
+      ]
+    },
+    {
+      "Code": "8pDwAIzxBCeYJyekJyopmCj5+LYA+N0A+LYA/QKM8QUrJSIrJSIrJfz9AowhJSohJSohJfz9AowrJSIrJSIrJfyMIpgisCKMACKYIiInjCv9BIbxBiAjJywvLCch/P0EhiElKi0xLSol/P0EhiAkKSwwLCkk/P0EhiElKi0xLSol/P0EhiAjJywvLCch/P0EhiElKi0xLSol/P0EhiAkKSwwLCkk/P0EhiElKi0xLSol/PjdAP79AozxBScjICcjICcjKCMgKCMgKCMpIyApIyApIygjICgjICgj/PX9BIzxAyuYKyuMK7Ar+wPIAPyMAKQrmCv1",
+      "Relocations": [
+        19,
+        22,
+        25,
+        179
+      ]
+    },
+    {
+      "Code": "jBQUABQAFJgAjBcXFxYWFhUV+fiVAPi9APiVAP0CjA8WEw8AGRYA/P0CjBIZFRIAGRUA/P0CjA8WEw8AGRYA/IwTEwATABMTExMTAA8AEwAP/QSMFA8UF/z9BIwSDRIV/P0EjBEYERT8/QSMEg0SFfz9BIwUDxQX/P0EjBINEhX8/QSMERgRFPz9BIwSDRIV/Pi9AP79AowUAA8UAA8XD4wUABAUABAXEIwUABEUABEXEYwUABAUABAXEPz1/QSMDw8ADwAPDwD7A5gAjA8AEwAWAPyMpACME5gAjBYA9Q==",
+      "Relocations": [
+        20,
+        23,
+        26,
+        146
+      ]
+    },
+    {
+      "Code": "4AAA+f0IjDEAMTEAMTEx/P0EjDExADEAMTEA+wPgAPyMpACMMZgAjDEA/QiMMQAxMQAxMTH8/QaMMTExMQAxMQD8jDEAyACMMQDIAP1AjDEx/P0EjDExADEAMTEA+wPgAPyMpACMMZgAjDEA/g==",
+      "Relocations": []
+    }
+  ]
+}

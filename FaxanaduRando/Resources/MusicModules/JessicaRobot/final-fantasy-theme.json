@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Theme of Final Fantasy",
+  "AllowedSlots": [
+    13
+  ],
+  "Channels": [
+    {
+      "Code": "8lHwAP0CmPECJSosJbAvmC4sKowpKpgsKrAqKZgnLC4nsDGYLy4sjCsumCwnsC4s/MgzmDPIMZguL4wvLpgsKywuLzHINJg0yDOYLzGMMTKYMYwxMpgxLy4s9A==",
+      "Relocations": []
+    },
+    {
+      "Code": "8hDwAP0CmPEDyBmMGx2YHhsdIBuMHR6YIIwgIrAjICCYH4wgIpgjIB8lsCMkJSP8jCMiICKYIx2MIiAeIJgiHiAcGxmwG5ggIrAlISMgHoweICEesCAdmPQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "sP0CEhEPDQsM4A2wFxYUExQSEQ384BcSsBAPFBIVEA8UFRoZF/Q=",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}

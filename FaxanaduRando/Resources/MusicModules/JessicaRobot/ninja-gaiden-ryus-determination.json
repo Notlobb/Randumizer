@@ -1,0 +1,34 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Ninja Gaiden - Ryu's Determination",
+  "AllowedSlots": [
+    16
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAOAA+f0C8QOMKy4rMIYpjCuGKYwrMqQrjC0uLZgrjC0rMC2GK4wthiuMLTKkLYwuMC6YLfyMmCspJyaMACYmmCb9AowmKy0uLS6YK4wyMC4wLjCYK4wuLSspKy2YNYwzMjCwMowA/IYmKSstLjD9AoaMLoYtjC6GK4wuhi2MLoYrMC4tLowuhi2MLoYrjC6GLYwuhiswLi0rjDCGLowwhi2MMIYujDCGLTIwLi0rKSYnKyYpKy4tKymMMjD8/g==",
+      "Relocations": []
+    },
+    {
+      "Code": "8hDwAOAA+f0C8QSGjB+GKyYAJowrhh8rjCYrJhuGKycAJ4wrhhsrjCcrJx2GKykAKYwrhh0rjCkrKRqGKyYrACsrjCsrKgD8GoYrJowdhikkjBuGJyKMGoYaIYwaGhoaGqQA/QSGjB+GKyYAJowrhh8rjCYrJhuGKycAJ4wrhhsrjCcrJx2GKykAKYwrhh0rjCkrKRqGKyYrACsrjC4tKwD8/g==",
+      "Relocations": []
+    },
+    {
+      "Code": "/QSGAgAOAPz5+DkA+DkAhgcAEwAFABEAAwAPAAIADgACAAIAAgACAAIApAD4OQD4OQD4OQD4OQD+/QSGBwATAPz9BIYDAA8A/P0EhgUAEQD8/QOGAgAOAPyGBQAGAPU=",
+      "Relocations": [
+        10,
+        13,
+        45,
+        48,
+        51,
+        54
+      ]
+    },
+    {
+      "Code": "hhEAUVEhUxEAUVEhU/n9AhEAUVEhUxFTIVMRAFFRIVMRUyFTEQBRUSFTEVMhUxEAUVEhUyEhACX8/QKGEQBRUSEAUVH8jCUAhiEAISH4VAD4VAD+/QeGEQBRUSFRUVH8IQAm/QeGEQBRUSFRUVH8ISEAJfU=",
+      "Relocations": [
+        78,
+        81
+      ]
+    }
+  ]
+}

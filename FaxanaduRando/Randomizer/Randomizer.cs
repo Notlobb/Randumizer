@@ -358,16 +358,20 @@ namespace FaxanaduRando.Randomizer
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
-            Text.AddTitleText(0, "RANDUMIZER V30B1", titleText);
-            var hash = ((uint)flags.GetHashCode()).ToString();
-            if (hash.Length > 8)
-            {
-                hash = hash.Substring(0, 8);
-            }
+            Text.AddTitleText(0, "RANDUMIZER V29B4", titleText);
+            var hash = Util.Fnv1aHash(flags).ToString("X8");
 
             Text.AddTitleText(1, $"FLAG HASH {hash}", titleText);
             Text.AddTitleText(2, $"SEED {seed}", titleText);
             Text.SetAllTitleText(content, titleText, Section.GetOffset(12, 0x9DCC, 0x8000));
+
+            var paletteRandomizer = new PaletteRandomizer(random);
+            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
+
+            if (GeneralOptions.ShuffleTowers)
+            {
+                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
+            }
 
             int dotIndex = inputFile.IndexOf(".nes");
             string outputFile;
@@ -383,19 +387,11 @@ namespace FaxanaduRando.Randomizer
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
 #endif
 
-            var paletteRandomizer = new PaletteRandomizer(random);
-            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
-
-            if (GeneralOptions.ShuffleTowers)
-            {
-                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
-            }
-
             File.WriteAllBytes(outputFile, content);
             if (GeneralOptions.GenerateSpoilerLog)
             {
                 var spoilers = new List<string>();
-                spoilers.Add("Randumizer v0.30 beta 1");
+                spoilers.Add("Randumizer v0.29 beta 4");
                 spoilers.Add($"Seed {seed}");
                 spoilers.Add($"Flags {flags}");
 #if DEBUG
@@ -1521,6 +1517,15 @@ namespace FaxanaduRando.Randomizer
             {
                 var soundRandomizer = new SoundRandomizer();
                 soundRandomizer.RandomizeSounds(content, random);
+            }
+
+            // only rebuild the soundtrack if music is enabled, and a non-original
+            // soundtrack has been selected
+            if (ExtraOptions.MusicSetting != Music.None &&
+                ExtraOptions.SoundtrackSetting != Soundtrack.Original)
+            {
+                MusicTrackRandomizer.RandomizeMusicTracks(content, random,
+                    ExtraOptions.SoundtrackSetting == Soundtrack.Mix);
             }
         }
 

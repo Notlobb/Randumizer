@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Pokemon RB - Pallet Town",
+  "AllowedSlots": [
+    9
+  ],
+  "Channels": [
+    {
+      "Code": "8pDwAPECjz89PDpEQUNBrT+PPDg4OjytPZ4Ajzc4Oq08hz2IPK06jwA/PTw/RENDRK1Bjz+tP48APTw6OD89PDqtOJ4Ajzg6PK09jwCtP489rTyeAI84OjyePT2tP4c9iD+tPJ4Ajzw6OJ6tOo8AnjU8rTqPAJ44Na03jwCeODytPI8ArTqPAPQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "8pDwAP0C8QSPnjCPMZ4zjzgzMZ4wjyyeM48z+wExMAAwMTCtMZ4AjzAxLjAsLiv8ODeeNY8znjGPLjAxMzEwLp4sK/0CjzEsKSwzLisuMCwnLDAsJyz8/QQuKSUp/CsnJScsKSUpLCklKSsnJSf0",
+      "Relocations": []
+    },
+    {
+      "Code": "/QKerSAdnh+tICKeIK0dH/sBnh2tIB+eG/yeIq0gHZ4bvBkbIJ4dG7wZGyCeIiC8HSIdIB/zeB28H/Q=",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}

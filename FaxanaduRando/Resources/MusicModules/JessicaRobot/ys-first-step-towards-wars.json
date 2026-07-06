@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Ys - First Step Towards Wars",
+  "AllowedSlots": [
+    4
+  ],
+  "Channels": [
+    {
+      "Code": "8lPwAPEE1CeHJykqLLgunCyHKpUphyopxieHJykqLLgunCyHKpUpjiqHJ7gzhwCcM/OoNbgA8ADUM4czNTY4uDqcOIc2lTWHNjXGM4czNTY4uDqcOIc2lTXUM5wzuDWcLjXzqDOONjiHOpU9jtQ/jjs9uD9CqkGcPY4/84w61DuOODq4O5w9P6o9No4483461D+OOz24P0KqQZw9jj/UOpxERtRHjkRGxkeORkZCqkS4PfNwPo4Ah/0EMy4qMy4qJyr8lTPUM4cAlTLUMocA83A69A==",
+      "Relocations": []
+    },
+    {
+      "Code": "8pPwAP0C8Qachy6OJ9QuhwC4MZwwLPyHLyonvyqcLPEEji6HKaMujjKHLqMyjjWHMqM1jjqHNaM6/QLxB5yHLo4n1C6HALgxnDAs/LgqnC8zxjGOLocplSXyU7gu8QaOKiyHLpUxuDOOMzWHNpU68pPxBpyqOza4M5w2LzP9Ao7xBC4xNZw6jjX7AZwx/I4xLvEGnCyOJ6osji8xuDM4jjYxLjYxLjYxNTIuNTIuNTKcqi8quCecKi8z/QKO8QQuMTWcOo41+wGcMfyOMS7xBqosxjiqLDiONjOqNbg4nDqONTY1ODY1Nv0CuCeOKiyHLpUx/I6VLy+OMzY7P0KVLi6OMjU6PkH9BIc6NTIu/PQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "/QKHjg+HDw+OD4cPD44Phw8Pjg+HDw+OEocSEo4ShxISjhSHFBSOFIcUFPz9BI4XhxcX/P0IjhaHFhb8/QKHjg+HDw+OD4cPD44Phw8Pjg+HDw+OEocSEo4ShxISjhSHFBSOFIcUFPz9BI4XhxcX/P0DjhaHFhb8hxYUEQ0PAA8ADZUPhwMDjhKHEZUNhw8ADwANlQ+HDw8RERISFhb9CI4XhxcX/P0IjhaHFhb8/QiOFIcUFPz9A44ShxIS/I4ShxIU/QSOFocWFvz9CI4XhxcX/P0IjhaHFhb8/QSOFIcUFPz9BI4QhxAQ/P0Ejg2HDQ38/QOOCocKCvyOCocKDf0Chw8Ajg+HDZUPhwMDjhSHFpUZ/Be4F5wAhwCVFocW/QaOFhb8hxaOGYcA9A==",
+      "Relocations": []
+    },
+    {
+      "Code": "/Q2OUYdRUY4hh1FR/IchjiOHIf0LjlGHUVGOIYdRUfyOUYdRUST9B44hh1FR/IchUSEh/Q6OUYdRUY4hh1FR/I4hUVEhUVEhUf0PjlGHUVGOIYdRUfyHIY4jhyH9Ao5Rh1FRjiGHUVGOUYdRUYchIY4A/I4hhwCOIYcAuACOAI4hhwCOIYcAuACHISH9A44hh1FR/CT0",
+      "Relocations": []
+    }
+  ]
+}

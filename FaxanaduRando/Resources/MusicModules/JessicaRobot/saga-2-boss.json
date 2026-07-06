@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - SaGa 2 - Boss",
+  "AllowedSlots": [
+    10
+  ],
+  "Channels": [
+    {
+      "Code": "+fIQ8ACG8QP9AiwwLjD8/QIuMTAx/P0EMDMxM/z9AjE1MzX8/QIuMTAx/Lwu8lCMNTQw/QKkNZgwjDU3ODqGODqMOIY3OIw3hjU3jDWGMzWkM4YxMLAujAArLC4sKyknhiUnKScpKywrjCw1MzCGLjAxMC4sKyyMLoYsLowwhi4wjDEwMTM1ODc1+wE0MjQ1Nzo4N/yMmDQwjDw6ODewOIwAhjc4Ojg3NZg0hjU3ODqwPP4=",
+      "Relocations": []
+    },
+    {
+      "Code": "+fIQ8AD9AvEEhiksKyz8/QIrLiwu/P0CLDAuMPz9Ai0wLjD8/QIuMTAx/P0CKy4sLvyYKwCGACwuMC4sKyj9AvJQhiAiIB8gACAiIB8gACAiIB8gIiAfIAAgIiAfIAAgIiAfmACGHyAiIJgAhh8gIiCMJCIkJSQiIB/yEIYdIB8gHSAfIB0gHyAdIB8gHyIgIh8iICIfIiAiHyIgIiAkIiQgJCIkICQiJCAkIvsBkiSMIiQmJCYkIvyGJCgkKCQpJCkkKiQqJCskKyQpKy8pKy8pK7AuhisuLCsuKywuMDEwLiwuLCv+",
+      "Relocations": []
+    },
+    {
+      "Code": "+bAFBwgJCgeYDBgTDP0CmIwNmACMDZgAjA0AmIwNmACMDZgAjA0AhgwADACYAIYMAAwAmACYBREPDIYKAAoAjAAKAAoACoYMAAwAjAAMAAwADPsBhg0ADQCMAA0ADQANmAwMDhD8/QSGDQANAPz9BIYMAPyGDgAOABAAEADgDpgMCggH/g==",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}
