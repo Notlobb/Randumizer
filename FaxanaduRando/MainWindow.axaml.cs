@@ -71,6 +71,7 @@ namespace FaxanaduRando
             randomizeSoundEffectsCheckbox.IsChecked = ExtraOptions.RandomizeSounds;
             addSuffixCheckbox.IsChecked = ExtraOptions.AppendSuffix;
             musicComboBox.SelectedIndex = (int)ExtraOptions.MusicSetting;
+            soundtrackComboBox.SelectedIndex = (int)ExtraOptions.SoundtrackSetting;
         }
 
         private void InitializeGUIElements()
@@ -148,6 +149,7 @@ namespace FaxanaduRando
             // order irrelevant as long as they update the corresponding option directly
             _extraComboBoxes = [
                 musicComboBox,
+                soundtrackComboBox,
                 ];
 
             // validate counts for serialized options against schema
@@ -237,7 +239,7 @@ namespace FaxanaduRando
                 return;
             }
 
-            // write current settings to live option class memebers as they are needed from this point
+            // write current settings to live option class members as they are needed from this point
             FlagsCodec.ApplySettings(_settings);
 
             if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
@@ -362,6 +364,7 @@ namespace FaxanaduRando
             {
                 // extra options not part of serialization
                 ExtraOptions.MusicSetting = (Music)musicComboBox.SelectedIndex;
+                ExtraOptions.SoundtrackSetting = (Soundtrack)soundtrackComboBox.SelectedIndex;
             }
             else
                 UpdateSetting(comboBox);

@@ -322,6 +322,14 @@ namespace FaxanaduRando.Randomizer
             Text.AddTitleText(2, $"SEED {seed}", titleText);
             Text.SetAllTitleText(content, titleText, Section.GetOffset(12, 0x9DCC, 0x8000));
 
+            var paletteRandomizer = new PaletteRandomizer(random);
+            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
+
+            if (GeneralOptions.ShuffleTowers)
+            {
+                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
+            }
+
             int dotIndex = inputFile.IndexOf(".nes");
             string outputFile;
             string suffix = "";
@@ -335,14 +343,6 @@ namespace FaxanaduRando.Randomizer
 #else
             outputFile = inputFile.Insert(dotIndex, "_" + seed.ToString() + "_" + flags + suffix);
 #endif
-
-            var paletteRandomizer = new PaletteRandomizer(random);
-            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
-
-            if (GeneralOptions.ShuffleTowers)
-            {
-                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
-            }
 
             File.WriteAllBytes(outputFile, content);
             if (GeneralOptions.GenerateSpoilerLog)
@@ -1477,6 +1477,15 @@ namespace FaxanaduRando.Randomizer
             {
                 var soundRandomizer = new SoundRandomizer();
                 soundRandomizer.RandomizeSounds(content, random);
+            }
+
+            // only rebuild the soundtrack if music is enabled, and a non-original
+            // soundtrack has been selected
+            if (ExtraOptions.MusicSetting != Music.None &&
+                ExtraOptions.SoundtrackSetting != Soundtrack.Original)
+            {
+                MusicTrackRandomizer.RandomizeMusicTracks(content, random,
+                    ExtraOptions.SoundtrackSetting == Soundtrack.Mix);
             }
         }
 

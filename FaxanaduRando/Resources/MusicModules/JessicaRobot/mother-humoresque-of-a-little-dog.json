@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Mother - Humoresque of a Little Dog",
+  "AllowedSlots": [
+    15
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAPEDmJAviDCQOIgvkDCIOJAviDCQOIgvkDCIOJA2iDWQNIgzkDGIAJAxiDOQNIg1mD07OpA0iDWQMZgA/QKIPJA7iDyQOog4kAD8iDqQOIg6mDw9NziQNIg1kDSINZgwMZAsiCuQL4gwkDOIMJA4iACQNogskDWILJAziDSQNYgsmDGQMYgzkDSINZg9Ozo4NTo6PDqQOIg3kDiYOog4mDUzM5A4iDSYMzEsMQD0",
+      "Relocations": []
+    },
+    {
+      "Code": "8lDwAPEGmJAsiACQM4gskACIM5AsiACQM4gskACIM5AuiCyQK4gqkCmIAJApiCqQK4gsmDUzMZAwiDGQLJgA/QKIOJA3iDiQNogzkAD8iDGQMIgxmDg4MzMxMTM1kCmIJ5AriCyQMIgskDOIAJAxiDCQMYgwkC+IMJAxiDCYLJA1iDaQN4g4mDUzMTAxMTE0M5A1iDSQNZg2iDOYMTAwkDOILJgqKSclAPQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "mAgADwAICAoMDQAIAA0NDAr9AggADwD8DcAAiADAAKAA/QKYCAAPAPz9Ag0ACAD8EhITExQUFhYPDwgIDQgNAPQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "/QyYEZAhiDH8mBEAAAAAAAAA/QiYEZAhiDH8/QOYEYghADERADERADH8mCERIQD0",
+      "Relocations": []
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Bomberman",
+  "AllowedSlots": [
+    11
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAPEChxuIG4cniBuPHociiCSPJSUkAIcZiBmHJYgZjxyHIIgijyOHIogjhxmIGI8Z/QKHFogWhyKIFo8ghx+III8WIvsBFgD8hxaIFocYiBr0",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    },
+    {
+      "Code": "+bwx/g==",
+      "Relocations": []
+    }
+  ]
+}

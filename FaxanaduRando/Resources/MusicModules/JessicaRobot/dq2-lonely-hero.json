@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Dragon Quest 2 Lonely Hero",
+  "AllowedSlots": [
+    3
+  ],
+  "Channels": [
+    {
+      "Code": "8pPwAPEEnrwzOp44NjUxvDOePY84Op42jzg2njUx8ADzeDMzngA1MzrzeDWeADUzOrw4njUxlC8xM54uLLwxni4syy6PLjM183g69A==",
+      "Relocations": []
+    },
+    {
+      "Code": "8pPwAPEH/QKHKogAhy6IAIcqiACHLogAhymIAIcuiACHKYgAhy6IAIcniACHLogAhyeIAIcuiACHJYgAhyyIAIcliACHLIgA/PEE83grKvEHhyqILocziACHKogAhy6IAIcniACHKogAhy6IAIcziACHKYguhzGIAIcpiACHLogAhzGIAIcpiACHLogAhzGIAIcniCqHLogAhyeIAIcqiACHI4gAhyeIAIcqiACHLogAhymILIcxiACHKYgAhyyIAIciiACHJYgAhymIAIcsiACHI4gnhyqIAIcjiACHJ4gAhyCIAIcjiACHJ4gAhyOIAIcgiCOHKIgAhyCIAIcjiACHJogAhyiIAIcjiACHJogAhyaIKYcyiACHJogAhymIAIcyiACHJ4gAhymIAIcuiACHKYgshzKIAIcpiACHLIgAhzKIAIcpiACHLIgAhzKIAPQ=",
+      "Relocations": []
+    },
+    {
+      "Code": "/QKHG4gAhx6IAI8Phx6IAIcZiACHHYgAjw2HHYgAhxeIAIcbiACPC4cbiACHFogAhxmIAI8KhxmIAPz9BIcPiACHFogAhxuIAIcWiAD8jw+HG4gArQCHD5cAhw+IAI8NhxmIAK0Ahw2XAIcNiACPC4cXiACtAIcLlwCHC4gAjwqHFogArQCHCpcAhwqIAI8IhxSIAK0AhwiXAIcIiACWEIgArQCHEJcAhxCIAI8KhxaIAK0AhxaXAIcRiACPCocWiACtAIcWlwCHCogA9A==",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}

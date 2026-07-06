@@ -1,0 +1,24 @@
+{
+  "Description": "JessicaRobot (https://www.romhacking.net/community/9037/) - Ghosts n Goblins theme",
+  "AllowedSlots": [
+    2
+  ],
+  "Channels": [
+    {
+      "Code": "8lDwAPn9AorxApQAqDiUN6g2lDU0ijIzADIzADIzACYnJpQn+wEr/C6KNzgANzgAlC+KNzgANzgAlDCKNzgANzgAlDGKNzgANzgAlDKKMzOUMwA3ijMzlDMAOIozM5QzADKKMycoKSorLC6oLLwAijIzADIzAKgrvACKMjMAMjMAqC+8AIo0NgA0NgCeMyczijExMS4uKyv+",
+      "Relocations": []
+    },
+    {
+      "Code": "8lDwAPn9ApTxAgCoM5QzqDOUMy4uigCULooAlC6KAJQiigCUIif80CMkJSaUiisrlCoAJ4orK5QrACeKLi6ULgAsiislJCMiISAflKgnvACULIoAlCyKAKgnvACULooAlC6KAKgovACUL4oAlC+KAJ4uIi6KLi4uKyslJf4=",
+      "Relocations": []
+    },
+    {
+      "Code": "+f0CihQXGw8UGxsAFBcbDxQbGwAWGRsPFhsbABYZGw8WGxsA/P0CihQXGw/8/QIUGRwN/P0CFBwgDfz9AhQcIA78GxsbABMADwAbGxsAFAAPABsbGwCUAIobGxQbHB0eHyAiihQAGxsAFBcbFAAbGwAUGhsTABsbABMbGxMAGxsAExob/QIQABcXABAUF/wTABsbABMZGwAbGhkYFxYT/g==",
+      "Relocations": []
+    },
+    {
+      "Code": "/w==",
+      "Relocations": []
+    }
+  ]
+}
