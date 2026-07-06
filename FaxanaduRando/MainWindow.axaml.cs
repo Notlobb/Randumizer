@@ -26,16 +26,14 @@ namespace FaxanaduRando
 
         private static readonly string[] Presets =
             [
-            // TODO: Recalculate flags strings now that more data (1 bool and 3 enums) are encoded
-            // in branch armor-weapon-stat-randomization
-            // all have been set a serialization of the default-constructed option values
-                "38DFFF5205k02v1ncoH00", // Beginner
-                "38DFFF5205k02v1ncoH00", // Standard
-                "38DFFF5205k02v1ncoH00", // Race (typical)
-                "38DFFF5205k02v1ncoH00", // Race (classic)
-                "38DFFF5205k02v1ncoH00", // Challenge mode
-                "38DFFF5205k02v1ncoH00", // Chaos mode
-                "38DFFF5205k02v1ncoH00", // Extra fast
+            // TODO: Verify the presets
+                "38DFFF5A25k02v1ncoH00", // Beginner
+                "38CFFF7A2za0cGalcmH00", // Standard
+                "7ECFFF7A2za0cFakcmH00", // Race (typical)
+                "580867000Am00a1nmoH00", // Race (classic)
+                "FECC377A2ze0bPakmoH00", // Challenge mode
+                "7ECFFF7E2ucba0a012bJk", // Chaos mode
+                "3ECFFFFA2Al02v1n2k200", // Extra fast
             ];
 
         public MainWindow()
