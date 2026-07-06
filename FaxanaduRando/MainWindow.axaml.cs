@@ -27,12 +27,12 @@ namespace FaxanaduRando
         private static readonly string[] Presets =
             [
                 "38DFFF5A05k02v1ncoH", // Beginner
-                "38CFFF7A0za0cGalcmH", // Standard
-                "7ECFFF7A0za0cFakcmH", // Race (typical)
+                "78CFFF5A0za0cGalcmH", // Standard
+                "7ECFFF5A0zc0cFakcmH", // Race (typical)
                 "580867000Am00a1nmoH", // Race (classic)
-                "FECC377A0ze0bPakmoH", // Challenge mode
+                "FECC375A0ze0bPakmoH", // Challenge mode
                 "7ECFFF7E0ucba0a012b", // Chaos mode
-                "3ECFFFFA0Al02v1n2k2", // Extra fast
+                "3ECFFFDA0Al02v1n2k2", // Extra fast
             ];
 
         public MainWindow()
