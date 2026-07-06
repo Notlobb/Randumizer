@@ -300,7 +300,8 @@ namespace FaxanaduRando.Randomizer
             string prefix = assembly.GetName().Name + ".Resources.MusicModules.";
             List<MusicModule> modules = [];
             foreach (string resource in assembly.GetManifestResourceNames()
-                .Where(r => r.StartsWith(prefix) && r.EndsWith(".json")))
+                .Where(r => r.StartsWith(prefix) && r.EndsWith(".json"))
+                .OrderBy(r => r, StringComparer.Ordinal))
             {
                 using Stream stream = assembly.GetManifestResourceStream(resource)!;
                 using StreamReader reader = new(stream);
