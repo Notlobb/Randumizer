@@ -167,16 +167,16 @@ namespace FaxanaduRando.Randomizer
         [Flag(FlagsCodec.NonBoolFlagBase + 50)]
         public static KeyLimit SmallKeyLimit { get; set; } = KeyLimit.NoLimit;
 
-        [Flag(FlagsCodec.NonBoolFlagBase + 53)]
+        [Flag(FlagsCodec.NonBoolFlagBase + 51)]
         public static KeyLimit BigKeyLimit { get; set; } = KeyLimit.NoLimit;
 
-        [Flag(FlagsCodec.NonBoolFlagBase + 54)]
+        [Flag(FlagsCodec.NonBoolFlagBase + 53)]
         public static WeaponStatRandomization WeaponStatSetting { get; set; } = WeaponStatRandomization.Unchanged;
 
-        [Flag(FlagsCodec.NonBoolFlagBase + 55)]
+        [Flag(FlagsCodec.NonBoolFlagBase + 54)]
         public static MagicStatRandomization MagicStatSetting { get; set; } = MagicStatRandomization.Unchanged;
 
-        [Flag(FlagsCodec.NonBoolFlagBase + 56)]
+        [Flag(FlagsCodec.NonBoolFlagBase + 55)]
         public static ArmorStatRandomization ArmorStatSetting { get; set; } = ArmorStatRandomization.Unchanged;
     }
 
