@@ -53,7 +53,7 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public Result UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string customTextFile)
+        public void UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string[] customTextFileContents)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
@@ -153,10 +153,8 @@ namespace FaxanaduRando.Randomizer
 
                 if (TextOptions.UseCustomText)
                 {
-                    string[] customTextLines = File.ReadAllLines(customTextFile);
-
                     communityHints = new List<string>() {};
-                    foreach (string customText in customTextLines)
+                    foreach (string customText in customTextFileContents)
                     {
                         if (customText.Trim().StartsWith(":"))
                         {
@@ -304,7 +302,7 @@ namespace FaxanaduRando.Randomizer
                     ItemNameRandomizer.GenerateItemNameDictionary(
                         this.random,
                         ItemOptions.RandomizeItemNames,
-                        customTextFile
+                        customTextFileContents
                     );
 
                 // to prep for writing to the ROM we convert to int and remove non-inventory items
@@ -323,7 +321,7 @@ namespace FaxanaduRando.Randomizer
 
                 Text.SetAllItemNames(content, intBasedDictionary);
 
-                var itemDialogs = ItemDialog.GetDialog(this.random, itemDictionary, customTextFile);
+                var itemDialogs = ItemDialog.GetDialog(this.random, itemDictionary, customTextFileContents);
 
                 foreach (var dialog in itemDialogs)
                 {
@@ -511,16 +509,15 @@ namespace FaxanaduRando.Randomizer
             int newLength = getLength(allText);
             if (newLength > oldLength)
             {
-                return Result.TextTooLong;
+                throw new RandomizationException("Text randomization failed, generated text was too long for this seed");
             }
 
             Text.SetAllText(content, allText);
-            return Result.Success;
         }
 
-        public void RandomizeTitles(byte[] content, string customTextFile)
+        public void RandomizeTitles(byte[] content, string[] customTextFileContent)
         {
-            var newTitles = TextOptions.UseCustomText ? GetCustomTitles(customTextFile) : GetNewTitles();
+            var newTitles = TextOptions.UseCustomText ? GetCustomTitles(customTextFileContent) : GetNewTitles();
 
             // if not enough titles are provided, then append existing titles.
             if (newTitles.Count < 16)
@@ -1020,12 +1017,10 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        private List<string> GetCustomTitles(string customTextFile)
+        private List<string> GetCustomTitles(string[] customTextFileContent)
         {
-            string[] customTextFileLines = File.ReadAllLines(customTextFile);
-
             var customTitles = new List<string>() {};
-            foreach (string line in customTextFileLines)
+            foreach (string line in customTextFileContent)
             {
                 if (line.Trim().StartsWith("title:")) {
                     customTitles.Add(line.Remove(0,6));

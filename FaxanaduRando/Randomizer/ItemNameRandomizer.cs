@@ -144,7 +144,7 @@ namespace FaxanaduRando.Randomizer
             { Item.Poison, new List<string> { "Poison", "Venom", "Toxin", "Bane Juice" } }
         };
 
-        public static Dictionary<Item, string> GenerateItemNameDictionary(Random random, bool randomize, string customTextFile = null)
+        public static Dictionary<Item, string> GenerateItemNameDictionary(Random random, bool randomize, string[] customTextFileContents)
         {
             var itemDictionary = new Dictionary<Item, string>();
 
@@ -161,20 +161,15 @@ namespace FaxanaduRando.Randomizer
                 }
             }
 
-            if (!string.IsNullOrEmpty(customTextFile) && File.Exists(customTextFile))
+            foreach (var line in customTextFileContents)
             {
-                var customLines = File.ReadAllLines(customTextFile);
-
-                foreach (var line in customLines)
+                var parts = line.Split(':');
+                // Item Id does not correspond to Dialog IDs so we exclude numerical custom text lines
+                if (parts.Length == 2 && !string.IsNullOrWhiteSpace(parts[0]) && !char.IsDigit(parts[0].Trim()[0])
+                    && Enum.TryParse(parts[0].Trim(), out Item itemKey)
+                    && itemDictionary.ContainsKey(itemKey))
                 {
-                    var parts = line.Split(':');
-                    // Item Id does not correspond to Dialog IDs so we exclude numerical custom text lines
-                    if (parts.Length == 2 && !string.IsNullOrWhiteSpace(parts[0]) && !char.IsDigit(parts[0].Trim()[0])
-                        && Enum.TryParse(parts[0].Trim(), out Item itemKey)
-                        && itemDictionary.ContainsKey(itemKey))
-                    {
-                        itemDictionary[itemKey] = parts[1].Trim();
-                    }
+                    itemDictionary[itemKey] = parts[1].Trim();
                 }
             }
 

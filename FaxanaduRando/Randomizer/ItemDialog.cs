@@ -158,22 +158,19 @@ namespace FaxanaduRando.Randomizer
         public static Dictionary<int, string> GetDialog(
             Random RandomGenerator,
             Dictionary<Item, string> itemOptions,
-            string customTextFile = null)
+            string[] customTextFileContents)
         {
             var result = new Dictionary<int, string>();
             var customTemplates = new Dictionary<Id, string>();
 
             // Load custom text if provided
-            if (!string.IsNullOrEmpty(customTextFile) && File.Exists(customTextFile))
+            foreach (var line in customTextFileContents)
             {
-                foreach (var line in File.ReadAllLines(customTextFile))
+                // compare text before colon to Id enum
+                var parts = line.Split(':');
+                if (parts.Length == 2 && Enum.TryParse(parts[0], out Id parsedId))
                 {
-                    // compare text before colon to Id enum
-                    var parts = line.Split(':');
-                    if (parts.Length == 2 && Enum.TryParse(parts[0], out Id parsedId))
-                    {
-                        customTemplates[parsedId] = parts[1].Trim();
-                    }
+                    customTemplates[parsedId] = parts[1].Trim();
                 }
             }
 
