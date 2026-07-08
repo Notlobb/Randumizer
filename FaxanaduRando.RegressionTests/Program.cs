@@ -1,5 +1,4 @@
 ﻿using FaxanaduRando.Randomizer;
-using System;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -18,14 +17,6 @@ namespace FaxanaduRando.RegressionTests
 #else
         private static readonly string DatasetFileName = "dataset-release.json";
 #endif
-
-        // implemented in new api
-        public class RandomizationException : Exception { public RandomizationException(string message) : base(message) { } }
-        // implemented in new api
-        public readonly record struct RandomizationResult(
-            byte[] Rom,
-            List<string> SpoilerLog,
-            string FileNameSuffix);
 
         private static int Main(string[] args)
         {
@@ -99,7 +90,8 @@ namespace FaxanaduRando.RegressionTests
                 try
                 {
                     ApplySettings(test);
-                    var randomResult = RandomizeWrapper(inputRom,
+                    var randomizer = new Randomizer.Randomizer();
+                    var randomResult = randomizer.Randomize(inputRom,
                         ReadCustomText(romFile, test),
                         test.Flags, test.Seed);
                     test.OutputRomSha256 = Sha256(randomResult.Rom);
@@ -127,72 +119,6 @@ namespace FaxanaduRando.RegressionTests
 
             Console.WriteLine($"Generated {dataset.Tests.Count} regression tests.");
             return 0;
-        }
-
-        public static RandomizationResult RandomizeWrapper(
-            byte[] inputFileContents,
-            string[] customTextFileContents,
-            string flags,
-            int seed)
-        {
-            string workDir = Path.Combine(Path.GetTempPath(),
-                "FaxanaduRando.RegressionTests",
-                Guid.NewGuid().ToString("N"));
-
-            Directory.CreateDirectory(workDir);
-
-            try
-            {
-                string inputRom = Path.Combine(workDir, "input.nes");
-                File.WriteAllBytes(inputRom, inputFileContents);
-
-                string? customText = null;
-                if (customTextFileContents.Length > 0)
-                {
-                    customText = Path.Combine(workDir, "custom.txt");
-                    File.WriteAllLines(customText, customTextFileContents);
-                }
-
-                var randomizer = new FaxanaduRando.Randomizer.Randomizer();
-                if (!randomizer.Randomize(inputRom, customText, flags, seed, out string message))
-                {
-                    throw new RandomizationException(message);
-                }
-
-                var outputRom = Directory.GetFiles(workDir, "*.nes")
-                    .Single(f => Path.GetFileName(f) != "input.nes");
-
-                string? spoilerLog = Directory
-                    .GetFiles(workDir, "input*.txt")
-                    .SingleOrDefault();
-
-                string outputName = Path.GetFileNameWithoutExtension(outputRom);
-
-#if DEBUG
-                // input_12345_foobar -> _foobar
-                string prefix = $"input_{seed}";
-#else
-                // input_12345_flags_foobar -> _foobar
-                string prefix = $"input_{seed}_{flags}";
-#endif
-
-                string fileNameSuffix = outputName.StartsWith(prefix)
-                    ? outputName.Substring(prefix.Length)
-                    : "";
-
-                return new RandomizationResult
-                {
-                    Rom = File.ReadAllBytes(outputRom),
-                    SpoilerLog = spoilerLog != null
-                        ? File.ReadAllLines(spoilerLog).ToList()
-                        : new List<string>(),
-                    FileNameSuffix = fileNameSuffix
-                };
-            }
-            finally
-            {
-                Directory.Delete(workDir, true);
-            }
         }
 
         private static int Verify(string romFile)
@@ -230,7 +156,8 @@ namespace FaxanaduRando.RegressionTests
 
                 try
                 {
-                    var result = RandomizeWrapper(
+                    var randomizer = new Randomizer.Randomizer();
+                    var result = randomizer.Randomize(
                         inputRom,
                         ReadCustomText(romFile, test),
                         test.Flags,
