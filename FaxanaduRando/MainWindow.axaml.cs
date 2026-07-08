@@ -286,7 +286,7 @@ namespace FaxanaduRando
                 string outFileName = Randomizer.Randomizer.GetOutputFilename(inputRomFileName, seed, flags, randomizationResult.FileNameSuffix);
 
                 File.WriteAllBytes(outFileName, randomizationResult.Rom);
-                if (GeneralOptions.GenerateSpoilerLog)
+                if (randomizationResult.SpoilerLog.Count > 0)
                     File.WriteAllLines(outFileName.Replace(".nes", ".txt"), randomizationResult.SpoilerLog);
 
                 await ShowSuccessMessageBox("Randomized ROM created at " + outFileName);

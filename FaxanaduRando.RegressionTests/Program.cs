@@ -5,6 +5,49 @@ using System.Text.Json;
 
 namespace FaxanaduRando.RegressionTests
 {
+
+    /* **************************************************************************
+     * Faxanadu regression test runner.
+     *
+     * This project exists to make randomizer refactoring safe. It generates and
+     * verifies datasets of randomization results so that even small unintended
+     * behavioral changes can be detected automatically.
+     *
+     * Usage:
+     *
+     *   RegressionTests generate <rom.nes> [count] [meta-seed]
+     *   RegressionTests verify  <rom.nes>
+     *
+     * The meta-seed controls dataset generation. This makes the set of generated
+     * seeds, flags, extra options, and custom text selections deterministic. That is
+     * useful for validating flag serialization, checking for hidden nondeterminism,
+     * and comparing behavior before and after a refactor.
+     *
+     * When generating a dataset, all .txt files next to the input ROM are treated as
+     * possible custom text files. Some generated tests will randomly select one of
+     * those files, while others will use no custom text.
+     *
+     * This project is a developer tool rather than a polished CLI. Feel free to
+     * edit this code locally to generate custom tests, verify only specific outputs,
+     * skip checks, add diagnostics, or investigate particular ROM banks.
+     *
+     * Do not commit local test-harness changes unless they are general and useful
+     * for other contributors. The default workflow should remain simple and
+     * predictable.
+     *
+     * Datasets store randomizer inputs and expected outputs only: hashes, flags,
+     * settings, custom text file names, suffixes, and expected errors. They never
+     * store the ROM itself. The input ROM is verified by SHA-256 before verification
+     * starts.
+     *
+     * Important: randomizer options are global state. Every setting that affects
+     * output must be explicitly applied before every test, both during generation
+     * and verification. No test should accidentally inherit settings from the
+     * previous test run.
+     *
+     * Debug and Release builds use separate datasets because conditional code may
+     * intentionally affect output, such as filename suffix formatting.
+     **************************************************************************** */
     internal static class Program
     {
         private static readonly JsonSerializerOptions JsonOptions = new()
@@ -45,6 +88,8 @@ namespace FaxanaduRando.RegressionTests
 
             byte[] inputRom = File.ReadAllBytes(romFile);
 
+            // discover all custom text files that may be randomly selected
+            // during dataset generation
             var customTextFiles = Directory
                 .GetFiles(Path.GetDirectoryName(romFile)!, "*.txt")
                 .OrderBy(Path.GetFileName, StringComparer.Ordinal)
@@ -57,6 +102,8 @@ namespace FaxanaduRando.RegressionTests
                 MetaSeed = metaSeed
             };
 
+            // generates deterministic regression test cases; this RNG does not affect
+            // the randomizer itself - it only determines which tests are generated
             var metaRandom = new Random(metaSeed);
 
             for (int i = 0; i < count; ++i)
@@ -69,6 +116,8 @@ namespace FaxanaduRando.RegressionTests
 
                 bool useCustomText = customTextFiles.Length > 0 && metaRandom.Next(4) == 0;
 
+                // record every input that can influence randomizer output so the test can
+                // later be reproduced exactly
                 var test = new RegressionTest
                 {
                     Seed = metaRandom.Next(),
@@ -238,23 +287,27 @@ namespace FaxanaduRando.RegressionTests
 
         public sealed class RegressionTest
         {
+            // randomizer inputs - explicit parameters
             public int Seed { get; set; }
             public required string Flags { get; set; }
             public string? CustomTextFile { get; set; }
 
-            // extra options not captured by the flags serialization
+            // randomizer inputs - global state not part of flag serialization
             public bool RandomizePalettes { get; set; }
             public bool RandomizeSounds { get; set; }
             public bool AppendSuffix { get; set; }
             public Music MusicSetting { get; set; }
             public Soundtrack SoundtrackSetting { get; set; }
 
+            // randomizer outputs
             public string? OutputRomSha256 { get; set; }
             public string? OutputSpoilerLogSha256 { get; set; }
             public string? OutputFileSuffix { get; set; }
             public string? OutputError { get; set; }
         }
 
+        // randomizer settings are global state; apply every setting before each
+        // test to ensure one test cannot affect the next
         private static void ApplySettings(RegressionTest test)
         {
             ExtraOptions.RandomizePalettes = test.RandomizePalettes;
@@ -266,6 +319,7 @@ namespace FaxanaduRando.RegressionTests
             FlagsCodec.ApplySettings(FlagsCodec.Deserialize(test.Flags));
         }
 
+        // return the custom text file associated with this test, if any
         private static string[] ReadCustomText(string romFile, RegressionTest test)
         {
             if (test.CustomTextFile == null)
@@ -287,6 +341,8 @@ namespace FaxanaduRando.RegressionTests
             return Convert.ToHexString(SHA256.HashData(bytes));
         }
 
+        // hash the spoiler log exactly as it would appear on disk, including the
+        // trailing newline after the final line (File.WriteAllLines)
         private static string Sha256SpoilerLog(List<string> lines)
         {
             string text = string.Join(Environment.NewLine, lines) + Environment.NewLine;
