@@ -846,29 +846,27 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.AddKillSwitch)
             {
-                var switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xE4);
-                switchSection.Bytes.Add(0xFE);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xE039, 0xC000));
+                // new routine address
+                const ushort hack_killswitch_addr = 0xfee4;
 
-                switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xA8);
-                switchSection.Bytes.Add(0xCB);
-                switchSection.Bytes.Add(OpCode.LDAZeroPage);
-                switchSection.Bytes.Add(0x19);
-                switchSection.Bytes.Add(OpCode.ANDImmediate);
-                switchSection.Bytes.Add(0x20);
-                switchSection.Bytes.Add(OpCode.BEQ);
-                switchSection.Bytes.Add(0x05);
-                switchSection.Bytes.Add(OpCode.LDAImmediate);
-                switchSection.Bytes.Add(0x01);
-                switchSection.Bytes.Add(OpCode.STAAbsolute);
-                switchSection.Bytes.Add(0x38);
-                switchSection.Bytes.Add(0x04);
-                switchSection.Bytes.Add(OpCode.RTS);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xFEE4, 0xC000));
+                // add new routine to be placed in free space
+                var switchSection = new Section();
+                // call the routine vanilla would have called if we didn't install the hook
+                switchSection.JSR(ROM.Sprites_FlipRanges);
+                switchSection.LDA_zp(RAM.ZP_Joy1_ChangedButtonMask);
+                // test bit 5: down button
+                switchSection.AND_imm(0b00100000);
+                switchSection.BEQ("@down_not_pressed");
+                switchSection.LDA_imm(0x01);
+                switchSection.STA_abs(RAM.PlayerIsDead);
+                switchSection.Label("@down_not_pressed");
+                switchSection.RTS();
+                // patch rom with this new routine
+                switchSection.FlushToContent(content, Section.GetOffset(15, hack_killswitch_addr));
+
+                // install hook - reference the new routine
+                switchSection.JSR(hack_killswitch_addr);
+                switchSection.FlushToContent(content, Section.GetOffset(15, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges));
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
@@ -900,34 +898,33 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.PreventKnockbackOnLadders)
             {
-                var section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0xD0);
-                section.Bytes.Add(0xFE);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(15, 0xE28C, 0xC000));
+                // new routine address
+                const ushort hack_prevent_ladder_knockback_addr = 0xFED0;
 
-                section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0x52);
-                section.Bytes.Add(0xE7);
-                section.Bytes.Add(OpCode.LDAZeroPage);
-                section.Bytes.Add(0xA4);
-                section.Bytes.Add(OpCode.ANDImmediate);
-                section.Bytes.Add(0x08);
-                section.Bytes.Add(OpCode.BEQ);
-                section.Bytes.Add(0x05);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x00);
-                section.Bytes.Add(OpCode.STAZeroPage);
-                section.Bytes.Add(0xAA);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x08);
-                section.Bytes.Add(OpCode.STAZeroPage);
-                section.Bytes.Add(0xAA);
-                section.Bytes.Add(OpCode.RTS);
-                section.AddToContent(content, Section.GetOffset(15, 0xFED0, 0xC000));
+                // add new routine to be placed in free space
+                var section = new Section();
+                // call the routine that checks if player is climbing and sets a status flag in zeropage
+                section.JSR(ROM.Player_CheckIfOnLadder);
+                section.LDA_zp(RAM.ZP_Player_Flags);
+                // test bit 3 - is player climbing
+                section.AND_imm(0b00001000);
+                section.BEQ("@not_climbing");
+                // climbing - prevent knockback
+                section.LDA_imm(0x00);
+                section.STA_zp(RAM.ZP_Player_MoveAcceleration_U);
+                section.RTS();
+                // not climbing - perform the vanilla behavior overwritten by the hook
+                section.Label("@not_climbing");
+                section.LDA_imm(0x08);
+                section.STA_zp(RAM.ZP_Player_MoveAcceleration_U);
+                section.RTS();
+                // patch rom with this new routine
+                section.FlushToContent(content, Section.GetOffset(15, hack_prevent_ladder_knockback_addr));
+
+                // add hook to new routine near the end of vanilla Player_UpdatePosFromKnockback
+                section.JSR(hack_prevent_ladder_knockback_addr);
+                section.NOP();
+                section.FlushToContent(content, Section.GetOffset(15, ROM.Player_UpdatePosFromKnockback_LDA_08));
             }
 
             if (GeneralOptions.MoveSpringQuestRequirement)
