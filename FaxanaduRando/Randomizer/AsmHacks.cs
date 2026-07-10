@@ -6,13 +6,13 @@ namespace FaxanaduRando.Randomizer
     public static class AsmHacks
     {
 
-        public static int DynamicHackKillSwitch(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackKillSwitch(byte[] content, ushort cpu_addr)
         {
             var switchSection = new Section();
 
             // install hook - reference the new routine
             switchSection.JSR(cpu_addr);
-            switchSection.FlushToContent(content, Section.GetOffset(bank, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges));
+            switchSection.FlushToContent(content, Section.GetOffset(15, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges));
 
             // call the routine vanilla would have called if we didn't install the hook
             switchSection.JSR(ROM.Sprites_FlipRanges);
@@ -25,17 +25,17 @@ namespace FaxanaduRando.Randomizer
             switchSection.Label("@down_not_pressed");
             switchSection.RTS();
             // patch rom with this new routine
-            return switchSection.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return switchSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
-        public static int DynamicHackPreventKnockbackOnLadders(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackPreventKnockbackOnLadders(byte[] content, ushort cpu_addr)
         {
             var section = new Section();
 
             // add hook to new routine near the end of vanilla Player_UpdatePosFromKnockback
             section.JSR(cpu_addr);
             section.NOP();
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.Player_UpdatePosFromKnockback_LDA_08));
+            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_UpdatePosFromKnockback_LDA_08));
 
             // call the routine that checks if player is climbing and sets a status flag in zeropage
             section.JSR(ROM.Player_CheckIfOnLadder);
@@ -53,13 +53,13 @@ namespace FaxanaduRando.Randomizer
             section.STA_zp(RAM.ZP_Player_MoveAcceleration_U);
             section.RTS();
             // patch rom with this new routine
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // in vanilla door requirements range from 0-8, where 0 is no requirement
         // this hack adds a requirement value 9 which only allows a door to be opened
         // based on certain requirments which are themselves an aggrregate of options
-        public static int DynamicHackDoorRequirementHandler(byte[] content, int bank, ushort cpu_addr,
+        public static int DynamicHackDoorRequirementHandler(byte[] content, ushort cpu_addr,
             bool dragonSlayerRequired, bool pendantRodRubyRequired, bool moveSpringQuestRequirement,
             bool showDragonSlayerFailureText)
         {
@@ -67,7 +67,7 @@ namespace FaxanaduRando.Randomizer
 
             // install hook - reference the new routine
             reqSection.JMP_abs(cpu_addr);
-            reqSection.FlushToContent(content, Section.GetOffset(bank, ROM.Game_RunDoorRequirementHandler_BEQ_RTS));
+            reqSection.FlushToContent(content, Section.GetOffset(15, ROM.Game_RunDoorRequirementHandler_BEQ_RTS));
 
             // new door requirement handler
             reqSection.BNE("@door_has_requirement");
@@ -142,17 +142,17 @@ namespace FaxanaduRando.Randomizer
 
             // all requirements passed
             reqSection.JMP_abs(ROM.Game_UnlockDoor);
-            return reqSection.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return reqSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // apply the pending stage, mark a stage change as pending, then load the destination outside area
-        public static int DynamicHackFlexibleDoorsApplyPendingStage(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackFlexibleDoorsApplyPendingStage(byte[] content, ushort cpu_addr)
         {
             var section = new Section();
 
             // update the sameworld-door logic to jump into our new routine instead of vanilla
             section.JMP(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.Player_CheckHandleEnterDoor_enterScreen));
+            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_CheckHandleEnterDoor_enterScreen));
 
             // new routine for applying pending stage, and clearing the stage-is-pending flag
             section.LDA_imm(0x01);
@@ -161,18 +161,18 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.CurrentStage);
             section.JSR(ROM.Game_SetupAndLoadOutsideArea);
             section.RTS();
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // clear the pending stage flag and apply palette handling
-        public static int DynamicHackFlexibleDoorsHandlePalette(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackFlexibleDoorsHandlePalette(byte[] content, ushort cpu_addr)
         {
             var section = new Section();
 
             // update the stage palette logic to jump into our palette handler
             section.JMP(cpu_addr);
             section.NOP(2);
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.Game_LoadCurrentArea_LoadPalette));
+            section.FlushToContent(content, Section.GetOffset(15, ROM.Game_LoadCurrentArea_LoadPalette));
 
             // new routine for handling hack door palette
             section.LDA_imm(0x00);
@@ -189,17 +189,17 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.StageChangePending);
             section.JMP(ROM.Screen_Load);
 
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // extract stage and door requirement from hacked same-world doors
-        public static int DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(byte[] content, ushort cpu_addr)
         {
             var section = new Section();
 
             // instead of storing A in door requirement ram directly, jump to the new routine
             section.JSR(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.Area_SetStateFromDoorDestination_STA_DoorReq));
+            section.FlushToContent(content, Section.GetOffset(15, ROM.Area_SetStateFromDoorDestination_STA_DoorReq));
 
             // extract stage and actual door requirement from hack-door data: Hack_ExtractStageAndRequirement
             section.TAY();
@@ -212,37 +212,37 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.CurrentDoor_KeyRequirement);
             section.RTS();
 
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // clear the pending stage-change flag before continuing with the vanilla outside-area setup and loading logic
-        public static int DynamicHackFlexibleDoorsClearFlagAndLoadWorld(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackFlexibleDoorsClearFlagAndLoadWorld(byte[] content, ushort cpu_addr)
         {
             var section = new Section();
 
             // hook vanilla code into our new routine
             section.JMP(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.Player_EnterDoorToOutside_JMP_SetupArea));
+            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_EnterDoorToOutside_JMP_SetupArea));
 
             // clear pending hack stage change flag and load world
             section.LDA_imm(0x00);
             section.STA_abs(RAM.StageChangePending);
             section.JMP(ROM.Game_SetupAndLoadOutsideArea);
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // implement a custom palette to music handler when the door hack is applied
         // TODO: Can be solved more efficiently by emitting extended key (palette) and value (music) tables instead
         // and updating the table references instead
         // this function takes 26 bytes or so, which is enough for a table with 13 entries (we need 9 in total)
-        public static int DynamicHackFlexibleDoorsCustomPaletteToMusic(byte[] content, int bank, ushort cpu_addr,
+        public static int DynamicHackFlexibleDoorsCustomPaletteToMusic(byte[] content, ushort cpu_addr,
             byte branchPalette, byte finalPalette)
         {
             var sec = new Section();
 
             // hook vanilla code into our new routine
             sec.JSR(cpu_addr);
-            sec.FlushToContent(content, Section.GetOffset(bank, ROM.Palette_Check_Loop_CMP_X));
+            sec.FlushToContent(content, Section.GetOffset(15, ROM.Palette_Check_Loop_CMP_X));
 
             sec.CMP_imm(branchPalette);
             sec.BNE("@not_branches");
@@ -267,7 +267,7 @@ namespace FaxanaduRando.Randomizer
             sec.STA_abs(RAM.World_DefaultMusic);
             sec.RTS();
 
-            return sec.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return sec.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // Other-world transitions normally change the current world without changing
@@ -276,7 +276,7 @@ namespace FaxanaduRando.Randomizer
         //
         // TODO: Make the hack routine and lookup table contiguous automatically and
         // return their combined size
-        public static int DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(byte[] content, int bank, ushort cpu_addr,
+        public static int DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(byte[] content, ushort cpu_addr,
             ushort table_cpu_addr, Dictionary<OtherWorldNumber, WorldNumber> wDict)
         {
             var newSection = new Section();
@@ -284,7 +284,7 @@ namespace FaxanaduRando.Randomizer
             // replace the vanilla INY instruction with a call to the new routine
             // the routine reproduces the overwritten instruction before returning
             newSection.JSR(cpu_addr);
-            newSection.FlushToContent(content, Section.GetOffset(bank, ROM.HandleOtherWorldTransition_INY));
+            newSection.FlushToContent(content, Section.GetOffset(15, ROM.HandleOtherWorldTransition_INY));
 
             // at the call site, A contains the destination world loaded from the
             // other-world transition data; use it as an index into the
@@ -299,36 +299,36 @@ namespace FaxanaduRando.Randomizer
             newSection.INY();
             newSection.LDA_ind_y(0x02);
             newSection.RTS();
-            int bytecount = newSection.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            int bytecount = newSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
 
             // map each world ID to the stage containing that world after segment
             // shuffling. The destination world ID is used directly as the table index
-            content[Section.GetOffset(bank, table_cpu_addr)] = (byte)wDict[OtherWorldNumber.Eolis];
-            content[Section.GetOffset(bank, table_cpu_addr + 1)] = (byte)wDict[OtherWorldNumber.Trunk];
-            content[Section.GetOffset(bank, table_cpu_addr + 2)] = (byte)wDict[OtherWorldNumber.Mist];
-            content[Section.GetOffset(bank, table_cpu_addr + 3)] = (byte)wDict[OtherWorldNumber.Towns];
-            content[Section.GetOffset(bank, table_cpu_addr + 4)] = (byte)wDict[OtherWorldNumber.Buildings];
-            content[Section.GetOffset(bank, table_cpu_addr + 5)] = (byte)wDict[OtherWorldNumber.Branch];
-            content[Section.GetOffset(bank, table_cpu_addr + 6)] = (byte)wDict[OtherWorldNumber.Dartmoor];
-            content[Section.GetOffset(bank, table_cpu_addr + 7)] = (byte)wDict[OtherWorldNumber.EvilOnesLair];
+            content[Section.GetOffset(15, table_cpu_addr)] = (byte)wDict[OtherWorldNumber.Eolis];
+            content[Section.GetOffset(15, table_cpu_addr + 1)] = (byte)wDict[OtherWorldNumber.Trunk];
+            content[Section.GetOffset(15, table_cpu_addr + 2)] = (byte)wDict[OtherWorldNumber.Mist];
+            content[Section.GetOffset(15, table_cpu_addr + 3)] = (byte)wDict[OtherWorldNumber.Towns];
+            content[Section.GetOffset(15, table_cpu_addr + 4)] = (byte)wDict[OtherWorldNumber.Buildings];
+            content[Section.GetOffset(15, table_cpu_addr + 5)] = (byte)wDict[OtherWorldNumber.Branch];
+            content[Section.GetOffset(15, table_cpu_addr + 6)] = (byte)wDict[OtherWorldNumber.Dartmoor];
+            content[Section.GetOffset(15, table_cpu_addr + 7)] = (byte)wDict[OtherWorldNumber.EvilOnesLair];
 
             return bytecount;
         }
 
-        public static int DynamicHackBossLockedItemsCheckNoBossesRemaining(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackBossLockedItemsCheckNoBossesRemaining(byte[] content, ushort cpu_addr)
         {
             // create the hook
             var section = new Section();
             section.JSR(cpu_addr);
 
             // install the hook in several places
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_BattleSuit_CheckForBosses));
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_BattleHelmet_CheckForBosses));
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_DragonSlayer_CheckForBosses));
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_QMattock_CheckForBosses));
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_QWingBoots_CheckForBosses));
-            section.AddToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_BlackOnyx_CheckForBosses));
-            section.FlushToContent(content, Section.GetOffset(bank, ROM.SpriteBehavior_Pendant_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BattleSuit_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BattleHelmet_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_DragonSlayer_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QMattock_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QWingBoots_CheckForBosses));
+            section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BlackOnyx_CheckForBosses));
+            section.FlushToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_Pendant_CheckForBosses));
 
             // new hack function
             section.TXA();
@@ -360,17 +360,17 @@ namespace FaxanaduRando.Randomizer
             // TODO: Remove this instruction and put @next_sprite label at *
             section.JMP((ushort)(cpu_addr + 4));
 
-            return section.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return section.FlushToContent(content, Section.GetOffset(14, cpu_addr));
         }
 
-        public static int DynamicHackUseMattockAnywhereExceptBannedScreens(byte[] content, int bank, ushort cpu_addr)
+        public static int DynamicHackUseMattockAnywhereExceptBannedScreens(byte[] content, ushort cpu_addr)
         {
             var mattocksection = new Section();
 
             // insert the hook, and allow mattock to be used if A=0 on return
             mattocksection.JSR(cpu_addr);
             mattocksection.NOP(3);
-            mattocksection.FlushToContent(content, Section.GetOffset(bank, ROM.Player_UseMattock_LDA_MetatileID));
+            mattocksection.FlushToContent(content, Section.GetOffset(15, ROM.Player_UseMattock_LDA_MetatileID));
 
             // new function in free space; returns 0 if mattock can be used
             mattocksection.LDA_abs(RAM.ZP_CurrentWorld); // TODO: LDA_zp
@@ -399,7 +399,7 @@ namespace FaxanaduRando.Randomizer
             mattocksection.LDA_imm(0x00);
             mattocksection.RTS();
 
-            return mattocksection.FlushToContent(content, Section.GetOffset(bank, cpu_addr));
+            return mattocksection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         public static int DynamicHackFastTextHelper(byte[] content, ushort cpu_addr)

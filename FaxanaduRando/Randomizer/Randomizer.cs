@@ -109,7 +109,7 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.AlwaysLockBehindBosses)
             {
-                AsmHacks.DynamicHackBossLockedItemsCheckNoBossesRemaining(content, 14,
+                AsmHacks.DynamicHackBossLockedItemsCheckNoBossesRemaining(content,
                     ROM.HackBossLockedItemsCheckNoBossesRemaining);
 
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Rod] =
@@ -375,19 +375,19 @@ namespace FaxanaduRando.Randomizer
         // this applies the famous sameworld-door to otherstage-door hack
         private void AddTowerShuffleModifications(byte[] content, bool paletteToMusicLogicReplaced, byte finalPalette, byte branchPalette)
         {
-            AsmHacks.DynamicHackFlexibleDoorsApplyPendingStage(content, 15, ROM.HackApplyPendingStage);
-            AsmHacks.DynamicHackFlexibleDoorsHandlePalette(content, 15, ROM.HackClearPendingStageAndApplyPalette);
-            AsmHacks.DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(content, 15, ROM.HackExtractStageAndDoorRequirement);
+            AsmHacks.DynamicHackFlexibleDoorsApplyPendingStage(content, ROM.HackApplyPendingStage);
+            AsmHacks.DynamicHackFlexibleDoorsHandlePalette(content, ROM.HackClearPendingStageAndApplyPalette);
+            AsmHacks.DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(content, ROM.HackExtractStageAndDoorRequirement);
 
             // if the palette-to-music logic has not already been replaced, extend it for
             // tower shuffle so palettes missing from the vanilla map (Branch and Zenis)
             // can select the correct music when same-world doors lead to other stages
             if (!paletteToMusicLogicReplaced)
             {
-                AsmHacks.DynamicHackFlexibleDoorsCustomPaletteToMusic(content, 15, ROM.HackCustomPaletteToMusicHandler,
+                AsmHacks.DynamicHackFlexibleDoorsCustomPaletteToMusic(content, ROM.HackCustomPaletteToMusicHandler,
                     branchPalette, finalPalette);
             }
-            AsmHacks.DynamicHackFlexibleDoorsClearFlagAndLoadWorld(content, 15, ROM.HackClearPendingStageAndLoadWorld);
+            AsmHacks.DynamicHackFlexibleDoorsClearFlagAndLoadWorld(content, ROM.HackClearPendingStageAndLoadWorld);
 
             //Set starting screen to Eolis shop screen,
             //since the original starting screen is now a tower
@@ -614,8 +614,8 @@ namespace FaxanaduRando.Randomizer
         private void AddMiscHacks(byte[] content, Random random)
         {
             //Allow menu on first Eolis screen
-            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return, 0xC000)] = OpCode.NOP;
-            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return + 1, 0xC000)] = OpCode.NOP;
+            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return)] = OpCode.NOP;
+            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return + 1)] = OpCode.NOP;
 
             if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
             {
@@ -637,7 +637,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.AddKillSwitch)
             {
-                AsmHacks.DynamicHackKillSwitch(content, 15, ROM.HackKillswitch);
+                AsmHacks.DynamicHackKillSwitch(content, ROM.HackKillswitch);
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
@@ -665,7 +665,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.PreventKnockbackOnLadders)
             {
-                AsmHacks.DynamicHackPreventKnockbackOnLadders(content, 15, ROM.HackPreventLadderKnockback);
+                AsmHacks.DynamicHackPreventKnockbackOnLadders(content, ROM.HackPreventLadderKnockback);
             }
 
             if (GeneralOptions.MoveSpringQuestRequirement)
@@ -721,14 +721,14 @@ namespace FaxanaduRando.Randomizer
                     ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged);
             }
 
-            AsmHacks.DynamicHackDoorRequirementHandler(content, 15, ROM.HackNewDoorRequirementHandler,
+            AsmHacks.DynamicHackDoorRequirementHandler(content, ROM.HackNewDoorRequirementHandler,
                 GeneralOptions.DragonSlayerRequired, GeneralOptions.PendantRodRubyRequired, GeneralOptions.MoveSpringQuestRequirement,
                 GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged);
 
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreensAllowMattockLockedItems ||
                 ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)
             {
-                AsmHacks.DynamicHackUseMattockAnywhereExceptBannedScreens(content, 15, ROM.HackMattockAnywhere);
+                AsmHacks.DynamicHackUseMattockAnywhereExceptBannedScreens(content, ROM.HackMattockAnywhere);
             }
             else if (ItemOptions.MattockUsage != ItemOptions.MattockUsages.Unchanged)
             {
@@ -745,7 +745,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
             {
-                AsmHacks.DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(content, 15,
+                AsmHacks.DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(content,
                     ROM.HackOtherWorldTransitionSetShuffledStage,
                     ROM.HackWorldToShuffledStageTable,
                     Door.worldDict);
