@@ -360,14 +360,16 @@ namespace FaxanaduRando.Randomizer
             Db(OpCode.ASLA);
         }
 
-        public void LSR()
+        public void LSR(int count = 1)
         {
-            LSR_a();
+            for (int i = 0; i < count; ++i)
+                LSR_a();
         }
 
-        public void ASL()
+        public void ASL(int count = 1)
         {
-            ASL_a();
+            for (int i = 0; i < count; ++i)
+                ASL_a();
         }
 
         // math
