@@ -126,48 +126,44 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
+        // replace the vanilla packed magic-resistance values with one random immune spell
+        // per enemy. The vanilla defense-calculation routine is repurposed as an immunity
+        // check: immune spells abort hit processing before collision detection, while all
+        // other spells bypass the original resistance calculation and deal full damage
         public void RandomizeMagicImmunities(Table magicResistanceTable, Random random, byte[] content)
         {
+            // each enemy is immune to one of the five spell types (IDs 0-4)
             foreach (var entry in magicResistanceTable.Entries)
             {
                 entry[0] = (byte)random.Next(0, 5);
             }
 
+            // replace the magic hit-width lookup with a jump to the new immunity check below
             var resistSection = new Section();
-            resistSection.Bytes.Add(OpCode.JMPAbsolute);
-            resistSection.Bytes.Add(0xD2);
-            resistSection.Bytes.Add(0x81);
-            resistSection.AddToContent(content, Section.GetOffset(14, 0x8AFF, 0x8000));
+            resistSection.JMP(ROM.HitEnemyWithMagic_CalcDefense_TempLo); // *
+            resistSection.FlushToContent(content, Section.GetOffset(14, ROM.Sprite_CheckHitByCastMagic_LDA_HitWidth));
 
-            resistSection = new Section();
-            resistSection.Bytes.Add(OpCode.JMPAbsolute);
-            resistSection.Bytes.Add(0xFD);
-            resistSection.Bytes.Add(0x81);
-            resistSection.Bytes.Add(OpCode.STYAbsolute);
-            resistSection.Bytes.Add(0x01);
-            resistSection.Bytes.Add(0x00);
-            resistSection.Bytes.Add(OpCode.LDYAbsoluteX);
-            resistSection.Bytes.Add(0xCC);
-            resistSection.Bytes.Add(0x02);
-            resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
-            resistSection.Bytes.Add(0x3B);
-            resistSection.Bytes.Add(0xB7);
-            resistSection.Bytes.Add(OpCode.CMPAbsolute);
-            resistSection.Bytes.Add(0x01);
-            resistSection.Bytes.Add(0x00);
-            resistSection.Bytes.Add(OpCode.BNE);
-            resistSection.Bytes.Add(0x01);
-            resistSection.Bytes.Add(OpCode.RTS);
-            resistSection.Bytes.Add(OpCode.LDYAbsolute);
-            resistSection.Bytes.Add(0x01);
-            resistSection.Bytes.Add(0x00);
-            resistSection.Bytes.Add(OpCode.LDAAbsoluteY);
-            resistSection.Bytes.Add(0x73);
-            resistSection.Bytes.Add(0x8B);
-            resistSection.Bytes.Add(OpCode.JMPAbsolute);
-            resistSection.Bytes.Add(0x02);
-            resistSection.Bytes.Add(0x8B);
-            resistSection.AddToContent(content, Section.GetOffset(14, 0x81CF, 0x8000));
+            // preserve the original damage path, but bypass the vanilla magic-defense calculation
+            resistSection.JMP(ROM.HitEnemyWithMagic_ReduceEnemyHP);
+            // new entry point for the immunity check. Y contains the current spell ID;
+            // compare it against the hit enemy's randomized immunity value
+            resistSection.STY_abs(RAM.ZP_Temp_01);
+            resistSection.LDY_abs_x(RAM.SpritesOnScreen);
+            resistSection.LDA_abs_y(ROM.SpriteMagicDefenseTable);
+            resistSection.CMP_abs(RAM.ZP_Temp_01);
+            resistSection.BNE("@not_immune");
+            // the enemy is immune to this spell. abort the entire magic hit check
+            resistSection.RTS();
+
+            // the enemy is not immune; restore the spell ID and perform the original
+            // hit-width lookup that was replaced by the jump to this routine
+            resistSection.Label("@not_immune");
+            resistSection.LDY_abs(RAM.ZP_Temp_01);
+            resistSection.LDA_abs_y(ROM.MagicHitWidthTable); // jumped to by *
+            resistSection.JMP(ROM.Sprite_CheckHitByCastMagic_STA_Temp01);
+
+            // repurpose the now-unused vanilla magic defense calculation as the new routine
+            resistSection.FlushToContent(content, Section.GetOffset(14, ROM.HitEnemyWithMagic_CalcDefense));
         }
 
         public void UpdateSpriteValues(int id, byte hp, byte damage, byte experience, byte rewardType,
