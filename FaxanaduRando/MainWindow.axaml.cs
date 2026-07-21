@@ -8,6 +8,7 @@ using MsBox.Avalonia;
 using MsBox.Avalonia.Enums;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace FaxanaduRando
 {
@@ -227,15 +228,18 @@ namespace FaxanaduRando
 
         private async void RandomizeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (pathTextBox.Text == null || pathTextBox.Text.Length == 0)
-                return;
-
-            if (!File.Exists(pathTextBox.Text))
-                return;
+            string inputRomFileName = pathTextBox.Text;
+            string customTextFileName = String.IsNullOrEmpty(customTextPathTextBox.Text) ? null : customTextPathTextBox.Text;
 
             if (!int.TryParse(seedTextBox.Text, out int seed))
             {
-                await MessageBoxManager.GetMessageBoxStandard("Error", "Incorrect seed format").ShowWindowDialogAsync(this);
+                await ShowErrorMessageBox("Incorrect seed format");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(inputRomFileName) || !File.Exists(inputRomFileName))
+            {
+                await ShowErrorMessageBox("Please supply a valid ROM file for randomization");
                 return;
             }
 
@@ -245,42 +249,55 @@ namespace FaxanaduRando
             if (Randomizer.GeneralOptions.RandomizeScreens != Randomizer.GeneralOptions.ScreenRandomization.Unchanged &&
                 !Randomizer.GeneralOptions.AddKillSwitch)
             {
-                var result = await MessageBoxManager.GetMessageBoxStandard("Warning",
-                    "It is recommended that you turn on the 'Add kill switch' flag when doing screen randomization to prevent softlocks. Continue?",
-                    ButtonEnum.YesNo).ShowWindowDialogAsync(this);
-                if (result == ButtonResult.No)
+                if (!await ShowWarningPrompt(
+                    "It is recommended that you turn on the 'Add kill switch' flag when doing screen randomization to prevent softlocks. Continue?"))
                 {
                     return;
                 }
             }
 
-            if (!string.IsNullOrEmpty(customTextPathTextBox.Text) &&
+            if (!string.IsNullOrEmpty(customTextFileName) &&
                 !Randomizer.TextOptions.UseCustomText)
             {
-                var result = await MessageBoxManager.GetMessageBoxStandard("Warning",
-                    "Custom text won't be used unless the 'Use custom text' flag is checked. Continue?",
-                    ButtonEnum.YesNo).ShowWindowDialogAsync(this);
-                if (result == ButtonResult.No)
+                if (!await ShowWarningPrompt(
+                    "Custom text won't be used unless the 'Use custom text' flag is checked. Continue?"))
                 {
                     return;
                 }
+            }
+
+            if (TextOptions.UseCustomText &&
+                (string.IsNullOrEmpty(customTextFileName) || !File.Exists(customTextFileName)))
+            {
+                await ShowErrorMessageBox("Please supply a path to a text file when using custom text. For a reference to the format of the file, check the Readme file");
+                return;
             }
 
             try
             {
+                string flags = FlagsCodec.Serialize();
+
                 var randomizer = new Randomizer.Randomizer();
-                string message;
-                bool success = randomizer.Randomize(pathTextBox.Text, customTextPathTextBox.Text, FlagsCodec.Serialize(), seed, out message);
-                if (!success)
-                {
-                    await MessageBoxManager.GetMessageBoxStandard("Failed", message).ShowWindowDialogAsync(this);
-                    return;
-                }
-                await MessageBoxManager.GetMessageBoxStandard("Success", message).ShowWindowDialogAsync(this);
+                var randomizationResult = randomizer.Randomize(
+                    File.ReadAllBytes(inputRomFileName),
+                    customTextFileName == null ? Array.Empty<string>() : File.ReadAllLines(customTextFileName),
+                    flags, seed);
+
+                string outFileName = Randomizer.Randomizer.GetOutputFilename(inputRomFileName, seed, flags, randomizationResult.FileNameSuffix);
+
+                File.WriteAllBytes(outFileName, randomizationResult.Rom);
+                if (randomizationResult.SpoilerLog.Count > 0)
+                    File.WriteAllLines(outFileName.Replace(".nes", ".txt"), randomizationResult.SpoilerLog);
+
+                await ShowSuccessMessageBox("Randomized ROM created at " + outFileName);
+            }
+            catch (RandomizationException ex)
+            {
+                await ShowFailureMessageBox(ex.Message);
             }
             catch (Exception ex)
             {
-                await MessageBoxManager.GetMessageBoxStandard("Error", $"Failed to create rom: {ex.Message}\n{ex.StackTrace}").ShowWindowDialogAsync(this);
+                await ShowErrorMessageBox($"Failed to create rom: {ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -392,7 +409,37 @@ namespace FaxanaduRando
             flagsTextBox.Text = FlagsCodec.Serialize(_settings);
         }
 
-    }
+        private Task ShowMessageBox(string title, string message, Icon icon)
+        {
+            return MessageBoxManager.GetMessageBoxStandard(
+                title,
+                message,
+                ButtonEnum.Ok,
+                icon)
+            .ShowWindowDialogAsync(this);
+        }
 
+        private async Task<bool> ShowWarningPrompt(string message)
+        {
+            var result = await MessageBoxManager.GetMessageBoxStandard(
+                "Warning",
+                message,
+                ButtonEnum.YesNo,
+                MsBox.Avalonia.Enums.Icon.Warning)
+            .ShowWindowDialogAsync(this);
+
+            return result == ButtonResult.Yes;
+        }
+
+        private Task ShowErrorMessageBox(string message) =>
+            ShowMessageBox("Error", message, MsBox.Avalonia.Enums.Icon.Error);
+
+        private Task ShowFailureMessageBox(string message) =>
+            ShowMessageBox("Failed", message, MsBox.Avalonia.Enums.Icon.Warning);
+
+        private Task ShowSuccessMessageBox(string message) =>
+            ShowMessageBox("Success", message, MsBox.Avalonia.Enums.Icon.Success);
+
+    }
 
 }

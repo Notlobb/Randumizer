@@ -1,0 +1,158 @@
+:Those Dwarves look like they missed Santa's nice list.
+:These wingboots are powered by the spirit of Christmas!|And maybe liquor.
+:Our shopkeeper sells tinsel.|Good for decorating, and strangling, monsters.
+:Have you tried fighting evil with a candy cane?|It leaves a fresh peppermint scent in their corpses.
+:The dwarves have been stealing all the mistletoe.|They must be planning something romantic.
+:My shield broke because I tried to block an icicle with it.|I should've read the manual.
+:Did you hear? The Evil One hates eggnog.|It's our only advantage.
+:Our doctor can cure poison, frostbite, and cold holiday buns, and bad holiday puns.
+:This sword is sharp enough to carve a turkey.|Or a monster. Your choice.
+:Our reindeer are refusing to fly until we pay them in cookies.
+:I tried to fight the wyvern with a rod.|It didn't end well.
+:Legend says the Evil One hates jingle bells.|Too bad they all got jingled all away.
+:Those dwarves over there? They keep trying to give me fruitcake.
+:Beware the Candy Cane Forest. It's sticky,|and not in a good way.
+:Our wizard created a spell to summon snowflakes.|And we got hit by a Meteor instead.
+:The monsters here are oddly festive. One threw a wreath at me yesterday.
+:There's a rumor that Santa's workshop is hidden deep in the Tower of Suffer.
+:I heard the Evil One fears a hero with tinsel in their hair.|Care to test it?
+:The dwarves say they saw a red-nosed reindeer flying overhead.|Must've been the mutation messing with their minds.
+:Want to buy a snowball? It's not magical, but it might be fun and or useful.
+:If you see a snowman moving, run.|Trust me on this one.
+:Did you know you can decorate your shield with ornaments?|It's festive and effective.
+:Our blacksmith tried to make a sword out of ice.|It lasted three seconds.
+:I saw a monster wearing a Santa hat. It still tried to eat me.
+:Every adventurer needs a good scarf.|It's fashionable and keeps your neck bite-free.
+1:Hehe.. thank you!!
+2:Sorry, I can't accept rupees. Do you have some Golds?
+4:Are you sure you don't want the protection plan?
+5:How do you plan on carrying that?
+6:Who needs cigarettes|when you can have smoked pork for {0} golds?
+7:Royale with cheese for {0}?
+8:Squid bread ham sandwich for {0}?
+9:Squid pan bagnat for {0}?
+10:Invest in oak steak for {0}?
+11:So.. we meat again. Pepperoni pizza for {0}?
+12:{0} for a good sandwich?
+13:Nello. I sell keys.
+14:Welcome to Eolis Mart.|Shop smart!
+17:I can't buy that!
+18:I'm interested in this.
+19:Could I interest you in a protection plan?
+20:I'll make squeaking sounds for {0}!
+22:I just found {0} in my beard... I'll sell it for {1} golds?
+23:Rely a ton on magic. Swords are stupid.
+24:Squeaky sounds for {0}?
+25:Welcome to the spa.
+26:Go ahead, try really hard.
+27:Spa treatment for {0}?
+28:Spa treatment for {0}?
+29:Spa treatment for {0}?
+30:Spa treatment for {0}?
+31:Spa treatment for {0}?
+32:Spa treatment for {0}?
+33:You look like you could use some extra letters and numbers.|Here's a few
+35:It might be time for a new year's resolution.|Just saying.
+40:Some dude named "Jack Frost" graffitied his name next to the key hole.
+38:You're out of golds?
+40:There is a mark of "Jack Frost" by the key hole.
+43:It's dangerous to go alone!|Take this.
+44:Visit all the Gurus on your way.|And make sure they stamp your card.|You can get a free ice cream after visiting 6 of them.
+46:I heard Forepaw has a fountain of eggnog.
+47:The Dwarfs are already in town.|They will soon take over, I fear.|I hope they offer a good dental plan.
+52:Glad you could come.|Disaster has befallen us.|The Evil One has returned and the fountains of rum have begun to run dry.|We need you, Faxanadude, to restore the fountains of rum.|Eggnog is just not the same without it.|Here's a few golds to help you get started.
+53:You're Faxanadude's twin brother?|Nice try, I'm not falling for that.
+54:The Evil One stole my advent calendar!|You must get it back for me!
+56:Listen to people.|They might be fools but at least you'll feel smug and superior.
+58:Welcome to Apolune, home of the World Tree's second biggest cheese wheel.
+83:Have you restored the rum yet?
+84:Give this back to Jerry in Mascon when you're done with it.
+86:Fine, I'll turn the tap back on.
+88:Give me your Holiday Cheer and I'll make the rum flow again!
+93:Take this. It might not be the Dragon Slayer,|but I'm sure if you bash the Evil One over the head with it,|it'll at least feel satisfying before he murders you.
+125:Show me some coal and I'll give you {0}.
+125:Ah you got the lump of coal! Take this.
+139:Oh you have the Snowsuit! This should pair nicely with it.
+163:Ho ho ho!|The rum has returned!|And we can finally decorate the World Tree.|Happy Holidays!
+164:There is the mark of "Qlaus" by the key hole.
+165:There is a mark of "Krampus" by the key hole.
+166:There is a mark of "Antlers" by the key hole.
+167:There is a mark of "Jolly" by the key hole.
+168:You can't ring the doorbell|without a ring..
+169:Sweet, glorious eggnog!
+170:The Ice Pick shattered.. just like ice.
+171:I flipped the snowglobe upside down.
+172:On Dasher, on Dancer, on Prancer...
+173:I used key, and then it melted. Was it made of ice?
+174:Who needs a mantra when you have Holiday Cheer!
+175:I found some Holiday Cheer.
+176:I found some Egg Nog.
+177:I found Ice Pick.
+178:I found some Merry Mukluks.
+179:I found a Snow Globe.
+180:I found a Snowsuit.
+181:I found Snowmobile Hemlet.
+182:I acquired the Dragon Sleigher.
+183:I found a Lump of Coal.
+184:I found a pendant made of tinsel in a wreath shape.
+185:I found a Candy Cane.
+186:Mmmm.. Hot Chocolate.
+187:I found some winter mitts.
+188:The mitts fell apart.
+189:I found a jug of warm apple cider.
+190:I finished the apple cider.
+191:The mukluks ran out of merriment.
+192:The snow globe shattered!
+title:FrostKnight
+title:YuleHero
+title:GiftBringer
+title:Winterlord
+title:Snowstormer
+title:Rudolph
+title:JingleKing
+title:Kringle
+title:Chiller
+title:CandyMaster
+title:SnowMeister
+title:SkaterBoi
+title:IceCool
+title:Caroler
+title:MrPlow
+title:Santa
+HandDagger:Dagger -2
+LongSword:Sword -3
+GiantBlade:Forked Shovel
+DragonSlayer:Dragon Sleigher
+LeatherArmor:Snow Vest
+StuddedMail:Parka
+FullPlate:Snowsuit
+BattleSuit:Santa Suit
+SmallShield:Small Sled
+LargeShield:Large Sled
+MagicShield:Magic Sled
+BattleHelmet:Snowmobile Hm
+Deluge:Snow Melter
+Thunder:Snowball
+Fire:Festive Fire
+Death:Ornament
+Tilte:Comet
+RingOfElf:Prancer Ring
+RubyRing:Dancer Ring
+RingOfDworf:Vixen Ring
+DemonsRing:Blitzen Ring
+KeyA:Antler Key
+KeyK:Krampus Key
+KeyQ:Qlaus Key
+KeyJ:JackFrost Key
+KeyJo:Jolly Key
+Mattock:Ice Pick
+Rod:Candy Cane
+HourGlass:Snowglobe
+WingBoots:Merry Mukluks
+RedPotion:Egg + 1
+BlackPotion:Hot Cocoa
+Elixir:Holiday Cheer
+Pendant:Tinsel Wreath
+BlackOnix:Lump of Coal
+Ointment:Vaporub
+Glove:Winter Mitt
