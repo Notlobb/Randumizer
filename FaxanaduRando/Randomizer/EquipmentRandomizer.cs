@@ -4,7 +4,7 @@ using System.Linq;
 namespace FaxanaduRando.Randomizer
 {
     // Per-item stat deltas applied by EquipmentRandomizer, indexed the same way as
-    // the corresponding table entries. Empty means "this category was left unchanged".
+    // the corresponding table entries. Empty means "this item type was left unchanged".
     public class EquipmentModifiers
     {
         public int[] WeaponModifiers { get; set; } = Array.Empty<int>();
