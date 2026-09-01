@@ -152,6 +152,9 @@ namespace FaxanaduRando.Randomizer
         [Flag(30)]
         public static bool IncludeSomeEolisDoors { get; set; } = false;
 
+        [Flag(34)]
+        public static bool ShowExactStatValues { get; set; } = false;
+
         [Flag(FlagsCodec.NonBoolFlagBase + 43)]
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
 

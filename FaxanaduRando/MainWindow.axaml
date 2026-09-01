@@ -264,6 +264,9 @@
 					<TextBlock Grid.Column="2" Grid.Row="13" Text="Armor stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
 					<ComboBox Name="armorStatComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource armorStatSettings}" SelectedIndex="0" Margin="0,1"
                               ToolTip.Tip="Randomize armor defense values. Swap randomly reassigns each armor's defense multiplier to another armor. The +/- options adjust values by a flat amount. Item names reflect the change. Studded Mail is never weakened. Values never go below 0"/>
+
+					<CheckBox Name="showExactStatValuesCheckBox" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="14" Content="Show exact stat values in item names" Margin="0,1"
+                              ToolTip.Tip="Item names show the resulting stat instead of the change from vanilla, so a dagger that ended up at 5 damage reads 'HAND DAGGER 5' rather than 'HAND DAGGER+1'. Only affects the item types that are being randomized"/>
 				</Grid>
 			</ScrollViewer>
 		</TabItem>

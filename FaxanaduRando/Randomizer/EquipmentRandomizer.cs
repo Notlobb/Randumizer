@@ -1,21 +1,37 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace FaxanaduRando.Randomizer
 {
+    // Per-item stat deltas applied by EquipmentRandomizer, indexed the same way as
+    // the corresponding table entries. Empty means "this category was left unchanged".
     public class EquipmentModifiers
     {
-        public Dictionary<int, int> WeaponModifiers { get; set; }
-        public Dictionary<int, int> MagicModifiers { get; set; }
-        public Dictionary<int, int> ArmorModifiers { get; set; }
+        public int[] WeaponModifiers { get; set; } = Array.Empty<int>();
+        public int[] MagicModifiers { get; set; } = Array.Empty<int>();
+        public int[] ArmorModifiers { get; set; } = Array.Empty<int>();
+
+        // Post-randomization stat values, same indexing as the modifier arrays.
+        public int[] WeaponValues { get; set; } = Array.Empty<int>();
+        public int[] MagicValues { get; set; } = Array.Empty<int>();
+        public int[] ArmorValues { get; set; } = Array.Empty<int>();
+
+        // When set, item names show the resulting stat value ("HAND DAGGER 5")
+        // instead of the delta from the vanilla value ("HAND DAGGER+1").
+        public bool ShowExactValues { get; set; }
     }
 
     public static class EquipmentRandomizer
     {
-        public static Dictionary<int, int> RandomizeWeapons(Table weaponStrengths, Table weaponGloveStrengths, double scaleFactor, Random random)
+        // Current single-byte value of every entry in a stat table.
+        public static int[] ReadValues(Table table)
         {
-            var modifiers = new Dictionary<int, int>();
+            return Enumerable.Range(0, table.Entries.Count).Select(i => (int)table.Entries[i][0]).ToArray();
+        }
+
+        public static int[] RandomizeWeapons(Table weaponStrengths, Table weaponGloveStrengths, double scaleFactor, Random random)
+        {
+            var modifiers = new int[weaponStrengths.Entries.Count];
             for (int i = 0; i < weaponStrengths.Entries.Count; i++)
             {
                 int baseStrength = weaponStrengths.Entries[i][0];
@@ -41,9 +57,9 @@ namespace FaxanaduRando.Randomizer
             return modifiers;
         }
 
-        public static Dictionary<int, int> RandomizeMagic(Table magicDamage, double scaleFactor, Random random)
+        public static int[] RandomizeMagic(Table magicDamage, double scaleFactor, Random random)
         {
-            var modifiers = new Dictionary<int, int>();
+            var modifiers = new int[magicDamage.Entries.Count];
             for (int i = 0; i < magicDamage.Entries.Count; i++)
             {
                 int baseDamage = magicDamage.Entries[i][0];
@@ -58,14 +74,14 @@ namespace FaxanaduRando.Randomizer
             return modifiers;
         }
 
-        public static Dictionary<int, int> SwapWeapons(Table weaponStrengths, Table weaponGloveStrengths, Random random)
+        public static int[] SwapWeapons(Table weaponStrengths, Table weaponGloveStrengths, Random random)
         {
             int count = weaponStrengths.Entries.Count;
             int[] origStrengths = Enumerable.Range(0, count).Select(i => (int)weaponStrengths.Entries[i][0]).ToArray();
             int[] origGloves = Enumerable.Range(0, count).Select(i => (int)weaponGloveStrengths.Entries[i][0]).ToArray();
             int[] perm = GeneratePermutation(count, random);
 
-            var modifiers = new Dictionary<int, int>();
+            var modifiers = new int[count];
             for (int i = 0; i < count; i++)
             {
                 weaponStrengths.Entries[i][0] = (byte)origStrengths[perm[i]];
@@ -75,13 +91,13 @@ namespace FaxanaduRando.Randomizer
             return modifiers;
         }
 
-        public static Dictionary<int, int> SwapMagic(Table magicDamage, Random random)
+        public static int[] SwapMagic(Table magicDamage, Random random)
         {
             int count = magicDamage.Entries.Count;
             int[] origDamage = Enumerable.Range(0, count).Select(i => (int)magicDamage.Entries[i][0]).ToArray();
             int[] perm = GeneratePermutation(count, random);
 
-            var modifiers = new Dictionary<int, int>();
+            var modifiers = new int[count];
             for (int i = 0; i < count; i++)
             {
                 magicDamage.Entries[i][0] = (byte)origDamage[perm[i]];
@@ -90,13 +106,13 @@ namespace FaxanaduRando.Randomizer
             return modifiers;
         }
 
-        public static Dictionary<int, int> SwapArmor(Table armorDefense, Random random)
+        public static int[] SwapArmor(Table armorDefense, Random random)
         {
             int count = armorDefense.Entries.Count;
             int[] origDefense = Enumerable.Range(0, count).Select(i => (int)armorDefense.Entries[i][0]).ToArray();
             int[] perm = GeneratePermutation(count, random);
 
-            var modifiers = new Dictionary<int, int>();
+            var modifiers = new int[count];
             for (int i = 0; i < count; i++)
             {
                 armorDefense.Entries[i][0] = (byte)origDefense[perm[i]];
@@ -116,9 +132,9 @@ namespace FaxanaduRando.Randomizer
             return perm;
         }
 
-        public static Dictionary<int, int> RandomizeArmor(Table armorDefense, int range, Random random)
+        public static int[] RandomizeArmor(Table armorDefense, int range, Random random)
         {
-            var modifiers = new Dictionary<int, int>();
+            var modifiers = new int[armorDefense.Entries.Count];
             for (int i = 0; i < armorDefense.Entries.Count; i++)
             {
                 int modifier = random.Next(-range, range + 1);

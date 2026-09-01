@@ -53,7 +53,7 @@ namespace FaxanaduRando.Randomizer
             titleRewards = GetTitleData(content, Section.GetOffset(15, 0xF767, 0xC000));
         }
 
-        public void UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string[] customTextFileContents, EquipmentModifiers equipmentModifiers = null)
+        public void UpdateText(ShopRandomizer shopRandomizer, GiftRandomizer giftRandomizer, DoorRandomizer doorRandomizer, SegmentRandomizer segmentRandomizer, byte[] content, string[] customTextFileContents, EquipmentModifiers equipmentModifiers)
         {
             var allText = Text.GetAllText(content);
             int oldLength = getLength(allText);
@@ -319,10 +319,7 @@ namespace FaxanaduRando.Randomizer
 
                 intBasedDictionary = keyValueList.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                if (equipmentModifiers != null)
-                {
-                    ApplyEquipmentModifiersToNames(intBasedDictionary, equipmentModifiers);
-                }
+                ApplyEquipmentModifiersToNames(intBasedDictionary, equipmentModifiers);
 
                 Text.SetAllItemNames(content, intBasedDictionary);
                 Text.WriteItemNameGlyphs(content);
@@ -1839,26 +1836,36 @@ namespace FaxanaduRando.Randomizer
         private static void ApplyEquipmentModifiersToNames(Dictionary<int, string> names, EquipmentModifiers modifiers)
         {
             // Weapons: modifier indices 0-3 -> Item IDs 0-3
-            ApplyModifiersToNames(names, modifiers.WeaponModifiers, new[] { 0, 1, 2, 3 });
+            ApplyModifiersToNames(names, modifiers.WeaponModifiers, modifiers.WeaponValues, modifiers.ShowExactValues, new[] { 0, 1, 2, 3 });
             // Armor: modifier indices 0-3 -> Item IDs 4-7
-            ApplyModifiersToNames(names, modifiers.ArmorModifiers, new[] { 4, 5, 6, 7 });
+            ApplyModifiersToNames(names, modifiers.ArmorModifiers, modifiers.ArmorValues, modifiers.ShowExactValues, new[] { 4, 5, 6, 7 });
             // Magic: modifier indices 0-4 -> Item IDs 12-16
-            ApplyModifiersToNames(names, modifiers.MagicModifiers, new[] { 12, 13, 14, 15, 16 });
+            ApplyModifiersToNames(names, modifiers.MagicModifiers, modifiers.MagicValues, modifiers.ShowExactValues, new[] { 12, 13, 14, 15, 16 });
         }
 
-        private static void ApplyModifiersToNames(Dictionary<int, string> names, Dictionary<int, int> modifiers, int[] itemIds)
+        private static void ApplyModifiersToNames(Dictionary<int, string> names, int[] modifiers, int[] values, bool showExactValues, int[] itemIds)
         {
-            if (modifiers == null) return;
-
-            for (int i = 0; i < itemIds.Length && i < modifiers.Count; i++)
+            for (int i = 0; i < itemIds.Length && i < modifiers.Length; i++)
             {
                 int itemId = itemIds[i];
-                int mod = modifiers[i];
-                if (mod == 0) continue;
                 if (!names.ContainsKey(itemId)) continue;
 
+                string suffix;
+                if (showExactValues)
+                {
+                    // Every item in a randomized item type gets its stat shown, even the
+                    // ones the randomizer happened to leave alone
+                    if (i >= values.Length) continue;
+                    suffix = $" {values[i]}";
+                }
+                else
+                {
+                    int mod = modifiers[i];
+                    if (mod == 0) continue;
+                    suffix = mod > 0 ? $"+{mod}" : $"{mod}";
+                }
+
                 string name = names[itemId];
-                string suffix = mod > 0 ? $"+{mod}" : $"{mod}";
                 int maxNameLen = 13 - suffix.Length;
                 if (name.Length > maxNameLen)
                 {

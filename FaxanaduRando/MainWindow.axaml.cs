@@ -27,13 +27,13 @@ namespace FaxanaduRando
 
         private static readonly string[] Presets =
             [
-                "38DFFF5A05k02v1ncoH", // Beginner
-                "78CFFF5A0za0cGalcmH", // Standard
-                "7ECFFF5A0zc0cFakcmH", // Race (typical)
-                "580867000Am00a1nmoH", // Race (classic)
-                "FECC375A0ze0bPakmoH", // Challenge mode
-                "7ECFFF7E0ucba0a012b", // Chaos mode
-                "3ECFFFDA0Al02v1n2k2", // Extra fast
+                "38DFFF5A25k02v1ncoH00", // Beginner
+                "78CFFF5A2za0cGalcmH00", // Standard
+                "7ECFFF5A2zc0cFakcmH00", // Race (typical)
+                "580867000Am00a1nmoH00", // Race (classic)
+                "FECC375A2ze0bPakmoH00", // Challenge mode
+                "7ECFFF7E2ucba0a012bJk", // Chaos mode
+                "3ECFFFDA2Al02v1n2k200", // Extra fast
             ];
 
         public MainWindow()
@@ -114,6 +114,7 @@ namespace FaxanaduRando
                     addKillSwitchCheckBox,
                     useCustomTextCheckBox,
                     useWeaponIndoorsCheckBox,
+                    showExactStatValuesCheckBox,
             ];
 
             _comboBoxes = [

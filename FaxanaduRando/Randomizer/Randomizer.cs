@@ -21,7 +21,7 @@ namespace FaxanaduRando.Randomizer
     {
         private static readonly double[] EquipmentScaleFactors = { 0.125, 0.25, 0.375, 0.50, 0.625 };
 
-        public RandomizationResult Randomize(byte[] inputFileContents, string[] customTextFileContents, string flags, int seed, out string message)
+        public RandomizationResult Randomize(byte[] inputFileContents, string[] customTextFileContents, string flags, int seed)
         {
             Random random = new Random(seed);
 
@@ -302,6 +302,12 @@ namespace FaxanaduRando.Randomizer
                 equipmentModifiers.ArmorModifiers = EquipmentRandomizer.RandomizeArmor(armorDefenseTable, range, random);
             }
 
+            // Read the resulting stats so item names can show exact values instead of deltas
+            equipmentModifiers.ShowExactValues = ItemOptions.ShowExactStatValues;
+            equipmentModifiers.WeaponValues = EquipmentRandomizer.ReadValues(weaponStrengthTable);
+            equipmentModifiers.MagicValues = EquipmentRandomizer.ReadValues(magicDamageTable);
+            equipmentModifiers.ArmorValues = EquipmentRandomizer.ReadValues(armorDefenseTable);
+
             doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
@@ -339,18 +345,7 @@ namespace FaxanaduRando.Randomizer
                 textRandomizer.RandomizeTitles(content, customTextFileContents);
             }
 
-            var result = textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents, equipmentModifiers);
-            if (result != Result.Success)
-            {
-                if (result == Result.TextTooLong)
-                {
-                    message = "Text randomization failed, generated text was too long for this seed";
-                    return false;
-                }
-
-                message = "Text randomization failed";
-                return false;
-            }
+            textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents, equipmentModifiers);
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
