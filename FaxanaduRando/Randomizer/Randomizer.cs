@@ -19,6 +19,8 @@ namespace FaxanaduRando.Randomizer
 
     public class Randomizer
     {
+        private static readonly double[] EquipmentScaleFactors = { 0.125, 0.25, 0.375, 0.50, 0.625 };
+
         public RandomizationResult Randomize(byte[] inputFileContents, string[] customTextFileContents, string flags, int seed)
         {
             Random random = new Random(seed);
@@ -263,6 +265,49 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviourProperties(content, random);
             }
 
+            var weaponStrengthTable = new Table(Section.GetOffset(14, 0xB7A5, 0x8000), 4, 1, content);
+            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, 0x88C7, 0x8000), 4, 1, content);
+            var magicDamageTable = new Table(Section.GetOffset(14, 0xB7A0, 0x8000), 5, 1, content);
+            var armorDefenseTable = new Table(Section.GetOffset(14, 0x8AD8, 0x8000), 4, 1, content);
+
+            var equipmentModifiers = new EquipmentModifiers();
+
+            if (ItemOptions.WeaponStatSetting == ItemOptions.WeaponStatRandomization.Swap)
+            {
+                equipmentModifiers.WeaponModifiers = EquipmentRandomizer.SwapWeapons(weaponStrengthTable, weaponGloveStrengthTable, random);
+            }
+            else if (ItemOptions.WeaponStatSetting != ItemOptions.WeaponStatRandomization.Unchanged)
+            {
+                double scaleFactor = EquipmentScaleFactors[(int)ItemOptions.WeaponStatSetting - 2];
+                equipmentModifiers.WeaponModifiers = EquipmentRandomizer.RandomizeWeapons(weaponStrengthTable, weaponGloveStrengthTable, scaleFactor, random);
+            }
+
+            if (ItemOptions.MagicStatSetting == ItemOptions.MagicStatRandomization.Swap)
+            {
+                equipmentModifiers.MagicModifiers = EquipmentRandomizer.SwapMagic(magicDamageTable, random);
+            }
+            else if (ItemOptions.MagicStatSetting != ItemOptions.MagicStatRandomization.Unchanged)
+            {
+                double scaleFactor = EquipmentScaleFactors[(int)ItemOptions.MagicStatSetting - 2];
+                equipmentModifiers.MagicModifiers = EquipmentRandomizer.RandomizeMagic(magicDamageTable, scaleFactor, random);
+            }
+
+            if (ItemOptions.ArmorStatSetting == ItemOptions.ArmorStatRandomization.Swap)
+            {
+                equipmentModifiers.ArmorModifiers = EquipmentRandomizer.SwapArmor(armorDefenseTable, random);
+            }
+            else if (ItemOptions.ArmorStatSetting != ItemOptions.ArmorStatRandomization.Unchanged)
+            {
+                int range = (int)ItemOptions.ArmorStatSetting - 1;
+                equipmentModifiers.ArmorModifiers = EquipmentRandomizer.RandomizeArmor(armorDefenseTable, range, random);
+            }
+
+            // Read the resulting stats so item names can show exact values instead of deltas
+            equipmentModifiers.ShowExactValues = ItemOptions.ShowExactStatValues;
+            equipmentModifiers.WeaponValues = EquipmentRandomizer.ReadValues(weaponStrengthTable);
+            equipmentModifiers.MagicValues = EquipmentRandomizer.ReadValues(magicDamageTable);
+            equipmentModifiers.ArmorValues = EquipmentRandomizer.ReadValues(armorDefenseTable);
+
             doorRandomizer.AddToContent(content);
 
             if (GeneralOptions.DarkTowers)
@@ -289,6 +334,10 @@ namespace FaxanaduRando.Randomizer
             enemyRewardTypeTable.AddToContent(content);
             enemyRewardQuantityTable.AddToContent(content);
             magicResistanceTable.AddToContent(content);
+            weaponStrengthTable.AddToContent(content);
+            weaponGloveStrengthTable.AddToContent(content);
+            magicDamageTable.AddToContent(content);
+            armorDefenseTable.AddToContent(content);
 
             var textRandomizer = new TextRandomizer(content, random);
             if (GeneralOptions.RandomizeTitles)
@@ -296,7 +345,7 @@ namespace FaxanaduRando.Randomizer
                 textRandomizer.RandomizeTitles(content, customTextFileContents);
             }
 
-            textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents);
+            textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents, equipmentModifiers);
 
             var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
                                                  Section.GetOffset(12, 0x9E0D, 0x8000));
@@ -844,6 +893,14 @@ namespace FaxanaduRando.Randomizer
                 content[Section.GetOffset(12, 0x8716, 0x8000)] = OpCode.NOP;
             }
 
+            if (GeneralOptions.UseWeaponIndoors)
+            {
+                // Allow items indoors: change STA to LDA so weapon stays equipped when entering buildings
+                content[Section.GetOffset(15, 0xDE08, 0xC000)] = 0xAD;
+                // Draw weapon indoors: allow weapon sprite to be shown indoors
+                content[Section.GetOffset(15, 0xEDF0, 0xC000)] = 0xFF;
+            }
+
             if (GeneralOptions.AddKillSwitch)
             {
                 var switchSection = new Section();
@@ -1080,44 +1137,33 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.FastText)
             {
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(0xFF);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xF4A2, 0xC000));
+                // Change AND mask from #$03 to #$00 (display char every frame)
+                content[Section.GetOffset(15, 0xF49F, 0xC000)] = 0x00;
 
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x90);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x1C);
+                // New subroutine: preserve original 4-frame sound cadence
+                var newSection = new Section();
+                newSection.Bytes.Add(OpCode.LDAAbsolute);   // LDA $021D (TextBox_Timer)
+                newSection.Bytes.Add(0x1D);
                 newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.JMPAbsolute);
-                newSection.Bytes.Add(0x57);
-                newSection.Bytes.Add(0xF5);
+                newSection.Bytes.Add(OpCode.ANDImmediate);   // AND #$02
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.LSRA);           // LSR A
+                newSection.Bytes.Add(0x49);                  // EOR #$01
+                newSection.Bytes.Add(0x01);
+                newSection.Bytes.Add(OpCode.STAAbsolute);    // STA $0212 (TextBox_PlayTextSound)
+                newSection.Bytes.Add(0x12);
+                newSection.Bytes.Add(0x02);
+                newSection.Bytes.Add(OpCode.RTS);
                 newSection.AddToContent(content, Section.GetOffset(15, 0xFF00, 0xC000));
 
+                // Hook: replace "LDA #$01 / STA TextBox_PlayTextSound" with JSR + NOPs
                 newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x13);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.BEQ);
-                newSection.Bytes.Add(0x06);
-                newSection.Bytes.Add(OpCode.LDAAbsolute);
-                newSection.Bytes.Add(0x1C);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0xA5);
-                newSection.Bytes.Add(0xF4);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFF90, 0xC000));
+                newSection.Bytes.Add(OpCode.JSR);            // JSR $FF00
+                newSection.Bytes.Add(0x00);
+                newSection.Bytes.Add(0xFF);
+                newSection.Bytes.Add(OpCode.NOP);
+                newSection.Bytes.Add(OpCode.NOP);
+                newSection.AddToContent(content, Section.GetOffset(15, 0xF472, 0xC000));
             }
 
             if (GeneralOptions.FastStart)
