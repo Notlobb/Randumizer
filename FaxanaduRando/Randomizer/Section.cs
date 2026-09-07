@@ -36,13 +36,13 @@ namespace FaxanaduRando.Randomizer
         // and returns the next available cpu address (and throws if it is > 1 past end of bank)
         public int FlushToContent(byte[] content, int bank, int cpuAddr)
         {
-            ResolveLabels();
-
             int nextAddr = cpuAddr + Size();
             int bankEnd = (bank == 15 ? 0xFFFF : 0xBFFF);
-
             if (nextAddr > bankEnd + 1)
-                throw new RandomizationException("Hack crosses bank {:bank} boundary");
+                throw new RandomizationException($"Hack crosses bank {bank} boundary");
+
+            // updates all label references with actual values (absolute, relative or lo/hi absolute)
+            ResolveLabels(cpuAddr);
 
             AddToContent(content, Section.GetOffset(bank, cpuAddr));
 
@@ -63,6 +63,27 @@ namespace FaxanaduRando.Randomizer
             Bytes.Add((byte)(value >> 8));
         }
 
+        // .dw label
+        public void Dw(string label)
+        {
+            AddLabelRef(label, LabelRefType.Absolute);
+            Dw(0); // patched later
+        }
+
+        // #<label
+        private void DbLo(string label)
+        {
+            AddLabelRef(label, LabelRefType.LoByte);
+            Db(0); // patched later
+        }
+
+        // #>label
+        private void DbHi(string label)
+        {
+            AddLabelRef(label, LabelRefType.HiByte);
+            Db(0); // patched later
+        }
+
         // 6502 instruction wrappers: mnemonic (uppercase), addressing mode (lowercase)
         // adding some aliases where it is natural to do so
 
@@ -73,9 +94,20 @@ namespace FaxanaduRando.Randomizer
             Dw(addr);
         }
 
+        public void JMP_abs(string label)
+        {
+            Db(OpCode.JMPAbsolute);
+            Dw(label);
+        }
+
         public void JMP(ushort addr)
         {
             JMP_abs(addr);
+        }
+
+        public void JMP(string label)
+        {
+            JMP_abs(label);
         }
 
         public void JMP_ind(ushort addr)
@@ -90,6 +122,12 @@ namespace FaxanaduRando.Randomizer
             Dw(addr);
         }
 
+        public void JSR(string label)
+        {
+            Db(OpCode.JSR);
+            Dw(label);
+        }
+
         public void RTS()
         {
             Db(OpCode.RTS);
@@ -100,6 +138,20 @@ namespace FaxanaduRando.Randomizer
         {
             Db(OpCode.LDAImmediate);
             Db(value);
+        }
+
+        // lda #<label
+        public void LDA_imm_lo(string label)
+        {
+            Db(OpCode.LDAImmediate);
+            DbLo(label);
+        }
+
+        // lda #>label
+        public void LDA_imm_hi(string label)
+        {
+            Db(OpCode.LDAImmediate);
+            DbHi(label);
         }
 
         public void LDA_zp(byte address)
@@ -436,53 +488,97 @@ namespace FaxanaduRando.Randomizer
             _labels[label] = Bytes.Count;
         }
 
-        // internal implementation of relative branch label resolution logic follows
         private void Clear()
         {
             Bytes.Clear();
             _labels.Clear();
-            _branchRefs.Clear();
+            _labelRefs.Clear();
+        }
+
+        // internal label resolution machinery follows
+        private enum LabelRefType
+        {
+            Relative,
+            Absolute,
+            LoByte,
+            HiByte
+        }
+
+        private struct LabelRef
+        {
+            public int Offset;
+            public string Label;
+            public LabelRefType Type;
         }
 
         // maps label names to byte offsets within this section
         private readonly Dictionary<string, int> _labels = new Dictionary<string, int>();
-        // records unresolved branches to be patched during label resolution
-        private readonly List<BranchRef> _branchRefs = new List<BranchRef>();
 
-        private struct BranchRef
+        // records unresolved label references to be patched during label resolution
+        private readonly List<LabelRef> _labelRefs = new List<LabelRef>();
+
+        private void AddLabelRef(string label, LabelRefType type)
         {
-            public int Offset;
-            public string Label;
+            _labelRefs.Add(new LabelRef
+            {
+                Offset = Bytes.Count,
+                Label = label,
+                Type = type
+            });
         }
 
         private void Branch(byte opcode, string label)
         {
             Db(opcode);
-
-            _branchRefs.Add(new BranchRef
-            {
-                Offset = Bytes.Count,
-                Label = label
-            });
-
-            Db(0); // placeholder, patched later during label resolution
+            AddLabelRef(label, LabelRefType.Relative);
+            Db(0); // placeholder
         }
 
-        // resolves label-based branches by patching placeholder branch offsets
-        private void ResolveLabels()
+        // resolves all label references by patching their placeholders
+        private void ResolveLabels(int baseCpuAddr)
         {
-            foreach (var branch in _branchRefs)
+            foreach (var reference in _labelRefs)
             {
-                if (!_labels.TryGetValue(branch.Label, out int target))
-                    throw new InvalidOperationException($"Undefined label: {branch.Label}");
+                if (!_labels.TryGetValue(reference.Label, out int labelOffset))
+                    throw new InvalidOperationException($"Undefined label: {reference.Label}");
 
-                int next = branch.Offset + 1;
-                int delta = target - next;
+                switch (reference.Type)
+                {
+                    case LabelRefType.Relative:
+                        {
+                            int next = reference.Offset + 1;
+                            int delta = labelOffset - next;
 
-                if (delta < sbyte.MinValue || delta > sbyte.MaxValue)
-                    throw new InvalidOperationException($"Branch out of range: {branch.Label}");
+                            if (delta < sbyte.MinValue || delta > sbyte.MaxValue)
+                                throw new InvalidOperationException($"Branch out of range: {reference.Label}");
 
-                Bytes[branch.Offset] = (byte)(sbyte)delta;
+                            Bytes[reference.Offset] = (byte)(sbyte)delta;
+                            break;
+                        }
+
+                    case LabelRefType.Absolute:
+                        {
+                            int target = baseCpuAddr + labelOffset;
+
+                            Bytes[reference.Offset] = (byte)(target & 0xFF);
+                            Bytes[reference.Offset + 1] = (byte)((target >> 8) & 0xFF);
+                            break;
+                        }
+
+                    case LabelRefType.LoByte:
+                        {
+                            int target = baseCpuAddr + labelOffset;
+                            Bytes[reference.Offset] = (byte)(target & 0xFF);
+                            break;
+                        }
+
+                    case LabelRefType.HiByte:
+                        {
+                            int target = baseCpuAddr + labelOffset;
+                            Bytes[reference.Offset] = (byte)((target >> 8) & 0xFF);
+                            break;
+                        }
+                }
             }
         }
 

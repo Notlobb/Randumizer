@@ -17,12 +17,12 @@ namespace FaxanaduRando.Randomizer
             // call the routine vanilla would have called if we didn't install the hook
             switchSection.JSR(ROM.Sprites_FlipRanges);
             switchSection.LDA_zp(RAM.ZP_Joy1_ChangedButtonMask);
-            // test bit 5: down button
+            // test bit 5: select button
             switchSection.AND_imm(0b00100000);
-            switchSection.BEQ("@down_not_pressed");
+            switchSection.BEQ("@select_not_pressed");
             switchSection.LDA_imm(0x01);
             switchSection.STA_abs(RAM.PlayerIsDead);
-            switchSection.Label("@down_not_pressed");
+            switchSection.Label("@select_not_pressed");
             switchSection.RTS();
             // patch rom with this new routine
             return switchSection.FlushToContent(content, 15, cpu_addr);
@@ -335,7 +335,8 @@ namespace FaxanaduRando.Randomizer
             section.PHA();
             section.LDY_imm(0x07); // loop over the 8 sprite slots backwards
 
-            // *: @next_sprite should be here
+            // TODO: branch directly here instead
+            section.Label("@next_sprite_loop");
             section.LDA_abs_y(RAM.SpritesOnScreen);
             section.TAX();
             section.LDA_abs_x(ROM.SpriteCategoryTable);
@@ -356,9 +357,9 @@ namespace FaxanaduRando.Randomizer
             section.SEC(); // set carry - signal no bosses - the item sprite can be shown
             section.RTS();
 
+            // TODO: Remove this label and JMP. BPL can branch directly to @next_sprite_loop.
             section.Label("@next_sprite");
-            // TODO: Remove this instruction and put @next_sprite label at *
-            section.JMP((ushort)(cpu_addr + 4));
+            section.JMP("@next_sprite_loop");
 
             return section.FlushToContent(content, 14, cpu_addr);
         }
@@ -692,15 +693,17 @@ namespace FaxanaduRando.Randomizer
 
             var convertPoisonSection = new Section();
 
-            // play sound effec 8 - item picked up
+            // play sound effect 8 - item picked up
             convertPoisonSection.Db(0x08);
             convertPoisonSection.JSR(ROM.Sound_PlayEffect);
-            // place poison (mana potion) in inventory
+            // place poison (black potion) in inventory
             convertPoisonSection.LDA_imm(0x11);
             convertPoisonSection.JSR(ROM.Player_PickUpItem);
-            // TODO: What is this? 0x7803 is not a valid address
+            // TODO: this is a typo of 0x0378 which is RAM addr of current sprite index
+            // X is overwritten by caller before use so this could be removed even in vanilla
             convertPoisonSection.LDX_abs(0x7803);
             convertPoisonSection.RTS();
+            // TODO: These two NOPs can also be removed
             convertPoisonSection.NOP(2);
 
             convertPoisonSection.FlushToContent(content, 15, ROM.Player_PickUpPoison_DamageSoundIndex);
