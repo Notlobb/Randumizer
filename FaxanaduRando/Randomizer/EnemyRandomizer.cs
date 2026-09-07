@@ -141,7 +141,7 @@ namespace FaxanaduRando.Randomizer
             // replace the magic hit-width lookup with a jump to the new immunity check below
             var resistSection = new Section();
             resistSection.JMP(ROM.HitEnemyWithMagic_CalcDefense_TempLo); // *
-            resistSection.FlushToContent(content, Section.GetOffset(14, ROM.Sprite_CheckHitByCastMagic_LDA_HitWidth));
+            resistSection.FlushToContent(content, 14, ROM.Sprite_CheckHitByCastMagic_LDA_HitWidth);
 
             // preserve the original damage path, but bypass the vanilla magic-defense calculation
             resistSection.JMP(ROM.HitEnemyWithMagic_ReduceEnemyHP);
@@ -163,7 +163,7 @@ namespace FaxanaduRando.Randomizer
             resistSection.JMP(ROM.Sprite_CheckHitByCastMagic_STA_Temp01);
 
             // repurpose the now-unused vanilla magic defense calculation as the new routine
-            resistSection.FlushToContent(content, Section.GetOffset(14, ROM.HitEnemyWithMagic_CalcDefense));
+            resistSection.FlushToContent(content, 14, ROM.HitEnemyWithMagic_CalcDefense);
         }
 
         public void UpdateSpriteValues(int id, byte hp, byte damage, byte experience, byte rewardType,

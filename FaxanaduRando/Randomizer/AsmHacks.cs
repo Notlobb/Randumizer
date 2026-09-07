@@ -12,7 +12,7 @@ namespace FaxanaduRando.Randomizer
 
             // install hook - reference the new routine
             switchSection.JSR(cpu_addr);
-            switchSection.FlushToContent(content, Section.GetOffset(15, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges));
+            switchSection.FlushToContent(content, 15, ROM.GameLoop_CheckPauseGame_JSR_Sprites_FlipRanges);
 
             // call the routine vanilla would have called if we didn't install the hook
             switchSection.JSR(ROM.Sprites_FlipRanges);
@@ -25,7 +25,7 @@ namespace FaxanaduRando.Randomizer
             switchSection.Label("@down_not_pressed");
             switchSection.RTS();
             // patch rom with this new routine
-            return switchSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return switchSection.FlushToContent(content, 15, cpu_addr);
         }
 
         public static int DynamicHackPreventKnockbackOnLadders(byte[] content, ushort cpu_addr)
@@ -35,7 +35,7 @@ namespace FaxanaduRando.Randomizer
             // add hook to new routine near the end of vanilla Player_UpdatePosFromKnockback
             section.JSR(cpu_addr);
             section.NOP();
-            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_UpdatePosFromKnockback_LDA_08));
+            section.FlushToContent(content, 15, ROM.Player_UpdatePosFromKnockback_LDA_08);
 
             // call the routine that checks if player is climbing and sets a status flag in zeropage
             section.JSR(ROM.Player_CheckIfOnLadder);
@@ -53,7 +53,7 @@ namespace FaxanaduRando.Randomizer
             section.STA_zp(RAM.ZP_Player_MoveAcceleration_U);
             section.RTS();
             // patch rom with this new routine
-            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return section.FlushToContent(content, 15, cpu_addr);
         }
 
         // in vanilla door requirements range from 0-8, where 0 is no requirement
@@ -67,7 +67,7 @@ namespace FaxanaduRando.Randomizer
 
             // install hook - reference the new routine
             reqSection.JMP_abs(cpu_addr);
-            reqSection.FlushToContent(content, Section.GetOffset(15, ROM.Game_RunDoorRequirementHandler_BEQ_RTS));
+            reqSection.FlushToContent(content, 15, ROM.Game_RunDoorRequirementHandler_BEQ_RTS);
 
             // new door requirement handler
             reqSection.BNE("@door_has_requirement");
@@ -142,7 +142,7 @@ namespace FaxanaduRando.Randomizer
 
             // all requirements passed
             reqSection.JMP_abs(ROM.Game_UnlockDoor);
-            return reqSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return reqSection.FlushToContent(content, 15, cpu_addr);
         }
 
         // apply the pending stage, mark a stage change as pending, then load the destination outside area
@@ -152,7 +152,7 @@ namespace FaxanaduRando.Randomizer
 
             // update the sameworld-door logic to jump into our new routine instead of vanilla
             section.JMP(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_CheckHandleEnterDoor_enterScreen));
+            section.FlushToContent(content, 15, ROM.Player_CheckHandleEnterDoor_enterScreen);
 
             // new routine for applying pending stage, and clearing the stage-is-pending flag
             section.LDA_imm(0x01);
@@ -161,7 +161,7 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.CurrentStage);
             section.JSR(ROM.Game_SetupAndLoadOutsideArea);
             section.RTS();
-            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return section.FlushToContent(content, 15, cpu_addr);
         }
 
         // clear the pending stage flag and apply palette handling
@@ -172,7 +172,7 @@ namespace FaxanaduRando.Randomizer
             // update the stage palette logic to jump into our palette handler
             section.JMP(cpu_addr);
             section.NOP(2);
-            section.FlushToContent(content, Section.GetOffset(15, ROM.Game_LoadCurrentArea_LoadPalette));
+            section.FlushToContent(content, 15, ROM.Game_LoadCurrentArea_LoadPalette);
 
             // new routine for handling hack door palette
             section.LDA_imm(0x00);
@@ -189,7 +189,7 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.StageChangePending);
             section.JMP(ROM.Screen_Load);
 
-            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return section.FlushToContent(content, 15, cpu_addr);
         }
 
         // extract stage and door requirement from hacked same-world doors
@@ -199,7 +199,7 @@ namespace FaxanaduRando.Randomizer
 
             // instead of storing A in door requirement ram directly, jump to the new routine
             section.JSR(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(15, ROM.Area_SetStateFromDoorDestination_STA_DoorReq));
+            section.FlushToContent(content, 15, ROM.Area_SetStateFromDoorDestination_STA_DoorReq);
 
             // extract stage and actual door requirement from hack-door data: Hack_ExtractStageAndRequirement
             section.TAY();
@@ -212,7 +212,7 @@ namespace FaxanaduRando.Randomizer
             section.STA_abs(RAM.CurrentDoor_KeyRequirement);
             section.RTS();
 
-            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return section.FlushToContent(content, 15, cpu_addr);
         }
 
         // clear the pending stage-change flag before continuing with the vanilla outside-area setup and loading logic
@@ -222,13 +222,13 @@ namespace FaxanaduRando.Randomizer
 
             // hook vanilla code into our new routine
             section.JMP(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(15, ROM.Player_EnterDoorToOutside_JMP_SetupArea));
+            section.FlushToContent(content, 15, ROM.Player_EnterDoorToOutside_JMP_SetupArea);
 
             // clear pending hack stage change flag and load world
             section.LDA_imm(0x00);
             section.STA_abs(RAM.StageChangePending);
             section.JMP(ROM.Game_SetupAndLoadOutsideArea);
-            return section.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return section.FlushToContent(content, 15, cpu_addr);
         }
 
         // implement a custom palette to music handler when the door hack is applied
@@ -242,7 +242,7 @@ namespace FaxanaduRando.Randomizer
 
             // hook vanilla code into our new routine
             sec.JSR(cpu_addr);
-            sec.FlushToContent(content, Section.GetOffset(15, ROM.Palette_Check_Loop_CMP_X));
+            sec.FlushToContent(content, 15, ROM.Palette_Check_Loop_CMP_X);
 
             sec.CMP_imm(branchPalette);
             sec.BNE("@not_branches");
@@ -267,7 +267,7 @@ namespace FaxanaduRando.Randomizer
             sec.STA_abs(RAM.World_DefaultMusic);
             sec.RTS();
 
-            return sec.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return sec.FlushToContent(content, 15, cpu_addr);
         }
 
         // Other-world transitions normally change the current world without changing
@@ -284,7 +284,7 @@ namespace FaxanaduRando.Randomizer
             // replace the vanilla INY instruction with a call to the new routine
             // the routine reproduces the overwritten instruction before returning
             newSection.JSR(cpu_addr);
-            newSection.FlushToContent(content, Section.GetOffset(15, ROM.HandleOtherWorldTransition_INY));
+            newSection.FlushToContent(content, 15, ROM.HandleOtherWorldTransition_INY);
 
             // at the call site, A contains the destination world loaded from the
             // other-world transition data; use it as an index into the
@@ -299,7 +299,7 @@ namespace FaxanaduRando.Randomizer
             newSection.INY();
             newSection.LDA_ind_y(0x02);
             newSection.RTS();
-            int bytecount = newSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            int bytecount = newSection.FlushToContent(content, 15, cpu_addr);
 
             // map each world ID to the stage containing that world after segment
             // shuffling. The destination world ID is used directly as the table index
@@ -328,7 +328,7 @@ namespace FaxanaduRando.Randomizer
             section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QMattock_CheckForBosses));
             section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QWingBoots_CheckForBosses));
             section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BlackOnyx_CheckForBosses));
-            section.FlushToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_Pendant_CheckForBosses));
+            section.FlushToContent(content, 14, ROM.SpriteBehavior_Pendant_CheckForBosses);
 
             // new hack function
             section.TXA();
@@ -360,7 +360,7 @@ namespace FaxanaduRando.Randomizer
             // TODO: Remove this instruction and put @next_sprite label at *
             section.JMP((ushort)(cpu_addr + 4));
 
-            return section.FlushToContent(content, Section.GetOffset(14, cpu_addr));
+            return section.FlushToContent(content, 14, cpu_addr);
         }
 
         public static int DynamicHackUseMattockAnywhereExceptBannedScreens(byte[] content, ushort cpu_addr)
@@ -370,7 +370,7 @@ namespace FaxanaduRando.Randomizer
             // insert the hook, and allow mattock to be used if A=0 on return
             mattocksection.JSR(cpu_addr);
             mattocksection.NOP(3);
-            mattocksection.FlushToContent(content, Section.GetOffset(15, ROM.Player_UseMattock_LDA_MetatileID));
+            mattocksection.FlushToContent(content, 15, ROM.Player_UseMattock_LDA_MetatileID);
 
             // new function in free space; returns 0 if mattock can be used
             mattocksection.LDA_abs(RAM.ZP_CurrentWorld); // TODO: LDA_zp
@@ -399,7 +399,7 @@ namespace FaxanaduRando.Randomizer
             mattocksection.LDA_imm(0x00);
             mattocksection.RTS();
 
-            return mattocksection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return mattocksection.FlushToContent(content, 15, cpu_addr);
         }
 
         public static int DynamicHackFastText(byte[] content, ushort cpu_addr)
@@ -411,7 +411,7 @@ namespace FaxanaduRando.Randomizer
             var newSection = new Section();
             newSection.JSR(cpu_addr);
             newSection.NOP(2);
-            newSection.FlushToContent(content, Section.GetOffset(15, ROM.TextBox_ShowNextChar_LDA_01, 0xC000));
+            newSection.FlushToContent(content, 15, ROM.TextBox_ShowNextChar_LDA_01);
 
             // New subroutine: preserve original 4-frame sound cadence
             newSection.LDA_abs(RAM.TextBox_Timer);
@@ -421,7 +421,7 @@ namespace FaxanaduRando.Randomizer
             newSection.STA_abs(RAM.TextBox_PlayTextSound);
             newSection.RTS();
 
-            return newSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return newSection.FlushToContent(content, 15, cpu_addr);
         }
 
         // repurposes five vanilla sprite IDs as collectible gift items
@@ -492,11 +492,11 @@ namespace FaxanaduRando.Randomizer
             // add a NOP to be aligned with the next check (we are overwriting the mattock-pickup logic in vanilla)
             newSection.JMP(cpu_addr);
             newSection.NOP();
-            newSection.FlushToContent(content, Section.GetOffset(15, ROM.Player_PickUp));
+            newSection.FlushToContent(content, 15, ROM.Player_PickUp);
 
             // remove the check on glove pickup (static patch)
             newSection.NOP(4);
-            newSection.FlushToContent(content, Section.GetOffset(15, ROM.Player_PickUp_checkGlove1));
+            newSection.FlushToContent(content, 15, ROM.Player_PickUp_checkGlove1);
 
             // the new pick-up hack routine follows
             newSection.TAX();
@@ -561,7 +561,7 @@ namespace FaxanaduRando.Randomizer
             // continue with vanilla logic from where we left off
             newSection.JMP(ROM.Player_PickUp_CheckMagicalRod);
 
-            int freeSpaceUsed = newSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            int next_cpu_addr = newSection.FlushToContent(content, 15, cpu_addr);
 
             var spriteTypeTable = new Table(Section.GetOffset(14, ROM.SpriteCategoryTable), 100, 1, content);
             // set the following sprites to have category 5 - item (Mattock already has this category)
@@ -668,7 +668,7 @@ namespace FaxanaduRando.Randomizer
             sizeTable.AddToContent(content);
             subBehaviourTable.AddToContent(content);
 
-            return freeSpaceUsed;
+            return next_cpu_addr;
         }
 
         public static int DynamicHackPoisonAsManaPotion(byte[] content, ushort cpu_addr)
@@ -688,7 +688,7 @@ namespace FaxanaduRando.Randomizer
             manaPotionSection.LDA_abs(RAM.SelectedItem);
             manaPotionSection.RTS();
 
-            int freeSpaceUsed = manaPotionSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            int next_cpu_addr = manaPotionSection.FlushToContent(content, 15, cpu_addr);
 
             var convertPoisonSection = new Section();
 
@@ -703,9 +703,9 @@ namespace FaxanaduRando.Randomizer
             convertPoisonSection.RTS();
             convertPoisonSection.NOP(2);
 
-            convertPoisonSection.FlushToContent(content, Section.GetOffset(15, ROM.Player_PickUpPoison_DamageSoundIndex));
+            convertPoisonSection.FlushToContent(content, 15, ROM.Player_PickUpPoison_DamageSoundIndex);
 
-            return freeSpaceUsed;
+            return next_cpu_addr;
         }
 
         // start the game with full health, mana, some gold and optionally the ring of elf
@@ -725,7 +725,7 @@ namespace FaxanaduRando.Randomizer
             // relies on bank 14 being loaded in at the time this routine is run
             var newSection = new Section();
             newSection.JSR(cpu_addr);
-            newSection.FlushToContent(content, Section.GetOffset(15, ROM.Game_Start_JSR_Game_LoadFirstLevel));
+            newSection.FlushToContent(content, 15, ROM.Game_Start_JSR_Game_LoadFirstLevel);
 
             // start with 1500 gold (256*5+220)
             newSection = new Section();
@@ -744,7 +744,7 @@ namespace FaxanaduRando.Randomizer
             newSection.JSR(ROM.Game_LoadFirstLevel);
             newSection.RTS();
 
-            return newSection.FlushToContent(content, Section.GetOffset(14, cpu_addr));
+            return newSection.FlushToContent(content, 14, cpu_addr);
         }
 
         public static int DynamicHackFlexibleItems(byte[] content, ushort cpu_addr)
@@ -762,7 +762,7 @@ namespace FaxanaduRando.Randomizer
             // allow any item to be sold, including items not present in the shop's sell table
             var sellSection = new Section();
             sellSection.JMP(cpu_addr);
-            sellSection.FlushToContent(content, Section.GetOffset(12, ROM.ShowSellMenu_JSR_FindSellMenuEntry));
+            sellSection.FlushToContent(content, 12, ROM.ShowSellMenu_JSR_FindSellMenuEntry);
 
             sellSection.JSR(ROM.FindSellMenuEntry);
             sellSection.CMP_imm(0xFF);
@@ -780,12 +780,12 @@ namespace FaxanaduRando.Randomizer
             sellSection.LDA_imm(0x00);
             sellSection.JMP(ROM.ShowSellMenu_STA_CostHi);
 
-            int usedFreeSpace = sellSection.FlushToContent(content, Section.GetOffset(12, cpu_addr));
+            int next_cpu_addr = sellSection.FlushToContent(content, 12, cpu_addr);
 
             // preserve the original item ID in X when no sell-table entry is found
             content[Section.GetOffset(12, ROM.FindSellMenuEntry_TAX)] = OpCode.NOP;
 
-            return usedFreeSpace;
+            return next_cpu_addr;
         }
 
         // fix vanilla ointment invincibility when a shield is equipped
@@ -796,7 +796,7 @@ namespace FaxanaduRando.Randomizer
         {
             var section = new Section();
             section.JSR(cpu_addr);
-            section.FlushToContent(content, Section.GetOffset(14, ROM.Player_CheckShieldHitByMagic));
+            section.FlushToContent(content, 14, ROM.Player_CheckShieldHitByMagic);
 
             // return shield value 3 while ointment is active, causing the vanilla
             // shield-vs-magic routine to return immediately; otherwise use the equipped shield
@@ -809,7 +809,7 @@ namespace FaxanaduRando.Randomizer
             section.LDA_imm(0x03);
             section.RTS();
 
-            return section.FlushToContent(content, Section.GetOffset(14, cpu_addr));
+            return section.FlushToContent(content, 14, cpu_addr);
         }
 
         // strengthen shields against magic:
@@ -820,7 +820,7 @@ namespace FaxanaduRando.Randomizer
             var section = new Section();
             section.JSR(cpu_addr);
             section.NOP();
-            section.FlushToContent(content, Section.GetOffset(14, ROM.Player_HandleHitByMagic_LSR_A));
+            section.FlushToContent(content, 14, ROM.Player_HandleHitByMagic_LSR_A);
 
             section = new Section();
             section.CPY_imm(0x02);
@@ -831,7 +831,7 @@ namespace FaxanaduRando.Randomizer
             section.Label("@return_0");
             section.LDA_imm(0x00);
             section.RTS();
-            return section.FlushToContent(content, Section.GetOffset(14, cpu_addr));
+            return section.FlushToContent(content, 14, cpu_addr);
         }
 
         // removes the check if quest flag 3 is set when loading Zorigeriru Wing Boots making them always available
@@ -855,7 +855,7 @@ namespace FaxanaduRando.Randomizer
                     // add another static hack to prevent decrement of the wingboots' duration
                     var bootSection = new Section();
                     bootSection.NOP(3);
-                    bootSection.FlushToContent(content, Section.GetOffset(15, ROM.WingBootsDurationDecrement));
+                    bootSection.FlushToContent(content, 15, ROM.WingBootsDurationDecrement);
                     break;
 
                 case ItemOptions.WingBootDurations.Random:
@@ -898,7 +898,7 @@ namespace FaxanaduRando.Randomizer
                     "Invalid Wing Boots duration type");
             }
 
-            wbsection.FlushToContent(content, Section.GetOffset(15, ROM.TitleToWingbootsDurationTable));
+            wbsection.FlushToContent(content, 15, ROM.TitleToWingbootsDurationTable);
 
             // helper local to this function
             void AddDurations(params byte[] values)

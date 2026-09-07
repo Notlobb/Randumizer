@@ -33,14 +33,21 @@ namespace FaxanaduRando.Randomizer
         }
 
         // resolves labels, applies the patch, clears internal state,
-        // and returns the number of emitted bytes
-        public int FlushToContent(byte[] content, int offset)
+        // and returns the next available cpu address (and throws if it is > 1 past end of bank)
+        public int FlushToContent(byte[] content, int bank, int cpuAddr)
         {
             ResolveLabels();
-            int result = Size();
-            AddToContent(content, offset);
+
+            int nextAddr = cpuAddr + Size();
+            int bankEnd = (bank == 15 ? 0xFFFF : 0xBFFF);
+
+            if (nextAddr > bankEnd + 1)
+                throw new RandomizationException("Hack crosses bank {:bank} boundary");
+
+            AddToContent(content, Section.GetOffset(bank, cpuAddr));
+
             Clear();
-            return result;
+            return nextAddr;
         }
 
         // .db
