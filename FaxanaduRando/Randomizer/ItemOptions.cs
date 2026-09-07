@@ -76,6 +76,36 @@ namespace FaxanaduRando.Randomizer
             NoLimit
         };
 
+        public enum WeaponStatRandomization
+        {
+            Unchanged,
+            Swap,
+            Subtle,
+            Mild,
+            Moderate,
+            Strong,
+            Extreme,
+        };
+
+        public enum MagicStatRandomization
+        {
+            Unchanged,
+            Swap,
+            Subtle,
+            Mild,
+            Moderate,
+            Strong,
+            Extreme,
+        };
+
+        public enum ArmorStatRandomization
+        {
+            Unchanged,
+            Swap,
+            PlusMinus1,
+            PlusMinus2,
+        };
+
         [Flag(16)]
         public static bool GuaranteeElixirNearFortress { get; set; } = true;
 
@@ -122,6 +152,9 @@ namespace FaxanaduRando.Randomizer
         [Flag(30)]
         public static bool IncludeSomeEolisDoors { get; set; } = false;
 
+        [Flag(34)]
+        public static bool ShowExactStatValues { get; set; } = false;
+
         [Flag(FlagsCodec.NonBoolFlagBase + 43)]
         public static BigItemSpawning BigItemSpawns { get; set; } = BigItemSpawning.AlwaysSpawn;
 
@@ -139,6 +172,15 @@ namespace FaxanaduRando.Randomizer
 
         [Flag(FlagsCodec.NonBoolFlagBase + 51)]
         public static KeyLimit BigKeyLimit { get; set; } = KeyLimit.NoLimit;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 53)]
+        public static WeaponStatRandomization WeaponStatSetting { get; set; } = WeaponStatRandomization.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 54)]
+        public static MagicStatRandomization MagicStatSetting { get; set; } = MagicStatRandomization.Unchanged;
+
+        [Flag(FlagsCodec.NonBoolFlagBase + 55)]
+        public static ArmorStatRandomization ArmorStatSetting { get; set; } = ArmorStatRandomization.Unchanged;
     }
 
     public class WingBootSettings : ObservableCollection<string>
@@ -273,6 +315,57 @@ namespace FaxanaduRando.Randomizer
     }
 
     public class KeyLimitConverter : EnumConverter<ItemOptions.KeyLimit>
+    {
+    }
+
+    public class WeaponStatSettings : ObservableCollection<string>
+    {
+        public WeaponStatSettings()
+        {
+            Add("Unchanged");
+            Add("Swap");
+            Add("Subtle");
+            Add("Mild");
+            Add("Moderate");
+            Add("Strong");
+            Add("Extreme");
+        }
+    }
+
+    public class MagicStatSettings : ObservableCollection<string>
+    {
+        public MagicStatSettings()
+        {
+            Add("Unchanged");
+            Add("Swap");
+            Add("Subtle");
+            Add("Mild");
+            Add("Moderate");
+            Add("Strong");
+            Add("Extreme");
+        }
+    }
+
+    public class ArmorStatSettings : ObservableCollection<string>
+    {
+        public ArmorStatSettings()
+        {
+            Add("Unchanged");
+            Add("Swap");
+            Add("+/- 1");
+            Add("+/- 2");
+        }
+    }
+
+    public class WeaponStatConverter : EnumConverter<ItemOptions.WeaponStatRandomization>
+    {
+    }
+
+    public class MagicStatConverter : EnumConverter<ItemOptions.MagicStatRandomization>
+    {
+    }
+
+    public class ArmorStatConverter : EnumConverter<ItemOptions.ArmorStatRandomization>
     {
     }
 

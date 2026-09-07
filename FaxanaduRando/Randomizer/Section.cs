@@ -396,6 +396,12 @@ namespace FaxanaduRando.Randomizer
             Db(OpCode.SEC);
         }
 
+        public void EOR_imm(byte value)
+        {
+            Db(OpCode.EORImmediate);
+            Db(value);
+        }
+
         // stack
         public void PHA()
         {

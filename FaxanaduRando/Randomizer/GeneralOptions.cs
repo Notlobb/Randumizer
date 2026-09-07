@@ -83,6 +83,9 @@ namespace FaxanaduRando.Randomizer
         [Flag(26)]
         public static bool FlexibleItems { get; set; } = true;
 
+        [Flag(33)]
+        public static bool UseWeaponIndoors { get; set; } = false;
+
         [Flag(27)]
         public static bool IncludeEvilOnesFortress { get; set; } = false;
 

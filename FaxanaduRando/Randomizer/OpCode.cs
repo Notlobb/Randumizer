@@ -10,6 +10,7 @@ namespace FaxanaduRando.Randomizer
         public const int ANDImmediate = 0x29;
         public const int SEC = 0x38;
         public const int PHA = 0x48;
+        public const int EORImmediate = 0x49;
         public const int LSRA = 0x4A;
         public const int RTS = 0x60;
         public const int PLA = 0x68;

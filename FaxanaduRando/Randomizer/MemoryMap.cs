@@ -13,6 +13,8 @@
 
         // main RAM
         public const ushort MessageID = 0x0213;
+        public const ushort TextBox_PlayTextSound = 0x212;
+        public const ushort TextBox_Timer = 0x021d;
         public const ushort UIStringCount = 0x021F;
         public const ushort UIDataArray = 0x0220;
         public const ushort ShopItemCostsLo = 0x0228;
@@ -184,17 +186,19 @@
         public const ushort OpenDoorWithRingOfElf_ScriptID = 0xEBA9;
         public const ushort OpenDoorWithRingOfDworf_ScriptID = 0xEBB9;
         public const ushort OpenDoorWithDemonsRing_ScriptID = 0xEBC9;
-        public const ushort BossMusicIndex = 0xEFAC;
-        public const ushort EndGameTransitionMusicIndex = 0xEFDA;
-        public const ushort TextBox_DisplayMessage = 0xF4A2;
-        public const ushort TextBox_DisplayMessage_BEQ_TextBox_ShowMessage = 0xF4A5;
-        public const ushort TextBox_ShowMessage_RTS = 0xF557;
-        public const ushort MMC1_LoadBankAndJump = 0xF859;
-        public const ushort MantraMusicIndex = 0xFC81;
+        public const ushort BossMusicIndex = 0xefac;
+        public const ushort EndGameTransitionMusicIndex = 0xefda;
+        public const ushort TextBox_ShowNextChar_LDA_01 = 0xF472;
+        public const ushort TextBox_ShowNextChar_IfReady_TimerMask = 0xf49f;
+        public const ushort TextBox_DisplayMessage = 0xf4a2;
+        public const ushort TextBox_DisplayMessage_BEQ_TextBox_ShowMessage = 0xf4a5;
+        public const ushort TextBox_ShowMessage_RTS = 0xf557;
+        public const ushort MMC1_LoadBankAndJump = 0xf859;
+        public const ushort MantraMusicIndex = 0xfc81;
         // bank 15 free space addresses used for hack injection
-        public const ushort HackItemPickup = 0xFCD0;
+        public const ushort HackItemPickup = 0xfcd0;
         public const ushort HackOtherWorldTransitionSetShuffledStage = 0xfd50;
-        public const ushort HackWorldToShuffledStageTable = 0xFD68;
+        public const ushort HackWorldToShuffledStageTable = 0xfd68;
         public const ushort HackClearPendingStageAndLoadWorld = 0xfda0;
         public const ushort HackPoisonAsManaPotion = 0xFD70;
         public const ushort HackMattockAnywhere = 0xFDD0;
@@ -206,7 +210,6 @@
         public const ushort HackPreventLadderKnockback = 0xFED0;
         public const ushort HackKillswitch = 0xFEE4;
         public const ushort HackFastText = 0xFF00;
-        public const ushort HackFastTextHelper = 0xFF90;
     }
 
 }

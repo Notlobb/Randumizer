@@ -402,48 +402,26 @@ namespace FaxanaduRando.Randomizer
             return mattocksection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
-        public static int DynamicHackFastTextHelper(byte[] content, ushort cpu_addr)
+        public static int DynamicHackFastText(byte[] content, ushort cpu_addr)
         {
-            var sec = new Section();
+            // Change AND mask from #$03 to #$00 (display char every frame)
+            content[Section.GetOffset(15, ROM.TextBox_ShowNextChar_IfReady_TimerMask)] = 0x00;
 
-            // execute one iteration of the vanilla text-display logic
-            // MessageID is cleared to 0 when the current string has been fully
-            // consumed. the fast-text hack performs multiple iterations per call,
-            // so we must stop once the message ends to avoid executing additional
-            // parser passes after textbox teardown
-            sec.LDA_abs(RAM.MessageID);
-            sec.BEQ("@return");
-            // the original routine expects A to contain Textbox_TitleCharOffset before entering at $F4A5
-            sec.LDA_abs(RAM.Textbox_TitleCharOffset);
-            sec.JSR(ROM.TextBox_DisplayMessage_BEQ_TextBox_ShowMessage);
+            // Hook: replace "LDA #$01 / STA TextBox_PlayTextSound" with JSR + NOPs
+            var newSection = new Section();
+            newSection.JSR(cpu_addr);
+            newSection.NOP(2);
+            newSection.FlushToContent(content, Section.GetOffset(15, ROM.TextBox_ShowNextChar_LDA_01, 0xC000));
 
-            sec.Label("@return");
-            sec.RTS();
+            // New subroutine: preserve original 4-frame sound cadence
+            newSection.LDA_abs(RAM.TextBox_Timer);
+            newSection.AND_imm(0x02);
+            newSection.LSR_a();
+            newSection.EOR_imm(0x01);
+            newSection.STA_abs(RAM.TextBox_PlayTextSound);
+            newSection.RTS();
 
-            return sec.FlushToContent(content, Section.GetOffset(15, cpu_addr));
-        }
-
-        public static int DynamicHackFastText(byte[] content, ushort cpu_addr, ushort cpu_addr_helper)
-        {
-            // Hook the vanilla text display routine.
-            // Instead of advancing one text step per call, redirect to a custom
-            // routine that advances up to three text steps.
-            var sec = new Section();
-            sec.JMP_abs(cpu_addr);
-            sec.FlushToContent(content, Section.GetOffset(15, ROM.TextBox_DisplayMessage));
-
-            // advance the textbox engine three times
-            // each helper call executes the vanilla text parser once
-            sec.JSR(cpu_addr_helper);
-            sec.JSR(cpu_addr_helper);
-            sec.JSR(cpu_addr_helper);
-            // restore A to the value expected by the vanilla return path
-            sec.LDA_abs(RAM.Textbox_TitleCharOffset);
-            // rejoin the original routine at its RTS
-            // TODO: surely a direct rts from here is equivalent
-            sec.JMP(ROM.TextBox_ShowMessage_RTS);
-
-            return sec.FlushToContent(content, Section.GetOffset(15, cpu_addr));
+            return newSection.FlushToContent(content, Section.GetOffset(15, cpu_addr));
         }
 
         // repurposes five vanilla sprite IDs as collectible gift items

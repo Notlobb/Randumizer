@@ -26,6 +26,9 @@
 		<randomizer:KeyLimitSettings x:Key="keyLimitSettings" />
 		<randomizer:MusicSettings x:Key="musicSettings" />
 		<randomizer:SoundtrackSettings x:Key="soundtrackSettings" />
+		<randomizer:WeaponStatSettings x:Key="weaponStatSettings" />
+		<randomizer:MagicStatSettings x:Key="magicStatSettings" />
+		<randomizer:ArmorStatSettings x:Key="armorStatSettings" />
 	</Window.Resources>
 	<Window.Styles>
 		<Style Selector="CheckBox">
@@ -105,13 +108,15 @@
 					<!-- Right column: more checkboxes -->
 					<CheckBox Name="flexibleItemsCheckbox" Grid.Column="6" Grid.Row="0" Content="Flexible items" Margin="0,1"
                               ToolTip.Tip="Allow equipping items indoors. You still can't use your main weapon indoors. Also allows for using items in the air, and allows for items to always be able to be sold in shops."/>
-					<CheckBox Name="darknessCheckBox" Grid.Column="6" Grid.Row="1" Content="Dark towers" Margin="0,1"
+					<CheckBox Name="useWeaponIndoorsCheckBox" Grid.Column="6" Grid.Row="1" Content="Use weapon indoors" Margin="0,1"
+                              ToolTip.Tip="Allows using your main weapon while inside buildings"/>
+					<CheckBox Name="darknessCheckBox" Grid.Column="6" Grid.Row="2" Content="Dark towers" Margin="0,1"
                               ToolTip.Tip="The inside of towers will be dark"/>
-					<CheckBox Name="randomizeTitlesCheckBox" Grid.Column="6" Grid.Row="2" Content="Randomize titles" Margin="0,1"
+					<CheckBox Name="randomizeTitlesCheckBox" Grid.Column="6" Grid.Row="3" Content="Randomize titles" Margin="0,1"
                               ToolTip.Tip="The name, requirements and rewards for titles will be random"/>
-					<CheckBox Name="addKillSwitchCheckBox" Grid.Column="6" Grid.Row="3" Content="Add kill switch" Margin="0,1"
+					<CheckBox Name="addKillSwitchCheckBox" Grid.Column="6" Grid.Row="4" Content="Add kill switch" Margin="0,1"
                               ToolTip.Tip="Pressing select while the game is paused and then unpausing will kill the player. It is recommended you turn this on when doing screen randomization"/>
-					<CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="6" Grid.Row="4" Content="Include Zenis in the tower shuffle" Margin="0,1"
+					<CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="6" Grid.Row="5" Content="Include Zenis in the tower shuffle" Margin="0,1"
                               ToolTip.Tip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
 
 					<!-- Combobox settings -->
@@ -247,6 +252,21 @@
                               ToolTip.Tip="Limit the maximum number of doors for each type of big key. Big key refers to the ace, or joker key"/>
 
 					<!-- Row 10 has includeSomeEolisDoorsCheckBox on the left -->
+
+					<TextBlock Grid.Column="2" Grid.Row="11" Text="Weapon stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="weaponStatComboBox" Grid.Column="4" Grid.Row="11" ItemsSource="{StaticResource weaponStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize weapon damage values. Swap randomly reassigns each weapon's damage to another weapon. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each weapon's base power, so weaker weapons vary less than stronger ones. Item names reflect the change. Dagger is never weakened. Damage never goes below 2"/>
+
+					<TextBlock Grid.Column="2" Grid.Row="12" Text="Magic stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="magicStatComboBox" Grid.Column="4" Grid.Row="12" ItemsSource="{StaticResource magicStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize magic damage values. Swap randomly reassigns each spell's damage to another spell. The tiered options (Subtle–Extreme) adjust values proportionally — the range scales with each spell's base power, so weaker spells vary less than stronger ones. Item names reflect the change. Damage never goes below 2"/>
+
+					<TextBlock Grid.Column="2" Grid.Row="13" Text="Armor stats:" VerticalAlignment="Center" Margin="0,1,8,1"/>
+					<ComboBox Name="armorStatComboBox" Grid.Column="4" Grid.Row="13" ItemsSource="{StaticResource armorStatSettings}" SelectedIndex="0" Margin="0,1"
+                              ToolTip.Tip="Randomize armor defense values. Swap randomly reassigns each armor's defense multiplier to another armor. The +/- options adjust values by a flat amount. Item names reflect the change. Studded Mail is never weakened. Values never go below 0"/>
+
+					<CheckBox Name="showExactStatValuesCheckBox" Grid.Column="2" Grid.ColumnSpan="3" Grid.Row="14" Content="Show exact stat values in item names" Margin="0,1"
+                              ToolTip.Tip="Item names show the resulting stat instead of the change from vanilla, so a dagger that ended up at 5 damage reads 'HAND DAGGER 5' rather than 'HAND DAGGER+1'. Only affects the item types that are being randomized"/>
 				</Grid>
 			</ScrollViewer>
 		</TabItem>
