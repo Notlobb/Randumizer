@@ -66,10 +66,12 @@ namespace FaxanaduRando.Randomizer
             doorRandomizer.UpdateBuildings(giftRandomizer, shopRandomizer);
             doorRandomizer.LimitKeys(random);
 
-            var spriteBehaviourTable = new Table(Section.GetOffset(14, 0xAD2D, 0x8000), 100, 2, content);
+            var spriteBehaviourTable = new Table(Section.GetOffset(14, ROM.SpriteBehaviorScriptTable), 100, 2, content);
+
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
             {
-                UpdateGiftItemLogic(levels, content, spriteBehaviourTable);
+                AsmHacks.DynamicHackConfigureGiftItemSprites(levels, content, ROM.HackItemPickup, spriteBehaviourTable,
+                    ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.Unchanged);
             }
 
             var itemRandomizer = new ItemRandomizer(random);
@@ -82,6 +84,7 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.AlwaysSpawnSmallItems)
             {
+                // route several item behaviors to the Wing Boots behavior
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Hourglass] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RedPotion2] =
@@ -99,59 +102,17 @@ namespace FaxanaduRando.Randomizer
                         spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Wingboots];
                 }
 
+                // make the Wing Boots and all other items routed to its action handler
+                // always show, not only 1/4 of the time
                 var section = new Section();
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(14, 0xA506, 0x8000));
+                section.NOP(3);
+                section.AddToContent(content, Section.GetOffset(14, ROM.ItemWingBootsRandom_JMP_Sprites_Remove));
             }
 
             if (ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.AlwaysLockBehindBosses)
             {
-                var section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0x00);
-                section.Bytes.Add(0xBF);
-                section.AddToContent(content, Section.GetOffset(14, 0xA379, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA3A9, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA3E4, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA408, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA42C, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA450, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA474, 0x8000));
-
-                section = new Section();
-                section.Bytes.Add(OpCode.TXA);
-                section.Bytes.Add(OpCode.PHA);
-                section.Bytes.Add(OpCode.LDYImmediate);
-                section.Bytes.Add(0x07);
-                section.Bytes.Add(OpCode.LDAAbsoluteY);
-                section.Bytes.Add(0xCC);
-                section.Bytes.Add(0x02);
-                section.Bytes.Add(OpCode.TAX);
-                section.Bytes.Add(OpCode.LDAAbsoluteX);
-                section.Bytes.Add(0x44);
-                section.Bytes.Add(0xB5);
-                section.Bytes.Add(OpCode.CMPImmediate);
-                section.Bytes.Add(0x07);
-                section.Bytes.Add(OpCode.BNE);
-                section.Bytes.Add(0x04);
-                section.Bytes.Add(OpCode.PLA);
-                section.Bytes.Add(OpCode.TAX);
-                section.Bytes.Add(OpCode.CLC);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.DEY);
-                section.Bytes.Add(OpCode.TYA);
-                section.Bytes.Add(OpCode.BPL);
-                section.Bytes.Add(0x04);
-                section.Bytes.Add(OpCode.PLA);
-                section.Bytes.Add(OpCode.TAX);
-                section.Bytes.Add(OpCode.SEC);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.JMPAbsolute);
-                section.Bytes.Add(0x04);
-                section.Bytes.Add(0xBF);
-                section.AddToContent(content, Section.GetOffset(14, 0xBF00, 0x8000));
+                AsmHacks.DynamicHackBossLockedItemsCheckNoBossesRemaining(content,
+                    ROM.HackBossLockedItemsCheckNoBossesRemaining);
 
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Rod] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
@@ -159,18 +120,14 @@ namespace FaxanaduRando.Randomizer
             else if (ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.AlwaysSpawn)
             {
                 var section = new Section();
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(14, 0xA379, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA3A9, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA3E4, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA408, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA42C, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA450, 0x8000));
-                section.AddToContent(content, Section.GetOffset(14, 0xA474, 0x8000));
+                section.NOP(5);
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BattleSuit_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BattleHelmet_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_DragonSlayer_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QMattock_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_QWingBoots_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_BlackOnyx_CheckForBosses));
+                section.AddToContent(content, Section.GetOffset(14, ROM.SpriteBehavior_Pendant_CheckForBosses));
             }
 
             if (ItemOptions.BigItemSpawns != ItemOptions.BigItemSpawning.Unchanged)
@@ -178,39 +135,32 @@ namespace FaxanaduRando.Randomizer
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.MattockBossLocked] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
 
-                UpdateWingBootsQuest(content);
+                AsmHacks.StaticHackIgnoreWingBootsQuestRequirement(content);
 
                 var section = new Section();
-                section.Bytes.Add(OpCode.JMPAbsolute);
-                section.Bytes.Add(0x23);
-                section.Bytes.Add(0xA5);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(14, 0xA3B4, 0x8000));
+                section.JMP(ROM.Sprite_Remove);
+                section.RTS();
+                section.NOP(6);
+                section.AddToContent(content, Section.GetOffset(14, ROM.Sprites_RemoveAll));
             }
 
             if (ItemOptions.RandomizeBarRank)
             {
                 byte rank = (byte)random.Next(6, 11);
                 var section = new Section();
-                section.Bytes.Add(rank);
-                section.AddToContent(content, Section.GetOffset(12, 0xA254, 0x8000));
+                section.Db(rank);
+                section.AddToContent(content, Section.GetOffset(12, ROM.ScriptVictimBarCheckRankOperand));
                 giftRandomizer.BarRank = rank;
             }
 
             var enemyRandomizer = new EnemyRandomizer();
             Screen.SetupEnemyIds();
-            var enemyHPTable = new Table(Section.GetOffset(14, 0xB5A9, 0x8000), 100, 1, content);
-            var enemyDamageTable = new Table(Section.GetOffset(14, 0xB6D7, 0x8000), 100, 1, content);
-            var enemyExperienceTable = new Table(Section.GetOffset(14, 0xB60E, 0x8000), 100, 1, content);
-            var enemyRewardTypeTable = new Table(Section.GetOffset(14, 0xB672, 0x8000), 100, 1, content);
-            var enemyRewardQuantityTable = new Table(Section.GetOffset(14, 0xACED, 0x8000), 63, 1, content);
-            var magicResistanceTable = new Table(Section.GetOffset(14, 0xB73B, 0x8000), 100, 1, content);
+            var enemyHPTable = new Table(Section.GetOffset(14, ROM.SpriteHPTable), 100, 1, content);
+            var enemyDamageTable = new Table(Section.GetOffset(14, ROM.SpriteDamageTable), 100, 1, content);
+            var enemyExperienceTable = new Table(Section.GetOffset(14, ROM.SpriteXPTable), 100, 1, content);
+            var enemyRewardTypeTable = new Table(Section.GetOffset(14, ROM.SpriteDropIndexTable), 100, 1, content);
+            var enemyRewardQuantityTable = new Table(Section.GetOffset(14, ROM.SpriteDropValueTable), 63, 1, content);
+            var magicResistanceTable = new Table(Section.GetOffset(14, ROM.SpriteMagicDefenseTable), 100, 1, content);
 
             if (EnemyOptions.EnemySet != EnemyOptions.EnemySetType.Unchanged)
             {
@@ -312,8 +262,10 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.DarkTowers)
             {
-                content[Section.GetOffset(15, 0xDF53, 0xC000)] = PaletteRandomizer.DarkPalette;
-                content[Section.GetOffset(15, 0xE56A, 0xC000)] = PaletteRandomizer.DarkPalette;
+                // world 7 (Zenis) default palette
+                content[Section.GetOffset(15, ROM.WorldToPaletteTable + 7)] = PaletteRandomizer.DarkPalette;
+                // palette-to-music table entry 1 (Trunk Towers palette)
+                content[Section.GetOffset(15, ROM.Palette_To_Music_Table_Palettes + 1)] = PaletteRandomizer.DarkPalette;
 
                 if (!(GeneralOptions.ShuffleTowers && GeneralOptions.IncludeEvilOnesFortress))
                 {
@@ -347,21 +299,21 @@ namespace FaxanaduRando.Randomizer
 
             textRandomizer.UpdateText(shopRandomizer, giftRandomizer, doorRandomizer, segmentRandomizer, content, customTextFileContents, equipmentModifiers);
 
-            var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, 0x9DCC, 0x8000),
-                                                 Section.GetOffset(12, 0x9E0D, 0x8000));
+            var titleText = Text.GetAllTitleText(content, Section.GetOffset(12, ROM.StringTitleScreenCopyright),
+                                                 Section.GetOffset(12, ROM.StringTitleLicensedTerminator));
             Text.AddTitleText(0, "RANDUMIZER V29B5", titleText);
             var hash = Util.Fnv1aHash(flags).ToString("X8");
 
             Text.AddTitleText(1, $"FLAG HASH {hash}", titleText);
             Text.AddTitleText(2, $"SEED {seed}", titleText);
-            Text.SetAllTitleText(content, titleText, Section.GetOffset(12, 0x9DCC, 0x8000));
+            Text.SetAllTitleText(content, titleText, Section.GetOffset(12, ROM.StringTitleScreenCopyright));
 
             var paletteRandomizer = new PaletteRandomizer(random);
-            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool addSection);
+            RandomizeExtras(content, random, doorRandomizer, paletteRandomizer, out bool paletteToMusicLogicReplaced);
 
             if (GeneralOptions.ShuffleTowers)
             {
-                AddTowerShuffleModifications(content, addSection, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
+                AddTowerShuffleModifications(content, paletteToMusicLogicReplaced, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
 
             string suffix = "";
@@ -389,7 +341,7 @@ namespace FaxanaduRando.Randomizer
                 foreach (var hint in hints)
                 {
                     string spoiler = hint.Replace(Text.spaceChar, ' ');
-                    spoiler = hint.Replace(Text.lineBreakChar, ' ');
+                    spoiler = spoiler.Replace(Text.lineBreakChar, ' ');
                     spoiler = spoiler.Replace(Text.endOfTextChar, ' ');
                     spoiler = spoiler.Replace(Text.lineBreakWithPauseChar, ' ');
                     spoiler = spoiler.Replace(Text.secondSpaceChar, ' ');
@@ -441,16 +393,16 @@ namespace FaxanaduRando.Randomizer
                 }
 
                 var spells = new Dictionary<Spell.Id, Spell>();
-                spells[Spell.Id.Deluge] = new Spell(Spell.Id.Deluge, content[Section.GetOffset(14, 0xB7A9, 0x8000)],
-                                                    content[Section.GetOffset(14, 0xB7A0, 0x8000)]);
-                spells[Spell.Id.Thunder] = new Spell(Spell.Id.Thunder, content[Section.GetOffset(14, 0xB7AA, 0x8000)],
-                                                     content[Section.GetOffset(14, 0xB7A1, 0x8000)]);
-                spells[Spell.Id.Fire] = new Spell(Spell.Id.Fire, content[Section.GetOffset(14, 0xB7AB, 0x8000)],
-                                                  content[Section.GetOffset(14, 0xB7A2, 0x8000)]);
-                spells[Spell.Id.Death] = new Spell(Spell.Id.Death, content[Section.GetOffset(14, 0xB7AC, 0x8000)],
-                                                   content[Section.GetOffset(14, 0xB7A3, 0x8000)]);
-                spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, 0xB7AD, 0x8000)],
-                                                   content[Section.GetOffset(14, 0xB7A4, 0x8000)]);
+                spells[Spell.Id.Deluge] = new Spell(Spell.Id.Deluge, content[Section.GetOffset(14, ROM.MagicCostTable)],
+                                                    content[Section.GetOffset(14, ROM.MagicDamageTable)]);
+                spells[Spell.Id.Thunder] = new Spell(Spell.Id.Thunder, content[Section.GetOffset(14, ROM.MagicCostTable + 1)],
+                                                     content[Section.GetOffset(14, ROM.MagicDamageTable + 1)]);
+                spells[Spell.Id.Fire] = new Spell(Spell.Id.Fire, content[Section.GetOffset(14, ROM.MagicCostTable + 2)],
+                                                  content[Section.GetOffset(14, ROM.MagicDamageTable + 2)]);
+                spells[Spell.Id.Death] = new Spell(Spell.Id.Death, content[Section.GetOffset(14, ROM.MagicCostTable + 3)],
+                                                   content[Section.GetOffset(14, ROM.MagicDamageTable + 3)]);
+                spells[Spell.Id.Tilte] = new Spell(Spell.Id.Tilte, content[Section.GetOffset(14, ROM.MagicCostTable + 4)],
+                                                   content[Section.GetOffset(14, ROM.MagicDamageTable + 4)]);
 
                 spoilers.Add($"Id Hp Damage AI");
                 foreach (var data in enemyData.Values)
@@ -469,147 +421,26 @@ namespace FaxanaduRando.Randomizer
             return new RandomizationResult(content, spoilers, suffix);
         }
 
-        private void AddTowerShuffleModifications(byte[] content, bool addSection, byte finalPalette, byte branchPalette)
+        // this applies the famous sameworld-door to otherstage-door hack
+        private void AddTowerShuffleModifications(byte[] content, bool paletteToMusicLogicReplaced, byte finalPalette, byte branchPalette)
         {
-            var newSection = new Section();
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0x00);
-            newSection.Bytes.Add(0xFE);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xE565, 0xC000));
+            AsmHacks.DynamicHackFlexibleDoorsApplyPendingStage(content, ROM.HackApplyPendingStage);
+            AsmHacks.DynamicHackFlexibleDoorsHandlePalette(content, ROM.HackClearPendingStageAndApplyPalette);
+            AsmHacks.DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(content, ROM.HackExtractStageAndDoorRequirement);
 
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x01);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0xFF);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0xFE);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0x35);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xDC);
-            newSection.Bytes.Add(0xDA);
-            newSection.Bytes.Add(OpCode.RTS);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFE00, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0x20);
-            newSection.Bytes.Add(0xFE);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xDF1D, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x00);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0x62);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0xFF);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x01);
-            newSection.Bytes.Add(OpCode.BEQ);
-            newSection.Bytes.Add(0x03);
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0x22);
-            newSection.Bytes.Add(0xDF);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x00);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0xFF);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0x46);
-            newSection.Bytes.Add(0xDD);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFE20, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0x40);
-            newSection.Bytes.Add(0xFE);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xE84C, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.TAY);
-            newSection.Bytes.Add(OpCode.LSR);
-            newSection.Bytes.Add(OpCode.LSR);
-            newSection.Bytes.Add(OpCode.LSR);
-            newSection.Bytes.Add(OpCode.LSR);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0xFE);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.TYA);
-            newSection.Bytes.Add(OpCode.ANDImmediate);
-            newSection.Bytes.Add(0x0F);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0x2B);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.RTS);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFE40, 0xC000));
-
-            if (!addSection)
+            // if the palette-to-music logic has not already been replaced, extend it for
+            // tower shuffle so palettes missing from the vanilla map (Branch and Zenis)
+            // can select the correct music when same-world doors lead to other stages
+            if (!paletteToMusicLogicReplaced)
             {
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x60);
-                newSection.Bytes.Add(0xFE);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xE54E, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.CMPImmediate);
-                newSection.Bytes.Add(branchPalette);
-                newSection.Bytes.Add(OpCode.BNE);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.BNE);
-                newSection.Bytes.Add(0x0A);
-                newSection.Bytes.Add(OpCode.CMPImmediate);
-                newSection.Bytes.Add(finalPalette);
-                newSection.Bytes.Add(OpCode.BEQ);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.CMPAbsoluteX);
-                newSection.Bytes.Add(0x69);
-                newSection.Bytes.Add(0xE5);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x10);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xFA);
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0xD1);
-                newSection.Bytes.Add(0x03);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFE60, 0xC000));
+                AsmHacks.DynamicHackFlexibleDoorsCustomPaletteToMusic(content, ROM.HackCustomPaletteToMusicHandler,
+                    branchPalette, finalPalette);
             }
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0xA0);
-            newSection.Bytes.Add(0xFD);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xE5D7, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x00);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0xFF);
-            newSection.Bytes.Add(0x1F);
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0xDC);
-            newSection.Bytes.Add(0xDA);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFDA0, 0xC000));
+            AsmHacks.DynamicHackFlexibleDoorsClearFlagAndLoadWorld(content, ROM.HackClearPendingStageAndLoadWorld);
 
             //Set starting screen to Eolis shop screen,
             //since the original starting screen is now a tower
-            content[Section.GetOffset(15, 0xDECB, 0xC000)] = Eolis.ShopScreen;
+            content[Section.GetOffset(15, ROM.Start_Screen_Index)] = Eolis.ShopScreen;
         }
 
         private List<Level> GetLevels(byte[] content, Random random)
@@ -832,65 +663,25 @@ namespace FaxanaduRando.Randomizer
         private void AddMiscHacks(byte[] content, Random random)
         {
             //Allow menu on first Eolis screen
-            content[Section.GetOffset(15, 0xE01C, 0xC000)] = OpCode.NOP;
-            content[Section.GetOffset(15, 0xE01D, 0xC000)] = OpCode.NOP;
+            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return)] = OpCode.NOP;
+            content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return + 1)] = OpCode.NOP;
 
             if (ItemOptions.SmallKeyLimit == ItemOptions.KeyLimit.Zero)
             {
                 //Use the fact that the small key messages are not used to add new ring messages
-                content[Section.GetOffset(15, 0xEBA9, 0xC000)] = 0x02;
-                content[Section.GetOffset(15, 0xEBB9, 0xC000)] = 0x7B;
-                content[Section.GetOffset(15, 0xEBC9, 0xC000)] = 0x7C;
+                content[Section.GetOffset(15, ROM.OpenDoorWithRingOfElf_ScriptID)] = 0x02;
+                content[Section.GetOffset(15, ROM.OpenDoorWithRingOfDworf_ScriptID)] = 0x7B;
+                content[Section.GetOffset(15, ROM.OpenDoorWithDemonsRing_ScriptID)] = 0x7C;
             }
 
             if (ItemOptions.FixPendantBug)
             {
-                content[Section.GetOffset(14, 0x8879, 0x8000)] = OpCode.BEQ;
+                content[Section.GetOffset(14, ROM.PendantCheckOffset)] = OpCode.BEQ;
             }
 
             if (GeneralOptions.FlexibleItems)
             {
-                content[Section.GetOffset(12, 0x8B87, 0x8000)] = 0xFF;
-                content[Section.GetOffset(15, 0xC47C, 0xC000)] = OpCode.NOP;
-                content[Section.GetOffset(15, 0xC47D, 0xC000)] = OpCode.NOP;
-
-                //Always allow items to be sold
-                var sellSection = new Section();
-                sellSection.Bytes.Add(OpCode.JMPAbsolute);
-                sellSection.Bytes.Add(0xA0);
-                sellSection.Bytes.Add(0xAD);
-                sellSection.AddToContent(content, Section.GetOffset(12, 0x8691, 0x8000));
-
-                sellSection = new Section();
-                sellSection.Bytes.Add(OpCode.JSR);
-                sellSection.Bytes.Add(0x04);
-                sellSection.Bytes.Add(0x87);
-                sellSection.Bytes.Add(OpCode.CMPImmediate);
-                sellSection.Bytes.Add(0xFF);
-                sellSection.Bytes.Add(OpCode.BEQ);
-                sellSection.Bytes.Add(0x03);
-                sellSection.Bytes.Add(OpCode.JMPAbsolute);
-                sellSection.Bytes.Add(0x96);
-                sellSection.Bytes.Add(0x86);
-                sellSection.Bytes.Add(OpCode.TXA);
-                sellSection.Bytes.Add(OpCode.LDXAbsolute);
-                sellSection.Bytes.Add(0x1F);
-                sellSection.Bytes.Add(0x2);
-                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
-                sellSection.Bytes.Add(0x20);
-                sellSection.Bytes.Add(0x2);
-                sellSection.Bytes.Add(OpCode.LDAImmediate);
-                sellSection.Bytes.Add(100);
-                sellSection.Bytes.Add(OpCode.STAAbsoluteX);
-                sellSection.Bytes.Add(0x28);
-                sellSection.Bytes.Add(0x2);
-                sellSection.Bytes.Add(OpCode.LDAImmediate);
-                sellSection.Bytes.Add(0);
-                sellSection.Bytes.Add(OpCode.JMPAbsolute);
-                sellSection.Bytes.Add(0xA9);
-                sellSection.Bytes.Add(0x86);
-                sellSection.AddToContent(content, Section.GetOffset(12, 0xADA0, 0x8000));
-                content[Section.GetOffset(12, 0x8716, 0x8000)] = OpCode.NOP;
+                AsmHacks.DynamicHackFlexibleItems(content, ROM.HackSellAnyItem);
             }
 
             if (GeneralOptions.UseWeaponIndoors)
@@ -903,29 +694,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.AddKillSwitch)
             {
-                var switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xE4);
-                switchSection.Bytes.Add(0xFE);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xE039, 0xC000));
-
-                switchSection = new Section();
-                switchSection.Bytes.Add(OpCode.JSR);
-                switchSection.Bytes.Add(0xA8);
-                switchSection.Bytes.Add(0xCB);
-                switchSection.Bytes.Add(OpCode.LDAZeroPage);
-                switchSection.Bytes.Add(0x19);
-                switchSection.Bytes.Add(OpCode.ANDImmediate);
-                switchSection.Bytes.Add(0x20);
-                switchSection.Bytes.Add(OpCode.BEQ);
-                switchSection.Bytes.Add(0x05);
-                switchSection.Bytes.Add(OpCode.LDAImmediate);
-                switchSection.Bytes.Add(0x01);
-                switchSection.Bytes.Add(OpCode.STAAbsolute);
-                switchSection.Bytes.Add(0x38);
-                switchSection.Bytes.Add(0x04);
-                switchSection.Bytes.Add(OpCode.RTS);
-                switchSection.AddToContent(content, Section.GetOffset(15, 0xFEE4, 0xC000));
+                AsmHacks.DynamicHackKillSwitch(content, ROM.HackKillswitch);
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
@@ -935,521 +704,116 @@ namespace FaxanaduRando.Randomizer
                     GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurusAndKeyshops ||
                     GeneralOptions.MiscDoorSetting == GeneralOptions.MiscDoors.ShuffleIncludeTownsExceptGurus)
                 {
+                    // set guru-given spawn point no matter what
                     var section = new Section();
-                    section.Bytes.Add(OpCode.NOP);
-                    section.Bytes.Add(OpCode.NOP);
-                    section.Bytes.Add(OpCode.NOP);
-                    section.Bytes.Add(OpCode.NOP);
-                    section.Bytes.Add(OpCode.NOP);
-                    section.AddToContent(content, Section.GetOffset(12, 0x8394, 0x8000));
+                    section.NOP(5);
+                    section.AddToContent(content, Section.GetOffset(12, ROM.ScriptActionSetSpawnPoint_CMP_Current));
                 }
                 else
                 {
+                    // allow the guru-given spawn point to move backward, but never set it to spawn point 0
                     var section = new Section();
-                    section.Bytes.Add(OpCode.CMPImmediate);
-                    section.Bytes.Add(0x0);
-                    section.Bytes.Add(OpCode.BEQ);
-                    section.Bytes.Add(0x4);
-                    section.Bytes.Add(OpCode.NOP);
-                    section.AddToContent(content, Section.GetOffset(12, 0x8394, 0x8000));
+                    section.CMP_imm(0x00);
+                    section.BEQ(0x04);
+                    section.NOP();
+                    section.AddToContent(content, Section.GetOffset(12, ROM.ScriptActionSetSpawnPoint_CMP_Current));
                 }
             }
 
             if (GeneralOptions.PreventKnockbackOnLadders)
             {
-                var section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0xD0);
-                section.Bytes.Add(0xFE);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(15, 0xE28C, 0xC000));
-
-                section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0x52);
-                section.Bytes.Add(0xE7);
-                section.Bytes.Add(OpCode.LDAZeroPage);
-                section.Bytes.Add(0xA4);
-                section.Bytes.Add(OpCode.ANDImmediate);
-                section.Bytes.Add(0x08);
-                section.Bytes.Add(OpCode.BEQ);
-                section.Bytes.Add(0x05);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x00);
-                section.Bytes.Add(OpCode.STAZeroPage);
-                section.Bytes.Add(0xAA);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x08);
-                section.Bytes.Add(OpCode.STAZeroPage);
-                section.Bytes.Add(0xAA);
-                section.Bytes.Add(OpCode.RTS);
-                section.AddToContent(content, Section.GetOffset(15, 0xFED0, 0xC000));
+                AsmHacks.DynamicHackPreventKnockbackOnLadders(content, ROM.HackPreventLadderKnockback);
             }
 
             if (GeneralOptions.MoveSpringQuestRequirement)
             {
+                // remove the check on all 3 springs being open before using the push-blocks
+                // ring of ruby check is still present
                 var springSection = new Section();
-                springSection.Bytes.Add(OpCode.NOP);
-                springSection.Bytes.Add(OpCode.NOP);
-                springSection.AddToContent(content, Section.GetOffset(15, 0xE971, 0xC000));
+                springSection.NOP(2);
+                springSection.AddToContent(content, Section.GetOffset(15, ROM.Player_CheckPushingBlock_Check3Springs));
             }
 
-            var times = new List<byte>();
-            if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Permanent)
+            if (ItemOptions.WingbootDurationSetting != ItemOptions.WingBootDurations.Unchanged)
             {
-                times.Add(1);
-                times.Add(1);
-                times.Add(1);
-                times.Add(1);
-                UpdateWingBootsTimer(times, content);
-                var bootSection = new Section();
-                bootSection.Bytes.Add(OpCode.NOP);
-                bootSection.Bytes.Add(OpCode.NOP);
-                bootSection.Bytes.Add(OpCode.NOP);
-                bootSection.AddToContent(content, Section.GetOffset(15, 0xC5AE, 0xC000));
+                AsmHacks.StaticHackWingbootDurations(random, content, ItemOptions.WingbootDurationSetting);
             }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Random)
-            {
-                var duration = (byte)random.Next(10, 46);
-                times.Add(duration);
-                duration += (byte)random.Next(1, 11);
-                times.Add(duration);
-                duration += (byte)random.Next(1, 11);
-                times.Add(duration);
-                duration += (byte)random.Next(1, 11);
-                times.Add(duration);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Always40)
-            {
-                times.Add(40);
-                times.Add(40);
-                times.Add(40);
-                times.Add(40);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.Always20)
-            {
-                times.Add(20);
-                times.Add(20);
-                times.Add(20);
-                times.Add(20);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.ScalesUpFrom40)
-            {
-                times.Add(40);
-                times.Add(45);
-                times.Add(50);
-                times.Add(55);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.ScalesUpFrom30)
-            {
-                times.Add(30);
-                times.Add(35);
-                times.Add(40);
-                times.Add(45);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.ScalesUpFrom20)
-            {
-                times.Add(20);
-                times.Add(30);
-                times.Add(40);
-                times.Add(50);
-                UpdateWingBootsTimer(times, content);
-            }
-            else if (ItemOptions.WingbootDurationSetting == ItemOptions.WingBootDurations.ScalesUpFrom10)
-            {
-                times.Add(10);
-                times.Add(20);
-                times.Add(30);
-                times.Add(40);
-                UpdateWingBootsTimer(times, content);
-            }
+
 
             if (ItemOptions.BuffGloves)
             {
+                // set duration of glove to 40 (vanilla is 20)
                 var section = new Section();
-                section.Bytes.Add(40);
-                section.AddToContent(content, Section.GetOffset(15, 0xC7DD, 0xC000));
+                section.Db(40);
+                section.AddToContent(content, Section.GetOffset(15, ROM.Player_PickUpGlove_DurationValue));
             }
 
             if (ItemOptions.BuffHourglass)
             {
+                // removes the code halving and re-drawing HP
                 var section = new Section();
-                for (int i = 0; i < 9; i++)
-                {
-                    section.Bytes.Add(OpCode.NOP);
-                }
-                section.AddToContent(content, Section.GetOffset(15, 0xC5D8, 0xC000));
+                section.NOP(9);
+                section.AddToContent(content, Section.GetOffset(15, ROM.Player_UseHourGlass_ReduceHP));
             }
 
             if (ItemOptions.ShieldSetting == 0 || ItemOptions.ShieldSetting == 1)
             {
-                var section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0xE0);
-                section.Bytes.Add(0xBF);
-                section.AddToContent(content, Section.GetOffset(14, 0x877C, 0x8000));
-
-                section = new Section();
-                section.Bytes.Add(OpCode.LDAAbsolute);
-                section.Bytes.Add(0x27);
-                section.Bytes.Add(0x04);
-                section.Bytes.Add(OpCode.BPL);
-                section.Bytes.Add(0x04);
-                section.Bytes.Add(OpCode.LDAAbsolute);
-                section.Bytes.Add(0xBF);
-                section.Bytes.Add(0x03);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x03);
-                section.Bytes.Add(OpCode.RTS);
-                section.AddToContent(content, Section.GetOffset(14, 0xBFE0, 0x8000));
+                AsmHacks.DynamicHackOintmentWorksWithShield(content, ROM.HackOintmentWorksWithShield);
             }
 
             if (ItemOptions.ShieldSetting == 1)
             {
-                var section = new Section();
-                section.Bytes.Add(OpCode.JSR);
-                section.Bytes.Add(0xC0);
-                section.Bytes.Add(0xBF);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(14, 0x87E8, 0x8000));
-
-                section = new Section();
-                section.Bytes.Add(OpCode.CPY);
-                section.Bytes.Add(0x2);
-                section.Bytes.Add(OpCode.BEQ);
-                section.Bytes.Add(0x4);
-                section.Bytes.Add(OpCode.LSR);
-                section.Bytes.Add(OpCode.LSR);
-                section.Bytes.Add(OpCode.LSR);
-                section.Bytes.Add(OpCode.RTS);
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x0);
-                section.Bytes.Add(OpCode.RTS);
-                section.AddToContent(content, Section.GetOffset(14, 0xBFC0, 0x8000));
+                AsmHacks.DynamicHackStrengthenShieldsAgainstMagic(content, ROM.HackStrongerShields);
             }
 
             if (GeneralOptions.FastText)
             {
-                // Change AND mask from #$03 to #$00 (display char every frame)
-                content[Section.GetOffset(15, 0xF49F, 0xC000)] = 0x00;
-
-                // New subroutine: preserve original 4-frame sound cadence
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAAbsolute);   // LDA $021D (TextBox_Timer)
-                newSection.Bytes.Add(0x1D);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.ANDImmediate);   // AND #$02
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.LSRA);           // LSR A
-                newSection.Bytes.Add(0x49);                  // EOR #$01
-                newSection.Bytes.Add(0x01);
-                newSection.Bytes.Add(OpCode.STAAbsolute);    // STA $0212 (TextBox_PlayTextSound)
-                newSection.Bytes.Add(0x12);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFF00, 0xC000));
-
-                // Hook: replace "LDA #$01 / STA TextBox_PlayTextSound" with JSR + NOPs
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);            // JSR $FF00
-                newSection.Bytes.Add(0x00);
-                newSection.Bytes.Add(0xFF);
-                newSection.Bytes.Add(OpCode.NOP);
-                newSection.Bytes.Add(OpCode.NOP);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xF472, 0xC000));
+                AsmHacks.DynamicHackFastText(content, ROM.HackFastText);
             }
 
             if (GeneralOptions.FastStart)
             {
-                var healthSection = new Section();
-                healthSection.Bytes.Add(0x50);
-                healthSection.AddToContent(content, Section.GetOffset(15, 0xDB30, 0xC000));
-
-                healthSection = new Section();
-                healthSection.Bytes.Add(0x50);
-                healthSection.AddToContent(content, Section.GetOffset(15, 0xDEAF, 0xC000));
-
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0xC0);
-                newSection.Bytes.Add(0xBD);
-                newSection.AddToContent(content, Section.GetOffset(14, 0xDB2C, 0x8000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0xDC);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0x92);
-                newSection.Bytes.Add(0x03);
-
-                newSection.Bytes.Add(OpCode.LDAImmediate);
-                newSection.Bytes.Add(0x05);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0x93);
-                newSection.Bytes.Add(0x03);
-
-                if (ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged)
-                {
-                    newSection.Bytes.Add(OpCode.LDAImmediate);
-                    newSection.Bytes.Add(0x80);
-                    newSection.Bytes.Add(OpCode.STAAbsolute);
-                    newSection.Bytes.Add(0x2C);
-                    newSection.Bytes.Add(0x04);
-                }
-
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0xA7);
-                newSection.Bytes.Add(0xDE);
-                newSection.Bytes.Add(OpCode.RTS);
-
-                newSection.AddToContent(content, Section.GetOffset(14, 0xBDC0, 0x8000));
+                AsmHacks.DynamicHackFastStart(content, ROM.HackFastStart,
+                    ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged);
             }
 
-            var reqSection = new Section();
-            reqSection.Bytes.Add(OpCode.JMPAbsolute);
-            reqSection.Bytes.Add(0x80);
-            reqSection.Bytes.Add(0xFE);
-            reqSection.AddToContent(content, Section.GetOffset(15, 0xEB32, 0xC000));
-            reqSection = new Section();
-            reqSection.Bytes.Add(OpCode.BNE);
-            reqSection.Bytes.Add(0x01);
-            reqSection.Bytes.Add(OpCode.RTS);
-            reqSection.Bytes.Add(OpCode.CMPImmediate);
-            reqSection.Bytes.Add(0x09);
-            reqSection.Bytes.Add(OpCode.BEQ);
-            reqSection.Bytes.Add(0x04);
-            reqSection.Bytes.Add(OpCode.ASLA);
-            reqSection.Bytes.Add(OpCode.JMPAbsolute);
-            reqSection.Bytes.Add(0x35);
-            reqSection.Bytes.Add(0xEB);
-
-            if (GeneralOptions.DragonSlayerRequired)
-            {
-                reqSection.Bytes.Add(OpCode.LDAAbsolute);
-                reqSection.Bytes.Add(0xBD);
-                reqSection.Bytes.Add(0x03);
-                reqSection.Bytes.Add(OpCode.CMPImmediate);
-                reqSection.Bytes.Add(0x03);
-                reqSection.Bytes.Add(OpCode.BEQ);
-                if (GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged)
-                {
-                    reqSection.Bytes.Add(0x09);
-                    reqSection.Bytes.Add(OpCode.LDAImmediate);
-                    reqSection.Bytes.Add(0x0);
-                    reqSection.Bytes.Add(OpCode.JSR);
-                    reqSection.Bytes.Add(0x59);
-                    reqSection.Bytes.Add(0xF8);
-                    reqSection.Bytes.Add(0x0c);
-                    reqSection.Bytes.Add(0x41);
-                    reqSection.Bytes.Add(0x82);
-                }
-                else
-                {
-                    reqSection.Bytes.Add(0x01);
-                }
-                reqSection.Bytes.Add(OpCode.RTS);
-            }
-
-            if (GeneralOptions.PendantRodRubyRequired)
-            {
-                reqSection.Bytes.Add(OpCode.LDAAbsolute);
-                reqSection.Bytes.Add(0x2C);
-                reqSection.Bytes.Add(0x04);
-                reqSection.Bytes.Add(OpCode.ANDImmediate);
-                reqSection.Bytes.Add(0x02);
-                reqSection.Bytes.Add(OpCode.BNE);
-                reqSection.Bytes.Add(0x01);
-                reqSection.Bytes.Add(OpCode.RTS);
-                reqSection.Bytes.Add(OpCode.LDAAbsolute);
-                reqSection.Bytes.Add(0x2C);
-                reqSection.Bytes.Add(0x04);
-                reqSection.Bytes.Add(OpCode.ANDImmediate);
-                reqSection.Bytes.Add(0x04);
-                reqSection.Bytes.Add(OpCode.BNE);
-                reqSection.Bytes.Add(0x01);
-                reqSection.Bytes.Add(OpCode.RTS);
-                reqSection.Bytes.Add(OpCode.LDAAbsolute);
-                reqSection.Bytes.Add(0x2C);
-                reqSection.Bytes.Add(0x04);
-                reqSection.Bytes.Add(OpCode.ANDImmediate);
-                reqSection.Bytes.Add(0x40);
-                reqSection.Bytes.Add(OpCode.BNE);
-                reqSection.Bytes.Add(0x01);
-                reqSection.Bytes.Add(OpCode.RTS);
-            }
-
-            if (GeneralOptions.MoveSpringQuestRequirement)
-            {
-                reqSection.Bytes.Add(OpCode.LDAAbsolute);
-                reqSection.Bytes.Add(0x2D);
-                reqSection.Bytes.Add(0x04);
-                reqSection.Bytes.Add(OpCode.ANDImmediate);
-                reqSection.Bytes.Add(0x07);
-                reqSection.Bytes.Add(OpCode.CMPImmediate);
-                reqSection.Bytes.Add(0x07);
-                reqSection.Bytes.Add(OpCode.BEQ);
-                reqSection.Bytes.Add(0x01);
-                reqSection.Bytes.Add(OpCode.RTS);
-            }
-
-            reqSection.Bytes.Add(OpCode.JMPAbsolute);
-            reqSection.Bytes.Add(0xE1);
-            reqSection.Bytes.Add(0xEB);
-            reqSection.AddToContent(content, Section.GetOffset(15, 0xFE80, 0xC000));
+            AsmHacks.DynamicHackDoorRequirementHandler(content, ROM.HackNewDoorRequirementHandler,
+                GeneralOptions.DragonSlayerRequired, GeneralOptions.PendantRodRubyRequired, GeneralOptions.MoveSpringQuestRequirement,
+                GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged);
 
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreensAllowMattockLockedItems ||
                 ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)
             {
-                var mattocksection = new Section();
-                mattocksection.Bytes.Add(OpCode.JSR);
-                mattocksection.Bytes.Add(0xD0);
-                mattocksection.Bytes.Add(0xFD);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.AddToContent(content, Section.GetOffset(15, 0xC637, 0xC000));
-
-                mattocksection = new Section();
-                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
-                mattocksection.Bytes.Add(0x24);
-                mattocksection.Bytes.Add(0x00);
-                mattocksection.Bytes.Add(OpCode.CMPImmediate);
-                mattocksection.Bytes.Add(0x01);
-                mattocksection.Bytes.Add(OpCode.BNE);
-                mattocksection.Bytes.Add(0x0A);
-                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
-                mattocksection.Bytes.Add(0x63);
-                mattocksection.Bytes.Add(0x00);
-                mattocksection.Bytes.Add(OpCode.CMPImmediate);
-                mattocksection.Bytes.Add(0x28);
-                mattocksection.Bytes.Add(OpCode.BNE);
-                mattocksection.Bytes.Add(0x03);
-                mattocksection.Bytes.Add(OpCode.LDAImmediate);
-                mattocksection.Bytes.Add(0x1);
-                mattocksection.Bytes.Add(OpCode.RTS);
-                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
-                mattocksection.Bytes.Add(0x24);
-                mattocksection.Bytes.Add(0x00);
-                mattocksection.Bytes.Add(OpCode.CMPImmediate);
-                mattocksection.Bytes.Add(0x05);
-                mattocksection.Bytes.Add(OpCode.BNE);
-                mattocksection.Bytes.Add(0x0A);
-                mattocksection.Bytes.Add(OpCode.LDAAbsolute);
-                mattocksection.Bytes.Add(0x63);
-                mattocksection.Bytes.Add(0x00);
-                mattocksection.Bytes.Add(OpCode.CMPImmediate);
-                mattocksection.Bytes.Add(0x1E);
-                mattocksection.Bytes.Add(OpCode.BNE);
-                mattocksection.Bytes.Add(0x03);
-                mattocksection.Bytes.Add(OpCode.LDAImmediate);
-                mattocksection.Bytes.Add(0x1);
-                mattocksection.Bytes.Add(OpCode.RTS);
-                mattocksection.Bytes.Add(OpCode.LDAImmediate);
-                mattocksection.Bytes.Add(0x0);
-                mattocksection.Bytes.Add(OpCode.RTS);
-                mattocksection.AddToContent(content, Section.GetOffset(15, 0xFDD0, 0xC000));
+                AsmHacks.DynamicHackUseMattockAnywhereExceptBannedScreens(content, ROM.HackMattockAnywhere);
             }
             else if (ItemOptions.MattockUsage != ItemOptions.MattockUsages.Unchanged)
             {
                 var mattocksection = new Section();
-                mattocksection.Bytes.Add(OpCode.LDAImmediate);
-                mattocksection.Bytes.Add(0x0);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.Bytes.Add(OpCode.NOP);
-                mattocksection.AddToContent(content, Section.GetOffset(15, 0xC637, 0xC000));
+                mattocksection.LDA_imm(0x00);
+                mattocksection.NOP(4);
+                mattocksection.AddToContent(content, Section.GetOffset(15, ROM.Player_UseMattock_LDA_MetatileID));
             }
 
             if (ItemOptions.ReplacePoison)
             {
-                var jumpSection = new Section();
-                jumpSection.Bytes.Add(OpCode.JSR);
-                jumpSection.Bytes.Add(0x70);
-                jumpSection.Bytes.Add(0xFD);
-                jumpSection.AddToContent(content, Section.GetOffset(15, 0xC48B, 0xC000));
-
-                var manaPotionSection = new Section();
-                manaPotionSection.Bytes.Add(OpCode.LDAAbsolute);
-                manaPotionSection.Bytes.Add(0xC1);
-                manaPotionSection.Bytes.Add(0x03);
-                manaPotionSection.Bytes.Add(OpCode.CMPImmediate);
-                manaPotionSection.Bytes.Add(0x11);
-                manaPotionSection.Bytes.Add(OpCode.BNE);
-                manaPotionSection.Bytes.Add(0x06);
-                manaPotionSection.Bytes.Add(OpCode.JSR);
-                manaPotionSection.Bytes.Add(0x06);
-                manaPotionSection.Bytes.Add(0xC5);
-                manaPotionSection.Bytes.Add(OpCode.JSR);
-                manaPotionSection.Bytes.Add(0xBF);
-                manaPotionSection.Bytes.Add(0xC4);
-                manaPotionSection.Bytes.Add(OpCode.LDAAbsolute);
-                manaPotionSection.Bytes.Add(0xC1);
-                manaPotionSection.Bytes.Add(0x03);
-                manaPotionSection.Bytes.Add(OpCode.RTS);
-                manaPotionSection.AddToContent(content, Section.GetOffset(15, 0xFD70, 0xC000));
-
-                var convertPoisonSection = new Section();
-                convertPoisonSection.Bytes.Add(0x08);
-                convertPoisonSection.Bytes.Add(OpCode.JSR);
-                convertPoisonSection.Bytes.Add(0xE4);
-                convertPoisonSection.Bytes.Add(0xD0);
-                convertPoisonSection.Bytes.Add(OpCode.LDAImmediate);
-                convertPoisonSection.Bytes.Add(0x11);
-                convertPoisonSection.Bytes.Add(OpCode.JSR);
-                convertPoisonSection.Bytes.Add(0xCD);
-                convertPoisonSection.Bytes.Add(0xC8);
-                convertPoisonSection.Bytes.Add(OpCode.LDXAbsolute);
-                convertPoisonSection.Bytes.Add(0x03);
-                convertPoisonSection.Bytes.Add(0x78);
-                convertPoisonSection.Bytes.Add(OpCode.RTS);
-                convertPoisonSection.Bytes.Add(OpCode.NOP);
-                convertPoisonSection.Bytes.Add(OpCode.NOP);
-                convertPoisonSection.AddToContent(content, Section.GetOffset(15, 0xC845, 0xC000));
+                AsmHacks.DynamicHackPoisonAsManaPotion(content, ROM.HackPoisonAsManaPotion);
             }
 
             if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
             {
-                var newSection = new Section();
-                newSection.Bytes.Add(OpCode.JSR);
-                newSection.Bytes.Add(0x50);
-                newSection.Bytes.Add(0xFD);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xEA82, 0xC000));
-
-                newSection = new Section();
-                newSection.Bytes.Add(OpCode.TAX);
-                newSection.Bytes.Add(OpCode.LDAAbsoluteX);
-                newSection.Bytes.Add(0x68);
-                newSection.Bytes.Add(0xFD);
-                newSection.Bytes.Add(OpCode.STAAbsolute);
-                newSection.Bytes.Add(0x35);
-                newSection.Bytes.Add(0x04);
-                newSection.Bytes.Add(OpCode.INY);
-                newSection.Bytes.Add(OpCode.LDAIndirectY);
-                newSection.Bytes.Add(0x02);
-                newSection.Bytes.Add(OpCode.RTS);
-                newSection.AddToContent(content, Section.GetOffset(15, 0xFD50, 0xC000));
-                content[Section.GetOffset(15, 0xFD68, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Eolis];
-                content[Section.GetOffset(15, 0xFD69, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Trunk];
-                content[Section.GetOffset(15, 0xFD6A, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Mist];
-                content[Section.GetOffset(15, 0xFD6B, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Towns];
-                content[Section.GetOffset(15, 0xFD6C, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Buildings];
-                content[Section.GetOffset(15, 0xFD6D, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Branch];
-                content[Section.GetOffset(15, 0xFD6E, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.Dartmoor];
-                content[Section.GetOffset(15, 0xFD6F, 0xC000)] = (byte)Door.worldDict[OtherWorldNumber.EvilOnesLair];
+                AsmHacks.DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(content,
+                    ROM.HackOtherWorldTransitionSetShuffledStage,
+                    ROM.HackWorldToShuffledStageTable,
+                    Door.worldDict);
             }
         }
 
-        private void RandomizeExtras(byte[] content, Random random, DoorRandomizer doorRandomizer, PaletteRandomizer paletteRandomizer, out bool addSection)
+        private void RandomizeExtras(byte[] content, Random random, DoorRandomizer doorRandomizer, PaletteRandomizer paletteRandomizer, out bool paletteToMusicLogicReplaced)
         {
-            addSection = false;
+            // tell the caller whether this function replaced the vanilla palette-to-music logic,
+            // so tower shuffle does not install another handler over the same code
+            paletteToMusicLogicReplaced = false;
+
             if (ExtraOptions.RandomizePalettes)
             {
                 paletteRandomizer.RandomizePalettes(content, random);
@@ -1464,33 +828,27 @@ namespace FaxanaduRando.Randomizer
             var section = new Section();
             if (ExtraOptions.MusicSetting == Music.None)
             {
-                section.Bytes.Add(OpCode.LDAImmediate);
-                section.Bytes.Add(0x0);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                addSection = true;
+                // bypass palette-to-music selection when music is disabled
+                section.LDA_imm(0x00);
+                section.NOP(2);
+                paletteToMusicLogicReplaced = true;
             }
             else if (ExtraOptions.MusicSetting == Music.Random && ExtraOptions.RandomizePalettes)
             {
-                section.Bytes.Add(OpCode.LSRA);
-                section.Bytes.Add(OpCode.TAX);
-                section.Bytes.Add(OpCode.INX);
-                section.Bytes.Add(OpCode.TXA);
-                addSection = true;
+                // replace the vanilla palette lookup by deriving the music-table index
+                // directly from the randomized destination palette
+                section.LSR();
+                section.TAX();
+                section.INX();
+                section.TXA();
+                paletteToMusicLogicReplaced = true;
             }
 
-            if (addSection)
+            if (paletteToMusicLogicReplaced)
             {
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.Bytes.Add(OpCode.NOP);
-                section.AddToContent(content, Section.GetOffset(15, 0xE54E, 0xC000));
+                // remove the remainder of the vanilla palette-to-music lookup loop
+                section.NOP(9);
+                section.AddToContent(content, Section.GetOffset(15, ROM.Palette_Check_Loop_CMP_X));
             }
 
             if (ExtraOptions.RandomizeSounds)
@@ -1507,270 +865,6 @@ namespace FaxanaduRando.Randomizer
                 MusicTrackRandomizer.RandomizeMusicTracks(content, random,
                     ExtraOptions.SoundtrackSetting == Soundtrack.Mix);
             }
-        }
-
-        private void UpdateGiftItemLogic(List<Level> levels, byte[] content, Table spriteBehaviourTable)
-        {
-            if (ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.Unchanged)
-            {
-                UpdateWingBootsQuest(content);
-            }
-
-            foreach (var level in levels)
-            {
-                foreach (var screen in level.Screens)
-                {
-                    foreach (var sprite in screen.Sprites)
-                    {
-                        if (sprite.Id == Sprite.SpriteId.MattockOrRingRuby)
-                        {
-                            sprite.Id = Sprite.SpriteId.MattockBossLocked;
-                        }
-                        else if (sprite.Id == Sprite.SpriteId.Glove2)
-                        {
-                            sprite.Id = Sprite.SpriteId.Glove;
-                        }
-                        else if (sprite.Id == Sprite.SpriteId.KeyAce)
-                        {
-                            sprite.Id = (Sprite.SpriteId)59;
-                        }
-                    }
-                }
-            }
-
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.KeyAce] =
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RingDworf] =
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RingDemon] =
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey] =
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-            spriteBehaviourTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby] =
-                spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
-
-            var newSection = new Section();
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(0xFC);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xC764, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xC7A5, 0xC000));
-
-            newSection = new Section();
-            newSection.Bytes.Add(OpCode.TAX);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x35);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x0E);
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.ORAImmediate);
-            newSection.Bytes.Add(0x10);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xE4);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.TXA);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x36);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x0E);
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.ORAImmediate);
-            newSection.Bytes.Add(0x20);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xE4);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.TXA);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x38);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x0B);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xCD);
-            newSection.Bytes.Add(0xC8);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xE4);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.TXA);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x50);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x0E);
-            newSection.Bytes.Add(OpCode.LDAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.ORAImmediate);
-            newSection.Bytes.Add(0x40);
-            newSection.Bytes.Add(OpCode.STAAbsolute);
-            newSection.Bytes.Add(0x2C);
-            newSection.Bytes.Add(0x04);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xE4);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.TXA);
-            newSection.Bytes.Add(OpCode.CMPImmediate);
-            newSection.Bytes.Add(0x12);
-            newSection.Bytes.Add(OpCode.BNE);
-            newSection.Bytes.Add(0x0A);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JSR);
-            newSection.Bytes.Add(0xE4);
-            newSection.Bytes.Add(0xD0);
-            newSection.Bytes.Add(OpCode.LDAImmediate);
-            newSection.Bytes.Add(0x08);
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0xCD);
-            newSection.Bytes.Add(0xC8);
-            newSection.Bytes.Add(OpCode.TXA);
-            newSection.Bytes.Add(OpCode.JMPAbsolute);
-            newSection.Bytes.Add(0x68);
-            newSection.Bytes.Add(0xC7);
-            newSection.AddToContent(content, Section.GetOffset(15, 0xFCD0, 0xC000));
-
-            var spriteTypeTable = new Table(Section.GetOffset(14, 0xB544, 0x8000), 100, 1, content);
-            spriteTypeTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 5;
-            spriteTypeTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 5;
-            spriteTypeTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 5;
-            spriteTypeTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 5;
-            spriteTypeTable.AddToContent(content);
-
-            var phaseIndexTable = new Table(Section.GetOffset(14, 0x8C9F, 0x8000), 100, 1, content);
-            var index = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-
-            int bank7Offset = Section.GetOffset(7, 0x8000, 0x8000);
-            int animationPointerOffset = bank7Offset + Util.GetPointer(content, bank7Offset + 6);
-            int animationOffset = bank7Offset + Util.GetPointer(content, animationPointerOffset + index * 2);
-
-            //First byte seems to be size
-            content[animationOffset] = 1 | (1 << 4);
-
-            int bank6Offset = Section.GetOffset(6, 0x8000, 0x8000);
-            int bank10Offset = Section.GetOffset(10, 0x8000, 0x8000);
-            int spritePointer1 = Util.GetPointer(content, bank6Offset);
-            int spritePointer2 = Util.GetPointer(content, bank7Offset);
-            int spriteDataPointerOffset1 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RingDemon) * 2;
-            int spriteDataPointerOffset2 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RingDworf) * 2;
-            int spriteDataPointerOffset3 = bank7Offset + spritePointer2 + ((int)Sprite.SpriteId.KeyAce - 0x37) * 2;
-            int spriteDataPointerOffset4 = bank7Offset + spritePointer2 + ((int)Sprite.SpriteId.MattockOrRingRuby - 0x37) * 2;
-            int spriteDataPointerOffset5 = bank6Offset + spritePointer1 + ((int)Sprite.SpriteId.RockSnakeOrJokerKey) * 2;
-            var pointer = Util.GetPointer(content, spriteDataPointerOffset3);
-            pointer += 64;
-            var bytes = BitConverter.GetBytes(pointer);
-            content[spriteDataPointerOffset4] = bytes[0];
-            content[spriteDataPointerOffset4 + 1] = bytes[1];
-            int spriteDataOffset1 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset1);
-            int spriteDataOffset2 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset2);
-            int spriteDataOffset3 = bank7Offset + Util.GetPointer(content, spriteDataPointerOffset3);
-            int spriteDataOffset4 = bank7Offset + Util.GetPointer(content, spriteDataPointerOffset4);
-            int spriteDataOffset5 = bank6Offset + Util.GetPointer(content, spriteDataPointerOffset5);
-
-            for (int i = 0; i < 32; i++)
-            {
-                content[spriteDataOffset1 + i] = content[bank10Offset + 84 * 16 + i];
-                content[spriteDataOffset1 + 32 + i] = content[bank10Offset + 92 * 16 + i];
-                content[spriteDataOffset2 + i] = content[bank10Offset + 86 * 16 + i];
-                content[spriteDataOffset2 + 32 + i] = content[bank10Offset + 92 * 16 + i];
-                content[spriteDataOffset3 + i] = content[bank10Offset + 118 * 16 + i];
-                content[spriteDataOffset3 + 32 + i] = content[bank10Offset + 120 * 16 + i];
-                content[spriteDataOffset4 + i] = content[bank10Offset + 88 * 16 + i];
-                content[spriteDataOffset4 + 32 + i] = content[bank10Offset + 92 * 16 + i];
-            }
-
-            for (int i = 0; i < 16; i++)
-            {
-                content[spriteDataOffset5 + i] = content[bank10Offset + 197 * 16 + i];
-                content[spriteDataOffset5 + 16 + i] = content[bank10Offset + 119 * 16 + i];
-            }
-
-            for (int i = 0; i < 16; i++)
-            {
-                content[spriteDataOffset5 + 32 + i] = content[bank10Offset + 198 * 16 + i];
-                content[spriteDataOffset5 + 32 + 16 + i] = content[bank10Offset + 121 * 16 + i];
-            }
-
-            var tilesTable = new Table(Section.GetOffset(15, 0xCE1B, 0xC000), 100, 1, content);
-            var sizeTable = new Table(Section.GetOffset(14, 0xB4DF, 0x8000), 100, 1, content);
-            var subBehaviourTable = new Table(Section.GetOffset(14, 0x8087, 0x8000), 100, 2, content);
-
-            phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-            phaseIndexTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-            phaseIndexTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-            phaseIndexTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = phaseIndexTable.Entries[(int)Sprite.SpriteId.RingDemon][0];
-            sizeTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 0;
-            sizeTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 0;
-            sizeTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 0;
-            sizeTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = 0;
-            sizeTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 0;
-            tilesTable.Entries[(int)Sprite.SpriteId.RingDemon][0] = 4;
-            tilesTable.Entries[(int)Sprite.SpriteId.RingDworf][0] = 4;
-            tilesTable.Entries[(int)Sprite.SpriteId.KeyAce][0] = 4;
-            tilesTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby][0] = 4;
-            tilesTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey][0] = 4;
-
-            subBehaviourTable.Entries[(int)Sprite.SpriteId.RingDemon] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
-            subBehaviourTable.Entries[(int)Sprite.SpriteId.RingDworf] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
-            subBehaviourTable.Entries[(int)Sprite.SpriteId.KeyAce] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
-            subBehaviourTable.Entries[(int)Sprite.SpriteId.MattockOrRingRuby] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
-            subBehaviourTable.Entries[(int)Sprite.SpriteId.RockSnakeOrJokerKey] = subBehaviourTable.Entries[(int)Sprite.SpriteId.Glove];
-
-            phaseIndexTable.AddToContent(content);
-            tilesTable.AddToContent(content);
-            sizeTable.AddToContent(content);
-            subBehaviourTable.AddToContent(content);
-        }
-
-        private void UpdateWingBootsQuest(byte[] content)
-        {
-            var newSection = new Section();
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.Bytes.Add(OpCode.NOP);
-            newSection.AddToContent(content, Section.GetOffset(14, 0xA418, 0x8000));
-        }
-
-        private void UpdateWingBootsTimer(List<byte> times, byte[] content)
-        {
-            var section = new Section();
-            foreach (var time in times)
-            {
-                section.Bytes.Add(time);
-            }
-
-            section.AddToContent(content, Section.GetOffset(15, 0xC599, 0xC000));
         }
 
         public static string GetOutputFilename(string inputFileName, int seed, string flags, string suffix)

@@ -10,10 +10,12 @@ namespace FaxanaduRando.Randomizer
         public const int ANDImmediate = 0x29;
         public const int SEC = 0x38;
         public const int PHA = 0x48;
+        public const int EORImmediate = 0x49;
         public const int LSRA = 0x4A;
         public const int RTS = 0x60;
         public const int PLA = 0x68;
         public const int STAZeroPage = 0x85;
+        public const int DEX = 0xCA;
         public const int DEY = 0x88;
         public const int TXA = 0x8A;
         public const int STYAbsolute = 0x8C;
@@ -21,6 +23,7 @@ namespace FaxanaduRando.Randomizer
         public const int STXAbsolute = 0x8E;
         public const int LSR = 0x4A;
         public const int JMPAbsolute = 0x4C;
+        public const int JMPIndirect = 0x6C;
         public const int BCC = 0x90;
         public const int TYA = 0x98;
         public const int TXS = 0x9A;
@@ -50,6 +53,7 @@ namespace FaxanaduRando.Randomizer
         public const int INX = 0xE8;
         public const int NOP = 0xEA;
         public const int INCAbsolute = 0xEE;
+        public const int BMI = 0x30;
         public const int BNE = 0xD0;
         public const int BEQ = 0xF0;
     }
