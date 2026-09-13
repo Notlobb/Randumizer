@@ -172,6 +172,12 @@ namespace FaxanaduRando.Randomizer
             Dw(address);
         }
 
+        public void LDA_abs_x(string label)
+        {
+            Db(OpCode.LDAAbsoluteX);
+            Dw(label);
+        }
+
         public void LDA_ind_x(byte addr)
         {
             Db(OpCode.LDAIndirectX);

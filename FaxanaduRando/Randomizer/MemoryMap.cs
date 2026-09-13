@@ -59,8 +59,8 @@
         public const ushort SceneOutroPaletteLo = 0xA72D;
         public const ushort IntroScreenMusicIndex = 0xA7A8;
         public const ushort OutroScreenMusicIndex = 0xA93E;
-        // bank 12 free space addresses used for hack injection
-        public const ushort HackSellAnyItem = 0xADA0;
+        // bank 12 free space address used for hack injection
+        public const ushort HackBank12Start = 0xADA0;
 
         // bank 14 vanilla code addresses (hook sites and callable routines)
         public const ushort SpriteUpdateHandlerTable = 0x8087;
@@ -97,11 +97,8 @@
         public const ushort SpriteMagicDefenseTable = 0xB73B;
         public const ushort MagicDamageTable = 0xB7A0;
         public const ushort MagicCostTable = 0xB7A9;
-        // bank 14 free space addresses used for hack injection
-        public const ushort HackFastStart = 0xBDC0;
-        public const ushort HackBossLockedItemsCheckNoBossesRemaining = 0xBF00;
-        public const ushort HackStrongerShields = 0xBFC0;
-        public const ushort HackOintmentWorksWithShield = 0xBFE0;
+        // bank 14 free space used for hack injection
+        public const ushort HackBank14Start = 0xBDC0;
 
         // bank 15 vanilla code addresses (hook sites and callable routines)
         public const ushort GameLoop_CheckUseCurrentItem_BNE_Return = 0xC47C;
@@ -195,21 +192,9 @@
         public const ushort TextBox_ShowMessage_RTS = 0xf557;
         public const ushort MMC1_LoadBankAndJump = 0xf859;
         public const ushort MantraMusicIndex = 0xfc81;
-        // bank 15 free space addresses used for hack injection
-        public const ushort HackItemPickup = 0xfcd0;
-        public const ushort HackOtherWorldTransitionSetShuffledStage = 0xfd50;
-        public const ushort HackWorldToShuffledStageTable = 0xfd68;
-        public const ushort HackClearPendingStageAndLoadWorld = 0xfda0;
-        public const ushort HackPoisonAsManaPotion = 0xFD70;
-        public const ushort HackMattockAnywhere = 0xFDD0;
-        public const ushort HackApplyPendingStage = 0xFE00;
-        public const ushort HackClearPendingStageAndApplyPalette = 0xFE20;
-        public const ushort HackExtractStageAndDoorRequirement = 0xFE40;
-        public const ushort HackCustomPaletteToMusicHandler = 0xFE60;
-        public const ushort HackNewDoorRequirementHandler = 0xFE80;
-        public const ushort HackPreventLadderKnockback = 0xFED0;
-        public const ushort HackKillswitch = 0xFEE4;
-        public const ushort HackFastText = 0xFF00;
+        // bank 15 free space address range used for hack injection
+        public const ushort HackBank15Start = 0xfcd0;
+        public const ushort HackBank15End = 0xffe0; // one-past-end
     }
 
 }
