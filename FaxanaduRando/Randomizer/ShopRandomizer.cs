@@ -15,7 +15,7 @@ namespace FaxanaduRando.Randomizer
             //RingRuby2 = 18,
             //RingDworf2 = 19,
             //RingDemon2 = 20,
-            Leatherarmour= 32,
+            Leatherarmour = 32,
             Studdedmail = 33,
             Fullplate = 34,
             Battlesuit = 35,
@@ -164,7 +164,17 @@ namespace FaxanaduRando.Randomizer
                 shopItem.Id = Id.Wingboots;
                 shopItem.MaxPriceOverride = 500;
 
-                int offset = Section.GetOffset(12, 0xAD90, 0x8000);
+                // adds wing boots to Eolis tool shop with a max price of 500
+                // the shop size is increased to 5 items, consuming 5*3+1=16 bytes, and moved to the start of bank 12 free space
+                // ensure the shop cannot grow bigger without also adding an equivalent offset to MemoryMap.HackBank12Start
+                const ushort EolisShopOverrideAddr = 0xAD90;
+                const byte EolisShopOverrideAddrLo = EolisShopOverrideAddr % 256;
+                const byte EolisShopOverrideAddrHi = EolisShopOverrideAddr / 256;
+
+                if ((EolisShopOverrideAddr + shop.Items.Count * 3 + 1) > ROM.HackBank12Start)
+                    throw new IndexOutOfRangeException("Dynamic script data overlaps bank 12 free space");
+
+                int offset = Section.GetOffset(12, EolisShopOverrideAddr, 0x8000);
                 foreach (var item in shop.Items)
                 {
                     item.offset = offset;
@@ -172,11 +182,11 @@ namespace FaxanaduRando.Randomizer
                 }
 
                 offset = Section.GetOffset(12, 0xA381, 0x8000);
-                content[offset] = 0x90;
-                content[offset + 1] = 0xAD;
+                content[offset] = EolisShopOverrideAddrLo;
+                content[offset + 1] = EolisShopOverrideAddrHi;
                 offset = Section.GetOffset(12, 0xA387, 0x8000);
-                content[offset] = 0x90;
-                content[offset + 1] = 0xAD;
+                content[offset] = EolisShopOverrideAddrLo;
+                content[offset + 1] = EolisShopOverrideAddrHi;
             }
 
             var staticPrice = new StaticPrice(DoorId.MartialArtsShop, 0x32116, content);
@@ -578,7 +588,7 @@ namespace FaxanaduRando.Randomizer
 
         private ushort AdjustForMultiplier(ushort price, int divisor)
         {
-           return (ushort)(((price / divisor) / 10) * 10);
+            return (ushort)(((price / divisor) / 10) * 10);
         }
     }
 }
