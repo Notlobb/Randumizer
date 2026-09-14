@@ -341,11 +341,10 @@ namespace FaxanaduRando.RegressionTests
             return Convert.ToHexString(SHA256.HashData(bytes));
         }
 
-        // hash the spoiler log exactly as it would appear on disk, including the
-        // trailing newline after the final line (File.WriteAllLines)
+        // hash the spoiler log with canonical Unix-style newlines
         private static string Sha256SpoilerLog(List<string> lines)
         {
-            string text = string.Join(Environment.NewLine, lines) + Environment.NewLine;
+            string text = string.Join('\n', lines) + '\n';
             return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(text)));
         }
     }

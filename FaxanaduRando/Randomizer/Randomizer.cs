@@ -25,6 +25,11 @@ namespace FaxanaduRando.Randomizer
         {
             Random random = new Random(seed);
 
+            BankAddressAllocator alloc = new BankAddressAllocator();
+            alloc.AddBank(12, ROM.HackBank12Start);
+            alloc.AddBank(14, ROM.HackBank14Start);
+            alloc.AddBank(15, ROM.HackBank15Start, ROM.HackBank15End);
+
 #if !DEBUG
             if (GeneralOptions.GenerateSpoilerLog)
             {
@@ -39,7 +44,7 @@ namespace FaxanaduRando.Randomizer
 #endif
 
             byte[] content = (byte[])inputFileContents.Clone();
-            AddMiscHacks(content, random);
+            AddMiscHacks(content, random, alloc);
 
             var levels = GetLevels(content, random);
             uint screenAttempts = 0;
@@ -61,7 +66,7 @@ namespace FaxanaduRando.Randomizer
 
             var segmentRandomizer = new SegmentRandomizer(content);
             var doorRandomizer = new DoorRandomizer(content, random);
-            var shopRandomizer = new ShopRandomizer(content, doorRandomizer);
+            var shopRandomizer = new ShopRandomizer(content, doorRandomizer, alloc);
             var giftRandomizer = new GiftRandomizer(content);
             doorRandomizer.UpdateBuildings(giftRandomizer, shopRandomizer);
             doorRandomizer.LimitKeys(random);
@@ -70,8 +75,9 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.ShuffleItems == ItemOptions.ItemShuffle.Mixed)
             {
-                AsmHacks.DynamicHackConfigureGiftItemSprites(levels, content, ROM.HackItemPickup, spriteBehaviourTable,
-                    ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.Unchanged);
+                alloc.SetAddress(15, AsmHacks.DynamicHackConfigureGiftItemSprites(levels, content,
+                    alloc.GetAddress(15), spriteBehaviourTable,
+                    ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.Unchanged));
             }
 
             var itemRandomizer = new ItemRandomizer(random);
@@ -111,8 +117,8 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.BigItemSpawns == ItemOptions.BigItemSpawning.AlwaysLockBehindBosses)
             {
-                AsmHacks.DynamicHackBossLockedItemsCheckNoBossesRemaining(content,
-                    ROM.HackBossLockedItemsCheckNoBossesRemaining);
+                alloc.SetAddress(14,
+                    AsmHacks.DynamicHackBossLockedItemsCheckNoBossesRemaining(content, alloc.GetAddress(14)));
 
                 spriteBehaviourTable.Entries[(int)Sprite.SpriteId.Rod] =
                     spriteBehaviourTable.Entries[(int)Sprite.SpriteId.WingbootsBossLocked];
@@ -215,10 +221,10 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviourProperties(content, random);
             }
 
-            var weaponStrengthTable = new Table(Section.GetOffset(14, 0xB7A5, 0x8000), 4, 1, content);
-            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, 0x88C7, 0x8000), 4, 1, content);
-            var magicDamageTable = new Table(Section.GetOffset(14, 0xB7A0, 0x8000), 5, 1, content);
-            var armorDefenseTable = new Table(Section.GetOffset(14, 0x8AD8, 0x8000), 4, 1, content);
+            var weaponStrengthTable = new Table(Section.GetOffset(14, ROM.WeaponStrengthTable), 4, 1, content);
+            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, ROM.GloveAddStrengthTable), 4, 1, content);
+            var magicDamageTable = new Table(Section.GetOffset(14, ROM.MagicDamageTable), 5, 1, content);
+            var armorDefenseTable = new Table(Section.GetOffset(14, ROM.ArmorDefMultTable), 4, 1, content);
 
             var equipmentModifiers = new EquipmentModifiers();
 
@@ -313,7 +319,8 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.ShuffleTowers)
             {
-                AddTowerShuffleModifications(content, paletteToMusicLogicReplaced, paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
+                AddTowerShuffleModifications(content, alloc, paletteToMusicLogicReplaced,
+                    paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
 
             string suffix = "";
@@ -422,21 +429,24 @@ namespace FaxanaduRando.Randomizer
         }
 
         // this applies the famous sameworld-door to otherstage-door hack
-        private void AddTowerShuffleModifications(byte[] content, bool paletteToMusicLogicReplaced, byte finalPalette, byte branchPalette)
+        private void AddTowerShuffleModifications(byte[] content, BankAddressAllocator alloc,
+            bool paletteToMusicLogicReplaced, byte finalPalette, byte branchPalette)
         {
-            AsmHacks.DynamicHackFlexibleDoorsApplyPendingStage(content, ROM.HackApplyPendingStage);
-            AsmHacks.DynamicHackFlexibleDoorsHandlePalette(content, ROM.HackClearPendingStageAndApplyPalette);
-            AsmHacks.DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(content, ROM.HackExtractStageAndDoorRequirement);
+            alloc.SetAddress(15, AsmHacks.DynamicHackFlexibleDoorsApplyPendingStage(content, alloc.GetAddress(15)));
+            alloc.SetAddress(15, AsmHacks.DynamicHackFlexibleDoorsHandlePalette(content, alloc.GetAddress(15)));
+            alloc.SetAddress(15, AsmHacks.DynamicHackFlexibleDoorsExtractStageAndDoorRequirement(content, alloc.GetAddress(15)));
 
             // if the palette-to-music logic has not already been replaced, extend it for
             // tower shuffle so palettes missing from the vanilla map (Branch and Zenis)
             // can select the correct music when same-world doors lead to other stages
             if (!paletteToMusicLogicReplaced)
             {
-                AsmHacks.DynamicHackFlexibleDoorsCustomPaletteToMusic(content, ROM.HackCustomPaletteToMusicHandler,
-                    branchPalette, finalPalette);
+
+                alloc.SetAddress(15, AsmHacks.DynamicHackFlexibleDoorsCustomPaletteToMusic(content,
+                    alloc.GetAddress(15), branchPalette, finalPalette));
             }
-            AsmHacks.DynamicHackFlexibleDoorsClearFlagAndLoadWorld(content, ROM.HackClearPendingStageAndLoadWorld);
+
+            alloc.SetAddress(15, AsmHacks.DynamicHackFlexibleDoorsClearFlagAndLoadWorld(content, alloc.GetAddress(15)));
 
             //Set starting screen to Eolis shop screen,
             //since the original starting screen is now a tower
@@ -660,7 +670,7 @@ namespace FaxanaduRando.Randomizer
             }
         }
 
-        private void AddMiscHacks(byte[] content, Random random)
+        private void AddMiscHacks(byte[] content, Random random, BankAddressAllocator alloc)
         {
             //Allow menu on first Eolis screen
             content[Section.GetOffset(15, ROM.CheckShowPlayerMenu_BEQ_Return)] = OpCode.NOP;
@@ -681,20 +691,20 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.FlexibleItems)
             {
-                AsmHacks.DynamicHackFlexibleItems(content, ROM.HackSellAnyItem);
+                alloc.SetAddress(12, AsmHacks.DynamicHackFlexibleItems(content, alloc.GetAddress(12)));
             }
 
             if (GeneralOptions.UseWeaponIndoors)
             {
                 // Allow items indoors: change STA to LDA so weapon stays equipped when entering buildings
-                content[Section.GetOffset(15, 0xDE08, 0xC000)] = 0xAD;
+                content[Section.GetOffset(15, ROM.Game_EnterBuilding_STA_ActiveWeapon)] = OpCode.LDAAbsolute;
                 // Draw weapon indoors: allow weapon sprite to be shown indoors
-                content[Section.GetOffset(15, 0xEDF0, 0xC000)] = 0xFF;
+                content[Section.GetOffset(15, ROM.Player_SetWeapon_CMP_WorldIndex)] = 0xFF;
             }
 
             if (GeneralOptions.AddKillSwitch)
             {
-                AsmHacks.DynamicHackKillSwitch(content, ROM.HackKillswitch);
+                alloc.SetAddress(15, AsmHacks.DynamicHackKillSwitch(content, alloc.GetAddress(15)));
             }
 
             if (GeneralOptions.AllowLoweringRespawn)
@@ -722,7 +732,7 @@ namespace FaxanaduRando.Randomizer
 
             if (GeneralOptions.PreventKnockbackOnLadders)
             {
-                AsmHacks.DynamicHackPreventKnockbackOnLadders(content, ROM.HackPreventLadderKnockback);
+                alloc.SetAddress(15, AsmHacks.DynamicHackPreventKnockbackOnLadders(content, alloc.GetAddress(15)));
             }
 
             if (GeneralOptions.MoveSpringQuestRequirement)
@@ -758,33 +768,33 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.ShieldSetting == 0 || ItemOptions.ShieldSetting == 1)
             {
-                AsmHacks.DynamicHackOintmentWorksWithShield(content, ROM.HackOintmentWorksWithShield);
+                alloc.SetAddress(14, AsmHacks.DynamicHackOintmentWorksWithShield(content, alloc.GetAddress(14)));
             }
 
             if (ItemOptions.ShieldSetting == 1)
             {
-                AsmHacks.DynamicHackStrengthenShieldsAgainstMagic(content, ROM.HackStrongerShields);
+                alloc.SetAddress(14, AsmHacks.DynamicHackStrengthenShieldsAgainstMagic(content, alloc.GetAddress(14)));
             }
 
             if (GeneralOptions.FastText)
             {
-                AsmHacks.DynamicHackFastText(content, ROM.HackFastText);
+                alloc.SetAddress(15, AsmHacks.DynamicHackFastText(content, alloc.GetAddress(15)));
             }
 
             if (GeneralOptions.FastStart)
             {
-                AsmHacks.DynamicHackFastStart(content, ROM.HackFastStart,
-                    ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged);
+                alloc.SetAddress(14, AsmHacks.DynamicHackFastStart(content, alloc.GetAddress(14),
+                    ItemOptions.RandomizeKeys == ItemOptions.KeyRandomization.Unchanged));
             }
 
-            AsmHacks.DynamicHackDoorRequirementHandler(content, ROM.HackNewDoorRequirementHandler,
+            alloc.SetAddress(15, AsmHacks.DynamicHackDoorRequirementHandler(content, alloc.GetAddress(15),
                 GeneralOptions.DragonSlayerRequired, GeneralOptions.PendantRodRubyRequired, GeneralOptions.MoveSpringQuestRequirement,
-                GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged);
+                GeneralOptions.UpdateMiscText && ItemOptions.ShuffleItems != ItemOptions.ItemShuffle.Unchanged));
 
             if (ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreensAllowMattockLockedItems ||
                 ItemOptions.MattockUsage == ItemOptions.MattockUsages.AnywhereExceptBannedScreens)
             {
-                AsmHacks.DynamicHackUseMattockAnywhereExceptBannedScreens(content, ROM.HackMattockAnywhere);
+                alloc.SetAddress(15, AsmHacks.DynamicHackUseMattockAnywhereExceptBannedScreens(content, alloc.GetAddress(15)));
             }
             else if (ItemOptions.MattockUsage != ItemOptions.MattockUsages.Unchanged)
             {
@@ -796,15 +806,13 @@ namespace FaxanaduRando.Randomizer
 
             if (ItemOptions.ReplacePoison)
             {
-                AsmHacks.DynamicHackPoisonAsManaPotion(content, ROM.HackPoisonAsManaPotion);
+                alloc.SetAddress(15, AsmHacks.DynamicHackPoisonAsManaPotion(content, alloc.GetAddress(15)));
             }
 
             if (GeneralOptions.ShuffleSegments == GeneralOptions.SegmentShuffle.AllSegments)
             {
-                AsmHacks.DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(content,
-                    ROM.HackOtherWorldTransitionSetShuffledStage,
-                    ROM.HackWorldToShuffledStageTable,
-                    Door.worldDict);
+                alloc.SetAddress(15, AsmHacks.DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(content,
+                    alloc.GetAddress(15), Door.worldDict));
             }
         }
 
