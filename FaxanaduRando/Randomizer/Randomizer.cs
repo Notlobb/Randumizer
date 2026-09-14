@@ -221,10 +221,10 @@ namespace FaxanaduRando.Randomizer
                 enemyRandomizer.RandomizeBehaviourProperties(content, random);
             }
 
-            var weaponStrengthTable = new Table(Section.GetOffset(14, 0xB7A5, 0x8000), 4, 1, content);
-            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, 0x88C7, 0x8000), 4, 1, content);
-            var magicDamageTable = new Table(Section.GetOffset(14, 0xB7A0, 0x8000), 5, 1, content);
-            var armorDefenseTable = new Table(Section.GetOffset(14, 0x8AD8, 0x8000), 4, 1, content);
+            var weaponStrengthTable = new Table(Section.GetOffset(14, ROM.WeaponStrengthTable), 4, 1, content);
+            var weaponGloveStrengthTable = new Table(Section.GetOffset(14, ROM.GloveAddStrengthTable), 4, 1, content);
+            var magicDamageTable = new Table(Section.GetOffset(14, ROM.MagicDamageTable), 5, 1, content);
+            var armorDefenseTable = new Table(Section.GetOffset(14, ROM.ArmorDefMultTable), 4, 1, content);
 
             var equipmentModifiers = new EquipmentModifiers();
 
@@ -697,9 +697,9 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.UseWeaponIndoors)
             {
                 // Allow items indoors: change STA to LDA so weapon stays equipped when entering buildings
-                content[Section.GetOffset(15, 0xDE08, 0xC000)] = 0xAD;
+                content[Section.GetOffset(15, ROM.Game_EnterBuilding_STA_ActiveWeapon)] = OpCode.LDAAbsolute;
                 // Draw weapon indoors: allow weapon sprite to be shown indoors
-                content[Section.GetOffset(15, 0xEDF0, 0xC000)] = 0xFF;
+                content[Section.GetOffset(15, ROM.Player_SetWeapon_CMP_WorldIndex)] = 0xFF;
             }
 
             if (GeneralOptions.AddKillSwitch)

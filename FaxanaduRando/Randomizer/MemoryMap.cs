@@ -70,6 +70,8 @@
         public const ushort Player_CheckShieldHitByMagic = 0x877C;
         public const ushort Player_HandleHitByMagic_LSR_A = 0x87E8;
         public const ushort PendantCheckOffset = 0x8879;
+        public const ushort GloveAddStrengthTable = 0x88C7;
+        public const ushort ArmorDefMultTable = 0x8AD8;
         public const ushort Sprite_CheckHitByCastMagic_LDA_HitWidth = 0x8AFF;
         public const ushort Sprite_CheckHitByCastMagic_STA_Temp01 = 0x8B02;
         public const ushort MagicHitWidthTable = 0x8B73;
@@ -96,6 +98,7 @@
         public const ushort SpriteDamageTable = 0xB6D7;
         public const ushort SpriteMagicDefenseTable = 0xB73B;
         public const ushort MagicDamageTable = 0xB7A0;
+        public const ushort WeaponStrengthTable = 0xB7A5;
         public const ushort MagicCostTable = 0xB7A9;
         // bank 14 free space used for hack injection
         public const ushort HackBank14Start = 0xBDC0;
@@ -129,6 +132,7 @@
         public const ushort SpawnInTempleMusicIndex = 0xDD9E;
         public const ushort GameEndKingsRoomMusicIndex = 0xDDE5;
         public const ushort GameEndKingsRoomPaletteIndex = 0xDDEE;
+        public const ushort Game_EnterBuilding_STA_ActiveWeapon = 0xDE08;
         public const ushort Game_LoadFirstLevel = 0xDEA7;
         public const ushort Start_Health = 0xDEAF;
         public const ushort Start_Screen_Index = 0xDECB;
@@ -183,6 +187,7 @@
         public const ushort OpenDoorWithRingOfElf_ScriptID = 0xEBA9;
         public const ushort OpenDoorWithRingOfDworf_ScriptID = 0xEBB9;
         public const ushort OpenDoorWithDemonsRing_ScriptID = 0xEBC9;
+        public const ushort Player_SetWeapon_CMP_WorldIndex = 0xEDF0;
         public const ushort BossMusicIndex = 0xefac;
         public const ushort EndGameTransitionMusicIndex = 0xefda;
         public const ushort TextBox_ShowNextChar_LDA_01 = 0xF472;
