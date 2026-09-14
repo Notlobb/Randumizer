@@ -66,7 +66,7 @@ namespace FaxanaduRando.Randomizer
 
             var segmentRandomizer = new SegmentRandomizer(content);
             var doorRandomizer = new DoorRandomizer(content, random);
-            var shopRandomizer = new ShopRandomizer(content, doorRandomizer);
+            var shopRandomizer = new ShopRandomizer(content, doorRandomizer, alloc);
             var giftRandomizer = new GiftRandomizer(content);
             doorRandomizer.UpdateBuildings(giftRandomizer, shopRandomizer);
             doorRandomizer.LimitKeys(random);

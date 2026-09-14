@@ -60,7 +60,7 @@
         public const ushort IntroScreenMusicIndex = 0xA7A8;
         public const ushort OutroScreenMusicIndex = 0xA93E;
         // bank 12 free space address used for hack injection
-        public const ushort HackBank12Start = 0xADA0;
+        public const ushort HackBank12Start = 0xAD90;
 
         // bank 14 vanilla code addresses (hook sites and callable routines)
         public const ushort SpriteUpdateHandlerTable = 0x8087;

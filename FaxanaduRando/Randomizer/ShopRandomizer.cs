@@ -141,7 +141,8 @@ namespace FaxanaduRando.Randomizer
         public List<StaticPrice> StaticPrices { get; set; } = new List<StaticPrice>();
         public Dictionary<DoorId, StaticPrice> StaticPriceDict { get; set; } = new Dictionary<DoorId, StaticPrice>();
 
-        public ShopRandomizer(byte[] content, DoorRandomizer doorRandomizer)
+        public ShopRandomizer(byte[] content, DoorRandomizer doorRandomizer,
+            BankAddressAllocator alloc)
         {
             var shop = new Shop(Shop.Id.EolisKeyShop, true);
             shop.Items.Add(new ShopItem(0x3258A, content));
@@ -164,15 +165,10 @@ namespace FaxanaduRando.Randomizer
                 shopItem.Id = Id.Wingboots;
                 shopItem.MaxPriceOverride = 500;
 
-                // adds wing boots to Eolis tool shop with a max price of 500
-                // the shop size is increased to 5 items, consuming 5*3+1=16 bytes, and moved to the start of bank 12 free space
-                // ensure the shop cannot grow bigger without also adding an equivalent offset to MemoryMap.HackBank12Start
-                const ushort EolisShopOverrideAddr = 0xAD90;
-                const byte EolisShopOverrideAddrLo = EolisShopOverrideAddr % 256;
-                const byte EolisShopOverrideAddrHi = EolisShopOverrideAddr / 256;
-
-                if ((EolisShopOverrideAddr + shop.Items.Count * 3 + 1) > ROM.HackBank12Start)
-                    throw new IndexOutOfRangeException("Dynamic script data overlaps bank 12 free space");
+                // adds wing boots to Eolis tool shop
+                ushort EolisShopOverrideAddr = alloc.GetAddress(12);
+                byte EolisShopOverrideAddrLo = (byte)(EolisShopOverrideAddr % 256);
+                byte EolisShopOverrideAddrHi = (byte)(EolisShopOverrideAddr / 256);
 
                 int offset = Section.GetOffset(12, EolisShopOverrideAddr, 0x8000);
                 foreach (var item in shop.Items)
@@ -180,6 +176,9 @@ namespace FaxanaduRando.Randomizer
                     item.offset = offset;
                     offset += 3;
                 }
+
+                // shop byte size is 3 per item (byte id and ushort price) and one $ff-delimiter
+                alloc.SetAddress(12, EolisShopOverrideAddr + 3 * shop.Items.Count + 1);
 
                 offset = Section.GetOffset(12, 0xA381, 0x8000);
                 content[offset] = EolisShopOverrideAddrLo;
