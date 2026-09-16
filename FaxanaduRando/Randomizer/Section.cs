@@ -208,6 +208,12 @@ namespace FaxanaduRando.Randomizer
             Dw(addr);
         }
 
+        public void LDX_zp(byte addr)
+        {
+            Db(OpCode.LDXZeroPage);
+            Db(addr);
+        }
+
         public void LDY_imm(byte value)
         {
             Db(OpCode.LDYImmediate);
@@ -245,6 +251,12 @@ namespace FaxanaduRando.Randomizer
             Dw(addr);
         }
 
+        public void STA_abs_y(ushort addr)
+        {
+            Db(OpCode.STAAbsoluteY);
+            Dw(addr);
+        }
+
         public void STX_abs(ushort addr)
         {
             Db(OpCode.STXAbsolute);
@@ -262,6 +274,12 @@ namespace FaxanaduRando.Randomizer
         {
             Db(OpCode.CMPImmediate);
             Db(value);
+        }
+
+        public void CMP_zp(byte addr)
+        {
+            Db(OpCode.CMPZeroPage);
+            Db(addr);
         }
 
         public void CMP_abs(ushort addr)
@@ -357,10 +375,22 @@ namespace FaxanaduRando.Randomizer
             Db(value);
         }
 
+        public void AND_abs_x(ushort addr)
+        {
+            Db(OpCode.ANDAbsoluteX);
+            Dw(addr);
+        }
+
         public void ORA_imm(byte value)
         {
             Db(OpCode.ORAImmediate);
             Db(value);
+        }
+
+        public void ORA_abs_x(ushort addr)
+        {
+            Db(OpCode.ORAAbsoluteX);
+            Dw(addr);
         }
 
         // registers
@@ -531,6 +561,14 @@ namespace FaxanaduRando.Randomizer
                 Label = label,
                 Type = type
             });
+        }
+
+        public ushort GetLabelAddress(string name, ushort cpu_addr)
+        {
+            if (!_labels.TryGetValue(name, out int position))
+                throw new InvalidOperationException($"Undefined label: {name}");
+
+            return (ushort)(cpu_addr + position);
         }
 
         private void Branch(byte opcode, string label)

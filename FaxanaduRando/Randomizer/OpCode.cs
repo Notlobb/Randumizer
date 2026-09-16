@@ -3,11 +3,14 @@ namespace FaxanaduRando.Randomizer
     public class OpCode
     {
         public const int ORAImmediate = 0x09;
+        public const int ORAAbsoluteX = 0x1d;
         public const int ASLA = 0x0A;
         public const int BPL = 0x10;
         public const int CLC = 0x18;
         public const int JSR = 0x20;
         public const int ANDImmediate = 0x29;
+
+        public const int ANDAbsoluteX = 0x3d;
         public const int SEC = 0x38;
         public const int PHA = 0x48;
         public const int EORImmediate = 0x49;
@@ -20,6 +23,7 @@ namespace FaxanaduRando.Randomizer
         public const int TXA = 0x8A;
         public const int STYAbsolute = 0x8C;
         public const int STAAbsolute = 0x8D;
+        public const int STAAbsoluteY = 0x99;
         public const int STXAbsolute = 0x8E;
         public const int LSR = 0x4A;
         public const int JMPAbsolute = 0x4C;
@@ -30,6 +34,7 @@ namespace FaxanaduRando.Randomizer
         public const int STAAbsoluteX = 0x9D;
         public const int LDAIndirectX = 0xA1;
         public const int LDXImmediate = 0xA2;
+        public const int LDXZeroPage = 0xA6;
         public const int TAY = 0xA8;
         public const int LDAZeroPage = 0xA5;
         public const int LDAImmediate = 0xA9;
@@ -50,6 +55,7 @@ namespace FaxanaduRando.Randomizer
         public const int CMPAbsolute = 0xCD;
         public const int DECAbsolute = 0xCE;
         public const int CMPAbsoluteX = 0xDD;
+        public const int CMPZeroPage = 0xC5;
         public const int INX = 0xE8;
         public const int NOP = 0xEA;
         public const int INCAbsolute = 0xEE;

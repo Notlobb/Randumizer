@@ -7,11 +7,14 @@
         public const byte ZP_Joy1_ChangedButtonMask = 0x19;
         public const byte ZP_CurrentWorld = 0x24;
         public const byte ZP_CurrentScreen = 0x63;
+        public const byte ZP_DoorBlockPos = 0x6a;
         public const byte ZP_Player_Flags = 0xa4;
         public const byte ZP_Player_MoveAcceleration_U = 0xaa;
         public const byte ZP_Music_Current = 0xfa;
 
         // main RAM
+        public const ushort CurrentROMBank = 0x0100;
+        public const ushort ExtendedFlags = 0x0101;
         public const ushort MessageID = 0x0213;
         public const ushort TextBox_PlayTextSound = 0x212;
         public const ushort TextBox_Timer = 0x021d;
@@ -118,7 +121,12 @@
         public const ushort Player_PickUpGlove_DurationValue = 0xC7DD;
         public const ushort Player_PickUpPoison_DamageSoundIndex = 0xC845;
         public const ushort Player_PickUpItem = 0xC8CD;
+
+        public const ushort Game_Init_JSR_Game_InitMMCAndBank = 0xC954;
+        public const ushort Game_Init_JSR_Game_InitScreenAndMusic = Game_Init_JSR_Game_InitMMCAndBank + 3;
         public const ushort Sprites_FlipRanges = 0xCBA8;
+        public const ushort Game_InitMMCAndBank = 0xCBBF;
+        public const ushort MMC1_UpdateROMBank = 0xCC1A;
         public const ushort SpritesChrTileCountTable = 0xCE1B;
         public const ushort HourGlassMusicIndex = 0xC5E7;
         public const ushort Screen_LoadSpritePalette = 0xD062;
@@ -181,6 +189,8 @@
         public const ushort OwTransBranchesRightDaybreak = 0xEB21;
         public const ushort OwTransBranchesLeftDaybreak = 0xEB26;
         public const ushort OwTransDartmoorRightDartmoorTown = 0xEB2C;
+        public const ushort Game_RunDoorRequirementHandler = 0xEB2F;
+        public const ushort Game_UnlockDoorWithKey_afterUse = 0xEBD9;
         public const ushort Game_UnlockDoor = 0xEBE1;
         public const ushort Game_RunDoorRequirementHandler_BEQ_RTS = 0xEB32;
         public const ushort Game_RunDoorRequirementHandler_TAY = 0xEB35;
