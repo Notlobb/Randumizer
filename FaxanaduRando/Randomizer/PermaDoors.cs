@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FaxanaduRando.Randomizer.DoorRandomizer;
-using static System.Collections.Specialized.BitVector32;
 
 namespace FaxanaduRando.Randomizer
 {
