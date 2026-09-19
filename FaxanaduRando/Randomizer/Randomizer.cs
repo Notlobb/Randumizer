@@ -324,6 +324,9 @@ namespace FaxanaduRando.Randomizer
                     paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
 
+            if (GeneralOptions.PermanentDoorUnlocks)
+                PermaDoors.Install(content, doorRandomizer, alloc);
+
             string suffix = "";
 
             if (ExtraOptions.AppendSuffix)
@@ -425,9 +428,6 @@ namespace FaxanaduRando.Randomizer
                 }
 #endif
             }
-
-            if (true) //if (GeneralOptions.PermanentDoorUnlocks)
-                PermaDoors.Install(content, doorRandomizer, alloc);
 
             return new RandomizationResult(content, spoilers, suffix);
         }
