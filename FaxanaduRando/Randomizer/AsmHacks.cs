@@ -263,7 +263,7 @@ namespace FaxanaduRando.Randomizer
             sec.LDA_imm(0x10);
 
             sec.Label("@store_palette");
-            sec.STA_abs((ushort)RAM.ZP_Music_Current); // TODO: can use STA_zp
+            sec.STA_zp(RAM.ZP_Music_Current);
             sec.STA_abs(RAM.World_DefaultMusic);
             sec.RTS();
 
@@ -273,11 +273,8 @@ namespace FaxanaduRando.Randomizer
         // Other-world transitions normally change the current world without changing
         // the current stage. With full segment shuffle, the destination world may have
         // moved to a different stage, so update CurrentStage during the transition
-        //
-        // TODO: Make the hack routine and lookup table contiguous automatically and
-        // return their combined size
         public static int DynamicHackSegmentShuffleUpdateStageForOtherWorldTransition(byte[] content, ushort cpu_addr,
-            ushort table_cpu_addr, Dictionary<OtherWorldNumber, WorldNumber> wDict)
+            Dictionary<OtherWorldNumber, WorldNumber> wDict)
         {
             var newSection = new Section();
 
@@ -290,7 +287,7 @@ namespace FaxanaduRando.Randomizer
             // other-world transition data; use it as an index into the
             // world-to-shuffled-stage lookup table
             newSection.TAX();
-            newSection.LDA_abs_x(table_cpu_addr);
+            newSection.LDA_abs_x("@world_to_stage");
             newSection.STA_abs(RAM.CurrentStage);
 
             // reproduce the overwritten vanilla INY instruction, then load the next
@@ -299,20 +296,20 @@ namespace FaxanaduRando.Randomizer
             newSection.INY();
             newSection.LDA_ind_y(0x02);
             newSection.RTS();
-            int bytecount = newSection.FlushToContent(content, 15, cpu_addr);
 
             // map each world ID to the stage containing that world after segment
             // shuffling. The destination world ID is used directly as the table index
-            content[Section.GetOffset(15, table_cpu_addr)] = (byte)wDict[OtherWorldNumber.Eolis];
-            content[Section.GetOffset(15, table_cpu_addr + 1)] = (byte)wDict[OtherWorldNumber.Trunk];
-            content[Section.GetOffset(15, table_cpu_addr + 2)] = (byte)wDict[OtherWorldNumber.Mist];
-            content[Section.GetOffset(15, table_cpu_addr + 3)] = (byte)wDict[OtherWorldNumber.Towns];
-            content[Section.GetOffset(15, table_cpu_addr + 4)] = (byte)wDict[OtherWorldNumber.Buildings];
-            content[Section.GetOffset(15, table_cpu_addr + 5)] = (byte)wDict[OtherWorldNumber.Branch];
-            content[Section.GetOffset(15, table_cpu_addr + 6)] = (byte)wDict[OtherWorldNumber.Dartmoor];
-            content[Section.GetOffset(15, table_cpu_addr + 7)] = (byte)wDict[OtherWorldNumber.EvilOnesLair];
+            newSection.Label("@world_to_stage");
+            newSection.Db((byte)wDict[OtherWorldNumber.Eolis]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Trunk]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Mist]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Towns]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Buildings]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Branch]);
+            newSection.Db((byte)wDict[OtherWorldNumber.Dartmoor]);
+            newSection.Db((byte)wDict[OtherWorldNumber.EvilOnesLair]);
 
-            return bytecount;
+            return newSection.FlushToContent(content, 15, cpu_addr);
         }
 
         public static int DynamicHackBossLockedItemsCheckNoBossesRemaining(byte[] content, ushort cpu_addr)
@@ -335,8 +332,7 @@ namespace FaxanaduRando.Randomizer
             section.PHA();
             section.LDY_imm(0x07); // loop over the 8 sprite slots backwards
 
-            // TODO: branch directly here instead
-            section.Label("@next_sprite_loop");
+            section.Label("@next_sprite");
             section.LDA_abs_y(RAM.SpritesOnScreen);
             section.TAX();
             section.LDA_abs_x(ROM.SpriteCategoryTable);
@@ -357,10 +353,6 @@ namespace FaxanaduRando.Randomizer
             section.SEC(); // set carry - signal no bosses - the item sprite can be shown
             section.RTS();
 
-            // TODO: Remove this label and JMP. BPL can branch directly to @next_sprite_loop.
-            section.Label("@next_sprite");
-            section.JMP("@next_sprite_loop");
-
             return section.FlushToContent(content, 14, cpu_addr);
         }
 
@@ -374,10 +366,10 @@ namespace FaxanaduRando.Randomizer
             mattocksection.FlushToContent(content, 15, ROM.Player_UseMattock_LDA_MetatileID);
 
             // new function in free space; returns 0 if mattock can be used
-            mattocksection.LDA_abs(RAM.ZP_CurrentWorld); // TODO: LDA_zp
+            mattocksection.LDA_zp(RAM.ZP_CurrentWorld);
             mattocksection.CMP_imm(0x01);
             mattocksection.BNE("@not_trunk_screen_40");
-            mattocksection.LDA_abs(RAM.ZP_CurrentScreen); // TODO: LDA_zp
+            mattocksection.LDA_zp(RAM.ZP_CurrentScreen);
             mattocksection.CMP_imm(0x28);
             mattocksection.BNE("@not_trunk_screen_40");
             // trunk screen 40 (final spring screen) - illegal
@@ -385,10 +377,10 @@ namespace FaxanaduRando.Randomizer
             mattocksection.RTS();
 
             mattocksection.Label("@not_trunk_screen_40");
-            mattocksection.LDA_abs(RAM.ZP_CurrentWorld); // TODO: LDA_zp
+            mattocksection.LDA_zp(RAM.ZP_CurrentWorld);
             mattocksection.CMP_imm(0x05);
             mattocksection.BNE("@not_branches_screen_30");
-            mattocksection.LDA_abs(RAM.ZP_CurrentScreen); // TODO: LDA_zp
+            mattocksection.LDA_zp(RAM.ZP_CurrentScreen);
             mattocksection.CMP_imm(0x1E);
             mattocksection.BNE("@not_branches_screen_30");
             // branches screen 30 (magical rod screen) - illegal
@@ -699,12 +691,7 @@ namespace FaxanaduRando.Randomizer
             // place poison (black potion) in inventory
             convertPoisonSection.LDA_imm(0x11);
             convertPoisonSection.JSR(ROM.Player_PickUpItem);
-            // TODO: this is a typo of 0x0378 which is RAM addr of current sprite index
-            // X is overwritten by caller before use so this could be removed even in vanilla
-            convertPoisonSection.LDX_abs(0x7803);
             convertPoisonSection.RTS();
-            // TODO: These two NOPs can also be removed
-            convertPoisonSection.NOP(2);
 
             convertPoisonSection.FlushToContent(content, 15, ROM.Player_PickUpPoison_DamageSoundIndex);
 
