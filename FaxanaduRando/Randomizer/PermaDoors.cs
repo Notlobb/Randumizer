@@ -58,7 +58,7 @@ namespace FaxanaduRando.Randomizer
             if (flagCount > DoorFlagMax)
                 throw new InvalidOperationException("Too many key-locked doors");
 
-            table[GetWorldIndex(world.index)].Add(new DoorFlag(
+            table[GetWorldIndex(world.number)].Add(new DoorFlag(
                 position.screen,
                 position.oldPos,
                 (byte)(DoorFlagMax - flagCount++)
