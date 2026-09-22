@@ -98,6 +98,9 @@ namespace FaxanaduRando.Randomizer
         [Flag(31)]
         public static bool AddKillSwitch { get; set; } = false;
 
+        [Flag(35)]
+        public static bool PermanentDoorUnlocks { get; set; } = false;
+
         [Flag(FlagsCodec.NonBoolFlagBase + 33)]
         public static Hints HintSetting { get; set; } = Hints.Strong;
 

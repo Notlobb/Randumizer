@@ -26,6 +26,7 @@ namespace FaxanaduRando.Randomizer
             Random random = new Random(seed);
 
             BankAddressAllocator alloc = new BankAddressAllocator();
+            alloc.AddBank(9, 0x8000);
             alloc.AddBank(12, ROM.HackBank12Start);
             alloc.AddBank(14, ROM.HackBank14Start);
             alloc.AddBank(15, ROM.HackBank15Start, ROM.HackBank15End);
@@ -322,6 +323,9 @@ namespace FaxanaduRando.Randomizer
                 AddTowerShuffleModifications(content, alloc, paletteToMusicLogicReplaced,
                     paletteRandomizer.FinalPalette, paletteRandomizer.BranchPalette);
             }
+
+            if (GeneralOptions.PermanentDoorUnlocks)
+                PermaDoors.Install(content, doorRandomizer, alloc);
 
             string suffix = "";
 

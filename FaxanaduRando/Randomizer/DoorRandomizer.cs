@@ -1403,5 +1403,10 @@ namespace FaxanaduRando.Randomizer
 
             return int.MaxValue;
         }
+
+        public DoorRequirement GetExitRequirement(ExitDoor door)
+        {
+            return (DoorRequirement)doorRequirementTable.Entries[(int)door][0];
+        }
     }
 }

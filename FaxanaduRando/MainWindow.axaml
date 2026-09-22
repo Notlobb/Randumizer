@@ -118,6 +118,8 @@
                               ToolTip.Tip="Pressing select while the game is paused and then unpausing will kill the player. It is recommended you turn this on when doing screen randomization"/>
 					<CheckBox Name="includeEvilOnesFortressCheckBox" Grid.Column="6" Grid.Row="5" Content="Include Zenis in the tower shuffle" Margin="0,1"
                               ToolTip.Tip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
+					<CheckBox Name="permanentDoorsCheckBox" Grid.Column="6" Grid.Row="6" Content="Permanent doors" Margin="0,1"
+							  ToolTip.Tip="Key-locked doors stay permanently unlocked after being opened once."/>
 
 					<!-- Combobox settings -->
 					<TextBlock Grid.Column="3" Grid.Row="12" Text="Hints:" VerticalAlignment="Center" Margin="0,4,8,1"/>
