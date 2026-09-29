@@ -23,8 +23,10 @@
         public const ushort ShopItemCostsLo = 0x0228;
         public const ushort Textbox_TitleCharOffset = 0x021C;
         public const ushort SpritesOnScreen = 0x02CC;
+        public const ushort XPLowByte = 0x0390;
         public const ushort GoldLowByte = 0x0392;
         public const ushort GoldMiddleByte = 0x0393;
+        public const ushort InventoryWeapons = 0x039D;
         public const ushort EquippedWeapon = 0x03BD;
         public const ushort EquippedShield = 0x03BF;
         public const ushort SelectedItem = 0x03C1;
@@ -34,26 +36,44 @@
         public const ushort SpecialItems = 0x042c;
         public const ushort QuestFlags = 0x042d;
         public const ushort CurrentStage = 0x0435;
+        public const ushort PlayerTitle = 0x0437;
         public const ushort PlayerIsDead = 0x0438;
+        public const ushort SpawnPoint = 0x0439;
+        public const ushort PendingTitle = 0x04ED;
+        public const ushort StartScreenSelection = 0x0687; // 0=START, 1=CONTINUE
 
         // unused vanilla RAM, accessed through the $1800-$1FFF mirror
         public const ushort PendingStage = 0x1ffe;          // mirrors 0x07fe
         public const ushort StageChangePending = 0x1fff;    // mirrors 0x07ff
     }
 
+    internal static class PPU
+    {
+        public const ushort PPU_ADDR = 0x2006;
+        public const ushort PPU_DATA = 0x2007;
+    }
+
     internal static class ROM
     {
         // bank 12 vanilla code addresses (hook sites and callable routines)
         public const ushort Scripts_Begin = 0x8241;
+        public const ushort Scripts_InvokeNextAction = 0x826E;
+        public const ushort ScriptActionShowMessage_JSR_MsgLoad = 0x82DC;
         public const ushort ScriptActionSetSpawnPoint_CMP_Current = 0x8394;
         public const ushort ShowSellMenu_LDX_StringCount = 0x8696;
         public const ushort ShowSellMenu_STA_CostHi = 0x86A9;
         public const ushort ShowSellMenu_JSR_FindSellMenuEntry = 0x8691;
         public const ushort FindSellMenuEntry = 0x8704;
         public const ushort FindSellMenuEntry_TAX = 0x8716;
+        public const ushort ScriptActionShowMantra = 0x8737;
         public const ushort PlayerMenu_HandleInventoryMenuInput_CMP_WorldNo = 0x8B87;
+        public const ushort MantraLoad = 0x95E9;
         public const ushort StringTitleScreenCopyright = 0x9DCC;
         public const ushort StringTitleLicensedTerminator = 0x9E0D;
+        public const ushort StartScreen_Draw = 0x9E21;
+        public const ushort StartScreen_Draw_JSR_PPU_WriteTilesFromCHRRAM = 0x9E80;
+        public const ushort StartScreen_DefaultSelection = 0x9EBC;
+        public const ushort StartScreen_InputSelect = 0x9F4A;
         public const ushort TitleScreenMusicIndex = 0x9F3E;
         public const ushort ScriptVictimBarCheckRankOperand = 0xA254;
         public const ushort SceneIntroChrHi = 0xA72A;
@@ -124,6 +144,7 @@
 
         public const ushort Game_Init_JSR_Game_InitMMCAndBank = 0xC954;
         public const ushort Game_Init_JSR_Game_InitScreenAndMusic = Game_Init_JSR_Game_InitMMCAndBank + 3;
+        public const ushort PPU_WaitUntilFlushed = 0xCAF7;
         public const ushort Sprites_FlipRanges = 0xCBA8;
         public const ushort Game_InitMMCAndBank = 0xCBBF;
         public const ushort MMC1_UpdateROMBank = 0xCC1A;
@@ -132,6 +153,7 @@
         public const ushort Screen_LoadSpritePalette = 0xD062;
         public const ushort Sound_PlayEffect = 0xD0E4;
         public const ushort DeathMusicIndex = 0xD989;
+        public const ushort Player_HandleDeath_InitGoldXP = 0xD99A;
         public const ushort Game_SetupAndLoadOutsideArea = 0xDADC;
         public const ushort Game_Start_JSR_Game_LoadFirstLevel = 0xDB2C;
         public const ushort Start_Mana = 0xDB30;
@@ -206,7 +228,10 @@
         public const ushort TextBox_DisplayMessage_BEQ_TextBox_ShowMessage = 0xf4a5;
         public const ushort TextBox_ShowMessage_RTS = 0xf557;
         public const ushort MMC1_LoadBankAndJump = 0xf859;
+        public const ushort PPU_WriteTilesFromCHRRAM = 0xF89E;
         public const ushort MantraMusicIndex = 0xfc81;
+        public const ushort ChooseContinue_TargetAddr = 0xFC8D;
+        public const ushort Continue_InitXpGold = 0xFC8F;
         // bank 15 free space address range used for hack injection
         public const ushort HackBank15Start = 0xfcd0;
         public const ushort HackBank15End = 0xffe0; // one-past-end

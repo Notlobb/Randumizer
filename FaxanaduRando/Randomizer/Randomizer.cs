@@ -327,6 +327,12 @@ namespace FaxanaduRando.Randomizer
             if (GeneralOptions.PermanentDoorUnlocks)
                 PermaDoors.Install(content, doorRandomizer, alloc);
 
+            SramSave.Install(content,
+                            keepGoldXpOnSramLoad: false,
+                            keepGoldXpOnDeath: false,
+                            colorText: true,
+                            saveStringId: null);
+
             string suffix = "";
 
             if (ExtraOptions.AppendSuffix)

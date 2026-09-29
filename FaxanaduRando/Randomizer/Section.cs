@@ -257,6 +257,12 @@ namespace FaxanaduRando.Randomizer
             Dw(addr);
         }
 
+        public void STA_ind_y(byte addr)
+        {
+            Db(OpCode.STAIndirectY);
+            Db(addr);
+        }
+
         public void STX_abs(ushort addr)
         {
             Db(OpCode.STXAbsolute);
@@ -468,6 +474,24 @@ namespace FaxanaduRando.Randomizer
         }
 
         // math
+        public void ADC_zp(byte addr)
+        {
+            Db(OpCode.ADCZeroPage);
+            Db(addr);
+        }
+
+        public void ADC_imm(byte value)
+        {
+            Db(OpCode.ADCImmediate);
+            Db(value);
+        }
+
+        public void ADC_ind_y(byte address)
+        {
+            Db(OpCode.ADCIndirectY);
+            Db(address);
+        }
+
         public void INC_abs(ushort addr)
         {
             Db(OpCode.INCAbsolute);
@@ -478,6 +502,12 @@ namespace FaxanaduRando.Randomizer
         {
             Db(OpCode.DECAbsolute);
             Dw(addr);
+        }
+
+        public void DEC_zp(byte addr)
+        {
+            Db(OpCode.DECZeroPage);
+            Db(addr);
         }
 
         // flags

@@ -17,12 +17,16 @@ namespace FaxanaduRando.Randomizer
         public const int LSRA = 0x4A;
         public const int RTS = 0x60;
         public const int PLA = 0x68;
+        public const int ADCZeroPage = 0x65;
+        public const int ADCImmediate = 0x69;
+        public const int ADCIndirectY = 0x71;
         public const int STAZeroPage = 0x85;
         public const int DEX = 0xCA;
         public const int DEY = 0x88;
         public const int TXA = 0x8A;
         public const int STYAbsolute = 0x8C;
         public const int STAAbsolute = 0x8D;
+        public const int STAIndirectY = 0x91;
         public const int STAAbsoluteY = 0x99;
         public const int STXAbsolute = 0x8E;
         public const int LSR = 0x4A;
@@ -54,6 +58,7 @@ namespace FaxanaduRando.Randomizer
         public const int CMPImmediate = 0xC9;
         public const int CMPAbsolute = 0xCD;
         public const int DECAbsolute = 0xCE;
+        public const int DECZeroPage = 0xC6;
         public const int CMPAbsoluteX = 0xDD;
         public const int CMPZeroPage = 0xC5;
         public const int INX = 0xE8;
