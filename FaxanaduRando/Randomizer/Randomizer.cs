@@ -333,6 +333,13 @@ namespace FaxanaduRando.Randomizer
                             colorText: true,
                             saveStringId: null);
 
+            var sramCode = new SramCode();
+
+            if (GeneralOptions.SmoothRoom)
+                SmoothRoom.Install(content, sramCode);
+
+            sramCode.Install(content, alloc);
+
             string suffix = "";
 
             if (ExtraOptions.AppendSuffix)

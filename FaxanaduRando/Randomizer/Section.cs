@@ -50,6 +50,16 @@ namespace FaxanaduRando.Randomizer
             return nextAddr;
         }
 
+        // resolves labels for code that runs at baseCpuAddr, returns the bytes and clears the section.
+        // used for code stored in one place and run from another, like SRAM code
+        public byte[] Assemble(int baseCpuAddr)
+        {
+            ResolveLabels(baseCpuAddr);
+            var bytes = Bytes.ToArray();
+            Clear();
+            return bytes;
+        }
+
         // .db
         public void Db(byte value)
         {
@@ -306,6 +316,12 @@ namespace FaxanaduRando.Randomizer
             Db(value);
         }
 
+        public void CPX_imm(byte value)
+        {
+            Db(OpCode.CPXImmediate);
+            Db(value);
+        }
+
         // branches
         public void BCC(sbyte offset)
         {
@@ -391,6 +407,12 @@ namespace FaxanaduRando.Randomizer
         {
             Db(OpCode.ORAImmediate);
             Db(value);
+        }
+
+        public void ORA_abs(ushort addr)
+        {
+            Db(OpCode.ORAAbsolute);
+            Dw(addr);
         }
 
         public void ORA_abs_x(ushort addr)
@@ -510,6 +532,18 @@ namespace FaxanaduRando.Randomizer
             Db(addr);
         }
 
+        public void ADC_abs(ushort addr)
+        {
+            Db(OpCode.ADCAbsolute);
+            Dw(addr);
+        }
+
+        public void SBC_imm(byte value)
+        {
+            Db(OpCode.SBCImmediate);
+            Db(value);
+        }
+
         // flags
         public void CLC()
         {
@@ -525,6 +559,12 @@ namespace FaxanaduRando.Randomizer
         {
             Db(OpCode.EORImmediate);
             Db(value);
+        }
+
+        public void EOR_zp(byte addr)
+        {
+            Db(OpCode.EORZeroPage);
+            Db(addr);
         }
 
         // stack

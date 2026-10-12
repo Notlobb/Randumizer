@@ -101,6 +101,9 @@ namespace FaxanaduRando.Randomizer
         [Flag(35)]
         public static bool PermanentDoorUnlocks { get; set; } = false;
 
+        [Flag(36)]
+        public static bool SmoothRoom { get; set; } = false;
+
         [Flag(FlagsCodec.NonBoolFlagBase + 33)]
         public static Hints HintSetting { get; set; } = Hints.Strong;
 
