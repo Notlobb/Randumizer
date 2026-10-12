@@ -67,5 +67,10 @@ namespace FaxanaduRando.Randomizer
         public const int BMI = 0x30;
         public const int BNE = 0xD0;
         public const int BEQ = 0xF0;
+        public const int EORZeroPage = 0x45;
+        public const int CPXImmediate = 0xE0;
+        public const int SBCImmediate = 0xE9;
+        public const int ORAAbsolute = 0x0D;
+        public const int ADCAbsolute = 0x6D;
     }
 }

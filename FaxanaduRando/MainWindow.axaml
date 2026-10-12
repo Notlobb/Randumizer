@@ -120,6 +120,8 @@
                               ToolTip.Tip="The Evil One's fortress will be included in the tower shuffle. There will be an extra tower location, that replaces the first door on the Dartmoor screen with 4 doors, and the end of the final world will lead to Eolis"/>
 					<CheckBox Name="permanentDoorsCheckBox" Grid.Column="6" Grid.Row="6" Content="Permanent doors" Margin="0,1"
 							  ToolTip.Tip="Key-locked doors stay permanently unlocked after being opened once."/>
+					<CheckBox Name="smoothRoomCheckBox" Grid.Column="6" Grid.Row="7" Content="Less slowdown" Margin="0,1"
+							  ToolTip.Tip="Faster sprite, graphics and message box code in SRAM, for less slowdown. Gameplay is unchanged."/>
 
 					<!-- Combobox settings -->
 					<TextBlock Grid.Column="3" Grid.Row="12" Text="Hints:" VerticalAlignment="Center" Margin="0,4,8,1"/>

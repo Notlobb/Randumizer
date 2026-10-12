@@ -3,7 +3,10 @@
     internal static class RAM
     {
         // zero page RAM
+        public const byte ZP_Temp_00 = 0x00;
         public const byte ZP_Temp_01 = 0x01;
+        public const byte ZP_Temp_02 = 0x02;
+        public const byte ZP_Temp_03 = 0x03;
         public const byte ZP_Joy1_ChangedButtonMask = 0x19;
         public const byte ZP_CurrentWorld = 0x24;
         public const byte ZP_CurrentScreen = 0x63;
@@ -23,6 +26,9 @@
         public const ushort ShopItemCostsLo = 0x0228;
         public const ushort Textbox_TitleCharOffset = 0x021C;
         public const ushort SpritesOnScreen = 0x02CC;
+        public const ushort SpriteChrTileBase = 0x032C;
+        public const ushort RoomSpriteIndex = 0x0378;
+        public const ushort RoomSpriteEntity = 0x038B;
         public const ushort XPLowByte = 0x0390;
         public const ushort GoldLowByte = 0x0392;
         public const ushort GoldMiddleByte = 0x0393;
@@ -41,6 +47,7 @@
         public const ushort SpawnPoint = 0x0439;
         public const ushort PendingTitle = 0x04ED;
         public const ushort StartScreenSelection = 0x0687; // 0=START, 1=CONTINUE
+        public const ushort SpriteOAM = 0x0700;
 
         // unused vanilla RAM, accessed through the $1800-$1FFF mirror
         public const ushort PendingStage = 0x1ffe;          // mirrors 0x07fe
@@ -127,6 +134,7 @@
         public const ushort HackBank14Start = 0xBDC0;
 
         // bank 15 vanilla code addresses (hook sites and callable routines)
+        public const ushort RoomLoad_JSR_SpriteUpload = 0xC2A6;
         public const ushort GameLoop_CheckUseCurrentItem_BNE_Return = 0xC47C;
         public const ushort GameLoop_CheckUseCurrentItem_LDA_SelectedItem = 0xC48B;
         public const ushort Player_ClearSelectedItem = 0xC4BF;
@@ -144,12 +152,25 @@
 
         public const ushort Game_Init_JSR_Game_InitMMCAndBank = 0xC954;
         public const ushort Game_Init_JSR_Game_InitScreenAndMusic = Game_Init_JSR_Game_InitMMCAndBank + 3;
+        public const ushort Game_InitScreenAndMusic = 0xCA78;
         public const ushort PPU_WaitUntilFlushed = 0xCAF7;
+        public const ushort RoomLoad_SpriteBankSplit = 0xC282;
+        public const ushort SpriteClear_STA_0700_Y = 0xCB84;
+        public const ushort SpriteClear_Done = 0xCB8D;
         public const ushort Sprites_FlipRanges = 0xCBA8;
         public const ushort Game_InitMMCAndBank = 0xCBBF;
         public const ushort MMC1_UpdateROMBank = 0xCC1A;
+        public const ushort SpriteUpload = 0xCDB5;
+        public const ushort SpriteUpload_SpriteBankSplit = 0xCD93;
+        public const ushort SpriteUpload_SpriteBankSubtract = 0xCD97;
         public const ushort SpritesChrTileCountTable = 0xCE1B;
         public const ushort HourGlassMusicIndex = 0xC5E7;
+        public const ushort PPUDrain_Threshold = 0xCF5C;
+        public const ushort PPUDrain_CopyLoop = 0xCF97;
+        public const ushort PPUDrain_Continue = 0xCFA1;
+        public const ushort PPUBuffer_WaitForCapacity = 0xCFCA;
+        public const ushort PPUBuffer_QueueCommandOrLength = 0xCFDC;
+        public const ushort PPUBuffer_QueueCommandOrLength_PLA = 0xCFE0;
         public const ushort Screen_LoadSpritePalette = 0xD062;
         public const ushort Sound_PlayEffect = 0xD0E4;
         public const ushort DeathMusicIndex = 0xD989;
@@ -222,6 +243,14 @@
         public const ushort Player_SetWeapon_CMP_WorldIndex = 0xEDF0;
         public const ushort BossMusicIndex = 0xefac;
         public const ushort EndGameTransitionMusicIndex = 0xefda;
+        public const ushort SpriteDraw_Body = 0xF120;
+        public const ushort SpriteDraw_NextTile = 0xF163;
+        public const ushort SpriteDrawFlipped_Body = 0xF1D4;
+        public const ushort SpriteDrawFlipped_NextTile = 0xF217;
+        public const ushort SpriteDraw_AdvanceOAM = 0xF228;
+        public const ushort TextBox_ClearTextTiles_LDY_20 = 0xF452;
+        public const ushort TextBox_ClearTextTiles_Loop = 0xF455;
+        public const ushort TextBox_ClearTextTiles_DEY = 0xF462;
         public const ushort TextBox_ShowNextChar_LDA_01 = 0xF472;
         public const ushort TextBox_ShowNextChar_IfReady_TimerMask = 0xf49f;
         public const ushort TextBox_DisplayMessage = 0xf4a2;
